@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Prompt Baukasten – Strukturierter XML-Editor</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root{
+    --paper:#f1efe9;
+    --paper-raised:#faf9f5;
+    --ink:#26313f;
+    --ink-soft:#5b6472;
+    --ink-faint:#9aa1ac;
+    --line:#dcd7cb;
+    --indigo:#33415c;
+    --indigo-soft:#e6e9ef;
+    --moss:#54704f;
+    --moss-soft:#e6ebe2;
+    --gold:#8a6323;
+    --gold-soft:#f1e7d2;
+    --clay:#a8442f;
+    --clay-soft:#f3e0da;
+    --slate:#5c6773;
+    --slate-soft:#e6e8ea;
+    --radius:10px;
+    --shadow:0 1px 2px rgba(38,49,63,.06), 0 6px 20px -10px rgba(38,49,63,.15);
+    --pane-height:560px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:radial-gradient(circle at 1px 1px, rgba(38,49,63,.05) 1px, transparent 0);
+    background-size:22px 22px;
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    min-height:100vh;
+  }
+
+  .wrap{
+    max-width:1280px;
+    margin:0 auto;
+    padding:32px 24px 80px;
+  }
+
+  header.top{
+    display:flex;
+    flex-wrap:wrap;
+    gap:16px;
+    align-items:flex-end;
+    justify-content:space-between;
+    margin-bottom:22px;
+    padding-bottom:20px;
+    border-bottom:1px solid var(--line);
+  }
+  header.top .title-block h1{
+    font-family:'Source Serif 4', serif;
+    font-weight:700;
+    font-size:2rem;
+    margin:0 0 4px;
+    letter-spacing:-.01em;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  header.top .title-block h1 .mark{
+    display:inline-block;
+    width:12px;height:12px;
+    border-radius:3px;
+    background:linear-gradient(135deg,var(--indigo),var(--moss));
+    transform:rotate(6deg);
+  }
+  header.top .title-block p{
+    margin:0;
+    color:var(--ink-soft);
+    font-size:.93rem;
+    max-width:600px;
+    line-height:1.5;
+  }
+
+  .toolbar{display:flex; flex-wrap:wrap; gap:8px;}
+  button{font-family:inherit; cursor:pointer;}
+  .btn{
+    appearance:none;
+    border:1px solid var(--line);
+    background:var(--paper-raised);
+    color:var(--ink);
+    padding:9px 14px;
+    border-radius:8px;
+    font-size:.86rem;
+    font-weight:600;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    gap:6px;
+    transition:border-color .15s, background .15s, transform .1s;
+    white-space:normal;
+    line-height:1.3;
+  }
+  .btn:hover{border-color:var(--ink-faint); background:#fff;}
+  .btn:active{transform:translateY(1px);}
+  .btn.primary{background:var(--indigo); border-color:var(--indigo); color:#fbf9f4;}
+  .btn.primary:hover{background:#3c4c6b;}
+  .btn.ghost{background:transparent; border-color:transparent; color:var(--ink-soft); padding:9px 10px;}
+  .btn.ghost:hover{background:var(--slate-soft); color:var(--ink);}
+  .btn.danger{color:var(--clay);}
+  .btn.small{padding:5px 9px; font-size:.76rem; border-radius:6px;}
+  .btn.block{width:100%; justify-content:center;}
+  #btnToggleSource{min-width:190px; justify-content:center;}
+  .btn:disabled{opacity:.4; cursor:not-allowed;}
+
+  .layout{display:grid; grid-template-columns:1fr; gap:20px;}
+  .layout.with-source{grid-template-columns:1.6fr 1fr; align-items:start;}
+  @media (max-width:980px){ .layout.with-source{grid-template-columns:1fr;} }
+
+  .panel{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .panel-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 18px; border-bottom:1px solid var(--line); gap:10px; flex-wrap:wrap;
+  }
+  .panel-head h2{font-family:'Source Serif 4', serif; font-size:1.05rem; margin:0; font-weight:600;}
+  .panel-head .hint{font-size:.78rem; color:var(--ink-faint);}
+  .panel-body{padding:20px 22px 26px;}
+
+  /* ---- split structure view: outline (left) + detail (right) ---- */
+  .split-body{display:flex; align-items:stretch;}
+  .outline-col{
+    width:300px; flex:0 0 300px;
+    border-right:1px solid var(--line);
+    display:flex; flex-direction:column;
+    background:#fbfaf6;
+  }
+  .outline-list{
+    overflow-y:auto;
+    height:var(--pane-height);
+    padding:10px 8px;
+  }
+  .outline-footer{
+    padding:12px; border-top:1px solid var(--line);
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .outline-footer .add-row{display:flex; gap:6px; flex-wrap:wrap;}
+  .outline-footer .add-row .btn{flex:1; padding:7px 8px; font-size:.75rem;}
+
+  .outline-empty{padding:20px 12px; font-size:.82rem; color:var(--ink-faint); line-height:1.5;}
+
+  .outline-row{
+    display:flex; align-items:center; gap:5px;
+    padding:6px 8px; border-radius:7px; cursor:pointer;
+    font-size:.85rem; margin-bottom:1px;
+  }
+  .outline-row:hover{background:var(--slate-soft);}
+  .outline-row.selected{background:var(--indigo-soft); box-shadow:inset 3px 0 0 var(--indigo);}
+  .outline-row.selected .outline-tag{color:var(--indigo);}
+  .outline-row.error .outline-tag, .outline-row.error .outline-comment{color:var(--clay);}
+  .outline-row.error{box-shadow:inset 3px 0 0 var(--clay);}
+
+  .outline-chevron{
+    width:14px; flex:none; font-size:.65rem; color:var(--ink-faint);
+    text-align:center; background:none; border:none; padding:0; cursor:pointer;
+  }
+  .outline-chevron.invisible{visibility:hidden;}
+
+  .outline-tag{font-family:'Source Serif 4', serif; font-weight:700; color:var(--indigo); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1; min-width:0;}
+  .outline-tag.empty{color:var(--ink-faint); font-style:italic; font-weight:600;}
+  .outline-row.depth-1 .outline-tag{color:var(--moss); font-size:.95em;}
+  .outline-row.depth-2 .outline-tag{color:var(--gold); font-size:.92em;}
+  .outline-row.depth-3 .outline-tag{color:var(--clay); font-size:.9em;}
+  .outline-row.depth-4 .outline-tag{color:var(--slate); font-size:.88em;}
+
+  .outline-comment{font-style:italic; color:var(--ink-faint); font-size:.83em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1; min-width:0;}
+  .outline-count{margin-left:auto; font-size:.72rem; color:var(--ink-faint); flex:none; padding-left:6px;}
+
+  /* ---- detail column ---- */
+  .detail-col{flex:1; min-width:0; display:flex; flex-direction:column;}
+  .detail-scroll{overflow-y:auto; height:var(--pane-height); padding:24px 28px 30px;}
+
+  .breadcrumb{display:flex; align-items:center; gap:2px; flex-wrap:wrap; font-size:.78rem; color:var(--ink-faint); margin-bottom:14px;}
+  .breadcrumb button{background:none; border:none; color:var(--ink-soft); font-size:.78rem; font-family:inherit; cursor:pointer; padding:2px 5px; border-radius:4px;}
+  .breadcrumb button:hover{background:var(--slate-soft); color:var(--ink);}
+  .breadcrumb .sep{color:var(--ink-faint); padding:0 1px;}
+
+  .detail-heading-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .detail-angle{color:var(--ink-faint); font-family:'JetBrains Mono',monospace; font-size:1.3rem; user-select:none;}
+  .detail-tag-input{
+    font-family:'Source Serif 4', serif; font-weight:700; font-size:1.6rem; color:var(--indigo);
+    border:none; background:transparent; border-bottom:2px solid transparent;
+    padding:2px 4px; min-width:140px; flex:1 1 auto;
+  }
+  .detail-tag-input:focus{outline:none; border-bottom-color:var(--indigo); background:#fff; border-radius:4px 4px 0 0;}
+  .detail-tag-input::placeholder{color:var(--ink-faint); font-weight:600;}
+
+  .comment-heading{font-family:'Inter',sans-serif; font-weight:700; font-style:italic; font-size:1.3rem; color:var(--ink-soft);}
+
+  .detail-toolbar{display:flex; gap:8px; flex-wrap:wrap; margin:14px 0 20px;}
+
+  .detail-textarea-wrap{border:1px solid var(--line); border-radius:12px; background:#fff; box-shadow:var(--shadow); overflow:hidden;}
+  .detail-textarea{
+    display:block; width:100%; box-sizing:border-box;
+    border:none; outline:none;
+    font-family:'Inter',sans-serif; font-size:1.02rem; line-height:1.75;
+    color:var(--ink); padding:20px 22px;
+    resize:none; height:360px; overflow-y:auto;
+    background:transparent;
+  }
+  .detail-textarea.comment-style{font-style:italic; color:var(--ink-soft);}
+  .detail-textarea::placeholder{color:var(--ink-faint); font-style:normal;}
+
+  .children-note{font-size:.88rem; color:var(--ink-soft); margin-bottom:14px; line-height:1.6;}
+  .children-list{display:flex; flex-direction:column; gap:7px;}
+  .child-row{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:11px 15px; border:1px solid var(--line); border-radius:9px;
+    background:#fff; cursor:pointer; transition:border-color .12s;
+  }
+  .child-row:hover{border-color:var(--ink-faint);}
+  .child-row .child-tag{font-family:'Source Serif 4', serif; font-weight:700; color:var(--indigo); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:0 1 auto; min-width:0;}
+  .child-row .child-preview{font-size:.8rem; color:var(--ink-faint); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1 1 auto; min-width:0; text-align:right;}
+  .child-row .child-arrow{color:var(--ink-faint); flex:none;}
+  .child-row.is-comment .child-tag{font-style:italic; color:var(--ink-soft); font-family:'Inter',sans-serif;}
+
+  .detail-empty{padding:60px 24px; text-align:center; color:var(--ink-soft);}
+  .detail-empty p{margin:0 0 16px; font-size:.92rem; line-height:1.6;}
+
+  @media (max-width:860px){
+    .split-body{flex-direction:column;}
+    .outline-col{width:100%; flex:none; border-right:none; border-bottom:1px solid var(--line);}
+    .outline-list{height:200px;}
+    .detail-scroll{height:440px;}
+    .detail-textarea{height:260px;}
+    .detail-tag-input{font-size:1.35rem;}
+  }
+
+  @media (max-width:640px){
+    .wrap{padding:16px 12px 48px;}
+    header.top{align-items:flex-start;}
+    header.top .title-block h1{font-size:1.55rem;}
+    .toolbar{width:100%;}
+    .toolbar .btn{flex:1 1 auto;}
+    .panel-body, .detail-scroll{padding:16px 14px 20px;}
+    .outline-footer{padding:10px;}
+    .outline-list{height:180px;}
+    .detail-scroll{height:420px;}
+    .detail-textarea{height:220px; padding:16px;}
+    .detail-tag-input{font-size:1.2rem; min-width:100px;}
+    .detail-toolbar .btn{flex:1 1 auto; font-size:.72rem; padding:7px 8px;}
+  }
+
+  /* ---- source view ---- */
+  #sourceText{
+    width:100%; min-height:420px; resize:vertical;
+    border:1px solid var(--line); border-radius:8px; background:#fdfcf9;
+    font-family:'JetBrains Mono',monospace; font-size:.82rem; line-height:1.65;
+    color:var(--ink); padding:14px;
+  }
+  #sourceText:focus{outline:none; border-color:var(--indigo);}
+  .source-actions{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;}
+
+  .amp-panel{margin-top:10px; padding:12px 14px; background:var(--gold-soft); border:1px solid #e0cfa0; border-radius:8px;}
+  .amp-panel p{margin:0 0 10px; font-size:.83rem; color:var(--ink); line-height:1.5;}
+  .amp-options{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;}
+  .amp-custom{display:flex; gap:8px; flex-wrap:wrap;}
+  .amp-custom input{flex:1; min-width:160px; border:1px solid var(--line); border-radius:6px; padding:7px 10px; font-family:'Inter',sans-serif; font-size:.85rem; background:#fff;}
+  .amp-custom input:focus{outline:none; border-color:var(--indigo);}
+
+  .banner{margin:0 0 16px; padding:12px 14px; border-radius:8px; font-size:.85rem; line-height:1.5; display:none;}
+  .banner.show{display:block;}
+  .banner.error{background:var(--clay-soft); color:#7a2f1f; border:1px solid #e2b3a4;}
+  .banner.ok{background:var(--moss-soft); color:#33452f; border:1px solid #b9cbb0;}
+  .banner ul{margin:6px 0 0; padding-left:18px;}
+  .banner li{margin-bottom:2px; cursor:pointer; text-decoration:underline;}
+
+  footer.credits{text-align:center; color:var(--ink-faint); font-size:.78rem; margin-top:28px;}
+  ::selection{background:var(--gold-soft);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="title-block">
+      <h1><span class="mark"></span>Prompt Baukasten</h1>
+      <p>Strukturierte Ansicht für XML-Prompts. Links die Gliederung, rechts der Inhalt des ausgewählten Abschnitts – groß, gut lesbar und frei in der Höhe verstellbar.</p>
+    </div>
+    <div class="toolbar">
+      <button class="btn" id="btnExample">Beispiel laden</button>
+      <button class="btn" id="btnValidate">Fehler prüfen</button>
+      <button class="btn" id="btnToggleSource">XML-Code anzeigen</button>
+      <button class="btn danger" id="btnReset">Zurücksetzen</button>
+    </div>
+  </header>
+
+  <div id="validationBanner" class="banner error"></div>
+
+  <div class="layout" id="layout">
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Struktur</h2>
+        <span class="hint">Links auswählen, rechts bearbeiten</span>
+      </div>
+      <div class="split-body">
+        <div class="outline-col">
+          <div class="outline-list" id="outlineList"></div>
+          <div class="outline-footer">
+            <div class="add-row">
+              <button class="btn primary" id="btnAddRoot">+ Element</button>
+              <button class="btn" id="btnAddRootComment">+ Kommentar</button>
+            </div>
+            <button class="btn block" id="btnCopyResult">⧉ Ergebnis in die Zwischenablage kopieren</button>
+          </div>
+        </div>
+        <div class="detail-col">
+          <div class="detail-scroll" id="detailScroll"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="sourcePanel" style="display:none;">
+      <div class="panel-head">
+        <h2>XML-Code</h2>
+        <span class="hint">Einfügen &amp; übernehmen, oder Live-Ausgabe kopieren</span>
+      </div>
+      <div class="panel-body">
+        <textarea id="sourceText" spellcheck="false" placeholder="Hier bestehenden XML-Prompt einfügen…"></textarea>
+        <div class="source-actions">
+          <button class="btn primary" id="btnApplySource">↩ Übernehmen</button>
+          <button class="btn" id="btnCopySource">Als XML kopieren</button>
+          <button class="btn" id="btnFixAmp">„&amp;“ ersetzen…</button>
+        </div>
+        <div class="amp-panel" id="ampPanel" style="display:none;">
+          <p>Einzelne <strong>&amp;</strong>-Zeichen im obigen Text werden bereits automatisch akzeptiert. Möchtest du sie stattdessen sichtbar ersetzen?</p>
+          <div class="amp-options">
+            <button class="btn small" data-amp="&amp;amp;">durch „&amp;amp;“ (korrektes XML)</button>
+            <button class="btn small" data-amp="und">durch „und“</button>
+            <button class="btn small" data-amp="u">durch „u“</button>
+          </div>
+          <div class="amp-custom">
+            <input type="text" id="ampCustomInput" placeholder="…oder eigenes Zeichen/Text eingeben" maxlength="20" />
+            <button class="btn small primary" id="btnAmpCustomApply">Anwenden</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="credits">Alles läuft lokal im Browser – nichts wird hochgeladen.</footer>
+</div>
+
+<script>
+(function(){
+
+  // ---------- state ----------
+  let tree = [];
+  let idCounter = 1;
+  let sourceFocused = false;
+  let selectedId = null;
+  let focusDetailField = false; // wenn true: nach dem nächsten render() Detail-Feld fokussieren
+
+  const outlineList = document.getElementById('outlineList');
+  const detailScroll = document.getElementById('detailScroll');
+  const sourceText = document.getElementById('sourceText');
+  const sourcePanel = document.getElementById('sourcePanel');
+  const layout = document.getElementById('layout');
+  const validationBanner = document.getElementById('validationBanner');
+  const ampPanel = document.getElementById('ampPanel');
+
+  function uid(){ return 'n' + (idCounter++); }
+
+  function newNode(tag, text){
+    return { id: uid(), kind: 'element', tag: tag || '', text: text || '', children: [], collapsed: false };
+  }
+  function newCommentNode(text){
+    return { id: uid(), kind: 'comment', text: text || '' };
+  }
+
+  // ---------- example ----------
+  function exampleTree(){
+    const role = newNode('rolle', 'Du bist ein hilfsbereiter Assistent für Kundenanfragen im Onlineshop.');
+    const task = newNode('aufgabe', 'Beantworte die Kundenfrage freundlich und präzise. Wenn Informationen fehlen, frage gezielt nach.');
+    const rules = newNode('regeln');
+    rules.children.push(newNode('regel', 'Nenne niemals interne Artikelnummern.'));
+    rules.children.push(newCommentNode('Interner Hinweis: diese Regel bei Bedarf pro Mandant anpassen.'));
+    rules.children.push(newNode('regel', 'Antworte immer auf Deutsch, außer die Frage ist auf Englisch gestellt.'));
+    const examples = newNode('beispiele');
+    const ex1 = newNode('beispiel');
+    ex1.children.push(newNode('eingabe', 'Wo bleibt meine Bestellung?'));
+    ex1.children.push(newNode('ausgabe', 'Ich prüfe das gerne für dich – kannst du mir deine Bestellnummer nennen?'));
+    examples.children.push(ex1);
+    return [role, task, rules, examples];
+  }
+
+  // ---------- ampersand handling ----------
+  const strayAmpRe = /&(?!(?:amp|lt|gt|quot|apos|#[0-9]+|#x[0-9a-fA-F]+);)/g;
+  function replaceStrayAmpersands(str, replacement){
+    return (str || '').replace(strayAmpRe, replacement);
+  }
+
+  // ---------- XML parsing ----------
+  function parseXMLString(str){
+    const trimmed = (str || '').trim();
+    if(!trimmed){ return { tree: [], errors: [] }; }
+    const safe = replaceStrayAmpersands(trimmed, '&amp;');
+    const wrapped = '<__root__>' + safe + '</__root__>';
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(wrapped, 'text/xml');
+    const errNode = doc.querySelector('parsererror');
+    if(errNode){
+      const raw = (errNode.textContent || '').trim();
+      const detail = raw.split('\n').map(l => l.trim()).filter(Boolean).join(' — ');
+      const errors = [ 'XML konnte nicht gelesen werden. Prüfe, ob jeder Tag korrekt geschlossen ist (z. B. </aufgabe>) und ob Start- und End-Tag exakt zusammenpassen.' ];
+      if(detail) errors.push('Details vom Browser: ' + detail);
+      return { tree: null, errors };
+    }
+    const rootEl = doc.documentElement;
+    const result = domChildNodesToNodes(rootEl);
+    if(result.length === 0 && rootEl.textContent.trim()){
+      result.push(newNode('text', rootEl.textContent.trim()));
+    }
+    return { tree: result, errors: [] };
+  }
+
+  function domChildNodesToNodes(el){
+    const out = [];
+    for(const child of Array.from(el.childNodes)){
+      if(child.nodeType === Node.ELEMENT_NODE){
+        out.push(domElementToNode(child));
+      } else if(child.nodeType === Node.COMMENT_NODE){
+        const text = (child.data || '').trim();
+        if(text) out.push(newCommentNode(text));
+      }
+    }
+    return out;
+  }
+
+  function domElementToNode(el){
+    const node = newNode(el.tagName, '');
+    const childNodes = domChildNodesToNodes(el);
+    if(childNodes.length > 0){
+      node.children = childNodes;
+    } else {
+      node.text = el.textContent || '';
+    }
+    return node;
+  }
+
+  // ---------- serialization ----------
+  function escapeXML(str){
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function serializeTree(nodes, depth){
+    depth = depth || 0;
+    const pad = '  '.repeat(depth);
+    let out = '';
+    for(const node of nodes){
+      if(node.kind === 'comment'){
+        const safe = (node.text || '').trim().replace(/--/g, '- -');
+        if(safe) out += pad + '<!-- ' + safe + ' -->\n';
+        continue;
+      }
+      const tag = node.tag && node.tag.trim() ? node.tag.trim() : 'element';
+      if(node.children && node.children.length){
+        out += pad + '<' + tag + '>\n';
+        out += serializeTree(node.children, depth + 1);
+        out += pad + '</' + tag + '>\n';
+      } else {
+        const text = (node.text || '').trim();
+        if(text.includes('\n')){
+          out += pad + '<' + tag + '>\n';
+          out += text.split('\n').map(l => pad + '  ' + escapeXML(l)).join('\n') + '\n';
+          out += pad + '</' + tag + '>\n';
+        } else {
+          out += pad + '<' + tag + '>' + escapeXML(text) + '</' + tag + '>\n';
+        }
+      }
+    }
+    return out;
+  }
+
+  function serializeFull(){
+    return '<prompt>\n' + serializeTree(tree, 1) + '</prompt>';
+  }
+
+  // ---------- tree lookup ----------
+  function findNode(nodes, id){
+    for(let i = 0; i < nodes.length; i++){
+      if(nodes[i].id === id){ return { node: nodes[i], arr: nodes, index: i }; }
+      if(nodes[i].children && nodes[i].children.length){
+        const found = findNode(nodes[i].children, id);
+        if(found) return found;
+      }
+    }
+    return null;
+  }
+
+  // Findet den Pfad (Liste von Vorfahren, Wurzel zuerst) zu einer Node-ID.
+  function findPath(nodes, id, trail){
+    trail = trail || [];
+    for(const n of nodes){
+      const newTrail = trail.concat([n]);
+      if(n.id === id) return newTrail;
+      if(n.children && n.children.length){
+        const found = findPath(n.children, id, newTrail);
+        if(found) return found;
+      }
+    }
+    return null;
+  }
+
+  function firstNavigableId(nodes){
+    return nodes.length ? nodes[0].id : null;
+  }
+
+  // ---------- mutations ----------
+  function addRootNode(){
+    const n = newNode('', '');
+    tree.push(n);
+    selectedId = n.id;
+    focusDetailField = true;
+    render();
+  }
+
+  function addRootComment(){
+    const n = newCommentNode('');
+    tree.push(n);
+    selectedId = n.id;
+    focusDetailField = true;
+    render();
+  }
+
+  function addChildNode(parentId){
+    const found = findNode(tree, parentId);
+    if(!found) return;
+    const n = newNode('', '');
+    found.node.children.push(n);
+    found.node.collapsed = false;
+    selectedId = n.id;
+    focusDetailField = true;
+    render();
+  }
+
+  function addCommentNode(parentId){
+    const found = findNode(tree, parentId);
+    if(!found) return;
+    const n = newCommentNode('');
+    found.node.children.push(n);
+    found.node.collapsed = false;
+    selectedId = n.id;
+    focusDetailField = true;
+    render();
+  }
+
+  function deleteNode(id){
+    const found = findNode(tree, id);
+    if(!found) return;
+    found.arr.splice(found.index, 1);
+    if(selectedId === id){
+      selectedId = firstNavigableId(tree);
+    }
+    render();
+  }
+
+  function moveNode(id, dir){
+    const found = findNode(tree, id);
+    if(!found) return;
+    const newIndex = found.index + dir;
+    if(newIndex < 0 || newIndex >= found.arr.length) return;
+    const tmp = found.arr[found.index];
+    found.arr[found.index] = found.arr[newIndex];
+    found.arr[newIndex] = tmp;
+    render();
+  }
+
+  function toggleCollapse(id, evt){
+    if(evt) evt.stopPropagation();
+    const found = findNode(tree, id);
+    if(!found) return;
+    found.node.collapsed = !found.node.collapsed;
+    render();
+  }
+
+  function selectNode(id){
+    selectedId = id;
+    render();
+  }
+
+  // ---------- rendering: outline (left) ----------
+  function renderOutline(){
+    outlineList.innerHTML = '';
+    if(tree.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'outline-empty';
+      empty.textContent = 'Noch keine Elemente. Über die Buttons unten starten, oder ein Beispiel laden.';
+      outlineList.appendChild(empty);
+      return;
+    }
+    tree.forEach(node => outlineList.appendChild(renderOutlineRow(node, 0)));
+  }
+
+  function renderOutlineRow(node, depth){
+    const wrap = document.createElement('div');
+
+    const row = document.createElement('div');
+    row.className = 'outline-row depth-' + Math.min(depth, 4);
+    row.style.paddingLeft = (8 + depth * 15) + 'px';
+    if(node.id === selectedId) row.classList.add('selected');
+    if(node._hasError) row.classList.add('error');
+    row.dataset.id = node.id;
+    row.onclick = () => selectNode(node.id);
+
+    const hasChildren = node.kind === 'element' && node.children && node.children.length > 0;
+    const chevron = document.createElement('button');
+    chevron.className = 'outline-chevron' + (hasChildren ? '' : ' invisible');
+    chevron.textContent = node.collapsed ? '▸' : '▾';
+    chevron.onclick = (e) => toggleCollapse(node.id, e);
+    row.appendChild(chevron);
+
+    if(node.kind === 'comment'){
+      const label = document.createElement('span');
+      label.className = 'outline-comment';
+      label.textContent = '💬 ' + (node.text.trim() ? node.text.trim() : 'Anmerkung');
+      row.appendChild(label);
+    } else {
+      const label = document.createElement('span');
+      label.className = 'outline-tag' + (node.tag.trim() ? '' : ' empty');
+      label.textContent = node.tag.trim() ? node.tag.trim() : '(ohne Namen)';
+      row.appendChild(label);
+      if(hasChildren){
+        const count = document.createElement('span');
+        count.className = 'outline-count';
+        count.textContent = node.children.length;
+        row.appendChild(count);
+      }
+    }
+
+    wrap.appendChild(row);
+
+    if(hasChildren && !node.collapsed){
+      node.children.forEach(child => wrap.appendChild(renderOutlineRow(child, depth + 1)));
+    }
+    return wrap;
+  }
+
+  // ---------- rendering: detail (right) ----------
+  function render(){
+    renderOutline();
+    renderDetail();
+    updateSourceFromTree();
+  }
+
+  function renderDetail(){
+    detailScroll.innerHTML = '';
+
+    if(tree.length === 0){
+      detailScroll.appendChild(buildEmptyState());
+      return;
+    }
+
+    const found = selectedId ? findNode(tree, selectedId) : null;
+    if(!found){
+      selectedId = firstNavigableId(tree);
+    }
+    const node = selectedId ? findNode(tree, selectedId) : null;
+    if(!node){
+      detailScroll.appendChild(buildEmptyState());
+      return;
+    }
+
+    detailScroll.appendChild(buildBreadcrumb(node.node.id));
+
+    if(node.node.kind === 'comment'){
+      detailScroll.appendChild(buildCommentDetail(node.node));
+    } else {
+      detailScroll.appendChild(buildElementDetail(node.node));
+    }
+
+    if(focusDetailField){
+      focusDetailField = false;
+      const tagInput = detailScroll.querySelector('.detail-tag-input');
+      const ta = detailScroll.querySelector('.detail-textarea');
+      if(tagInput){ tagInput.focus(); }
+      else if(ta){ ta.focus(); }
+    }
+  }
+
+  function buildEmptyState(){
+    const empty = document.createElement('div');
+    empty.className = 'detail-empty';
+    empty.innerHTML = '<p>Noch nichts ausgewählt. Füge links dein erstes Element hinzu, oder lade ein Beispiel.</p><div class="actions"></div>';
+    const actions = empty.querySelector('.actions');
+    const b1 = document.createElement('button');
+    b1.className = 'btn primary'; b1.textContent = '+ Element hinzufügen';
+    b1.onclick = addRootNode;
+    const b2 = document.createElement('button');
+    b2.className = 'btn'; b2.textContent = 'Beispiel laden';
+    b2.onclick = loadExample;
+    actions.style.display = 'flex'; actions.style.gap = '10px'; actions.style.justifyContent = 'center'; actions.style.flexWrap = 'wrap';
+    actions.appendChild(b1); actions.appendChild(b2);
+    return empty;
+  }
+
+  function buildBreadcrumb(id){
+    const bc = document.createElement('div');
+    bc.className = 'breadcrumb';
+    const path = findPath(tree, id) || [];
+    path.forEach((n, i) => {
+      if(i > 0){
+        const sep = document.createElement('span');
+        sep.className = 'sep';
+        sep.textContent = '›';
+        bc.appendChild(sep);
+      }
+      const btn = document.createElement('button');
+      btn.textContent = n.kind === 'comment' ? '💬 Anmerkung' : (n.tag.trim() || '(ohne Namen)');
+      if(i === path.length - 1) btn.style.fontWeight = '700';
+      btn.onclick = () => selectNode(n.id);
+      bc.appendChild(btn);
+    });
+    return bc;
+  }
+
+  function buildElementDetail(node){
+    const wrap = document.createElement('div');
+
+    const headRow = document.createElement('div');
+    headRow.className = 'detail-heading-row';
+
+    const openAngle = document.createElement('span');
+    openAngle.className = 'detail-angle'; openAngle.textContent = '<';
+    headRow.appendChild(openAngle);
+
+    const tagInput = document.createElement('input');
+    tagInput.className = 'detail-tag-input';
+    tagInput.type = 'text';
+    tagInput.value = node.tag;
+    tagInput.placeholder = 'tag-name';
+    tagInput.autocomplete = 'off';
+    tagInput.spellcheck = false;
+    tagInput.addEventListener('input', (e) => {
+      node.tag = e.target.value.replace(/\s+/g, '-');
+      e.target.value = node.tag;
+      updateOutlineLabelFor(node.id, node.tag);
+      updateSourceFromTree();
+    });
+    headRow.appendChild(tagInput);
+
+    const closeAngle = document.createElement('span');
+    closeAngle.className = 'detail-angle'; closeAngle.textContent = '>';
+    headRow.appendChild(closeAngle);
+
+    wrap.appendChild(headRow);
+
+    const toolbar = document.createElement('div');
+    toolbar.className = 'detail-toolbar';
+    toolbar.appendChild(mkBtn('↑ Nach oben', () => moveNode(node.id, -1)));
+    toolbar.appendChild(mkBtn('↓ Nach unten', () => moveNode(node.id, 1)));
+    toolbar.appendChild(mkBtn('+ Unterpunkt', () => addChildNode(node.id)));
+    toolbar.appendChild(mkBtn('+ Kommentar', () => addCommentNode(node.id)));
+    const delBtn = mkBtn('✕ Löschen', () => { if(confirm('Dieses Element (inkl. Unterpunkte) wirklich löschen?')) deleteNode(node.id); });
+    delBtn.classList.add('danger');
+    toolbar.appendChild(delBtn);
+    wrap.appendChild(toolbar);
+
+    const hasChildren = node.children && node.children.length > 0;
+
+    if(hasChildren){
+      const note = document.createElement('div');
+      note.className = 'children-note';
+      note.textContent = 'Dieser Abschnitt enthält ' + node.children.length + ' Unterpunkt' + (node.children.length === 1 ? '' : 'e') + '. Zum Bearbeiten anklicken:';
+      wrap.appendChild(note);
+
+      const list = document.createElement('div');
+      list.className = 'children-list';
+      node.children.forEach(child => {
+        const row = document.createElement('div');
+        row.className = 'child-row' + (child.kind === 'comment' ? ' is-comment' : '');
+        row.onclick = () => selectNode(child.id);
+
+        const left = document.createElement('span');
+        left.className = 'child-tag';
+        left.textContent = child.kind === 'comment' ? '💬 Anmerkung' : (child.tag.trim() || '(ohne Namen)');
+        row.appendChild(left);
+
+        const preview = document.createElement('span');
+        preview.className = 'child-preview';
+        const previewText = child.kind === 'comment' ? child.text : (child.children && child.children.length ? child.children.length + ' Unterpunkte' : child.text);
+        preview.textContent = (previewText || '').toString().trim().slice(0, 40);
+        row.appendChild(preview);
+
+        const arrow = document.createElement('span');
+        arrow.className = 'child-arrow';
+        arrow.textContent = '›';
+        row.appendChild(arrow);
+
+        list.appendChild(row);
+      });
+      wrap.appendChild(list);
+    } else {
+      const textareaWrap = document.createElement('div');
+      textareaWrap.className = 'detail-textarea-wrap';
+      const textarea = document.createElement('textarea');
+      textarea.className = 'detail-textarea';
+      textarea.placeholder = 'Text für dieses Element eingeben…';
+      textarea.value = node.text;
+      textarea.addEventListener('input', (e) => {
+        node.text = e.target.value;
+        updateSourceFromTree();
+      });
+      textareaWrap.appendChild(textarea);
+      wrap.appendChild(textareaWrap);
+    }
+
+    return wrap;
+  }
+
+  function buildCommentDetail(node){
+    const wrap = document.createElement('div');
+
+    const headRow = document.createElement('div');
+    headRow.className = 'detail-heading-row';
+    const heading = document.createElement('span');
+    heading.className = 'comment-heading';
+    heading.textContent = '💬 Anmerkung';
+    headRow.appendChild(heading);
+    wrap.appendChild(headRow);
+
+    const toolbar = document.createElement('div');
+    toolbar.className = 'detail-toolbar';
+    toolbar.appendChild(mkBtn('↑ Nach oben', () => moveNode(node.id, -1)));
+    toolbar.appendChild(mkBtn('↓ Nach unten', () => moveNode(node.id, 1)));
+    const delBtn = mkBtn('✕ Löschen', () => { if(confirm('Diese Anmerkung wirklich löschen?')) deleteNode(node.id); });
+    delBtn.classList.add('danger');
+    toolbar.appendChild(delBtn);
+    wrap.appendChild(toolbar);
+
+    const textareaWrap = document.createElement('div');
+    textareaWrap.className = 'detail-textarea-wrap';
+    const textarea = document.createElement('textarea');
+    textarea.className = 'detail-textarea comment-style';
+    textarea.placeholder = 'Anmerkung / Kommentar eingeben…';
+    textarea.value = node.text;
+    textarea.addEventListener('input', (e) => {
+      node.text = e.target.value;
+      updateOutlineLabelFor(node.id, null, node.text);
+      updateSourceFromTree();
+    });
+    textareaWrap.appendChild(textarea);
+    wrap.appendChild(textareaWrap);
+
+    return wrap;
+  }
+
+  function mkBtn(label, onClick){
+    const b = document.createElement('button');
+    b.className = 'btn small';
+    b.type = 'button';
+    b.textContent = label;
+    b.onclick = onClick;
+    return b;
+  }
+
+  // Aktualisiert nur das Label einer Outline-Zeile live, ohne kompletten Re-Render
+  // (verhindert Fokusverlust während des Tippens im Tag-Namen-Feld).
+  function updateOutlineLabelFor(id, tagValue, commentValue){
+    const row = outlineList.querySelector('.outline-row[data-id="' + id + '"]');
+    if(!row) return;
+    if(tagValue !== null && tagValue !== undefined){
+      const label = row.querySelector('.outline-tag');
+      if(label){
+        const t = tagValue.trim();
+        label.textContent = t ? t : '(ohne Namen)';
+        label.classList.toggle('empty', !t);
+      }
+    }
+    if(commentValue !== null && commentValue !== undefined){
+      const label = row.querySelector('.outline-comment');
+      if(label){
+        const t = commentValue.trim();
+        label.textContent = '💬 ' + (t ? t : 'Anmerkung');
+      }
+    }
+  }
+
+  // ---------- source sync ----------
+  function updateSourceFromTree(){
+    if(sourceFocused) return;
+    sourceText.value = serializeFull().trim();
+  }
+
+  function applySourceToTree(){
+    const { tree: parsed, errors } = parseXMLString(sourceText.value);
+    if(errors.length){
+      showBanner('error', errors);
+      return;
+    }
+    if(parsed.length === 1 && parsed[0].kind === 'element' && (parsed[0].tag || '').trim().toLowerCase() === 'prompt'){
+      tree = parsed[0].children;
+    } else {
+      tree = parsed;
+    }
+    selectedId = firstNavigableId(tree);
+    hideBanner();
+    render();
+  }
+
+  // ---------- validation ----------
+  const tagNameRe = /^[A-Za-z_][A-Za-z0-9_.\-]*$/;
+
+  function clearErrorFlags(nodes){
+    nodes.forEach(n => { n._hasError = false; if(n.children) clearErrorFlags(n.children); });
+  }
+
+  function validateTree(){
+    const issues = [];
+    (function walk(nodes){
+      nodes.forEach(n => {
+        if(n.kind === 'comment') return;
+        const t = (n.tag || '').trim();
+        if(!t){
+          issues.push({ id: n.id, message: 'Ein Element hat noch keinen Tag-Namen.' });
+        } else if(!tagNameRe.test(t)){
+          issues.push({ id: n.id, message: '„' + t + '" ist kein gültiger Tag-Name (nur Buchstaben, Zahlen, "-", "_", "."; muss mit Buchstabe beginnen).' });
+        }
+        if(n.children && n.children.length) walk(n.children);
+      });
+    })(tree);
+    return issues;
+  }
+
+  function runValidation(){
+    clearErrorFlags(tree);
+    const issues = validateTree();
+    if(issues.length === 0){
+      showBanner('ok', ['Keine Fehler gefunden. Die Struktur lässt sich sauber als XML exportieren.']);
+      renderOutline();
+      return;
+    }
+    issues.forEach(issue => {
+      const found = findNode(tree, issue.id);
+      if(found) found.node._hasError = true;
+    });
+    renderOutline();
+    showBannerClickable(issues);
+  }
+
+  function escapeHTML(str){
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function showBanner(type, messages){
+    validationBanner.className = 'banner show ' + type;
+    validationBanner.innerHTML = '<strong>' + (type === 'error' ? 'Achtung' : 'Alles gut') + '</strong>' +
+      '<ul>' + messages.map(m => '<li style="cursor:default;text-decoration:none;">' + escapeHTML(m) + '</li>').join('') + '</ul>';
+  }
+
+  function showBannerClickable(issues){
+    validationBanner.className = 'banner show error';
+    validationBanner.innerHTML = '<strong>' + issues.length + (issues.length === 1 ? ' Punkt zu prüfen' : ' Punkte zu prüfen') + '</strong><ul></ul>';
+    const ul = validationBanner.querySelector('ul');
+    issues.forEach(issue => {
+      const li = document.createElement('li');
+      li.textContent = issue.message + ' (zum Element springen)';
+      li.onclick = () => {
+        selectNode(issue.id);
+        const row = outlineList.querySelector('.outline-row[data-id="' + issue.id + '"]');
+        if(row) row.scrollIntoView({ behavior:'smooth', block:'center' });
+        const input = detailScroll.querySelector('.detail-tag-input');
+        if(input) input.focus();
+      };
+      ul.appendChild(li);
+    });
+  }
+
+  function hideBanner(){
+    validationBanner.className = 'banner';
+    validationBanner.innerHTML = '';
+  }
+
+  // ---------- misc actions ----------
+  function loadExample(){
+    tree = exampleTree();
+    selectedId = firstNavigableId(tree);
+    hideBanner();
+    render();
+  }
+
+  function resetAll(){
+    if(tree.length && !confirm('Wirklich alles löschen und neu beginnen?')) return;
+    tree = [];
+    selectedId = null;
+    hideBanner();
+    render();
+  }
+
+  function copySource(){
+    sourceText.select();
+    navigator.clipboard.writeText(sourceText.value).then(() => {
+      flashButton('btnCopySource', 'Kopiert ✓');
+    }).catch(() => { document.execCommand('copy'); });
+  }
+
+  function copyResult(){
+    const xml = serializeFull().trim();
+    navigator.clipboard.writeText(xml).then(() => {
+      flashButton('btnCopyResult', '✓ In Zwischenablage kopiert');
+    }).catch(() => {
+      const tmp = document.createElement('textarea');
+      tmp.value = xml;
+      document.body.appendChild(tmp);
+      tmp.select();
+      document.execCommand('copy');
+      document.body.removeChild(tmp);
+      flashButton('btnCopyResult', '✓ In Zwischenablage kopiert');
+    });
+  }
+
+  function flashButton(id, tempLabel){
+    const btn = document.getElementById(id);
+    const old = btn.textContent;
+    btn.textContent = tempLabel;
+    setTimeout(() => btn.textContent = old, 1400);
+  }
+
+  function toggleSourcePanel(){
+    const showing = sourcePanel.style.display !== 'none';
+    sourcePanel.style.display = showing ? 'none' : 'block';
+    layout.classList.toggle('with-source', !showing);
+    document.getElementById('btnToggleSource').textContent = showing ? 'XML-Code anzeigen' : 'XML-Code ausblenden';
+    if(!showing){ updateSourceFromTree(); }
+  }
+
+  function toggleAmpPanel(){
+    const showing = ampPanel.style.display !== 'none';
+    ampPanel.style.display = showing ? 'none' : 'block';
+  }
+
+  function applyAmpFix(replacement){
+    if(!replacement) return;
+    sourceText.value = replaceStrayAmpersands(sourceText.value, replacement);
+    applySourceToTree();
+    ampPanel.style.display = 'none';
+  }
+
+  // ---------- events ----------
+  document.getElementById('btnAddRoot').addEventListener('click', addRootNode);
+  document.getElementById('btnAddRootComment').addEventListener('click', addRootComment);
+  document.getElementById('btnExample').addEventListener('click', loadExample);
+  document.getElementById('btnValidate').addEventListener('click', runValidation);
+  document.getElementById('btnReset').addEventListener('click', resetAll);
+  document.getElementById('btnToggleSource').addEventListener('click', toggleSourcePanel);
+  document.getElementById('btnApplySource').addEventListener('click', applySourceToTree);
+  document.getElementById('btnCopySource').addEventListener('click', copySource);
+  document.getElementById('btnCopyResult').addEventListener('click', copyResult);
+  document.getElementById('btnFixAmp').addEventListener('click', toggleAmpPanel);
+  document.querySelectorAll('.amp-options .btn').forEach(btn => {
+    btn.addEventListener('click', () => applyAmpFix(btn.dataset.amp));
+  });
+  document.getElementById('btnAmpCustomApply').addEventListener('click', () => {
+    const val = document.getElementById('ampCustomInput').value;
+    if(val) applyAmpFix(val);
+  });
+  sourceText.addEventListener('focus', () => sourceFocused = true);
+  sourceText.addEventListener('blur', () => sourceFocused = false);
+
+  // ---------- init ----------
+  tree = exampleTree();
+  selectedId = firstNavigableId(tree);
+  render();
+
+})();
+</script>
+</body>
+</html>

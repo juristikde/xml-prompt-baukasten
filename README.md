@@ -1,4 +1,3 @@
-```markdown
 # Prompt Baukasten
 
 **Strukturierter XML-Editor und Viewer für Prompts**
@@ -104,4 +103,3 @@ Das Tool ist bewusst schlank gehalten: schneller Einstieg in strukturierte Promp
 ---
 
 *Lokaler Prompt-Baukasten – strukturiert schreiben, klar lesen.*
-```

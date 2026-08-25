@@ -55,7 +55,7 @@
     display:inline-block; width:10px; height:10px; border-radius:3px;
     background:linear-gradient(135deg,var(--indigo),var(--moss)); transform:rotate(6deg);
   }
-  .toolbar{display:flex; flex-wrap:wrap; gap:6px;}
+  .toolbar{display:flex; flex-wrap:wrap; gap:6px; align-items:center;}
   button{font-family:inherit; cursor:pointer;}
   .btn{
     appearance:none; border:1px solid var(--line); background:var(--paper-raised);
@@ -80,7 +80,7 @@
   .split-btn .split-caret{border:none; background:transparent; padding:4px 7px; cursor:pointer; color:var(--ink-soft); display:flex; align-items:center; border-radius:0 7px 7px 0;}
   .split-btn .split-caret:hover{background:#fff; color:var(--ink);}
   .split-btn .split-caret svg{width:10px; height:10px;}
-  .wiki-menu{
+  .wiki-menu, .template-menu{
     position: fixed;
     top: 0;
     left: 0;
@@ -93,12 +93,33 @@
     min-width: 200px;
     display: none;
   }
-  .wiki-menu.open{ display: block; }
-  .wiki-menu label{display:block; font-size:.7rem; color:var(--ink-soft); margin-bottom:2px; font-weight:500;}
+  .wiki-menu.open, .template-menu.open{ display: block; }
+  .wiki-menu label, .template-menu label{display:block; font-size:.7rem; color:var(--ink-soft); margin-bottom:2px; font-weight:500;}
   .wiki-menu select, .wiki-menu input[type="number"]{width:100%; border:1px solid var(--line); border-radius:6px; padding:5px 8px; font-family:inherit; font-size:.78rem; background:#fff; margin-bottom:6px;}
   .wiki-menu select:focus, .wiki-menu input:focus{outline:none; border-color:var(--indigo);}
   .wiki-menu .menu-actions{display:flex; gap:5px;}
-  .wiki-wrap{position:relative; display:inline-block;}
+  .wiki-wrap, .template-wrap{position:relative; display:inline-block;}
+
+  .template-menu .tpl-item{
+    display:block; width:100%; text-align:left;
+    border:none; background:transparent;
+    padding:7px 10px; border-radius:6px;
+    font-family:inherit; font-size:.78rem; font-weight:500;
+    color:var(--ink); cursor:pointer;
+  }
+  .template-menu .tpl-item:hover{background:var(--indigo-soft); color:var(--indigo);}
+  .template-menu .tpl-item + .tpl-item{margin-top:2px;}
+
+  /* Toolbar-Variante des Split-Buttons (etwas größer wie .btn) */
+  .toolbar .split-btn{
+    border-radius:7px;
+  }
+  .toolbar .split-btn .split-main{
+    padding:7px 11px; font-size:.8rem; font-weight:600;
+  }
+  .toolbar .split-btn .split-caret{
+    padding:7px 9px;
+  }
 
   .layout{display:grid; grid-template-columns:1fr; gap:12px; flex:1; min-height:0; overflow:hidden;}
   .layout.with-source{grid-template-columns:1.5fr 1fr;}
@@ -259,6 +280,9 @@
     header.top .title-block h1{font-size:1.2rem;}
     .toolbar{width:100%;}
     .toolbar .btn{flex:1 1 auto; padding:6px 5px; font-size:.72rem;}
+    .toolbar .split-btn{flex:1 1 auto;}
+    .toolbar .split-btn .split-main{flex:1; justify-content:center; padding:6px 5px; font-size:.72rem;}
+    .toolbar .split-btn .split-caret{padding:6px 8px;}
     .layout.with-source{grid-template-columns:1fr;}
     .split-body{flex-direction:column;}
     .outline-col{
@@ -281,7 +305,22 @@
       <h1><span class="mark"></span>Prompt Baukasten</h1>
     </div>
     <div class="toolbar">
-      <button class="btn" id="btnExample">Beispiel</button>
+      <div class="template-wrap" id="templateWrap">
+        <div class="split-btn">
+          <button type="button" class="split-main" id="btnExample">Beispiel</button>
+          <div class="split-sep"></div>
+          <button type="button" class="split-caret" id="btnTemplateCaret" aria-label="Vorlagen">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4.5L6 7.5L9 4.5"/></svg>
+          </button>
+        </div>
+        <div class="template-menu" id="templateMenu">
+          <button type="button" class="tpl-item" data-tpl="example">Kundenservice (Beispiel)</button>
+          <button type="button" class="tpl-item" data-tpl="structured">Strukturierter System-Prompt</button>
+          <button type="button" class="tpl-item" data-tpl="support">Kundensupport Agent</button>
+          <button type="button" class="tpl-item" data-tpl="research">Recherche &amp; Analyse</button>
+          <button type="button" class="tpl-item" data-tpl="creative">Kreatives Schreiben</button>
+        </div>
+      </div>
       <button class="btn" id="btnValidate">Prüfen</button>
       <button class="btn" id="btnToggleSource">XML anzeigen</button>
       <button class="btn danger" id="btnReset">Zurücksetzen</button>
@@ -291,7 +330,7 @@
   <div class="layout" id="layout">
     <section class="panel">
       <div class="panel-head">
-        <h2>Struktur & Ebenen</h2>
+        <h2>Struktur &amp; Ebenen</h2>
       </div>
       <div class="split-body">
         <div class="outline-col">
@@ -342,12 +381,12 @@
         <div class="source-actions">
           <button class="btn primary" id="btnApplySource">↩ Übernehmen</button>
           <button class="btn" id="btnCopySource">Kopieren</button>
-          <button class="btn" id="btnFixAmp">„&amp;amp;“ ersetzen…</button>
+          <button class="btn" id="btnFixAmp">„&amp;“ ersetzen…</button>
         </div>
         <div class="amp-panel" id="ampPanel" style="display:none;">
-          <p>Einzelne <strong>&amp;amp;</strong> ersetzen?</p>
+          <p>Einzelne <strong>&amp;</strong> ersetzen?</p>
           <div class="amp-options">
-            <button class="btn small" data-amp="&amp;amp;amp;">„&amp;amp;amp;“</button>
+            <button class="btn small" data-amp="&amp;">„&amp;“</button>
             <button class="btn small" data-amp="und">„und“</button>
             <button class="btn small" data-amp="u">„u“</button>
           </div>
@@ -363,7 +402,7 @@
 <script>
 (function(){
   let tree=[], idCounter=1, sourceFocused=false, selectedId=null, focusDetailField=false;
-  let wikiSettings={lang:'de',chars:450}, openWikiMenu=null;
+  let wikiSettings={lang:'de',chars:450}, openWikiMenu=null, openTemplateMenu=null;
 
   const outlineList=document.getElementById('outlineList');
   const detailScroll=document.getElementById('detailScroll');
@@ -401,8 +440,21 @@
     });
     openWikiMenu=null;
   }
+
+  function closeTemplateMenu(){
+    const menu=document.getElementById('templateMenu');
+    if(menu){
+      menu.classList.remove('open');
+      menu.style.left = '';
+      menu.style.top = '';
+    }
+    openTemplateMenu=null;
+  }
   
-  document.addEventListener('click',e=>{if(openWikiMenu&&!e.target.closest('.wiki-wrap')) closeAllWikiMenus();});
+  document.addEventListener('click',e=>{
+    if(openWikiMenu && !e.target.closest('.wiki-wrap')) closeAllWikiMenus();
+    if(openTemplateMenu && !e.target.closest('.template-wrap')) closeTemplateMenu();
+  });
 
   function createWikiSplitButton(textarea){
     const wrap=document.createElement('div'); wrap.className='wiki-wrap';
@@ -443,6 +495,7 @@
       e.stopPropagation();
       const isOpen = menu.classList.contains('open');
       closeAllWikiMenus();
+      closeTemplateMenu();
       if(!isOpen){
         const detailCol = document.querySelector('.detail-col');
         const colRect = detailCol ? detailCol.getBoundingClientRect() : null;
@@ -479,11 +532,100 @@
     return [role,task,rules,examples];
   }
 
+  function structuredTree(){
+    const role=newNode('rolle','Du bist [Rolle eintragen]. Deine Aufgabe ist es, [Kernmission in einem Satz].');
+    const principles=newNode('kernprinzipien','Priorisiere in dieser Reihenfolge: 1) Sicherheit und Wahrhaftigkeit, 2) Nützlichkeit für den Nutzer, 3) Klarheit und Präzision.');
+    const tone=newNode('ton','Warm, direkt und respektvoll. Keine Floskeln, kein übertriebenes Lob. Bei emotionalen Themen stabil und zugewandt, nicht klinisch.');
+    const response=newNode('antwortverhalten');
+    response.children.push(newNode('format','Strukturiere Antworten klar. Nutze Aufzählungen nur, wenn sie die Lesbarkeit verbessern.'));
+    response.children.push(newNode('laenge','So ausführlich wie nötig, so knapp wie möglich. Bei komplexen Themen lieber in Schritten erklären.'));
+    response.children.push(newNode('unklarheit','Bei unklaren Anfragen die sinnvollste Interpretation wählen, kurz benennen und dann antworten. Nur nachfragen, wenn sonst klarer Aufwand verschwendet würde.'));
+    const bounds=newNode('grenzen');
+    bounds.children.push(newNode('nicht','Keine Anleitungen zu Waffen, illegalen Aktivitäten oder schädlichen Handlungen.'));
+    bounds.children.push(newNode('nicht','Keine erfundeten oder sexuellen Inhalte mit Bezug zu Minderjährigen.'));
+    bounds.children.push(newNode('vorsicht','Bei medizinischen, rechtlichen oder finanziellen Fragen Fakten liefern, aber keine verbindlichen Empfehlungen geben und auf Fachleute verweisen.'));
+    const even=newNode('evenhandedness','Bei kontroversen Themen die stärksten Argumente beider Seiten fair darstellen. Eigene Meinung nur zurückhaltend und als solche gekennzeichnet.');
+    const examples=newNode('beispiele');
+    const good=newNode('gut');
+    good.children.push(newNode('situation','Nutzer fragt unklar nach einer Empfehlung.'));
+    good.children.push(newNode('verhalten','Sinnvolle Annahme nennen, dann konkrete Antwort geben.'));
+    const bad=newNode('schlecht');
+    bad.children.push(newNode('situation','Nutzer fragt unklar nach einer Empfehlung.'));
+    bad.children.push(newNode('verhalten','Nur Rückfragen stellen, ohne etwas Brauchbares zu liefern.'));
+    examples.children.push(good);
+    examples.children.push(bad);
+    return [role,principles,tone,response,bounds,even,examples];
+  }
+
+  function supportTree(){
+    const role=newNode('rolle','Du bist ein Customer-Support-Agent für [Produkt/Firma]. Du bist empathisch, lösungsorientiert und professionell.');
+    const goal=newNode('ziel','Löse das Anliegen möglichst in einer Interaktion. Jede Antwort endet mit einem klaren nächsten Schritt.');
+    const tone=newNode('ton');
+    tone.children.push(newNode('ruhe','Professionell und effizient bei sachlichen Anfragen.'));
+    tone.children.push(newNode('frust','Empathisch anerkennen, dann zur Lösung überleiten – Frust nicht spiegeln.'));
+    const classify=newNode('klassifikation','Ordne jede Anfrage intern einer Kategorie zu: BILLING, TECHNISCH, LIEFERUNG, PRODUKT, SONSTIGES – bevor du antwortest.');
+    const rules=newNode('regeln');
+    rules.children.push(newNode('regel','Keine internen Systemdetails, Passwörter oder Artikelnummern nennen.'));
+    rules.children.push(newNode('regel','Keine Zusagen zu Erstattungen oder Kulanz, die außerhalb der Richtlinie liegen.'));
+    rules.children.push(newNode('regel','Bei Eskalation klar sagen, was als Nächstes passiert und wann der Kunde etwas hört.'));
+    const examples=newNode('beispiele');
+    const ex1=newNode('beispiel');
+    ex1.children.push(newNode('eingabe','Meine Bestellung ist beschädigt angekommen.'));
+    ex1.children.push(newNode('ausgabe','Das tut mir leid – beschädigte Ware ist ärgerlich. Ich starte den Austausch: Bitte schick mir ein Foto des Schadens und die Bestellnummer, dann sende ich dir den Ersatz mit Expressversand.'));
+    examples.children.push(ex1);
+    return [role,goal,tone,classify,rules,examples];
+  }
+
+  function researchTree(){
+    const role=newNode('rolle','Du bist ein Recherche- und Analyse-Assistent. Deine Stärke liegt darin, Informationen zu strukturieren, Quellen zu gewichten und Unsicherheit transparent zu machen.');
+    const principles=newNode('prinzipien');
+    principles.children.push(newNode('prinzip','Unterscheide klar zwischen belegten Fakten, plausiblen Schlussfolgerungen und Spekulation.'));
+    principles.children.push(newNode('prinzip','Bei aktuellen oder sich schnell ändernden Themen auf mögliche Veraltung hinweisen.'));
+    principles.children.push(newNode('prinzip','Widersprüchliche Quellen benennen, statt eine Seite zu bevorzugen.'));
+    const format=newNode('format');
+    format.children.push(newNode('struktur','Kurze Zusammenfassung zuerst, danach Details und Einordnung.'));
+    format.children.push(newNode('quellen','Quellen sinngemäß wiedergeben, nicht wortwörtlich kopieren. Bei Bedarf auf Originalquellen verweisen.'));
+    const tone=newNode('ton','Nüchtern, präzise und nachvollziehbar. Kein Marketing-Ton, keine künstliche Sicherheit bei unsicheren Lagen.');
+    return [role,principles,format,tone];
+  }
+
+  function creativeTree(){
+    const role=newNode('rolle','Du bist ein kreativer Schreibpartner. Du hilfst bei Texten, Dialogen, Konzepten und Stilfragen – ohne dem Nutzer die Stimme zu nehmen.');
+    const tone=newNode('ton','Anregend und konkret. Vorschläge machen, Alternativen anbieten, aber nicht belehrend wirken.');
+    const approach=newNode('vorgehen');
+    approach.children.push(newNode('schritt','Zuerst klären: Genre, Ton, Länge, Zielgruppe, Tabus.'));
+    approach.children.push(newNode('schritt','Bei Bedarf 2–3 stilistische Varianten anbieten, statt nur einer Lösung.'));
+    approach.children.push(newNode('schritt','Feedback des Nutzers ernst nehmen und darauf aufbauen, nicht bei jedem Schritt neu starten.'));
+    const bounds=newNode('grenzen');
+    bounds.children.push(newNode('nicht','Keine Inhalte, die Minderjährige sexualisieren.'));
+    bounds.children.push(newNode('nicht','Keine realen Personen in kompromittierenden erfundenen Szenen, wenn erkennbar schädigend.'));
+    return [role,tone,approach,bounds];
+  }
+
+  const TEMPLATES={
+    example: exampleTree,
+    structured: structuredTree,
+    support: supportTree,
+    research: researchTree,
+    creative: creativeTree
+  };
+
+  function loadTemplate(key){
+    const factory=TEMPLATES[key];
+    if(!factory) return;
+    if(tree.length && !confirm('Aktuelle Struktur durch die Vorlage ersetzen?')) return;
+    tree=factory();
+    selectedId=firstNavigableId(tree);
+    hideBanner();
+    render();
+    closeTemplateMenu();
+  }
+
   const strayAmpRe=/&(?!(?:amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)/g;
   function replaceStrayAmpersands(str,rep){return (str||'').replace(strayAmpRe,rep);}
   function parseXMLString(str){
     const t=(str||'').trim(); if(!t) return {tree:[],errors:[]};
-    const doc=new DOMParser().parseFromString('<__root__>'+replaceStrayAmpersands(t,'&amp;amp;')+'</__root__>','text/xml');
+    const doc=new DOMParser().parseFromString('<__root__>'+replaceStrayAmpersands(t,'&amp;')+'</__root__>','text/xml');
     if(doc.querySelector('parsererror')) return {tree:null,errors:['XML ungültig.']};
     const result=domChildNodesToNodes(doc.documentElement);
     if(!result.length&&doc.documentElement.textContent.trim()) result.push(newNode('text',doc.documentElement.textContent.trim()));
@@ -762,7 +904,7 @@
   }
   function hideBanner(){validationBanner.className='banner'; validationBanner.innerHTML='';}
 
-  function loadExample(){tree=exampleTree(); selectedId=firstNavigableId(tree); hideBanner(); render();}
+  function loadExample(){loadTemplate('example');}
   function resetAll(){if(tree.length&&!confirm('Alles löschen?')) return; tree=[]; selectedId=null; hideBanner(); render();}
   function copySource(){sourceText.select(); navigator.clipboard.writeText(sourceText.value).then(()=>flashButton('btnCopySource','✓')).catch(()=>document.execCommand('copy'));}
   function copyResult(){
@@ -781,6 +923,33 @@
   function toggleAmpPanel(){ampPanel.style.display=ampPanel.style.display!=='none'?'none':'block';}
   function applyAmpFix(rep){if(!rep) return; sourceText.value=replaceStrayAmpersands(sourceText.value,rep); applySourceToTree(); ampPanel.style.display='none';}
 
+  // Template split-button wiring
+  document.getElementById('btnExample').onclick=e=>{
+    e.stopPropagation();
+    loadTemplate('example');
+  };
+  document.getElementById('btnTemplateCaret').onclick=e=>{
+    e.stopPropagation();
+    const menu=document.getElementById('templateMenu');
+    const isOpen=menu.classList.contains('open');
+    closeAllWikiMenus();
+    closeTemplateMenu();
+    if(!isOpen){
+      const btn=document.getElementById('btnTemplateCaret');
+      const rect=btn.getBoundingClientRect();
+      menu.style.left=Math.min(rect.left, window.innerWidth-220)+'px';
+      menu.style.top=(rect.bottom+6)+'px';
+      menu.classList.add('open');
+      openTemplateMenu=menu;
+    }
+  };
+  document.querySelectorAll('#templateMenu .tpl-item').forEach(btn=>{
+    btn.onclick=e=>{
+      e.stopPropagation();
+      loadTemplate(btn.dataset.tpl);
+    };
+  });
+
   document.getElementById('ctxSiblingEl').onclick=()=>{if(selectedId) addSibling(selectedId,false);};
   document.getElementById('ctxSiblingCo').onclick=()=>{if(selectedId) addSibling(selectedId,true);};
   document.getElementById('ctxChildEl').onclick=()=>{if(selectedId) addChild(selectedId,false);};
@@ -793,7 +962,6 @@
   document.getElementById('btnAddRootComment').onclick=addRootComment;
   document.getElementById('btnAddUser').onclick=()=>addTemplate('user');
   document.getElementById('btnAddAssistant').onclick=()=>addTemplate('assistant');
-  document.getElementById('btnExample').onclick=loadExample;
   document.getElementById('btnValidate').onclick=runValidation;
   document.getElementById('btnReset').onclick=resetAll;
   document.getElementById('btnToggleSource').onclick=toggleSourcePanel;

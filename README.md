@@ -1,5 +1,3 @@
-Hier die gesamte finale README auf `.webp`:
-
 # Prompt Baukasten – Strukturierter XML-Editor
 
 <div align="center">

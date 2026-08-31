@@ -89,6 +89,8 @@ Jeder Tab hält seine eigene Struktur, Auswahl und Zähler. Der Titel wird über
 - `×` am Tab → Tab schließen (letzter Tab wird geleert, nicht gelöscht)
 - URL-Parameter: `#tabBarLocation=left&tabBarShown=true` steuert Position und Sichtbarkeit der Tab-Leiste
 
+![Tabs und Vorlagen](screenshots/tabs-and-templates.png)
+
 ### Struktur-Liste
 
 Links liegt die Übersicht. Sie zeigt Tag-Namen in Serif-Bold, eine kurze Text-Vorschau und die Anzahl der direkt enthaltenen Elemente.
@@ -113,6 +115,8 @@ Rechts erscheint nach Auswahl der eigentliche Editor:
 4.  **Textfeld:** Eigentlicher Inhalt, füllt den verfügbaren Platz
 
 Bei Anmerkungen: Kopf `💬 Anmerkung` + kursives Feld.
+
+![Mobile Ansicht mit Bottom-Sheet](screenshots/mobile-sheet.png)
 
 ### XML-Ansicht
 
@@ -158,6 +162,8 @@ Der geteilte Button `+ WikiText` besteht aus zwei Teilen:
 - **Pfeil ▼:** Öffnet Einstellungen für Sprache und `ca. Zeichen` (80–2000)
 
 Quelle ist die Wikipedia API (`generator=random`). `zufällig` wählt aus 11 Sprachen. Eingefügt wird an der aktuellen Cursor-Position im Textfeld.
+
+![WikiText Menü](screenshots/wikitext-menu.png)
 
 ### Validierung
 

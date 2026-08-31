@@ -68,14 +68,14 @@ Ideal für: System-Prompts, Agenten-Rollen, Few-Shot-Beispiele und jede Art von 
 **Variante A – Direkt öffnen:**
 
 ```bash
-open prompt-baukasten.html
+open index.html
 ```
 
 **Variante B – Lokal hosten (optional):**
 
 ```bash
 python3 -m http.server 8000
-# dann http://localhost:8000/prompt-baukasten.html öffnen
+# dann http://localhost:8000/index.html öffnen
 ```
 
 Keine Abhängigkeiten, kein Build.
@@ -197,14 +197,6 @@ Getestet in aktuellen Chromium, Firefox, Safari (Desktop + iOS).
 - `fetch` für Wiki (braucht Internet, Rest funktioniert komplett offline)
 - `navigator.clipboard.writeText` mit `execCommand('copy')` als Rückfall
 - `navigator.vibrate` optional für das Long-Press Feedback
-
-## Roadmap
-
-- [ ] Automatisches Speichern lokal mit Versionen
-- [ ] Import/Export als `.prompt.json`
-- [ ] Pflichtfelder je Vorlage
-- [ ] Tastenkürzel (`Cmd+Enter` = kopieren, `Cmd+S` = speichern)
-- [ ] Teilen per URL (komprimierte Struktur im Hash)
 
 ## Mitwirken
 

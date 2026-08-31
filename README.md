@@ -92,8 +92,6 @@ Jeder Tab hält seine eigene Struktur, Auswahl und Zähler. Der Titel wird über
 - `+` am Ende der Leiste → neuer Prompt
 - `×` am Tab → Tab schließen (letzter Tab wird geleert, nicht gelöscht)
 
-![Tabs und Vorlagen](screenshots/tabs-and-templates.webp)
-
 ### Struktur-Liste
 
 Links liegt die Übersicht. Sie zeigt Tag-Namen in Serif-Bold, eine kurze Text-Vorschau und die Anzahl der direkt enthaltenen Elemente.

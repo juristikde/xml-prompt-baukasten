@@ -32,7 +32,6 @@ Hier die gesamte finale README auf `.webp`:
   - [Validierung](#validierung)
   - [Mobile Ansicht](#mobile-ansicht)
   - [URL-Parameter](#url-parameter)
-- [Design-Prinzipien](#design-prinzipien)
 - [Technik](#technik)
 - [Browser-Kompatibilität](#browser-kompatibilität)
 - [Mitwirken](#mitwirken)
@@ -202,16 +201,6 @@ index.html#tabBarLocation=top&tabBarShown=true&showCharacterCount=false
 | `showCharacterCount` | `true` / `false` | `false` | Zeichenzähler: Gesamtzeichen Ergebnis + Summe aller Textfelder + aktuelle Auswahl |
 
 Alle Parameter sind optional und kombinierbar.
-
-## Design-Prinzipien
-
-> Hover nur auf Geräten mit echtem Zeiger und feiner Steuerung. Auf Touch darf `:hover` nicht greifen, sonst bleiben Zustände nach dem Antippen hängen.
-
-Weitere Leitplanken:
-
-- **Papier-Metapher:** `--paper`, `--paper-raised`, `--paper-sunken`, dezentes Punkt-Raster, Serif für Überschriften (Source Serif 4), Sans für UI (Inter), Mono für XML (JetBrains Mono)
-- **Ohne Abhängigkeiten:** Kein React, kein Bundler. Vanilla JS in einer gekapselten Funktion, nur Browser-APIs
-- **Panels statt Popups:** Mobil als `position: fixed` Panels mit identischer Pixel-Geometrie
 
 ## Technik
 

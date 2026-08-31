@@ -1,3 +1,5 @@
+Hier die gesamte finale README auf `.webp`:
+
 # Prompt Baukasten – Strukturierter XML-Editor
 
 <div align="center">
@@ -9,7 +11,7 @@
 [No Dependencies](https://img.shields.io/badge/dependencies-0-lightgrey?style=flat-square)
 [License: MIT](https://img.shields.io/badge/license-MIT-00ACD7?style=flat-square)
 
-![Prompt Baukasten Screenshot](screenshots/editor-overview.png)
+![Prompt Baukasten Screenshot](screenshots/editor-overview.webp)
 
 </div>
 
@@ -90,7 +92,7 @@ Jeder Tab hält seine eigene Struktur, Auswahl und Zähler. Der Titel wird über
 - `+` am Ende der Leiste → neuer Prompt
 - `×` am Tab → Tab schließen (letzter Tab wird geleert, nicht gelöscht)
 
-![Tabs und Vorlagen](screenshots/tabs-and-templates.png)
+![Tabs und Vorlagen](screenshots/tabs-and-templates.webp)
 
 ### Struktur-Liste
 
@@ -162,7 +164,7 @@ Der geteilte Button `+ WikiText` besteht aus zwei Teilen:
 
 Quelle ist die Wikipedia API (`generator=random`). `zufällig` wählt aus 11 Sprachen. Eingefügt wird an der aktuellen Cursor-Position im Textfeld.
 
-![WikiText Menü](screenshots/wikitext-menu.png)
+![WikiText Menü](screenshots/wikitext-menu.webp)
 
 ### Validierung
 
@@ -177,7 +179,7 @@ Betroffene Zeilen bekommen einen roten Rand links. Ein Banner zeigt `N zu prüfe
 
 Ab ≤900px wechselt die App in den mobilen Modus. Ab ≤480px wird nochmal verdichtet.
 
-![Mobile Ansicht mit Bottom-Sheet](screenshots/mobile-sheet.png)
+![Mobile Ansicht mit Bottom-Sheet](screenshots/mobile-sheet.webp)
 
 **Besonderheiten mobil:**
 

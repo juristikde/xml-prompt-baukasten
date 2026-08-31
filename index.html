@@ -1616,6 +1616,50 @@
         }
       }
     
+      /* Zeichenanzahl – Caption, tabular, zurückhaltend (HIG: Deference) */
+      .char-count {
+        font-size: var(--text-caption);
+        color: var(--ink-faint);
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+        line-height: 1.3;
+        padding: var(--space-1) var(--space-3);
+        flex: none;
+        user-select: none;
+        -webkit-user-select: none;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    
+      .char-count .char-sel {
+        color: var(--ink-soft);
+      }
+    
+      .detail-textarea-wrap .char-count {
+        border-top: 1px solid var(--line);
+        background: var(--paper-sunken);
+        padding: var(--space-2) var(--space-4);
+      }
+    
+      .char-count-inline {
+        padding: var(--space-1) 0 0;
+        width: 100%;
+      }
+    
+      .char-count-global {
+        text-align: center;
+        padding: var(--space-1) var(--space-2) 0;
+        width: 100%;
+      }
+    
+      #sourceText + .char-count {
+        border: 1px solid var(--line);
+        border-top: none;
+        border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+        background: var(--paper-sunken);
+      }
+    
       ::selection { background: var(--color-warning-soft); }
     </style>
     </head>
@@ -1698,6 +1742,7 @@
                         <button class="btn danger" id="btnDelete">Löschen</button>
                       </div>
                       <button class="btn primary block" id="btnCopyResult">Ergebnis kopieren</button>
+                      <div class="char-count char-count-global" id="resultCharCount" aria-live="polite" hidden>0 Zeichen</div>
                     </div>
                   </div>
                 </div>
@@ -1988,26 +2033,44 @@
         return !isMobileLayout() || mobileDetailOpen;
       }
     
-      function readHashState(){
+      function parseHashParams(){
         const raw = (location.hash || '').replace(/^#/, '');
         const params = {};
         raw.split('&').forEach(part => {
+          if(!part) return;
           const eq = part.indexOf('=');
-          if(eq < 0) return;
+          if(eq < 0){
+            const k = decodeURIComponent(part.trim());
+            if(k) params[k] = '';
+            return;
+          }
           const k = decodeURIComponent(part.slice(0, eq).trim());
           const v = decodeURIComponent(part.slice(eq + 1).trim());
           if(k) params[k] = v;
         });
+        return params;
+      }
+
+      function readHashState(){
+        const params = parseHashParams();
         if(params.tabBarLocation === 'left') tabsOrientation = 'vertical';
         else if(params.tabBarLocation === 'top') tabsOrientation = 'horizontal';
         if(params.tabBarShown === 'false') tabsVisible = false;
         else if(params.tabBarShown === 'true') tabsVisible = true;
+        /* showCharacterCount: Wert aus URL behalten; fehlt er → Default false (erster Aufruf) */
+        if(Object.prototype.hasOwnProperty.call(params, 'showCharacterCount')){
+          const v = params.showCharacterCount;
+          showCharacterCount = (v === 'true' || v === '1');
+        } else {
+          showCharacterCount = false;
+        }
       }
     
       function writeHashState(){
         const parts = [];
         parts.push('tabBarLocation=' + (tabsOrientation === 'vertical' ? 'left' : 'top'));
         parts.push('tabBarShown=' + (tabsVisible ? 'true' : 'false'));
+        parts.push('showCharacterCount=' + (showCharacterCount ? 'true' : 'false'));
         const next = '#' + parts.join('&');
         if(location.hash !== next){
           history.replaceState(null, '', next);
@@ -2015,6 +2078,7 @@
       }
     
       let tree = [], idCounter = 1, sourceFocused = false, selectedId = null, focusDetailField = false;
+      let showCharacterCount = false;
       let wikiSettings = {lang:'de', chars:450}, openWikiMenu = null, openTemplateMenu = null, openOptionsMenu = null;
     
       let dragId = null;
@@ -2483,7 +2547,112 @@
       }
       function serializeFull(){ return '<prompt>\n'+serializeTree(tree,1)+'</prompt>'; }
     
-      function findNode(nodes, id){
+
+      function formatCharCount(len, sel){
+        let s = len + ' Zeichen';
+        if(sel > 0) s += ' · ' + sel + ' ausgewählt';
+        return s;
+      }
+
+      /** URL: showCharacterCount=true|false (Query oder Hash). Standard: false. */
+      
+
+      function readShowCharacterCount(){
+        /* Wert steht nach readHashState; hier nur UI anpassen */
+        applyCharacterCountVisibility();
+      }
+
+      function applyCharacterCountVisibility(){
+        document.querySelectorAll('.char-count').forEach(el => {
+          if(el.id === 'resultCharCount') return;
+          el.hidden = !showCharacterCount;
+        });
+        const res = document.getElementById('resultCharCount');
+        if(res){
+          res.hidden = !showCharacterCount;
+          if(showCharacterCount) updateResultCharCount();
+        }
+        if(showCharacterCount){
+          document.querySelectorAll('.char-count-field').forEach(attachCharCount);
+        }
+      }
+
+      function selectionLength(el){
+        try{
+          const a = el.selectionStart, b = el.selectionEnd;
+          if(typeof a === 'number' && typeof b === 'number') return Math.abs(b - a);
+        }catch(_){}
+        return 0;
+      }
+
+      /**
+       * Nur Felder mit Klasse .char-count-field und nur wenn showCharacterCount=true.
+       * Auswahl-Länge wenn Markierung möglich (textarea/input).
+       */
+      function attachCharCount(field){
+        if(!showCharacterCount) return;
+        if(!field || field.nodeType !== 1) return;
+        if(!field.classList.contains('char-count-field')) return;
+        const tag = field.tagName;
+        if(tag !== 'TEXTAREA' && !(tag === 'INPUT' && /^(text|search|url|tel|password|email)$/i.test(field.type || 'text'))) return;
+        if(field.dataset.charCountBound === '1'){
+          updateCharCountMeter(field);
+          return;
+        }
+        field.dataset.charCountBound = '1';
+        let meter = field._charMeter;
+        if(!meter || !meter.isConnected){
+          meter = document.createElement('div');
+          meter.className = 'char-count';
+          meter.setAttribute('aria-live', 'polite');
+          meter.hidden = !showCharacterCount;
+          const parent = field.parentElement;
+          if(parent && parent.classList.contains('detail-textarea-wrap')){
+            parent.appendChild(meter);
+          } else {
+            field.insertAdjacentElement('afterend', meter);
+          }
+          field._charMeter = meter;
+        }
+        const update = () => updateCharCountMeter(field);
+        field.addEventListener('input', update);
+        field.addEventListener('select', update);
+        field.addEventListener('keyup', update);
+        field.addEventListener('mouseup', update);
+        field.addEventListener('focus', update);
+        field.addEventListener('blur', update);
+        update();
+      }
+
+      function updateCharCountMeter(field){
+        const meter = field._charMeter;
+        if(!meter) return;
+        if(!showCharacterCount){
+          meter.hidden = true;
+          return;
+        }
+        meter.hidden = false;
+        const len = (field.value || '').length;
+        const sel = selectionLength(field);
+        if(sel > 0){
+          meter.innerHTML = len + ' Zeichen<span class="char-sel"> · ' + sel + ' ausgewählt</span>';
+        } else {
+          meter.textContent = len + ' Zeichen';
+        }
+      }
+
+      function updateResultCharCount(){
+        const el = document.getElementById('resultCharCount');
+        if(!el) return;
+        if(!showCharacterCount){
+          el.hidden = true;
+          return;
+        }
+        el.hidden = false;
+        el.textContent = serializeFull().trim().length + ' Zeichen';
+      }
+
+function findNode(nodes, id){
         for(let i = 0; i < nodes.length; i++){
           if(nodes[i].id === id) return {node:nodes[i], arr:nodes, index:i};
           if(nodes[i].children && nodes[i].children.length){ const f = findNode(nodes[i].children, id); if(f) return f; }
@@ -2821,7 +2990,7 @@
     
         const textareaWrap = document.createElement('div'); textareaWrap.className = 'detail-textarea-wrap';
         const textarea = document.createElement('textarea');
-        textarea.className = 'detail-textarea'+(node.kind==='comment'?' comment-style':'');
+        textarea.className = 'detail-textarea char-count-field'+(node.kind==='comment'?' comment-style':'');
         textarea.placeholder = node.kind==='comment'?'Anmerkung…':'Text für dieses Element…';
         textarea.value = node.text||'';
         textarea.setAttribute('aria-label', node.kind==='comment' ? 'Kommentartext' : 'Elementtext');
@@ -2835,6 +3004,7 @@
         tools.appendChild(createWikiSplitButton(textarea));
         detailScroll.appendChild(tools);
         detailScroll.appendChild(textareaWrap);
+        attachCharCount(textarea);
     
         if(focusDetailField && shouldFocusDetail()){
           focusDetailField = false;
@@ -2889,7 +3059,10 @@
         const p = row.querySelector('.outline-preview'); if(p) p.textContent = (text||'').trim().slice(0,36);
       }
     
-      function updateSourceFromTree(){ if(!sourceFocused) sourceText.value = serializeFull().trim(); }
+      function updateSourceFromTree(){
+        if(!sourceFocused) sourceText.value = serializeFull().trim();
+        updateResultCharCount();
+      }
       function applySourceToTree(){
         const {tree:parsed, errors} = parseXMLString(sourceText.value);
         if(errors.length){ showBanner('error', errors); return; }
@@ -3100,6 +3273,7 @@
     
       window.addEventListener('hashchange', () => {
         readHashState();
+        readShowCharacterCount();
         renderTabs();
       });
     
@@ -3120,6 +3294,7 @@
       });
     
       readHashState();
+      writeHashState(); /* alle Parameter immer in der URL; Default nur wenn zuvor fehlte */
     
       idCounter = 1;
       const first = createTabState('Prompt 1', []);
@@ -3134,8 +3309,10 @@
         updateMobileSheetMetrics();
         putAllSheetsDormant();
       }
+      readShowCharacterCount();
       renderTabs();
       render();
+      updateResultCharCount();
     })();
     </script>
     </body>

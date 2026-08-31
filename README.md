@@ -9,6 +9,8 @@
 [No Dependencies](https://img.shields.io/badge/dependencies-0-lightgrey?style=flat-square)
 [License: MIT](https://img.shields.io/badge/license-MIT-00ACD7?style=flat-square)
 
+**[➜ Live Demo öffnen](https://juristikde.github.io/xml-prompt-baukasten)**
+
 ![Prompt Baukasten Screenshot](screenshots/editor-overview.webp)
 
 </div>
@@ -41,6 +43,8 @@
 
 > Ein guter Prompt ist kein Fließtext – er ist Architektur.
 
+**[Live testen: juristikde.github.io/xml-prompt-baukasten](https://juristikde.github.io/xml-prompt-baukasten)**
+
 **Prompt Baukasten** ist ein rein clientseitiges Web-Tool zum Bauen, Pflegen und Wiederverwenden von strukturierten XML-Prompts für LLMs. Statt XML von Hand zu tippen, arbeitest du in zwei synchronisierten Ansichten: einer hierarchischen Struktur-Liste links und einem fokussierten Editor rechts. Das Ergebnis ist immer sauber serialisiertes, valides XML.
 
 Die gesamte App ist **eine einzige `.html`-Datei**. Keine Installation, kein Build, kein Server, kein Tracking. Doppelklick und los.
@@ -65,13 +69,17 @@ Ideal für: System-Prompts, Agenten-Rollen, Few-Shot-Beispiele und jede Art von 
 
 ## Quickstart
 
-**Variante A – Direkt öffnen:**
+**Variante A – Direkt im Browser:**
+
+https://juristikde.github.io/xml-prompt-baukasten
+
+**Variante B – Lokal öffnen:**
 
 ```bash
 open index.html
 ```
 
-**Variante B – Lokal hosten (optional):**
+**Variante C – Lokal hosten:**
 
 ```bash
 python3 -m http.server 8000

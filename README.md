@@ -31,7 +31,6 @@
 - [Design-Prinzipien](#design-prinzipien)
 - [Technik](#technik)
 - [Browser-Kompatibilität](#browser-kompatibilität)
-- [Roadmap](#roadmap)
 - [Mitwirken](#mitwirken)
 - [Lizenz](#lizenz)
 
@@ -121,7 +120,7 @@ Bei Anmerkungen: Kopf `💬 Anmerkung` + kursives Feld.
 
 - Desktop: zweispaltig (`1.5fr 1fr`)
 - Mobil: eigenes Panel, das von links hereinfährt
-- Das Feld zeigt immer die komplette Ausgabe von `serializeFull()` – ein `<prompt>` Rahmen um deine Struktur
+- Das Feld zeigt immer die komplette Ausgabe – ein `<prompt>` Rahmen um deine Struktur
 - `Übernehmen` liest zurück: Erkennt `<prompt>` als Hülle und übernimmt nur den Inhalt
 - `Kopieren` + `„&“ ersetzen…` für den Ampersand-Fix
 
@@ -187,8 +186,8 @@ Weitere Leitplanken:
 
 - **Eine Datei:** HTML + CSS + JS in einem Dokument, Favicon als inline SVG Data-URI
 - **Zustand:** `tabs[]`, `tree[]`, `idCounter`, `selectedId`, `wikiSettings`, `dragId` – bewusst ohne LocalStorage, damit nichts unbemerkt liegen bleibt
-- **XML:** `DOMParser` mit `__root__` Hülle + Vorab-Ersetzung einzelner `&` (`/&(?!(?:amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)/g`)
-- **Mobile Maße:** `updateMobileSheetMetrics()` berechnet 32%/36% für den oberen Listenbereich und setzt die Maße per inline-Style auf beide Panels, damit Oberkante und Unterkante exakt aufeinandertreffen
+- **XML:** `DOMParser` mit `__root__` Hülle + Vorab-Ersetzung einzelner `&`
+- **Mobile Maße:** Berechnet 32%/36% für den oberen Listenbereich und setzt die Maße per inline-Style auf beide Panels, damit Oberkante und Unterkante exakt aufeinandertreffen
 
 ## Browser-Kompatibilität
 

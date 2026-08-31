@@ -28,6 +28,8 @@
   - [Vorlagen](#vorlagen)
   - [WikiText](#wikitext)
   - [Validierung](#validierung)
+  - [Mobile Ansicht](#mobile-ansicht)
+  - [URL-Parameter](#url-parameter)
 - [Design-Prinzipien](#design-prinzipien)
 - [Technik](#technik)
 - [Browser-Kompatibilität](#browser-kompatibilität)
@@ -59,8 +61,8 @@ Ideal für: System-Prompts, Agenten-Rollen, Few-Shot-Beispiele und jede Art von 
 - **Prüfung** – Findet leere Tag-Namen und ungültige Schreibweisen, klickbare Fehlerliste springt zur betroffenen Stelle
 - **Ampersand-Fix** – Erkennt einzelne `&` und bietet `&amp;`, `und`, `u` oder eigenen Ersatz an
 - **Kommentare als eigenes Element** – `<!-- Hinweis -->` wird als 💬 Anmerkung geführt, nicht nur als Text
-- **Mobile Bottom-Sheets** – Ab ≤900px fahren Editor und XML-Ansicht als überlagerte Panels ein, die Liste bleibt darunter bedienbar
-- **Saubere Bedienung** – Kein Framework, sofortiges Feedback, `prefers-reduced-motion` wird respektiert, 44px Mindestgröße für Touch
+- **Zeichenzähler** – Zeigt live die Zeichen des Gesamtergebnisses, die Zeichen aller Textfelder und die Auswahl im aktiven Feld
+- **Vollständig mobil nutzbar** – Bottom-Sheets, Long-Press, 44px Touch-Ziele, keine Hover-Fallen
 
 ## Quickstart
 
@@ -87,7 +89,6 @@ Jeder Tab hält seine eigene Struktur, Auswahl und Zähler. Der Titel wird über
 
 - `+` am Ende der Leiste → neuer Prompt
 - `×` am Tab → Tab schließen (letzter Tab wird geleert, nicht gelöscht)
-- URL-Parameter: `#tabBarLocation=left&tabBarShown=true` steuert Position und Sichtbarkeit der Tab-Leiste
 
 ![Tabs und Vorlagen](screenshots/tabs-and-templates.png)
 
@@ -97,8 +98,7 @@ Links liegt die Übersicht. Sie zeigt Tag-Namen in Serif-Bold, eine kurze Text-V
 
 - **Klick** wählt aus
 - **Pfeil ▾/▸** klappt den darunterliegenden Bereich auf oder zu
-- **Ziehen per Maus** oder **langes Drücken + Ziehen** auf Touch verschiebt innerhalb derselben Ebene
-- **› Button (nur mobil)** öffnet den Eintrag im unteren Panel
+- **Ziehen per Maus** verschiebt innerhalb derselben Ebene
 - **Aktionen im Fußbereich:**
   - `+ Element` / `+ Kommentar` – neuen Eintrag auf gleicher Ebene nach dem ausgewählten anlegen
   - `+ user` / `+ assistant` – vorgefertigte Rollen für Beispiele
@@ -113,10 +113,9 @@ Rechts erscheint nach Auswahl der eigentliche Editor:
 2.  **Tag-Kopf:** `< [eingabe] >` – Leerzeichen werden automatisch zu `-`
 3.  **Werkzeugleiste:** `↑/↓` verschiebt den Eintrag, `+ WikiText` als geteilter Button
 4.  **Textfeld:** Eigentlicher Inhalt, füllt den verfügbaren Platz
+5.  **Zeichenzähler (wenn aktiv):** Unter dem Textfeld – `Gesamt: X Zeichen | Alle Felder: Y | Auswahl: Z`
 
 Bei Anmerkungen: Kopf `💬 Anmerkung` + kursives Feld.
-
-![Mobile Ansicht mit Bottom-Sheet](screenshots/mobile-sheet.png)
 
 ### XML-Ansicht
 
@@ -174,26 +173,51 @@ Quelle ist die Wikipedia API (`generator=random`). `zufällig` wählt aus 11 Spr
 
 Betroffene Zeilen bekommen einen roten Rand links. Ein Banner zeigt `N zu prüfen` mit Liste – Klick springt zur Stelle und markiert sie. Bei 0 Problemen: grünes Banner `Keine Fehler.`
 
+### Mobile Ansicht
+
+Ab ≤900px wechselt die App in den mobilen Modus. Ab ≤480px wird nochmal verdichtet.
+
+![Mobile Ansicht mit Bottom-Sheet](screenshots/mobile-sheet.png)
+
+**Besonderheiten mobil:**
+
+- **Bottom-Sheets statt Spalten:** Detail-Editor und XML-Ansicht fahren als überlagerte Panels ein. Die Struktur-Liste bleibt im Hintergrund bedienbar und wird abgedunkelt.
+- **Long-Press statt Drag:** Langes Drücken (ca. 450ms) aktiviert den Verschiebe-Modus mit leichtem Vibrieren (`navigator.vibrate`).
+- **› Öffnen-Button:** In der Listen-Zeile erscheint mobil ein `›` Button, der den Eintrag direkt im Bottom-Sheet öffnet.
+- **Kein Hover:** Alle `:hover` Regeln liegen in `@media (hover: hover) and (pointer: fine)`.
+- **44px Touch-Ziele:** Buttons und Eingaben haben mindestens 44px Höhe, Pfad-Navigation ist horizontal scrollbar.
+
+### URL-Parameter
+
+Das Layout lässt sich per Hash in der URL steuern und teilen:
+
+```
+index.html#tabBarLocation=top&tabBarShown=true&showCharacterCount=false
+```
+
+| Parameter | Werte | Standard | Wirkung |
+| :--- | :--- | :--- | :--- |
+| `tabBarLocation` | `top` / `left` | `top` | Position der Tab-Leiste |
+| `tabBarShown` | `true` / `false` | `true` | Tab-Leiste ein- oder ausblenden |
+| `showCharacterCount` | `true` / `false` | `true` | Zeichenzähler: Gesamtzeichen Ergebnis + Summe aller Textfelder + aktuelle Auswahl |
+
+Alle Parameter sind optional und kombinierbar.
+
 ## Design-Prinzipien
 
-Im CSS explizit dokumentiert:
-
 > Hover nur auf Geräten mit echtem Zeiger und feiner Steuerung. Auf Touch darf `:hover` nicht greifen, sonst bleiben Zustände nach dem Antippen hängen.
-
-Alle `:hover` Regeln liegen in `@media (hover: hover) and (pointer: fine)`. Aktiv- und Fokus-Zustände gelten überall.
 
 Weitere Leitplanken:
 
 - **Papier-Metapher:** `--paper`, `--paper-raised`, `--paper-sunken`, dezentes Punkt-Raster, Serif für Überschriften (Source Serif 4), Sans für UI (Inter), Mono für XML (JetBrains Mono)
 - **Ohne Abhängigkeiten:** Kein React, kein Bundler. Vanilla JS in einer gekapselten Funktion, nur Browser-APIs
-- **Panels statt Popups:** Mobil werden Editor und XML als `position: fixed` Panels mit identischer Pixel-Geometrie animiert – gemessen per JS, damit kein Versatz entsteht
+- **Panels statt Popups:** Mobil als `position: fixed` Panels mit identischer Pixel-Geometrie
 
 ## Technik
 
 - **Eine Datei:** HTML + CSS + JS in einem Dokument, Favicon als inline SVG Data-URI
-- **Zustand:** `tabs[]`, `tree[]`, `idCounter`, `selectedId`, `wikiSettings`, `dragId` – bewusst ohne LocalStorage, damit nichts unbemerkt liegen bleibt
+- **Zustand:** `tabs[]`, `tree[]`, `idCounter`, `selectedId`, `wikiSettings`, `dragId` – bewusst ohne LocalStorage
 - **XML:** `DOMParser` mit `__root__` Hülle + Vorab-Ersetzung einzelner `&`
-- **Mobile Maße:** Berechnet 32%/36% für den oberen Listenbereich und setzt die Maße per inline-Style auf beide Panels, damit Oberkante und Unterkante exakt aufeinandertreffen
 
 ## Browser-Kompatibilität
 

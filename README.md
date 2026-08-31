@@ -199,7 +199,7 @@ index.html#tabBarLocation=top&tabBarShown=true&showCharacterCount=false
 | :--- | :--- | :--- | :--- |
 | `tabBarLocation` | `top` / `left` | `top` | Position der Tab-Leiste |
 | `tabBarShown` | `true` / `false` | `true` | Tab-Leiste ein- oder ausblenden |
-| `showCharacterCount` | `true` / `false` | `true` | Zeichenzähler: Gesamtzeichen Ergebnis + Summe aller Textfelder + aktuelle Auswahl |
+| `showCharacterCount` | `true` / `false` | `false` | Zeichenzähler: Gesamtzeichen Ergebnis + Summe aller Textfelder + aktuelle Auswahl |
 
 Alle Parameter sind optional und kombinierbar.
 

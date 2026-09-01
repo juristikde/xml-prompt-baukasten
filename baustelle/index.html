@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%2333415c'/%3E%3Cstop offset='100%25' stop-color='%2354704f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg transform='translate(16 16) rotate(6)'%3E%3Crect x='-10' y='-10' width='20' height='20' rx='3' fill='url(%23g)'/%3E%3C/g%3E%3C/svg%3E" />
+<title>In Arbeit – Prompt Baukasten</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,700&family=Inter:wght@400&family=JetBrains+Mono:wght@400&display=swap');
+
+  :root {
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --text-footnote: 0.8125rem;
+    --text-callout: 1rem;
+    --text-title-2: 1.375rem;
+    --paper: #f1efe9;
+    --paper-raised: #faf9f5;
+    --paper-sunken: #f7f5ef;
+    --ink: #26313f;
+    --ink-soft: #5b6472;
+    --ink-faint: #9aa1ac;
+    --line: #dcd7cb;
+    --line-strong: #c9c3b5;
+    --color-action: #33415c;
+    --color-success: #54704f;
+    --color-warning: #8a6323;
+    --color-action-soft: #e6e9ef;
+    --radius: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+    --shadow: 0 1px 2px rgba(38,49,63,.06), 0 6px 20px -10px rgba(38,49,63,.15);
+    --shadow-raised: 0 4px 16px -4px rgba(38,49,63,.12);
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --font-serif: 'Source Serif 4', Georgia, serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin:0; padding:0; min-height:100%; }
+
+  body {
+    background: var(--paper);
+    background-image: radial-gradient(circle at 1px 1px, rgba(38,49,63,.045) 1px, transparent 0);
+    background-size: 22px 22px;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .wrap {
+    max-width: 1400px;
+    width:100%;
+    margin: 0 auto;
+    padding: var(--space-4);
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap: var(--space-3);
+  }
+
+  header.top {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--line);
+  }
+
+  header.top h1 {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: var(--text-title-2);
+    margin:0;
+    letter-spacing:-0.02em;
+    display:flex;
+    align-items:center;
+    gap: var(--space-2);
+    line-height:1.2;
+  }
+  header.top h1 .mark {
+    display:inline-block;
+    width:12px; height:12px;
+    border-radius:3px;
+    background: linear-gradient(135deg, var(--color-action), var(--color-success));
+    transform: rotate(6deg);
+    flex:none;
+  }
+
+  .stage {
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: var(--space-6) var(--space-2);
+  }
+
+  .card {
+    width:min(640px, 100%);
+    background: var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-raised);
+    padding: clamp(24px, 5vw, 48px);
+    position:relative;
+    overflow:hidden;
+  }
+
+  .card::before{
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height:4px;
+    background: linear-gradient(90deg, var(--color-action), var(--color-success), var(--color-warning));
+    opacity:0.8;
+  }
+
+  h2.hero {
+    font-family: var(--font-serif);
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    line-height:1.1;
+    letter-spacing:-0.03em;
+    font-weight:700;
+    margin: var(--space-5) 0 var(--space-3);
+  }
+  h2.hero em {
+    font-style:normal;
+    background: linear-gradient(135deg, var(--color-action) 20%, var(--color-success));
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .desc {
+    font-size: var(--text-callout);
+    color: var(--ink-soft);
+    max-width: 42ch;
+    margin:0 0 var(--space-6);
+    line-height:1.55;
+  }
+
+  .scene {
+    position:relative;
+    border:1px dashed var(--line-strong);
+    background: var(--paper-sunken);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    margin-bottom: var(--space-5);
+    overflow:hidden;
+  }
+
+  .scaffolding {
+    display:flex;
+    flex-direction:column;
+    gap: var(--space-3);
+    position:relative;
+    z-index:1;
+  }
+
+  .beam {
+    height:10px;
+    background: repeating-linear-gradient(90deg, var(--line-strong) 0 18px, transparent 18px 26px);
+    border-radius: 4px;
+    opacity:0.9;
+  }
+  .beam.short { width: 62%; }
+
+  .blocks {
+    display:flex;
+    gap: var(--space-3);
+    flex-wrap:wrap;
+  }
+
+  .block {
+    width: 64px; height: 64px;
+    border-radius: var(--radius);
+    border:1px solid var(--line);
+    background: #fff;
+    display:grid;
+    place-items:center;
+    font-family: var(--font-mono);
+    font-size: var(--text-footnote);
+    color: var(--ink-faint);
+    position:relative;
+    transform: rotate(var(--r, 0deg));
+    box-shadow: var(--shadow);
+    animation: wobble 4s ease-in-out infinite;
+  }
+  .block:nth-child(1){ --r:-3deg; animation-delay:0s; }
+  .block:nth-child(2){ --r:2deg; animation-delay:0.2s; background: var(--color-action-soft); color: var(--color-action); }
+  .block:nth-child(3){ --r:-1deg; animation-delay:0.4s; }
+
+  @keyframes wobble {
+    0%,100%{ transform: rotate(var(--r)) translateY(0); }
+    50%{ transform: rotate(calc(var(--r) + 1deg)) translateY(-3px); }
+  }
+
+  .block .inner {
+    width:28px; height:28px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, var(--color-action), var(--color-success));
+    opacity:0.9;
+  }
+
+  .crane {
+    position:absolute;
+    right: 14px;
+    bottom: -6px;
+    font-family: var(--font-mono);
+    font-size: 28px;
+    opacity:0.15;
+    user-select:none;
+    animation: drift 8s linear infinite;
+  }
+  @keyframes drift {
+    0%{ transform: translateX(0); }
+    50%{ transform: translateX(-6px); }
+    100%{ transform: translateX(0); }
+  }
+
+  @media (max-width: 600px){
+    .wrap{ padding: 12px; }
+    .card{ padding: 22px; }
+    .blocks{ gap: 10px; }
+    .block{ width:56px; height:56px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ animation:none !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <h1><span class="mark"></span>...</h1>
+    </header>
+    <main class="stage">
+      <section class="card" aria-labelledby="title">
+        <h2 class="hero" id="title">Diese Ecke<br>ist noch <em>Baustelle.</em></h2>
+        <p class="desc">
+          Hier entsteht gerade etwas Neues.<br>
+          Schau später wieder vorbei,<br>wir räumen noch die Bausteine aus.
+        </p>
+        <div class="scene" aria-hidden="true">
+          <div class="scaffolding">
+            <div class="beam"></div>
+            <div class="blocks">
+              <div class="block">&lt;/&gt;</div>
+              <div class="block"><div class="inner"></div></div>
+              <div class="block">:)</div>
+            </div>
+            <div class="beam short"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

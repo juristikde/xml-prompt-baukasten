@@ -197,7 +197,7 @@ Ab ≤900px wechselt die App in den mobilen Modus. Ab ≤480px wird nochmal verd
 Das Layout lässt sich per Hash in der URL steuern und teilen:
 
 ```
-index.html#tabBarLocation=top&tabBarShown=true&showCharacterCount=false
+#tabBarLocation=top&tabBarShown=true&showCharacterCount=false&skipNonErrorNotifications=false&xmlCodeLineWrap=true
 ```
 
 | Parameter | Werte | Standard | Wirkung |
@@ -205,6 +205,8 @@ index.html#tabBarLocation=top&tabBarShown=true&showCharacterCount=false
 | `tabBarLocation` | `top` / `left` | `top` | Position der Tab-Leiste |
 | `tabBarShown` | `true` / `false` | `true` | Tab-Leiste ein- oder ausblenden |
 | `showCharacterCount` | `true` / `false` | `false` | Zeichenzähler: Gesamtzeichen Ergebnis + Summe aller Textfelder + aktuelle Auswahl |
+| `skipNonErrorNotifications` | `true` / `false` | `false` | Blendet Hinweise oder positive Meldungen nach 5 Sekunden automatisch aus. Kann über "Nicht mehr dauerhaft anzeigen" einmalig über das UI auf true gesetzt werden. |
+| `xmlCodeLineWrap` | `true` / `false` | `true` | Bricht Text in der XML Code Ansicht automatisch um. |
 
 Alle Parameter sind optional und kombinierbar.
 

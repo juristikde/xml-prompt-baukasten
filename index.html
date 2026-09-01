@@ -668,14 +668,24 @@
         gap: var(--space-2);
         flex-wrap: wrap;
         flex: none;
+        min-height: 56px; /* an Struktur-Panel mit Title-Input anpassen */
+        box-sizing: border-box;
       }
-    
+
       .panel-head h2 {
         font-family: var(--font-serif);
         font-size: var(--text-headline);
         margin: 0;
         font-weight: 600;
         letter-spacing: -0.01em;
+        line-height: 1.25;
+        min-height: 36px;          /* wie .panel-title-input */
+        display: flex;
+        align-items: center;
+      }
+
+      .panel-title-input {
+        /* bestehende Regeln lassen; min-height: 36px bleibt */
       }
     
       /*
@@ -1240,89 +1250,57 @@
         flex: none;
       }
     
-      .amp-panel {
-        padding: var(--space-3);
-        background: var(--color-warning-soft);
-        border: 1px solid #e0cfa0;
-        border-radius: var(--radius-sm);
-        flex: none;
-      }
-    
-      .amp-panel p {
-        margin: 0 0 var(--space-2);
-        font-size: var(--text-footnote);
-        color: var(--ink);
-        line-height: 1.35;
-      }
-    
-      .amp-options {
-        display: flex;
-        gap: var(--space-2);
-        flex-wrap: wrap;
-        margin-bottom: var(--space-2);
-      }
-    
-      .amp-custom {
-        display: flex;
-        gap: var(--space-2);
-        flex-wrap: wrap;
-      }
-    
-      .amp-custom input {
-        flex: 1;
-        min-width: 120px;
-        border: 1px solid var(--line);
-        border-radius: var(--radius-sm);
-        padding: var(--space-2) var(--space-3);
-        font-family: var(--font-sans);
-        font-size: var(--text-subhead);
-        background: #fff;
-        min-height: 40px;
-      }
-    
-      .amp-custom input:focus {
-        outline: 2px solid var(--color-action);
-        outline-offset: 0;
-        border-color: var(--color-action);
-      }
-    
       .banner {
         margin: 0;
         padding: var(--space-3) var(--space-4);
+        padding-right: var(--space-7);
         border-radius: var(--radius-sm);
         font-size: var(--text-subhead);
         line-height: 1.35;
         display: none;
         flex: none;
         position: relative;
-        padding-right: var(--space-7);
+        box-sizing: border-box;
+        max-height: 9.5rem;
+        overflow-x: hidden;
+        overflow-y: auto;
+        scrollbar-width: thin;
       }
-    
-      .banner.show { display: block; }
-    
+
+      .banner.show {
+        display: block;
+      }
+
       .banner.error {
         background: var(--color-destructive-soft);
         color: #7a2f1f;
         border: 1px solid #e2b3a4;
       }
-    
+
       .banner.ok {
         background: var(--color-success-soft);
         color: #33452f;
         border: 1px solid #b9cbb0;
       }
-    
+
+      .banner.warning {
+        background: var(--color-warning-soft);
+        color: #5c4218;
+        border: 1px solid #e0cfa0;
+      }
+
       .banner ul {
         margin: var(--space-1) 0 0;
         padding-left: var(--space-4);
       }
-    
-      .banner li {
+
+      .banner li,
+      .banner .banner-item {
         margin-bottom: 2px;
-        cursor: pointer;
-        text-decoration: underline;
+        cursor: default;
+        text-decoration: none;
       }
-    
+
       .banner-close {
         position: absolute;
         top: var(--space-2);
@@ -1340,18 +1318,87 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        margin: 0;
+        float: none;
+        z-index: 2;
       }
-    
+
       @media (hover: hover) and (pointer: fine) {
         .banner-close:hover {
           opacity: 1;
-          background: rgba(0,0,0,.06);
+          background: rgba(0, 0, 0, 0.06);
         }
       }
-    
+
       .banner-close:focus-visible {
         outline: 2px solid currentColor;
         outline-offset: 0;
+      }
+
+      @media (max-width: 900px) {
+        .banner {
+          max-height: 8rem;
+        }
+      }
+
+      .source-wrap {
+        display: flex;
+        flex: 1 1 auto;
+        min-height: 0;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+        background: #fdfcf9;
+      }
+
+      .source-gutter {
+        flex: none;
+        width: 3.2em;
+        padding: var(--space-3) 6px var(--space-3) 0;
+        text-align: right;
+        font-family: var(--font-mono);
+        font-size: var(--text-footnote);
+        line-height: 1.5;
+        color: var(--ink-faint);
+        background: var(--paper-sunken);
+        border-right: 1px solid var(--line);
+        overflow: hidden;
+        user-select: none;
+        white-space: pre;
+      }
+
+      .source-gutter .ln {
+        display: block;
+        box-sizing: border-box;
+        line-height: 1.5;
+        padding-right: 6px;
+      }
+
+      #sourceText {
+        border: none !important;
+        border-radius: 0 !important;
+        flex: 1 1 auto;
+        min-width: 0;
+        font-family: var(--font-mono);
+        font-size: var(--text-footnote);
+        line-height: 1.5;
+        padding: var(--space-3);
+        white-space: pre;
+        overflow-x: auto;
+        overflow-y: auto;
+        tab-size: 2;
+      }
+
+      #sourceText.wrap-on {
+        white-space: pre-wrap;
+        overflow-x: hidden;
+        word-break: break-word;
+      }
+
+      .detail-textarea:disabled {
+        background: var(--paper-sunken);
+        color: var(--ink-faint);
+        cursor: not-allowed;
       }
     
       /* ===== Mobile ===== */
@@ -1680,11 +1727,6 @@
                 </button>
               </div>
               <div class="template-menu" id="templateMenu" role="menu">
-                <button type="button" class="tpl-item" data-tpl="example" role="menuitem">Kundenservice (Beispiel)</button>
-                <button type="button" class="tpl-item" data-tpl="structured" role="menuitem">Strukturierter System-Prompt</button>
-                <button type="button" class="tpl-item" data-tpl="support" role="menuitem">Kundensupport Agent</button>
-                <button type="button" class="tpl-item" data-tpl="research" role="menuitem">Recherche &amp; Analyse</button>
-                <button type="button" class="tpl-item" data-tpl="creative" role="menuitem">Kreatives Schreiben</button>
               </div>
             </div>
             <button class="btn" id="btnValidate">Prüfen</button>
@@ -1697,11 +1739,7 @@
               <button type="button" class="btn" id="btnOptions" aria-haspopup="true" aria-expanded="false">Optionen</button>
               <div class="options-menu" id="optionsMenu" role="menu">
                 <span class="opt-label">Vorlagen</span>
-                <button type="button" class="opt-item" data-tpl="example" role="menuitem">Kundenservice (Beispiel)</button>
-                <button type="button" class="opt-item" data-tpl="structured" role="menuitem">Strukturierter System-Prompt</button>
-                <button type="button" class="opt-item" data-tpl="support" role="menuitem">Kundensupport Agent</button>
-                <button type="button" class="opt-item" data-tpl="research" role="menuitem">Recherche &amp; Analyse</button>
-                <button type="button" class="opt-item" data-tpl="creative" role="menuitem">Kreatives Schreiben</button>
+                <div id="optionsTemplateItems"></div>
                 <div class="opt-sep"></div>
                 <button type="button" class="opt-item" id="optValidate" role="menuitem">Prüfen</button>
                 <button type="button" class="opt-item" id="optToggleSource" role="menuitem">XML anzeigen</button>
@@ -1754,6 +1792,7 @@
             <section class="panel" id="sourcePanel" style="display:none;" aria-label="XML-Code">
               <div class="panel-head">
                 <h2>XML-Code</h2>
+                <button type="button" class="btn small" id="btnToggleWrap" aria-pressed="false" title="Zeilenumbruch umschalten">Umbruch aus</button>
                 <button type="button" class="source-close" id="btnSourceClose" aria-label="XML schließen">×</button>
               </div>
               <div class="panel-body">
@@ -1761,19 +1800,6 @@
                 <div class="source-actions">
                   <button class="btn primary" id="btnApplySource">Übernehmen</button>
                   <button class="btn" id="btnCopySource">Kopieren</button>
-                  <button class="btn plain" id="btnFixAmp">„&amp;“ ersetzen…</button>
-                </div>
-                <div class="amp-panel" id="ampPanel" style="display:none;">
-                  <p>Einzelne <strong>&amp;</strong> ersetzen?</p>
-                  <div class="amp-options">
-                    <button class="btn small" data-amp="&amp;">„&amp;“</button>
-                    <button class="btn small" data-amp="und">„und“</button>
-                    <button class="btn small" data-amp="u">„u“</button>
-                  </div>
-                  <div class="amp-custom">
-                    <input type="text" id="ampCustomInput" placeholder="eigenes" maxlength="20" aria-label="Eigener Ersatztext" />
-                    <button class="btn small primary" id="btnAmpCustomApply">OK</button>
-                  </div>
                 </div>
               </div>
             </section>
@@ -2058,11 +2084,17 @@
         if(params.tabBarShown === 'false') tabsVisible = false;
         else if(params.tabBarShown === 'true') tabsVisible = true;
         /* showCharacterCount: Wert aus URL behalten; fehlt er → Default false (erster Aufruf) */
-        if(Object.prototype.hasOwnProperty.call(params, 'showCharacterCount')){
-          const v = params.showCharacterCount;
-          showCharacterCount = (v === 'true' || v === '1');
+        if(Object.prototype.hasOwnProperty.call(params, 'skipNonErrorNotifications')){
+          const v = params.skipNonErrorNotifications;
+          skipNonErrorNotifications = (v === 'true' || v === '1');
         } else {
-          showCharacterCount = false;
+          skipNonErrorNotifications = false; // Default: dauerhaft anzeigen
+        }
+        if(Object.prototype.hasOwnProperty.call(params, 'xmlCodeLineWrap')){
+          const v = params.xmlCodeLineWrap;
+          xmlCodeLineWrap = (v === 'true' || v === '1');
+        } else {
+          xmlCodeLineWrap = true;
         }
       }
     
@@ -2071,6 +2103,8 @@
         parts.push('tabBarLocation=' + (tabsOrientation === 'vertical' ? 'left' : 'top'));
         parts.push('tabBarShown=' + (tabsVisible ? 'true' : 'false'));
         parts.push('showCharacterCount=' + (showCharacterCount ? 'true' : 'false'));
+        parts.push('skipNonErrorNotifications=' + (skipNonErrorNotifications ? 'true' : 'false'));
+        parts.push('xmlCodeLineWrap=' + (xmlCodeLineWrap ? 'true' : 'false'));
         const next = '#' + parts.join('&');
         if(location.hash !== next){
           history.replaceState(null, '', next);
@@ -2079,7 +2113,10 @@
     
       let tree = [], idCounter = 1, sourceFocused = false, selectedId = null, focusDetailField = false;
       let showCharacterCount = false;
-      let wikiSettings = {lang:'de', chars:450}, openWikiMenu = null, openTemplateMenu = null, openOptionsMenu = null;
+      let skipNonErrorNotifications = false;
+      let bannerHideTimer = null;
+      let xmlCodeLineWrap = true;
+      let wikiSettings = {lang:'de', chars:1200}, openWikiMenu = null, openTemplateMenu = null, openOptionsMenu = null;
     
       let dragId = null;
       let dragOverId = null;
@@ -2094,7 +2131,6 @@
       const sourcePanel = document.getElementById('sourcePanel');
       const layout = document.getElementById('layout');
       const validationBanner = document.getElementById('validationBanner');
-      const ampPanel = document.getElementById('ampPanel');
       const tabsShell = document.getElementById('tabsShell');
       const tabList = document.getElementById('tabList');
       const panelStructureTitle = document.getElementById('panelStructureTitle');
@@ -2396,136 +2432,302 @@
         split.appendChild(mainBtn); split.appendChild(sep); split.appendChild(caretBtn);
         wrap.appendChild(split); wrap.appendChild(menu); return wrap;
       }
-    
-      function exampleTree(){
-        const role = newNode('rolle','Du bist ein hilfsbereiter Assistent für Kundenanfragen im Onlineshop.');
-        const task = newNode('aufgabe','Beantworte die Kundenfrage freundlich und präzise.');
-        const rules = newNode('regeln');
-        rules.children.push(newNode('regel','Nenne niemals interne Artikelnummern.'));
-        rules.children.push(newCommentNode('Interner Hinweis: pro Mandant anpassen.'));
-        rules.children.push(newNode('regel','Antworte auf Deutsch, außer die Frage ist auf Englisch.'));
-        const examples = newNode('beispiele');
-        const ex1 = newNode('beispiel');
-        ex1.children.push(newNode('eingabe','Wo bleibt meine Bestellung?'));
-        ex1.children.push(newNode('ausgabe','Ich prüfe das gerne – kannst du mir die Bestellnummer nennen?'));
-        examples.children.push(ex1);
-        return [role, task, rules, examples];
-      }
-    
-      function structuredTree(){
-        const role = newNode('rolle','Du bist [Rolle eintragen]. Deine Aufgabe ist es, [Kernmission in einem Satz].');
-        const principles = newNode('kernprinzipien','Priorisiere in dieser Reihenfolge: 1) Sicherheit und Wahrhaftigkeit, 2) Nützlichkeit für den Nutzer, 3) Klarheit und Präzision.');
-        const tone = newNode('ton','Warm, direkt und respektvoll. Keine Floskeln, kein übertriebenes Lob. Bei emotionalen Themen stabil und zugewandt, nicht klinisch.');
-        const response = newNode('antwortverhalten');
-        response.children.push(newNode('format','Strukturiere Antworten klar. Nutze Aufzählungen nur, wenn sie die Lesbarkeit verbessern.'));
-        response.children.push(newNode('laenge','So ausführlich wie nötig, so knapp wie möglich. Bei komplexen Themen lieber in Schritten erklären.'));
-        response.children.push(newNode('unklarheit','Bei unklaren Anfragen die sinnvollste Interpretation wählen, kurz benennen und dann antworten. Nur nachfragen, wenn sonst klarer Aufwand verschwendet würde.'));
-        const bounds = newNode('grenzen');
-        bounds.children.push(newNode('nicht','Keine Anleitungen zu Waffen, illegalen Aktivitäten oder schädlichen Handlungen.'));
-        bounds.children.push(newNode('nicht','Keine erotischen oder sexuellen Inhalte mit Bezug zu Minderjährigen.'));
-        bounds.children.push(newNode('vorsicht','Bei medizinischen, rechtlichen oder finanziellen Fragen Fakten liefern, aber keine verbindlichen Empfehlungen geben und auf Fachleute verweisen.'));
-        const even = newNode('evenhandedness','Bei kontroversen Themen die stärksten Argumente beider Seiten fair darstellen. Eigene Meinung nur zurückhaltend und als solche gekennzeichnet.');
-        const examples = newNode('beispiele');
-        const good = newNode('gut');
-        good.children.push(newNode('situation','Nutzer fragt unklar nach einer Empfehlung.'));
-        good.children.push(newNode('verhalten','Sinnvolle Annahme nennen, dann konkrete Antwort geben.'));
-        const bad = newNode('schlecht');
-        bad.children.push(newNode('situation','Nutzer fragt unklar nach einer Empfehlung.'));
-        bad.children.push(newNode('verhalten','Nur Rückfragen stellen, ohne etwas Brauchbares zu liefern.'));
-        examples.children.push(good);
-        examples.children.push(bad);
-        return [role, principles, tone, response, bounds, even, examples];
-      }
-    
-      function supportTree(){
-        const role = newNode('rolle','Du bist ein Customer-Support-Agent für [Produkt/Firma]. Du bist empathisch, lösungsorientiert und professionell.');
-        const goal = newNode('ziel','Löse das Anliegen möglichst in einer Interaktion. Jede Antwort endet mit einem klaren nächsten Schritt.');
-        const tone = newNode('ton');
-        tone.children.push(newNode('ruhe','Professionell und effizient bei sachlichen Anfragen.'));
-        tone.children.push(newNode('frust','Empathisch anerkennen, dann zur Lösung überleiten – Frust nicht spiegeln.'));
-        const classify = newNode('klassifikation','Ordne jede Anfrage intern einer Kategorie zu: BILLING, TECHNISCH, LIEFERUNG, PRODUKT, SONSTIGES – bevor du antwortest.');
-        const rules = newNode('regeln');
-        rules.children.push(newNode('regel','Keine internen Systemdetails, Passwörter oder Artikelnummern nennen.'));
-        rules.children.push(newNode('regel','Keine Zusagen zu Erstattungen oder Kulanz, die außerhalb der Richtlinie liegen.'));
-        rules.children.push(newNode('regel','Bei Eskalation klar sagen, was als Nächstes passiert und wann der Kunde etwas hört.'));
-        const examples = newNode('beispiele');
-        const ex1 = newNode('beispiel');
-        ex1.children.push(newNode('eingabe','Meine Bestellung ist beschädigt angekommen.'));
-        ex1.children.push(newNode('ausgabe','Das tut mir leid – beschädigte Ware ist ärgerlich. Ich starte den Austausch: Bitte schick mir ein Foto des Schadens und die Bestellnummer, dann sende ich dir den Ersatz mit Expressversand.'));
-        examples.children.push(ex1);
-        return [role, goal, tone, classify, rules, examples];
-      }
-    
-      function researchTree(){
-        const role = newNode('rolle','Du bist ein Recherche- und Analyse-Assistent. Deine Stärke liegt darin, Informationen zu strukturieren, Quellen zu gewichten und Unsicherheit transparent zu machen.');
-        const principles = newNode('prinzipien');
-        principles.children.push(newNode('prinzip','Unterscheide klar zwischen belegten Fakten, plausiblen Schlussfolgerungen und Spekulation.'));
-        principles.children.push(newNode('prinzip','Bei aktuellen oder sich schnell ändernden Themen auf mögliche Veraltung hinweisen.'));
-        principles.children.push(newNode('prinzip','Widersprüchliche Quellen benennen, statt eine Seite zu bevorzugen.'));
-        const format = newNode('format');
-        format.children.push(newNode('struktur','Kurze Zusammenfassung zuerst, danach Details und Einordnung.'));
-        format.children.push(newNode('quellen','Quellen sinngemäß wiedergeben, nicht wortwörtlich kopieren. Bei Bedarf auf Originalquellen verweisen.'));
-        const tone = newNode('ton','Nüchtern, präzise und nachvollziehbar. Kein Marketing-Ton, keine künstliche Sicherheit bei unsicheren Lagen.');
-        return [role, principles, format, tone];
-      }
-    
-      function creativeTree(){
-        const role = newNode('rolle','Du bist ein kreativer Schreibpartner. Du hilfst bei Texten, Dialogen, Konzepten und Stilfragen – ohne dem Nutzer die Stimme zu nehmen.');
-        const tone = newNode('ton','Anregend und konkret. Vorschläge machen, Alternativen anbieten, aber nicht belehrend wirken.');
-        const approach = newNode('vorgehen');
-        approach.children.push(newNode('schritt','Zuerst klären: Genre, Ton, Länge, Zielgruppe, Tabus.'));
-        approach.children.push(newNode('schritt','Bei Bedarf 2–3 stilistische Varianten anbieten, statt nur einer Lösung.'));
-        approach.children.push(newNode('schritt','Feedback des Nutzers ernst nehmen und darauf aufbauen, nicht bei jedem Schritt neu starten.'));
-        const bounds = newNode('grenzen');
-        bounds.children.push(newNode('nicht','Keine Inhalte, die Minderjährige sexualisieren.'));
-        bounds.children.push(newNode('nicht','Keine realen Personen in kompromittierenden erfundenen Szenen, wenn erkennbar schädigend.'));
-        return [role, tone, approach, bounds];
-      }
-    
-      const TEMPLATES = {
-        example: exampleTree,
-        structured: structuredTree,
-        support: supportTree,
-        research: researchTree,
-        creative: creativeTree
-      };
-    
-      function loadTemplate(key){
-        const factory = TEMPLATES[key];
-        if(!factory) return;
-        if(tree.length && !confirm('Aktuelle Struktur durch die Vorlage ersetzen?')) return;
-        idCounter = 1;
-        tree = factory();
-        selectedId = firstNavigableId(tree);
-        hideBanner();
-        render();
+
+      /* ===== HIER neue Vorlagen ergänzen: einfach ein Objekt {title, xml} anhängen ===== */
+      const TEMPLATES = [
+        {
+          title: 'Kundenservice',
+          xml: `<prompt>
+        <rolle>Du bist ein hilfsbereiter Assistent für Kundenanfragen im Onlineshop.</rolle>
+        <aufgabe>Beantworte die Kundenfrage freundlich und präzise.</aufgabe>
+        <regeln>
+          <regel>Nenne niemals interne Artikelnummern.</regel>
+          <!-- Interner Hinweis: pro Mandant anpassen. -->
+          <regel>Antworte auf Deutsch, außer die Frage ist auf Englisch.</regel>
+        </regeln>
+        <beispiele>
+          <beispiel>
+            <eingabe>Wo bleibt meine Bestellung?</eingabe>
+            <ausgabe>Ich prüfe das gerne – kannst du mir die Bestellnummer nennen?</ausgabe>
+          </beispiel>
+        </beispiele>
+      </prompt>`
+        },
+        {
+          title: 'Strukturierter System-Prompt',
+          xml: `<prompt>
+        <rolle>Du bist [Rolle eintragen]. Deine Aufgabe ist es, [Kernmission in einem Satz].</rolle>
+        <kernprinzipien>Priorisiere in dieser Reihenfolge: 1) Sicherheit und Wahrhaftigkeit, 2) Nützlichkeit für den Nutzer, 3) Klarheit und Präzision.</kernprinzipien>
+        <ton>Warm, direkt und respektvoll. Keine Floskeln, kein übertriebenes Lob.</ton>
+        <antwortverhalten>
+          <format>Strukturiere Antworten klar. Nutze Aufzählungen nur, wenn sie die Lesbarkeit verbessern.</format>
+          <laenge>So ausführlich wie nötig, so knapp wie möglich.</laenge>
+          <unklarheit>Bei unklaren Anfragen die sinnvollste Interpretation wählen, kurz benennen und dann antworten.</unklarheit>
+        </antwortverhalten>
+        <grenzen>
+          <nicht>Keine Anleitungen zu Waffen, illegalen Aktivitäten oder schädlichen Handlungen.</nicht>
+          <vorsicht>Bei medizinischen, rechtlichen oder finanziellen Fragen Fakten liefern, aber keine verbindlichen Empfehlungen geben.</vorsicht>
+        </grenzen>
+      </prompt>`
+        },
+        {
+          title: 'Kundensupport Agent',
+          xml: `<prompt>
+        <rolle>Du bist ein Customer-Support-Agent für [Produkt/Firma].</rolle>
+        <ziel>Löse das Anliegen möglichst in einer Interaktion.</ziel>
+        <regeln>
+          <regel>Keine internen Systemdetails, Passwörter oder Artikelnummern nennen.</regel>
+          <regel>Keine Zusagen zu Erstattungen, die außerhalb der Richtlinie liegen.</regel>
+        </regeln>
+      </prompt>`
+        },
+        {
+          title: 'Recherche & Analyse',
+          xml: `<prompt>
+        <rolle>Du bist ein Recherche- und Analyse-Assistent.</rolle>
+        <prinzipien>
+          <prinzip>Unterscheide klar zwischen Fakten, Schlussfolgerungen und Spekulation.</prinzip>
+          <prinzip>Widersprüchliche Quellen benennen, statt eine Seite zu bevorzugen.</prinzip>
+        </prinzipien>
+      </prompt>`
+        },
+        {
+          title: 'Kreatives Schreiben',
+          xml: `<prompt>
+        <rolle>Du bist ein kreativer Schreibpartner.</rolle>
+        <ton>Anregend und konkret. Vorschläge machen, nicht belehrend wirken.</ton>
+      </prompt>`
+        }
+        /* ,{ title: 'Meine neue Vorlage', xml: `<prompt>...</prompt>` } */
+      ];
+
+      const TEMPLATES_MORE_URL = 'https://example.com/vorlagen-bibliothek'; // Platzhalter-Link
+
+      function openMoreTemplatesLink(){
+        window.open(TEMPLATES_MORE_URL, '_blank', 'noopener');
         closeTemplateMenu();
         closeOptionsMenu();
       }
-    
+
+      /** Baut beide Menüs (Desktop + Mobile) aus TEMPLATES auf. Bei jeder Änderung an TEMPLATES einfach neu aufrufen. */
+      function renderTemplateMenus(){
+        const desktopMenu = document.getElementById('templateMenu');
+        const mobileList = document.getElementById('optionsTemplateItems');
+        if(desktopMenu) desktopMenu.innerHTML = '';
+        if(mobileList) mobileList.innerHTML = '';
+
+        TEMPLATES.forEach((tpl, idx) => {
+          if(desktopMenu){
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'tpl-item';
+            btn.setAttribute('role', 'menuitem');
+            btn.textContent = tpl.title;
+            btn.onclick = e => { e.stopPropagation(); loadTemplate(idx); };
+            desktopMenu.appendChild(btn);
+          }
+          if(mobileList){
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'opt-item';
+            btn.setAttribute('role', 'menuitem');
+            btn.textContent = tpl.title;
+            btn.onclick = e => { e.stopPropagation(); loadTemplate(idx); };
+            mobileList.appendChild(btn);
+          }
+        });
+
+        [desktopMenu, mobileList].forEach((container, i) => {
+          if(!container) return;
+          const more = document.createElement('button');
+          more.type = 'button';
+          more.className = (i === 0 ? 'tpl-item' : 'opt-item') + ' tpl-more';
+          more.setAttribute('role', 'menuitem');
+          more.textContent = 'Weitere...';
+          more.onclick = e => { e.stopPropagation(); openMoreTemplatesLink(); };
+          container.appendChild(more);
+        });
+      }
+
+      /** Lädt Vorlage per Index still im Hintergrund über den XML-Parser. */
+      function loadTemplate(index){
+        const tpl = TEMPLATES[index];
+        if(!tpl) return;
+        if(tree.length && !confirm('Aktuelle Struktur durch die Vorlage ersetzen?')) return;
+        sourceText.value = tpl.xml;
+        applySourceToTree();
+        closeTemplateMenu();
+        closeOptionsMenu();
+      }
+
       const strayAmpRe = /&(?!(?:amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)/g;
       function replaceStrayAmpersands(str,rep){ return (str||'').replace(strayAmpRe, rep); }
-      function parseXMLString(str){
-        const t = (str||'').trim(); if(!t) return {tree:[], errors:[]};
-        const doc = new DOMParser().parseFromString('<__root__>'+replaceStrayAmpersands(t,'&amp;')+'</__root__>','text/xml');
-        if(doc.querySelector('parsererror')) return {tree:null, errors:['XML ungültig.']};
-        const result = domChildNodesToNodes(doc.documentElement);
-        if(!result.length && doc.documentElement.textContent.trim()) result.push(newNode('text', doc.documentElement.textContent.trim()));
-        return {tree:result, errors:[]};
+      function cleanParserErrorText(raw){
+        let s = (raw || '').replace(/\s+/g, ' ').trim();
+
+        s = s.replace(/\bAdresse:\s*\S+/gi, '');
+        s = s.replace(/\bLocation:\s*\S+/gi, '');
+        s = s.replace(/file:\/\/\/\S+/gi, '');
+        s = s.replace(/https?:\/\/\S+/gi, '');
+        s = s.replace(/This page contains the following errors:\s*/i, '');
+        s = s.replace(/Below is a rendering of the page up to the first error\.?/gi, '');
+
+        // Firefox-Sourcetext / Caret-Zeilen entfernen
+        s = s.replace(/----+\^/g, '');
+        s = s.replace(/:\s*<\/[^>]+>\s*$/g, ''); // trailing ": </tag>" vom Sourcetext
+
+        return s.replace(/\s+/g, ' ').trim();
       }
-      function domChildNodesToNodes(el){
+
+      function extractXmlParserLocation(parserErrorEl){
+        const raw = parserErrorEl ? (parserErrorEl.textContent || '') : '';
+
+        const patterns = [
+          /error on line\s+(\d+)\s+at column\s+(\d+)/i,
+          /Line Number\s*(\d+)\s*,?\s*Column\s*(\d+)/i,
+          /Zeile\s*Nr\.?\s*(\d+)\s*,\s*Spalte\s*(\d+)/i,
+          /line(?:\s*number)?\s*(\d+)\s*,\s*column\s*(\d+)/i,
+          /Zeile\s*(\d+)\s*,\s*Spalte\s*(\d+)/i
+        ];
+        let line = null, col = null;
+        for(const re of patterns){
+          const m = re.exec(raw);
+          if(m){ line = parseInt(m[1],10); col = m[2] ? parseInt(m[2],10) : null; break; }
+        }
+
+        // Nur die eigentliche Fehlermeldung extrahieren, kein Sourcetext/Caret
+        let message;
+        const chromeMatch = /error on line\s+\d+\s+at column\s+\d+\s*:?\s*([^\n]*)/i.exec(raw);
+        if(chromeMatch && chromeMatch[1]){
+          message = chromeMatch[1];
+        } else {
+          // Firefox: alles vor "Location:" ist die Meldung
+          message = raw.split(/Location:/i)[0].replace(/^XML Parsing Error:\s*/i, '');
+        }
+
+        message = message.split(/\n/)[0];              // nur erste Zeile
+        message = message.replace(/[-]{2,}\^.*$/, '');  // Reste von Caret-Zeilen kappen
+        message = message.trim();
+
+        return { line, col, detail: message };
+      }
+
+      function parseXMLString(str){
+        const raw = str || '';
+        // Führende Newlines im Textarea, die trim() schluckt
+        const leading = raw.match(/^\s*/)?.[0] || '';
+        const leadingNL = (leading.match(/\n/g) || []).length;
+        const t = raw.trim();
+        if(!t) return { tree: [], errors: [], migrated: 0 };
+
+        // Prefix in derselben Zeile → Zeilen 2…N stimmen 1:1, kein künstliches \n
+        const prefix = '<__root__>';
+        const wrapped = prefix + replaceStrayAmpersands(t, '&amp;') + '</__root__>';
+        const doc = new DOMParser().parseFromString(wrapped, 'text/xml');
+        const pe = doc.querySelector('parsererror');
+
+        if(pe){
+          const loc = extractXmlParserLocation(pe);
+          let line = loc.line;
+          let col = loc.col;
+
+          if(line != null){
+            line = Math.max(1, line - 1 + leadingNL);
+            if(line - leadingNL === 1 && col != null){
+              col = Math.max(1, col - prefix.length);
+            }
+          }
+
+          const detail = cleanParserErrorText(loc.detail);
+
+          let message;
+          if(line != null){
+            message = 'XML ungültig – Zeile ' + line +
+              (col != null ? ', Spalte ' + col : '') +
+              (detail ? ': ' + detail : '');
+          } else if(detail){
+            message = 'XML ungültig: ' + detail;
+          } else {
+            message = 'XML ungültig.';
+          }
+
+          return { tree: null, errors: [message], migrated: 0 };
+        }
+
+        let migrated = 0;
+        const result = domChildNodesToNodes(doc.documentElement, (n) => { migrated += n; });
+        if(!result.length && doc.documentElement.textContent.trim()){
+          result.push(newNode('text', doc.documentElement.textContent.trim()));
+        }
+        return { tree: result, errors: [], migrated };
+      }
+
+      function domChildNodesToNodes(el, onMigrate){
         const out = [];
         for(const c of Array.from(el.childNodes)){
-          if(c.nodeType === 1) out.push(domElementToNode(c));
-          else if(c.nodeType === 8){ const t = (c.data||'').trim(); if(t) out.push(newCommentNode(t)); }
+          if(c.nodeType === 1) out.push(domElementToNode(c, onMigrate));
+          else if(c.nodeType === 8){
+            const t = (c.data||'').trim();
+            if(t) out.push(newCommentNode(t));
+          }
         }
         return out;
       }
-      function domElementToNode(el){
+
+      function domElementToNode(el, onMigrate){
         const node = newNode(el.tagName, '');
-        const kids = domChildNodesToNodes(el);
-        let own = ''; for(const c of Array.from(el.childNodes)) if(c.nodeType === 3) own += c.textContent;
-        node.text = own.trim(); if(kids.length) node.children = kids; return node;
+        const ordered = [];
+        let textChunks = [];
+        let hasElements = false;
+        let hasNonEmptyText = false;
+
+        for(const c of Array.from(el.childNodes)){
+          if(c.nodeType === 1){
+            hasElements = true;
+            ordered.push({type:'el', el:c});
+          } else if(c.nodeType === 3){
+            const raw = c.textContent || '';
+            if(raw.trim()){
+              hasNonEmptyText = true;
+              ordered.push({type:'text', text: raw});
+              textChunks.push(raw);
+            }
+          } else if(c.nodeType === 8){
+            const t = (c.data||'').trim();
+            if(t) ordered.push({type:'comment', text:t});
+          }
+        }
+
+        if(hasNonEmptyText && hasElements){
+          const kids = [];
+          const parentTag = (el.tagName || 'element').trim();
+          const leafTag = parentTag ? (parentTag + '_text') : 'content';
+          for(const item of ordered){
+            if(item.type === 'text'){
+              const trimmed = item.text.trim();
+              if(trimmed){
+                kids.push(newNode(leafTag, trimmed));
+                if(typeof onMigrate === 'function') onMigrate(1);
+              }
+            } else if(item.type === 'el'){
+              kids.push(domElementToNode(item.el, onMigrate));
+            } else if(item.type === 'comment'){
+              kids.push(newCommentNode(item.text));
+            }
+          }
+          node.text = '';
+          node.children = kids;
+        } else if(hasElements){
+          node.text = '';
+          node.children = ordered
+            .filter(i => i.type === 'el' || i.type === 'comment')
+            .map(i => i.type === 'el' ? domElementToNode(i.el, onMigrate) : newCommentNode(i.text));
+        } else {
+          // Nur Text
+          node.text = textChunks.join('').trim();
+          node.children = [];
+        }
+        return node;
       }
       function escapeXML(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
       function serializeTree(nodes, depth){
@@ -2546,8 +2748,56 @@
         return out;
       }
       function serializeFull(){ return '<prompt>\n'+serializeTree(tree,1)+'</prompt>'; }
-    
 
+      /** Serialisiert und liefert Map nodeId → Start-Zeile (1-basiert, relativ zum gesamten serializeFull-Output). */
+      function serializeTreeWithLines(nodes, depth, state){
+        depth = depth || 0;
+        state = state || {lines: [''], map: {}};
+        const pad = '  '.repeat(depth);
+        for(const node of nodes){
+          if(node.kind === 'comment'){
+            const s = (node.text||'').trim().replace(/--/g,'- -');
+            if(s){
+              state.map[node.id] = state.lines.length;
+              state.lines.push(pad + '<!-- ' + s + ' -->');
+            }
+            continue;
+          }
+          const tag = (node.tag && node.tag.trim()) || 'element';
+          const hasCh = node.children && node.children.length;
+          const text = (node.text||'').trim();
+          state.map[node.id] = state.lines.length;
+          if(hasCh){
+            state.lines.push(pad + '<' + tag + '>');
+            if(text){
+              if(text.includes('\n')){
+                text.split('\n').forEach(l => state.lines.push(pad + '  ' + escapeXML(l)));
+              } else {
+                state.lines.push(pad + '  ' + escapeXML(text));
+              }
+            }
+            serializeTreeWithLines(node.children, depth + 1, state);
+            state.lines.push(pad + '</' + tag + '>');
+          } else {
+            if(text.includes('\n')){
+              state.lines.push(pad + '<' + tag + '>');
+              text.split('\n').forEach(l => state.lines.push(pad + '  ' + escapeXML(l)));
+              state.lines.push(pad + '</' + tag + '>');
+            } else {
+              state.lines.push(pad + '<' + tag + '>' + escapeXML(text) + '</' + tag + '>');
+            }
+          }
+        }
+        return state;
+      }
+
+      function getLineMap(){
+        const state = {lines: ['<prompt>'], map: {}};
+        serializeTreeWithLines(tree, 1, state);
+        state.lines.push('</prompt>');
+        return state;
+      }
+    
       function formatCharCount(len, sel){
         let s = len + ' Zeichen';
         if(sel > 0) s += ' · ' + sel + ' ausgewählt';
@@ -2556,7 +2806,6 @@
 
       /** URL: showCharacterCount=true|false (Query oder Hash). Standard: false. */
       
-
       function readShowCharacterCount(){
         /* Wert steht nach readHashState; hier nur UI anpassen */
         applyCharacterCountVisibility();
@@ -2670,26 +2919,28 @@ function findNode(nodes, id){
       }
       function firstNavigableId(nodes){ return nodes.length ? nodes[0].id : null; }
     
-      function insertRelative(node){
+      function insertRelative(node, opts){
+        opts = opts || {};
+        const doFocus = opts.focus !== false; // Default: fokusieren
         if(selectedId){
           const f = findNode(tree, selectedId);
           if(f){
             f.arr.splice(f.index + 1, 0, node);
             selectedId = node.id;
-            focusDetailField = shouldFocusDetail();
+            focusDetailField = doFocus && shouldFocusDetail();
             render();
             return;
           }
         }
         tree.push(node);
         selectedId = node.id;
-        focusDetailField = shouldFocusDetail();
+        focusDetailField = doFocus && shouldFocusDetail();
         render();
       }
     
       function addRootNode(){ insertRelative(newNode('','')); }
       function addRootComment(){ insertRelative(newCommentNode('')); }
-      function addTemplate(tag){ insertRelative(newNode(tag,'')); }
+      function addTemplate(tag){ insertRelative(newNode(tag,''), { focus: false }); }
       function addSibling(afterId, isComment){
         const f = findNode(tree, afterId); if(!f) return;
         const n = isComment ? newCommentNode('') : newNode('','');
@@ -2698,9 +2949,28 @@ function findNode(nodes, id){
         render();
       }
       function addChild(parentId, isComment){
-        const f = findNode(tree, parentId); if(!f || f.node.kind === 'comment') return;
+        const f = findNode(tree, parentId);
+        if(!f || f.node.kind === 'comment') return;
+        const parent = f.node;
+
+        // XML: Container darf keinen direkten Text haben → Text in <Parent_text>-Kind verschieben
+        if((parent.text || '').trim() !== ''){
+          const parentTag = (parent.tag || '').trim();
+          const leafTag = parentTag ? (parentTag + '_text') : 'content';
+          const textNode = newNode(leafTag, parent.text);
+          parent.children = parent.children || [];
+          parent.children.unshift(textNode);
+          parent.text = '';
+          showBanner('ok', [
+            'Hinweis: Inhalt von <' + (parentTag || 'element') +
+            '> wurde nach <' + leafTag + '> verschoben, da Container-Tags keinen direkten Text enthalten sollten.'
+          ]);
+        }
+
         const n = isComment ? newCommentNode('') : newNode('','');
-        f.node.children.push(n); f.node.collapsed = false; selectedId = n.id;
+        parent.children.push(n);
+        parent.collapsed = false;
+        selectedId = n.id;
         focusDetailField = shouldFocusDetail();
         render();
       }
@@ -2991,10 +3261,18 @@ function findNode(nodes, id){
         const textareaWrap = document.createElement('div'); textareaWrap.className = 'detail-textarea-wrap';
         const textarea = document.createElement('textarea');
         textarea.className = 'detail-textarea char-count-field'+(node.kind==='comment'?' comment-style':'');
-        textarea.placeholder = node.kind==='comment'?'Anmerkung…':'Text für dieses Element…';
-        textarea.value = node.text||'';
+        const isContainer = node.kind === 'element' && node.children && node.children.length > 0;
+        if(isContainer){
+          textarea.disabled = true;
+          textarea.placeholder = 'Dieser Tag ist ein Container.';
+          textarea.value = '';
+        } else {
+          textarea.placeholder = node.kind==='comment'?'Anmerkung…':'Text für dieses Element…';
+          textarea.value = node.text||'';
+        }
         textarea.setAttribute('aria-label', node.kind==='comment' ? 'Kommentartext' : 'Elementtext');
         textarea.oninput = e => {
+          if(isContainer) return;
           node.text = e.target.value;
           if(node.kind === 'comment') updateOutlineLabelFor(node.id, null, node.text);
           else updateOutlinePreview(node.id, node.text);
@@ -3064,58 +3342,289 @@ function findNode(nodes, id){
         updateResultCharCount();
       }
       function applySourceToTree(){
-        const {tree:parsed, errors} = parseXMLString(sourceText.value);
-        if(errors.length){ showBanner('error', errors); return; }
-        if(parsed.length === 1 && parsed[0].kind === 'element' && (parsed[0].tag||'').toLowerCase() === 'prompt') tree = parsed[0].children;
-        else tree = parsed;
-        selectedId = firstNavigableId(tree); hideBanner(); render();
+        const { tree: parsed, errors, migrated } = parseXMLString(sourceText.value);
+
+        if(errors.length){
+          showBanner('error', errors);
+          return;
+        }
+
+        if(parsed.length === 1 && parsed[0].kind === 'element' &&
+          (parsed[0].tag || '').toLowerCase() === 'prompt'){
+          tree = parsed[0].children;
+        } else {
+          tree = parsed;
+        }
+        selectedId = firstNavigableId(tree);
+
+        if(migrated > 0){
+          showBanner('ok', [
+            'Import-Hinweis: Mixed Content erkannt. ' + migrated +
+            ' Text-Blöcke wurden automatisch in <Parent_text>-Tags umgewandelt.'
+          ]);
+        } else {
+          hideBanner();
+        }
+        render();
       }
     
       const tagNameRe = /^[A-Za-z_][A-Za-z0-9_.\-]*$/;
-      function clearErrorFlags(nodes){ nodes.forEach(n => { n._hasError = false; if(n.children) clearErrorFlags(n.children); }); }
+      const GENERIC_TAGS = new Set(['tag','data','info','text','element','item','value']);
+
+      function clearErrorFlags(nodes){
+        nodes.forEach(n => {
+          n._hasError = false;
+          n._line = null;
+          if(n.children) clearErrorFlags(n.children);
+        });
+      }
+
       function validateTree(){
-        const issues = [];
-        (function walk(nodes){ nodes.forEach(n => {
-          if(n.kind === 'comment') return;
-          const t = (n.tag||'').trim();
-          if(!t) issues.push({id:n.id, message:'Element ohne Tag-Namen.'});
-          else if(!tagNameRe.test(t)) issues.push({id:n.id, message:'„'+t+'" ungültig.'});
-          if(n.children && n.children.length) walk(n.children);
-        }); })(tree);
-        return issues;
+        const hard = [];
+        const soft = [];
+        const lineState = getLineMap();
+
+        (function walk(nodes, depth, parentTag){
+          nodes.forEach(n => {
+            if(n.kind === 'comment') return;
+            const t = (n.tag || '').trim();
+            const line = lineState.map[n.id] || null;
+            n._line = line;
+
+            if(!t || !tagNameRe.test(t)){
+              hard.push({
+                id: n.id,
+                line,
+                message: !t
+                  ? 'Tag ohne Namen – Zeile ' + line
+                  : 'Tag <' + t + '> enthält ungültige Zeichen – Zeile ' + line
+              });
+            }
+
+            if(t && GENERIC_TAGS.has(t.toLowerCase())){
+              soft.push({
+                id:n.id, line, level:'warning',
+                message:'Warnung: <' + t + '> ist zu generisch. Nutze beschreibende Namen wie <kunden_anfrage> statt <data> (XML: Use consistent, descriptive tag names)' +
+                        (line ? ' · Zeile ~' + line : '')
+              });
+            }
+            if(depth > 4){
+              soft.push({
+                id:n.id, line, level:'warning',
+                message:'Warnung: Verschachtelungstiefe ' + depth + ' in <' + (t||'?') + '>. Mehr als 4 Ebenen erschweren das Verständnis.' +
+                        (line ? ' · Zeile ~' + line : '')
+              });
+            }
+            if(t.toLowerCase() === 'example' && (parentTag||'').toLowerCase() !== 'examples'){
+              soft.push({
+                id:n.id, line, level:'hint',
+                message:'Hinweis: <example> sollte in <examples> verpackt sein (XML)' +
+                        (line ? ' · Zeile ~' + line : '')
+              });
+            }
+            const hasText = (n.text||'').trim() !== '';
+            const hasKids = n.children && n.children.length > 0;
+            if(!hasText && !hasKids){
+              soft.push({
+                id:n.id, line, level:'hint',
+                message:'Hinweis: <' + (t||'?') + '> ist leer' + (line ? ' · Zeile ~' + line : '')
+              });
+            }
+
+            if(n.children && n.children.length) walk(n.children, depth + 1, t);
+          });
+        })(tree, 1, null);
+
+        return {hard, soft};
       }
+
       function runValidation(){
-        clearErrorFlags(tree); const issues = validateTree();
-        if(!issues.length){ showBanner('ok',['Keine Fehler.']); renderOutline(); return; }
-        issues.forEach(i => { const f = findNode(tree, i.id); if(f) f.node._hasError = true; });
-        renderOutline(); showBannerClickable(issues);
+        clearErrorFlags(tree);
+        const {hard, soft} = validateTree();
+        if(!hard.length && !soft.length){
+          showBanner('ok', ['Keine Fehler.']);
+          renderOutline();
+          return;
+        }
+        hard.forEach(i => {
+          const f = findNode(tree, i.id);
+          if(f) f.node._hasError = true;
+        });
+        renderOutline();
+        showBannerMixed(hard, soft);
       }
+
       function escapeHTML(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-    
+
       function bannerCloseBtn(){
         const btn = document.createElement('button');
         btn.type = 'button'; btn.className = 'banner-close'; btn.setAttribute('aria-label','Schließen');
         btn.innerHTML = '✕'; btn.onclick = hideBanner;
         return btn;
       }
+
       function showBanner(type, msgs){
-        validationBanner.className = 'banner show '+type;
-        validationBanner.innerHTML = '<strong>'+(type==='error'?'Achtung':'Alles gut')+'</strong><ul>'+
-          msgs.map(m => '<li style="cursor:default;text-decoration:none;">'+escapeHTML(m)+'</li>').join('')+'</ul>';
+        clearBannerTimer && clearBannerTimer();
+        validationBanner.className = 'banner show ' + type;
+        const title = type === 'error' ? 'Achtung'
+                    : type === 'warning' ? 'Hinweise'
+                    : 'Alles gut';
+        validationBanner.innerHTML =
+          '<strong>' + title + '</strong><ul>' +
+          msgs.map(m =>
+            '<li class="banner-item">' + escapeHTML(typeof m === 'string' ? m : (m.message || String(m))) + '</li>'
+          ).join('') +
+          '</ul>';
+        validationBanner.appendChild(bannerCloseBtn());
+
+        if(type === 'ok' || type === 'warning'){
+          // Skip-Button + 5s-Timer wie zuvor, falls gewünscht
+          scheduleNonErrorHide && scheduleNonErrorHide();
+        }
+      }
+
+      function showBannerClickable(issues){
+        clearBannerTimer && clearBannerTimer();
+        validationBanner.className = 'banner show error';
+        validationBanner.innerHTML = '<strong>' + issues.length + ' zu prüfen</strong><ul></ul>';
+        const ul = validationBanner.querySelector('ul');
+
+        issues.forEach(issue => {
+          const li = document.createElement('li');
+          const canJump = !!(issue.line || issue.id);
+          li.textContent =
+            (issue.line ? 'Zeile ' + issue.line + ': ' : '') +
+            (issue.message || 'Fehler') +
+            (canJump ? ' → springen' : '');
+
+          if(canJump){
+            li.style.cursor = 'pointer';
+            li.style.textDecoration = 'underline';
+            li.onclick = () => jumpToIssue(issue);
+          } else {
+            li.style.cursor = 'default';
+            li.style.textDecoration = 'none';
+          }
+          ul.appendChild(li);
+        });
+
         validationBanner.appendChild(bannerCloseBtn());
       }
-      function showBannerClickable(issues){
-        validationBanner.className = 'banner show error';
-        validationBanner.innerHTML = '<strong>'+issues.length+' zu prüfen</strong><ul></ul>';
+
+      function jumpToIssue(issue){
+        if(issue.id) selectNode(issue.id);
+
+        if(issue.line){
+          if(isMobileLayout()){
+            openSheet('source');
+            setTimeout(() => scrollSourceToLine(issue.line, issue.col), 320);
+          } else {
+            if(sourcePanel.style.display === 'none' || sourcePanel.style.display === ''){
+              sourcePanel.style.display = 'flex';
+              layout.classList.add('with-source');
+              setSourceLabels(true);
+              updateSourceFromTree();
+            }
+            scrollSourceToLine(issue.line, issue.col);
+          }
+        }
+
+        if(issue.id){
+          const row = outlineList.querySelector('.outline-row[data-id="' + issue.id + '"]');
+          if(row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+
+      function scrollSourceToLine(line, col){
+        if(!sourceText || !line) return;
+        const lines = (sourceText.value || '').split('\n');
+        let pos = 0;
+        for(let i = 0; i < line - 1 && i < lines.length; i++){
+          pos += lines[i].length + 1;
+        }
+        const lineText = lines[line - 1] || '';
+        const start = pos + (col && col > 0 ? Math.min(col - 1, lineText.length) : 0);
+        const end = pos + lineText.length;
+
+        sourceText.focus();
+        sourceText.setSelectionRange(start, end);
+
+        const lineHeight = parseFloat(getComputedStyle(sourceText).lineHeight) || 18;
+        // bei Wrap nur Näherung – reicht zum Sichtbarmachen
+        sourceText.scrollTop = Math.max(0, (line - 3) * lineHeight);
+      }
+
+      function showBannerMixed(hard, soft){
+        clearBannerTimer();
+        const hasHard = hard.length > 0;
+        validationBanner.className = 'banner show ' + (hasHard ? 'error' : 'warning');
+        const title = hasHard
+          ? (hard.length + ' Fehler' + (soft.length ? ', ' + soft.length + ' Hinweise' : ''))
+          : (soft.length + ' Hinweise');
+        validationBanner.innerHTML = '<strong>' + title + '</strong><ul></ul>';
         const ul = validationBanner.querySelector('ul');
-        issues.forEach(issue => {
-          const li = document.createElement('li'); li.textContent = issue.message+' (springen)';
-          li.onclick = () => { selectNode(issue.id); const row = outlineList.querySelector('.outline-row[data-id="'+issue.id+'"]'); if(row) row.scrollIntoView({behavior:'smooth', block:'center'}); };
+        [...hard, ...soft].forEach(issue => {
+          const li = document.createElement('li');
+          li.textContent = (issue.line ? 'Zeile ' + issue.line + ': ' : '') + issue.message + ' → springen';
+          li.onclick = () => jumpToIssue(issue);
           ul.appendChild(li);
         });
         validationBanner.appendChild(bannerCloseBtn());
+
+        if(!hasHard){
+          // reine Hinweise → wie ok/warning behandeln
+          if(!skipNonErrorNotifications){
+            const skipBtn = document.createElement('button');
+            skipBtn.type = 'button';
+            skipBtn.className = 'btn small plain';
+            skipBtn.style.marginTop = '8px';
+            skipBtn.textContent = 'Nicht mehr dauerhaft anzeigen';
+            skipBtn.onclick = (e) => { e.stopPropagation(); enableSkipNonError(); };
+            validationBanner.appendChild(skipBtn);
+          }
+          scheduleNonErrorHide();
+        }
+        // hat Hard-Errors → bleibt stehen, manuell schließen
       }
-      function hideBanner(){ validationBanner.className = 'banner'; validationBanner.innerHTML = ''; }
+
+      function clearBannerTimer(){
+        if(bannerHideTimer){ clearTimeout(bannerHideTimer); bannerHideTimer = null; }
+      }
+
+      function hideBanner(){
+        clearBannerTimer();
+        validationBanner.className = 'banner';
+        validationBanner.innerHTML = '';
+      }
+
+      function scheduleNonErrorHide(){
+        clearBannerTimer();
+        if(!skipNonErrorNotifications) return;
+        bannerHideTimer = setTimeout(() => hideBanner(), 5000);
+      }
+
+      function enableSkipNonError(){
+        skipNonErrorNotifications = true;
+        writeHashState();
+        hideBanner();
+      }
+
+      let sourceWrapOn = false;
+
+      function applySourceWrap(){
+        sourceText.classList.toggle('wrap-on', xmlCodeLineWrap);
+        const btn = document.getElementById('btnToggleWrap');
+        if(btn){
+          btn.textContent = xmlCodeLineWrap ? 'Umbruch an' : 'Umbruch aus';
+          btn.setAttribute('aria-pressed', xmlCodeLineWrap ? 'true' : 'false');
+        }
+      }
+
+      document.getElementById('btnToggleWrap').onclick = () => {
+        xmlCodeLineWrap = !xmlCodeLineWrap;
+        writeHashState();
+        applySourceWrap();
+      };
     
       function resetAll(){
         if(tree.length && !confirm('Alles löschen?')) return;
@@ -3174,12 +3683,10 @@ function findNode(nodes, id){
           updateSourceFromTree();
         }
       }
-      function toggleAmpPanel(){ ampPanel.style.display = ampPanel.style.display !== 'none' ? 'none' : 'block'; }
-      function applyAmpFix(rep){ if(!rep) return; sourceText.value = replaceStrayAmpersands(sourceText.value, rep); applySourceToTree(); ampPanel.style.display = 'none'; }
     
       document.getElementById('btnExample').onclick = e => {
         e.stopPropagation();
-        loadTemplate('example');
+        loadTemplate(0);
       };
       document.getElementById('btnTemplateCaret').onclick = e => {
         e.stopPropagation();
@@ -3197,12 +3704,6 @@ function findNode(nodes, id){
           openTemplateMenu = menu;
         }
       };
-      document.querySelectorAll('#templateMenu .tpl-item').forEach(btn => {
-        btn.onclick = e => {
-          e.stopPropagation();
-          loadTemplate(btn.dataset.tpl);
-        };
-      });
     
       document.getElementById('btnOptions').onclick = e => {
         e.stopPropagation();
@@ -3221,12 +3722,7 @@ function findNode(nodes, id){
           openOptionsMenu = menu;
         }
       };
-      document.querySelectorAll('#optionsMenu .opt-item[data-tpl]').forEach(btn => {
-        btn.onclick = e => {
-          e.stopPropagation();
-          loadTemplate(btn.dataset.tpl);
-        };
-      });
+
       document.getElementById('optValidate').onclick = e => {
         e.stopPropagation();
         closeOptionsMenu();
@@ -3258,7 +3754,6 @@ function findNode(nodes, id){
       document.getElementById('btnApplySource').onclick = applySourceToTree;
       document.getElementById('btnCopySource').onclick = copySource;
       document.getElementById('btnCopyResult').onclick = copyResult;
-      document.getElementById('btnFixAmp').onclick = toggleAmpPanel;
       document.getElementById('btnSourceClose').onclick = () => {
         if(isMobileLayout()) closeSheet(false);
         else {
@@ -3267,13 +3762,13 @@ function findNode(nodes, id){
           setSourceLabels(false);
         }
       };
-      document.querySelectorAll('.amp-options .btn').forEach(b => b.onclick = () => applyAmpFix(b.dataset.amp));
-      document.getElementById('btnAmpCustomApply').onclick = () => { const v = document.getElementById('ampCustomInput').value; if(v) applyAmpFix(v); };
-      sourceText.onfocus = () => sourceFocused = true; sourceText.onblur = () => sourceFocused = false;
-    
+      sourceText.onfocus = () => sourceFocused = true;
+      sourceText.onblur = () => sourceFocused = false;
+
       window.addEventListener('hashchange', () => {
         readHashState();
         readShowCharacterCount();
+        applySourceWrap(); 
         renderTabs();
       });
     
@@ -3310,6 +3805,8 @@ function findNode(nodes, id){
         putAllSheetsDormant();
       }
       readShowCharacterCount();
+      applySourceWrap(); 
+      renderTemplateMenus();
       renderTabs();
       render();
       updateResultCharCount();

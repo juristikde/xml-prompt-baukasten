@@ -4,11 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Favicons -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
-    <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
-    <link rel="manifest" href="/icons/site.webmanifest" />
+
+    <!-- Apple -->
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Theme Color -->
     <meta name="theme-color" content="#faf9f5" />
 
     <title>Prompt Baukasten – Strukturierter XML-Editor</title>
@@ -1672,7 +1679,13 @@
     <div class="wrap">
       <header class="top">
         <div class="title-block">
-          <h1><img class="mark" src="/icons/logo.png" width="24" height="24" alt="" /><span class="title-text">Prompt Baukasten</span></h1>
+          <h1>
+            <picture>
+              <source srcset="/icons/logo-24.webp" type="image/webp">
+              <img class="mark" src="/icons/logo-24.png" width="24" height="24" alt="" />
+            </picture>
+            <span class="title-text">Prompt Baukasten</span>
+          </h1>
         </div>
         <div class="toolbar">
           <div class="toolbar-desktop">

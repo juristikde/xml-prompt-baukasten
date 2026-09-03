@@ -3,7 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%2333415c'/%3E%3Cstop offset='100%25' stop-color='%2354704f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg transform='translate(16 16) rotate(6)'%3E%3Crect x='-10' y='-10' width='20' height='20' rx='3' fill='url(%23g)'/%3E%3C/g%3E%3C/svg%3E" />
+<!-- FAVICON - PNG für Browser -->
+<link rel="icon" href="/xml-prompt-baukasten/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="16x16" href="/xml-prompt-baukasten/icons/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/xml-prompt-baukasten/icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="/xml-prompt-baukasten/icons/favicon-48x48.png">
+<link rel="apple-touch-icon" href="/xml-prompt-baukasten/icons/apple-touch-icon.png">
+<link rel="manifest" href="/xml-prompt-baukasten/site.webmanifest">
+<meta name="theme-color" content="#faf9f5">
 <title>In Arbeit – Prompt Baukasten</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,700&family=Inter:wght@400&family=JetBrains+Mono:wght@400&display=swap');
@@ -84,13 +91,24 @@
     gap: var(--space-2);
     line-height:1.2;
   }
+
+  /* ===== Logo – exakt wie auf der Hauptseite ===== */
   header.top h1 .mark {
-    display:inline-block;
-    width:12px; height:12px;
-    border-radius:3px;
-    background: linear-gradient(135deg, var(--color-action), var(--color-success));
-    transform: rotate(6deg);
-    flex:none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex: none;
+    /* absolut clean – kein Transform, kein Background, kein Radius */
+  }
+
+  header.top h1 .mark picture,
+  header.top h1 .mark img {
+    display: block;
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
   }
 
   .stage {
@@ -201,7 +219,7 @@
     50%{ transform: rotate(calc(var(--r) + 1deg)) translateY(-3px); }
   }
 
-  .block .inner {
+  .block.inner {
     width:28px; height:28px;
     border-radius: 6px;
     background: linear-gradient(135deg, var(--color-action), var(--color-success));
@@ -232,14 +250,23 @@
   }
 
   @media (prefers-reduced-motion: reduce){
-    *,*::before,*::after{ animation:none !important; }
+    *,*::before,*::after{ animation:none!important; }
   }
 </style>
 </head>
 <body>
   <div class="wrap">
     <header class="top">
-      <h1><span class="mark"></span>...</h1>
+      <h1>
+        <span class="mark" id="appMark" aria-hidden="true">
+          <picture>
+            <source type="image/webp" srcset="/xml-prompt-baukasten/icons/logo-24.webp 1x, /xml-prompt-baukasten/icons/logo-48.webp 2x">
+            <source type="image/png" srcset="/xml-prompt-baukasten/icons/logo-24.png 1x, /xml-prompt-baukasten/icons/logo-48.png 2x">
+            <img src="/xml-prompt-baukasten/icons/logo-24.png" width="24" height="24" alt="" decoding="async" loading="eager">
+          </picture>
+        </span>
+        ...
+      </h1>
     </header>
     <main class="stage">
       <section class="card" aria-labelledby="title">
@@ -262,5 +289,22 @@
       </section>
     </main>
   </div>
+<script>
+(function(){
+  const mark=document.getElementById('appMark');
+  if(!mark) return;
+  const img=mark.querySelector('img');
+  const conn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+  const isSlow=conn&&(conn.saveData||/^(slow-2g|2g)$/.test(conn.effectiveType));
+  if(isSlow){
+    const pic=mark.querySelector('picture');
+    if(pic) pic.remove();
+    return;
+  }
+  if(img){
+    img.addEventListener('error',()=>{img.hidden=true;},{once:true});
+  }
+})();
+</script>
 </body>
 </html>

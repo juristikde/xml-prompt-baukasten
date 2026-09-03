@@ -119,7 +119,7 @@
     overflow: hidden;
     gap: var(--space-3);
   }
-
+  
   header.top {
     display: flex;
     flex-wrap: nowrap;
@@ -153,28 +153,22 @@
     max-width: 100%;
   }
 
-  header.top.title-block h1.mark {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border-radius: 3px;
-    background: linear-gradient(135deg, var(--color-action), var(--color-success));
-    transform: rotate(6deg);
+  header.top .title-block h1 .mark {
+    display: inline-flex;   /* wichtig für saubere Zentrierung */
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
     flex: none;
-    overflow: hidden; /* wichtig */
-    position: relative;
+    /* absolut KEINE weiteren Eigenschaften */
   }
-  header.top.title-block h1.mark picture,
-  header.top.title-block h1.mark img {
+
+  header.top .title-block h1 .mark picture,
+  header.top .title-block h1 .mark img {
     display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: inherit;
-  }
-  /* Wenn Bild fehlschlägt, sieht man automatisch den Gradient drunter -> Fallback bleibt */
-  header.top.title-block h1.mark img[hidden] {
-    display: none;
+    width: 24px;
+    height: 24px;
+    object-fit: contain;   /* contain statt cover, damit nichts abgeschnitten wird */
   }
 
   header.top .title-block h1 .title-text {

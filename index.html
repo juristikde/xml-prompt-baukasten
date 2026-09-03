@@ -1860,7 +1860,7 @@
         </section>
         <section class="panel" id="sourcePanel" style="display:none;" aria-label="XML-Code">
           <div class="panel-head">
-            <h2>XML-Code</h2>
+            <h2 id="sourcePanelTitle">XML-Code</h2>
             <div class="panel-head-tools" id="sourceHeadTools">
               <div class="options-wrap" id="sourceOptionsWrap">
                 <button type="button" class="btn small" id="btnSourceOptions" aria-haspopup="true" aria-expanded="false">Optionen</button>
@@ -2046,7 +2046,10 @@
     if(side === 'source'){
       sourcePanel.style.display = 'flex';
       setSourceLabels(true);
+      sourceGesamtMode = false;
+      updateSourcePanelTitle();
       updateSourceFromTree();
+      updateSourceHeadTools();
     }
     clearSheetTimer();
     ensureDetailParent();
@@ -2184,6 +2187,7 @@
   let skipNonErrorNotifications = false;
   let bannerHideTimer = null;
   let xmlCodeLineWrap = true;
+  let sourceGesamtMode = false;
   let wikiSettings = {lang:'de', chars:450}, openWikiMenu = null, openTemplateMenu = null, openOptionsMenu = null;
 
   let nodeClipboard = null;
@@ -2830,6 +2834,17 @@
   }
   function serializeFull(){ return '<prompt>\n'+serializeTree(tree,1)+'</prompt>'; }
 
+  function serializeGesamtConfig(){
+    saveActiveTab();
+    const parts = ['<!-- GESAMT-CONFIG -->'];
+    tabs.forEach(t => {
+      const title = ((t.title || 'Prompt') + '').replace(/--/g, '- -');
+      parts.push('<!-- TAB: ' + title + ' -->');
+      parts.push(('<prompt>\n' + serializeTree(t.tree || [], 1) + '</prompt>').trim());
+    });
+    return parts.join('\n\n');
+  }
+
   function serializeTreeWithLines(nodes, depth, state){
     depth = depth || 0;
     state = state || {lines: [''], map: {}};
@@ -3310,6 +3325,19 @@
     }
   }
 
+  function updateSourcePanelTitle(){
+    const h2 = document.getElementById('sourcePanelTitle');
+    if(h2) h2.textContent = sourceGesamtMode ? 'Gesamt-Config' : 'XML-Code';
+  }
+
+  function toggleGesamtMode(){
+    sourceGesamtMode = !sourceGesamtMode;
+    sourceFocused = false;
+    updateSourceFromTree();
+    updateSourcePanelTitle();
+    updateSourceHeadTools();
+  }
+
   function updateSourceHeadTools(){
     const tools = document.getElementById('sourceHeadTools');
     if(!tools) return;
@@ -3318,6 +3346,15 @@
     tools.innerHTML = '';
 
     if(useUnpackedTools()){
+      const btnGesamt = document.createElement('button');
+      btnGesamt.type = 'button';
+      btnGesamt.className = 'btn small';
+      btnGesamt.id = 'btnGesamtConfig';
+      btnGesamt.title = sourceGesamtMode ? 'Einzelnen Tab-XML anzeigen' : 'Gesamt-Config aller Tabs anzeigen';
+      btnGesamt.textContent = sourceGesamtMode ? 'Tab-XML' : 'Gesamt';
+      btnGesamt.onclick = () => toggleGesamtMode();
+      tools.appendChild(btnGesamt);
+
       const btnFind = document.createElement('button');
       btnFind.type = 'button';
       btnFind.className = 'btn small';
@@ -3357,6 +3394,18 @@
       menu.className = 'options-menu source-options-menu';
       menu.id = 'sourceOptionsMenu';
       menu.setAttribute('role', 'menu');
+
+      const optGesamt = document.createElement('button');
+      optGesamt.type = 'button';
+      optGesamt.className = 'opt-item';
+      optGesamt.setAttribute('role', 'menuitem');
+      optGesamt.textContent = sourceGesamtMode ? 'Tab-XML' : 'Gesamt-Config';
+      optGesamt.onclick = e => {
+        e.stopPropagation();
+        closeOptionsMenu();
+        toggleGesamtMode();
+      };
+      menu.appendChild(optGesamt);
 
       const optFind = document.createElement('button');
       optFind.type = 'button';
@@ -3955,11 +4004,77 @@
   }
 
   function updateSourceFromTree(){
-    if(!sourceFocused) sourceText.value = serializeFull().trim();
+    if(!sourceFocused) {
+      if(sourceGesamtMode) sourceText.value = serializeGesamtConfig();
+      else sourceText.value = serializeFull().trim();
+    }
     updateResultCharCount();
   }
 
+  function applyGesamtFromSource(){
+    const { tree: parsed, errors, migrated } = parseXMLString(sourceText.value);
+    if(errors.length){ showBanner('error', errors); return; }
+    if(!parsed || !parsed.length){
+      showBanner('error', ['Keine gültige Gesamt-Config gefunden.']);
+      return;
+    }
+    const newTabs = [];
+    let currentTitle = 'Prompt 1';
+    let currentChildren = [];
+    function flush(){
+      if(currentChildren.length || newTabs.length === 0){
+        let treeData = currentChildren;
+        if(currentChildren.length === 1 && currentChildren[0].kind === 'element' && (currentChildren[0].tag || '').toLowerCase() === 'prompt'){
+          treeData = currentChildren[0].children || [];
+        }
+        const t = createTabState(currentTitle, treeData);
+        newTabs.push(t);
+      }
+      currentChildren = [];
+    }
+    parsed.forEach(n => {
+      if(n.kind === 'comment'){
+        const txt = (n.text || '').trim();
+        const m = /^TAB:\s*(.+)$/i.exec(txt);
+        if(m){
+          flush();
+          currentTitle = m[1].trim() || 'Prompt';
+        }
+      } else {
+        currentChildren.push(n);
+      }
+    });
+    flush();
+    if(!newTabs.length){
+      showBanner('error', ['Keine gültige Gesamt-Config gefunden.']);
+      return;
+    }
+    tabs = newTabs;
+    activeTabId = tabs[0].id;
+    tree = tabs[0].tree;
+    selectedId = tabs[0].selectedId;
+    idCounter = tabs[0].idCounter;
+    sourceFocused = false;
+    focusDetailField = false;
+    sourceGesamtMode = false;
+    updateSourcePanelTitle();
+    hideBanner();
+    if(migrated > 0){
+      showBanner('ok', [
+        'Import-Hinweis: Mixed Content erkannt. ' + migrated +
+        ' Text-Blöcke wurden automatisch in <Parent_text>-Tags umgewandelt.'
+      ]);
+    }
+    renderTabs();
+    render();
+    updateSourceHeadTools();
+  }
+
   function applySourceToTree(){
+    if(sourceGesamtMode){
+      applyGesamtFromSource();
+      return;
+    }
     const { tree: parsed, errors, migrated } = parseXMLString(sourceText.value);
     if(errors.length){ showBanner('error', errors); return; }
     if(parsed.length === 1 && parsed[0].kind === 'element' && (parsed[0].tag || '').toLowerCase() === 'prompt'){
@@ -4087,7 +4202,10 @@
           sourcePanel.style.display = 'flex';
           layout.classList.add('with-source');
           setSourceLabels(true);
+          sourceGesamtMode = false;
+          updateSourcePanelTitle();
           updateSourceFromTree();
+          updateSourceHeadTools();
         }
         scrollSourceToLine(issue.line, issue.col);
       }
@@ -4226,7 +4344,10 @@
       sourcePanel.style.display = 'flex';
       layout.classList.add('with-source');
       setSourceLabels(true);
+      sourceGesamtMode = false;
+      updateSourcePanelTitle();
       updateSourceFromTree();
+      updateSourceHeadTools();
     }
   }
 

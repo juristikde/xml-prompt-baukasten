@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "hi",
+    "name": "हिन्दी",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (अरबी)",
+      "local": "अरबी"
+    },
+    "bg": {
+      "native": "Български (बुल्गारियाई)",
+      "local": "बुल्गारियाई"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "बोस्नियाई"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "चेक"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "डेनिश"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "जर्मन"
+    },
+    "el": {
+      "native": "Ελληνικά (यूनानी)",
+      "local": "यूनानी"
+    },
+    "en": {
+      "native": "English",
+      "local": "अंग्रेज़ी"
+    },
+    "es": {
+      "native": "Español",
+      "local": "स्पेनिश"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "एस्टोनियाई"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "फिनिश"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "फ़्रेंच"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "आयरिश"
+    },
+    "hi": {
+      "native": "हिन्दी (हिन्दी)",
+      "local": "हिन्दी"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "क्रोएशियाई"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "हंगेरियाई"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "इतालवी"
+    },
+    "ja": {
+      "native": "日本語 (जापानी)",
+      "local": "जापानी"
+    },
+    "ka": {
+      "native": "ქართული (जॉर्जियाई)",
+      "local": "जॉर्जियाई"
+    },
+    "ko": {
+      "native": "한국어 (कोरियाई)",
+      "local": "कोरियाई"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "लिथुआनियाई"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "लातवियाई"
+    },
+    "mk": {
+      "native": "Македонски (मैसेडोनियाई)",
+      "local": "मैसेडोनियाई"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "मोलडावियाई"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "माल्टीज़"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "डच"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "पोलिश"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "पुर्तगाली"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "रोमानियाई"
+    },
+    "ru": {
+      "native": "Русский (रूसी)",
+      "local": "रूसी"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "स्लोवाक"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "स्लोवेनियाई"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "अल्बानियाई"
+    },
+    "sr": {
+      "native": "Српски (सर्बियाई)",
+      "local": "सर्बियाई"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "स्वीडिश"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "तुर्की"
+    },
+    "uk": {
+      "native": "Українська (यूक्रेनियाई)",
+      "local": "यूक्रेनियाई"
+    },
+    "zh": {
+      "native": "中文 (चीनी)",
+      "local": "चीनी"
+    }
+  },
+  "app": {
+    "documentTitle": "प्रॉम्प्ट बिल्डर – संरचित XML संपादक",
+    "title": "प्रॉम्प्ट बिल्डर"
+  },
+  "toolbar": {
+    "example": "उदाहरण",
+    "templatesOpen": "टेम्पलेट खोलें",
+    "protocol": "लॉग",
+    "showXml": "XML दिखाएँ",
+    "hideXml": "XML छिपाएँ",
+    "reset": "रीसेट",
+    "options": "विकल्प",
+    "language": "भाषा",
+    "templatesLabel": "टेम्पलेट",
+    "moreTemplates": "और..."
+  },
+  "protocol": {
+    "title": "लॉग",
+    "clear": "साफ़ करें",
+    "close": "लॉग बंद करें",
+    "validate": "जाँचें",
+    "empty": "अभी कोई प्रविष्टि नहीं। संरचना अभी जाँचने के लिए «जाँचें» दबाएँ।",
+    "noErrors": "कोई त्रुटि नहीं।",
+    "xmlApplied": "XML सफलतापूर्वक लागू हुआ।",
+    "gesamtApplied": "समग्र कॉन्फ़िग सफलतापूर्वक लागू हुई।",
+    "mixedContent": "आयात नोट: मिश्रित सामग्री मिली। {n} टेक्स्ट ब्लॉकों को स्वतः &lt;Parent_text&gt; टैग में लपेटा गया।",
+    "containerMoved": "नोट: &lt;{parent}&gt; की सामग्री &lt;{leaf}&gt; में स्थानांतरित की गई, क्योंकि कंटेनर टैग में सीधा टेक्स्ट नहीं होना चाहिए।",
+    "invalidXml": "अमान्य XML।",
+    "invalidXmlDetail": "अमान्य XML: {detail}",
+    "invalidXmlLine": "अमान्य XML – पंक्ति {line}",
+    "invalidXmlLineCol": "अमान्य XML – पंक्ति {line}, स्तंभ {col}",
+    "invalidXmlLineColDetail": "अमान्य XML – पंक्ति {line}, स्तंभ {col}: {detail}",
+    "invalidXmlLineDetail": "अमान्य XML – पंक्ति {line}: {detail}",
+    "noGesamt": "कोई मान्य समग्र कॉन्फ़िग नहीं मिली।",
+    "networkError": "नेटवर्क त्रुटि",
+    "noPage": "कोई पृष्ठ नहीं",
+    "textTooShort": "टेक्स्ट बहुत छोटा है",
+    "errorPrefix": "त्रुटि: ",
+    "linePrefix": "पंक्ति {line}: "
+  },
+  "language": {
+    "title": "भाषा",
+    "close": "भाषा मेनू बंद करें",
+    "searchPlaceholder": "भाषा खोजें…",
+    "searchAria": "भाषा खोजें",
+    "empty": "कोई भाषा नहीं मिली।",
+    "selected": "चयनित"
+  },
+  "tabs": {
+    "namePlaceholder": "टैब का नाम",
+    "nameAria": "टैब का नाम",
+    "duplicate": "डुप्लिकेट",
+    "duplicateTitle": "वर्तमान टैब डुप्लिकेट करें",
+    "close": "टैब बंद करें",
+    "new": "नया टैब",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " प्रतिलिपि",
+    "confirmResetLast": "अंतिम टैब रीसेट करें?",
+    "confirmReplaceTemplate": "वर्तमान संरचना को टेम्पलेट से बदलें?"
+  },
+  "outline": {
+    "empty": "अभी कोई तत्व नहीं। नीचे एक तत्व या टिप्पणी बनाएँ।",
+    "addElement": "+ तत्व",
+    "addComment": "+ टिप्पणी",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ उप-आइटम",
+    "delete": "हटाएँ",
+    "copyResult": "परिणाम कॉपी करें",
+    "copied": "✓ कॉपी हुआ",
+    "copiedShort": "✓",
+    "confirmDelete": "वाकई हटाएँ?",
+    "confirmReset": "सब कुछ हटाएँ?",
+    "commentLabel": "नोट",
+    "noName": "(बिना नाम)",
+    "expand": "विस्तार",
+    "collapse": "संक्षिप्त",
+    "openEditor": "संपादक में खोलें"
+  },
+  "detail": {
+    "empty": "बाएँ कोई तत्व चुनें या नीचे नया बनाएँ।",
+    "level": "स्तर {n}",
+    "commentHeading": "💬 नोट",
+    "tagPlaceholder": "टैग-नाम",
+    "tagAria": "टैग का नाम",
+    "textPlaceholder": "इस तत्व का टेक्स्ट…",
+    "commentPlaceholder": "नोट…",
+    "containerPlaceholder": "यह टैग एक कंटेनर है।",
+    "textAria": "तत्व का टेक्स्ट",
+    "commentAria": "टिप्पणी का टेक्स्ट",
+    "moveUp": "ऊपर ले जाएँ",
+    "moveDown": "नीचे ले जाएँ",
+    "copy": "कॉपी",
+    "copyTitle": "चयनित आइटम कॉपी करें",
+    "paste": "पेस्ट",
+    "pasteTitle": "कॉपी किया आइटम पेस्ट करें",
+    "find": "खोजें",
+    "findTitle": "खोजें और बदलें",
+    "options": "विकल्प",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Wiki सेटिंग ›",
+    "wikiLang": "भाषा",
+    "wikiChars": "लगभग अक्षर",
+    "wikiInsert": "सम्मिलित करें",
+    "wikiClose": "बंद करें",
+    "wikiLoading": "लोड हो रहा है…",
+    "wikiAria": "Wiki सेटिंग",
+    "back": "वापस",
+    "closeEditor": "संपादक बंद करें"
+  },
+  "source": {
+    "title": "XML कोड",
+    "gesamtTitle": "समग्र कॉन्फ़िग",
+    "options": "विकल्प",
+    "find": "खोजें",
+    "wrapOn": "रैप चालू",
+    "wrapOff": "रैप बंद",
+    "wrapTitle": "लाइन रैप टॉगल करें",
+    "gesamt": "समग्र",
+    "tabXml": "टैब XML",
+    "gesamtConfig": "समग्र कॉन्फ़िग",
+    "gesamtTitleBtn": "सभी टैब की समग्र कॉन्फ़िग दिखाएँ",
+    "tabXmlTitle": "एक टैब का XML दिखाएँ",
+    "close": "XML बंद करें",
+    "placeholder": "XML प्रॉम्प्ट पेस्ट करें…",
+    "aria": "XML स्रोत कोड",
+    "apply": "लागू करें",
+    "copy": "कॉपी"
+  },
+  "find": {
+    "placeholder": "खोजें…",
+    "replacePlaceholder": "बदलें…",
+    "ariaFind": "खोज शब्द",
+    "ariaReplace": "प्रतिस्थापन टेक्स्ट",
+    "prev": "पिछला मिलान",
+    "next": "अगला मिलान",
+    "prevTitle": "पिछला",
+    "nextTitle": "अगला",
+    "close": "खोज बंद करें",
+    "closeTitle": "बंद करें",
+    "replace": "बदलें",
+    "replaceTitle": "वर्तमान मिलान बदलें",
+    "replaceAll": "सभी",
+    "replaceAllTitle": "सभी मिलान बदलें",
+    "caseTitle": "अक्षर आकार का ध्यान रखें",
+    "regexTitle": "नियमित व्यंजक",
+    "replaced": "{n} बदले गए",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} अक्षर",
+    "selected": " · {n} चयनित"
+  },
+  "validation": {
+    "tagNoName": "बिना नाम का टैग – पंक्ति {line}",
+    "tagInvalid": "टैग &lt;{tag}&gt; में अमान्य अक्षर हैं – पंक्ति {line}",
+    "genericTag": "चेतावनी: &lt;{tag}&gt; बहुत सामान्य है। &lt;data&gt; की जगह &lt;customer_request&gt; जैसे वर्णनात्मक नाम उपयोग करें (XML: Use consistent, descriptive tag names){line}",
+    "depth": "चेतावनी: &lt;{tag}&gt; में नेस्टिंग गहराई {depth}। 4 से अधिक स्तर समझना कठिन बनाते हैं.{line}",
+    "exampleHint": "नोट: &lt;example&gt; को &lt;examples&gt; में लपेटना चाहिए (XML){line}",
+    "emptyTag": "नोट: &lt;{tag}&gt; खाली है{line}",
+    "lineSuffix": " · पंक्ति ~{line}"
+  },
+  "wiki": {
+    "de": "जर्मन",
+    "en": "अंग्रेज़ी",
+    "fr": "फ़्रेंच",
+    "es": "स्पेनिश",
+    "it": "इतालवी",
+    "pt": "पुर्तगाली",
+    "nl": "डच",
+    "pl": "पोलिश",
+    "ru": "रूसी",
+    "ja": "जापानी",
+    "zh": "चीनी",
+    "random": "यादृच्छिक"
+  }
+}

@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "tr",
+    "name": "Türkçe",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Arapça)",
+      "local": "Arapça"
+    },
+    "bg": {
+      "native": "Български (Bulgarca)",
+      "local": "Bulgarca"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "Boşnakça"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "Çekçe"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "Danca"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "Almanca"
+    },
+    "el": {
+      "native": "Ελληνικά (Yunanca)",
+      "local": "Yunanca"
+    },
+    "en": {
+      "native": "English",
+      "local": "İngilizce"
+    },
+    "es": {
+      "native": "Español",
+      "local": "İspanyolca"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "Estonca"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "Fince"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "Fransızca"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "İrlandaca"
+    },
+    "hi": {
+      "native": "हिन्दी (Hintçe)",
+      "local": "Hintçe"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "Hırvatça"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "Macarca"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "İtalyanca"
+    },
+    "ja": {
+      "native": "日本語 (Japonca)",
+      "local": "Japonca"
+    },
+    "ka": {
+      "native": "ქართული (Gürcüce)",
+      "local": "Gürcüce"
+    },
+    "ko": {
+      "native": "한국어 (Korece)",
+      "local": "Korece"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "Litvanca"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "Letonca"
+    },
+    "mk": {
+      "native": "Македонски (Makedonca)",
+      "local": "Makedonca"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "Moldovaca"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "Maltaca"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "Felemenkçe"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "Lehçe"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "Portekizce"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "Romence"
+    },
+    "ru": {
+      "native": "Русский (Rusça)",
+      "local": "Rusça"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "Slovakça"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "Slovence"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "Arnavutça"
+    },
+    "sr": {
+      "native": "Српски (Sırpça)",
+      "local": "Sırpça"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "İsveççe"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "Türkçe"
+    },
+    "uk": {
+      "native": "Українська (Ukraynaca)",
+      "local": "Ukraynaca"
+    },
+    "zh": {
+      "native": "中文 (Çince)",
+      "local": "Çince"
+    }
+  },
+  "app": {
+    "documentTitle": "Prompt Oluşturucu – Yapılandırılmış XML Düzenleyici",
+    "title": "Prompt Oluşturucu"
+  },
+  "toolbar": {
+    "example": "Örnek",
+    "templatesOpen": "Şablonları aç",
+    "protocol": "Günlük",
+    "showXml": "XML’i göster",
+    "hideXml": "XML’i gizle",
+    "reset": "Sıfırla",
+    "options": "Seçenekler",
+    "language": "Dil",
+    "templatesLabel": "Şablonlar",
+    "moreTemplates": "Daha fazla..."
+  },
+  "protocol": {
+    "title": "Günlük",
+    "clear": "Temizle",
+    "close": "Günlüğü kapat",
+    "validate": "Kontrol et",
+    "empty": "Henüz kayıt yok. Yapıyı şimdi doğrulamak için «Kontrol et»e dokunun.",
+    "noErrors": "Hata yok.",
+    "xmlApplied": "XML başarıyla uygulandı.",
+    "gesamtApplied": "Birleşik yapılandırma başarıyla uygulandı.",
+    "mixedContent": "İçe aktarma notu: karma içerik algılandı. {n} metin bloğu otomatik olarak &lt;Parent_text&gt; etiketlerine sarıldı.",
+    "containerMoved": "Not: &lt;{parent}&gt; içeriği &lt;{leaf}&gt; öğesine taşındı; çünkü kapsayıcı etiketler doğrudan metin içermemelidir.",
+    "invalidXml": "Geçersiz XML.",
+    "invalidXmlDetail": "Geçersiz XML: {detail}",
+    "invalidXmlLine": "Geçersiz XML – satır {line}",
+    "invalidXmlLineCol": "Geçersiz XML – satır {line}, sütun {col}",
+    "invalidXmlLineColDetail": "Geçersiz XML – satır {line}, sütun {col}: {detail}",
+    "invalidXmlLineDetail": "Geçersiz XML – satır {line}: {detail}",
+    "noGesamt": "Geçerli birleşik yapılandırma bulunamadı.",
+    "networkError": "Ağ hatası",
+    "noPage": "Sayfa yok",
+    "textTooShort": "Metin çok kısa",
+    "errorPrefix": "Hata: ",
+    "linePrefix": "Satır {line}: "
+  },
+  "language": {
+    "title": "Dil",
+    "close": "Dil menüsünü kapat",
+    "searchPlaceholder": "Dil ara…",
+    "searchAria": "Dil ara",
+    "empty": "Dil bulunamadı.",
+    "selected": "Seçili"
+  },
+  "tabs": {
+    "namePlaceholder": "Sekme adı",
+    "nameAria": "Sekme adı",
+    "duplicate": "Çoğalt",
+    "duplicateTitle": "Geçerli sekmeyi çoğalt",
+    "close": "Sekmeyi kapat",
+    "new": "Yeni sekme",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " Kopya",
+    "confirmResetLast": "Son sekme sıfırlansın mı?",
+    "confirmReplaceTemplate": "Geçerli yapı şablonla değiştirilsin mi?"
+  },
+  "outline": {
+    "empty": "Henüz öğe yok. Aşağıda bir öğe veya yorum ekleyin.",
+    "addElement": "+ Öğe",
+    "addComment": "+ Yorum",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Alt madde",
+    "delete": "Sil",
+    "copyResult": "Sonucu kopyala",
+    "copied": "✓ Kopyalandı",
+    "copiedShort": "✓",
+    "confirmDelete": "Gerçekten silinsin mi?",
+    "confirmReset": "Hepsi silinsin mi?",
+    "commentLabel": "Not",
+    "noName": "(adsız)",
+    "expand": "Genişlet",
+    "collapse": "Daralt",
+    "openEditor": "Düzenleyicide aç"
+  },
+  "detail": {
+    "empty": "Soldan bir öğe seçin veya aşağıda yeni bir tane ekleyin.",
+    "level": "Düzey {n}",
+    "commentHeading": "💬 Not",
+    "tagPlaceholder": "etiket-adı",
+    "tagAria": "Etiket adı",
+    "textPlaceholder": "Bu öğe için metin…",
+    "commentPlaceholder": "Not…",
+    "containerPlaceholder": "Bu etiket bir kapsayıcıdır.",
+    "textAria": "Öğe metni",
+    "commentAria": "Yorum metni",
+    "moveUp": "Yukarı taşı",
+    "moveDown": "Aşağı taşı",
+    "copy": "Kopyala",
+    "copyTitle": "Seçili öğeyi kopyala",
+    "paste": "Yapıştır",
+    "pasteTitle": "Kopyalanan öğeyi yapıştır",
+    "find": "Bul",
+    "findTitle": "Bul ve değiştir",
+    "options": "Seçenekler",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Wiki ayarları ›",
+    "wikiLang": "Dil",
+    "wikiChars": "yak. karakter",
+    "wikiInsert": "Ekle",
+    "wikiClose": "Kapat",
+    "wikiLoading": "Yükleniyor…",
+    "wikiAria": "Wiki ayarları",
+    "back": "Geri",
+    "closeEditor": "Düzenleyiciyi kapat"
+  },
+  "source": {
+    "title": "XML kodu",
+    "gesamtTitle": "Birleşik yapılandırma",
+    "options": "Seçenekler",
+    "find": "Bul",
+    "wrapOn": "Kaydırma açık",
+    "wrapOff": "Kaydırma kapalı",
+    "wrapTitle": "Satır kaydırmayı değiştir",
+    "gesamt": "Birleşik",
+    "tabXml": "Sekme XML",
+    "gesamtConfig": "Birleşik yapılandırma",
+    "gesamtTitleBtn": "Tüm sekmelerin birleşik yapılandırmasını göster",
+    "tabXmlTitle": "Tek bir sekmenin XML’ini göster",
+    "close": "XML’i kapat",
+    "placeholder": "XML prompt yapıştır…",
+    "aria": "XML kaynak kodu",
+    "apply": "Uygula",
+    "copy": "Kopyala"
+  },
+  "find": {
+    "placeholder": "Bul…",
+    "replacePlaceholder": "Değiştir…",
+    "ariaFind": "Arama terimi",
+    "ariaReplace": "Değiştirme metni",
+    "prev": "Önceki eşleşme",
+    "next": "Sonraki eşleşme",
+    "prevTitle": "Önceki",
+    "nextTitle": "Sonraki",
+    "close": "Aramayı kapat",
+    "closeTitle": "Kapat",
+    "replace": "Değiştir",
+    "replaceTitle": "Geçerli eşleşmeyi değiştir",
+    "replaceAll": "Tümü",
+    "replaceAllTitle": "Tüm eşleşmeleri değiştir",
+    "caseTitle": "Büyük/küçük harf duyarlı",
+    "regexTitle": "Düzenli ifade",
+    "replaced": "{n} değiştirildi",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} karakter",
+    "selected": " · {n} seçili"
+  },
+  "validation": {
+    "tagNoName": "Adsız etiket – satır {line}",
+    "tagInvalid": "&lt;{tag}&gt; etiketi geçersiz karakterler içeriyor – satır {line}",
+    "genericTag": "Uyarı: &lt;{tag}&gt; çok genel. &lt;data&gt; yerine &lt;musteri_istegi&gt; gibi açıklayıcı adlar kullanın (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Uyarı: &lt;{tag}&gt; içinde yuvalanma derinliği {depth}. 4’ten fazla düzey anlamayı zorlaştırır.{line}",
+    "exampleHint": "Not: &lt;example&gt; &lt;examples&gt; içine sarılmalıdır (XML){line}",
+    "emptyTag": "Not: &lt;{tag}&gt; boş{line}",
+    "lineSuffix": " · Satır ~{line}"
+  },
+  "wiki": {
+    "de": "Almanca",
+    "en": "İngilizce",
+    "fr": "Fransızca",
+    "es": "İspanyolca",
+    "it": "İtalyanca",
+    "pt": "Portekizce",
+    "nl": "Felemenkçe",
+    "pl": "Lehçe",
+    "ru": "Rusça",
+    "ja": "Japonca",
+    "zh": "Çince",
+    "random": "Rastgele"
+  }
+}

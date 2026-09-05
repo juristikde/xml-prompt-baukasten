@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "ro",
+    "name": "Română",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Arabă)",
+      "local": "arabă"
+    },
+    "bg": {
+      "native": "Български (Bulgară)",
+      "local": "bulgară"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "bosniacă"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "cehă"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "daneză"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "germană"
+    },
+    "el": {
+      "native": "Ελληνικά (Greacă)",
+      "local": "greacă"
+    },
+    "en": {
+      "native": "English",
+      "local": "engleză"
+    },
+    "es": {
+      "native": "Español",
+      "local": "spaniolă"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "estonă"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "finlandeză"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "franceză"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "irlandeză"
+    },
+    "hi": {
+      "native": "हिन्दी (Hindi)",
+      "local": "hindi"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "croată"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "maghiară"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "italiană"
+    },
+    "ja": {
+      "native": "日本語 (Japoneză)",
+      "local": "japoneză"
+    },
+    "ka": {
+      "native": "ქართული (Georgiană)",
+      "local": "georgiană"
+    },
+    "ko": {
+      "native": "한국어 (Coreeană)",
+      "local": "coreeană"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "lituaniană"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "letonă"
+    },
+    "mk": {
+      "native": "Македонски (Macedoneană)",
+      "local": "macedoneană"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "moldovenească"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "malteză"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "neerlandeză"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "poloneză"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "portugheză"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "română"
+    },
+    "ru": {
+      "native": "Русский (Rusă)",
+      "local": "rusă"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "slovacă"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "slovenă"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "albaneză"
+    },
+    "sr": {
+      "native": "Српски (Sârbă)",
+      "local": "sârbă"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "suedeză"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "turcă"
+    },
+    "uk": {
+      "native": "Українська (Ucraineană)",
+      "local": "ucraineană"
+    },
+    "zh": {
+      "native": "中文 (Chineză)",
+      "local": "chineză"
+    }
+  },
+  "app": {
+    "documentTitle": "Constructor de Prompturi – Editor XML structurat",
+    "title": "Constructor de Prompturi"
+  },
+  "toolbar": {
+    "example": "Exemplu",
+    "templatesOpen": "Deschide șabloane",
+    "protocol": "Jurnal",
+    "showXml": "Afișează XML",
+    "hideXml": "Ascunde XML",
+    "reset": "Resetează",
+    "options": "Opțiuni",
+    "language": "Limbă",
+    "templatesLabel": "Șabloane",
+    "moreTemplates": "Mai multe..."
+  },
+  "protocol": {
+    "title": "Jurnal",
+    "clear": "Golește",
+    "close": "Închide jurnalul",
+    "validate": "Verifică",
+    "empty": "Încă nu există intrări. Atinge „Verifică” pentru a valida structura acum.",
+    "noErrors": "Nicio eroare.",
+    "xmlApplied": "XML aplicat cu succes.",
+    "gesamtApplied": "Configurația globală a fost aplicată cu succes.",
+    "mixedContent": "Notă de import: a fost detectat conținut mixt. {n} blocuri de text au fost învelite automat în etichete <Parent_text>.",
+    "containerMoved": "Notă: conținutul <{parent}> a fost mutat în <{leaf}>, deoarece etichetele container nu ar trebui să conțină text direct.",
+    "invalidXml": "XML invalid.",
+    "invalidXmlDetail": "XML invalid: {detail}",
+    "invalidXmlLine": "XML invalid – linia {line}",
+    "invalidXmlLineCol": "XML invalid – linia {line}, coloana {col}",
+    "invalidXmlLineColDetail": "XML invalid – linia {line}, coloana {col}: {detail}",
+    "invalidXmlLineDetail": "XML invalid – linia {line}: {detail}",
+    "noGesamt": "Nu a fost găsită nicio configurație globală validă.",
+    "networkError": "Eroare de rețea",
+    "noPage": "Nicio pagină",
+    "textTooShort": "Text prea scurt",
+    "errorPrefix": "Eroare: ",
+    "linePrefix": "Linia {line}: "
+  },
+  "language": {
+    "title": "Limbă",
+    "close": "Închide meniul de limbă",
+    "searchPlaceholder": "Caută limbă…",
+    "searchAria": "Caută limbă",
+    "empty": "Nicio limbă găsită.",
+    "selected": "Selectat"
+  },
+  "tabs": {
+    "namePlaceholder": "Numele filei",
+    "nameAria": "Numele filei",
+    "duplicate": "Duplică",
+    "duplicateTitle": "Duplică fila curentă",
+    "close": "Închide fila",
+    "new": "Filă nouă",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " Copie",
+    "confirmResetLast": "Resetezi ultima filă?",
+    "confirmReplaceTemplate": "Înlocuiești structura curentă cu șablonul?"
+  },
+  "outline": {
+    "empty": "Încă nu există elemente. Creează mai jos un element sau un comentariu.",
+    "addElement": "+ Element",
+    "addComment": "+ Comentariu",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Subpunct",
+    "delete": "Șterge",
+    "copyResult": "Copiază rezultatul",
+    "copied": "✓ Copiat",
+    "copiedShort": "✓",
+    "confirmDelete": "Chiar ștergi?",
+    "confirmReset": "Ștergi tot?",
+    "commentLabel": "Notă",
+    "noName": "(fără nume)",
+    "expand": "Extinde",
+    "collapse": "Restrânge",
+    "openEditor": "Deschide în editor"
+  },
+  "detail": {
+    "empty": "Selectează un element în stânga sau creează unul nou mai jos.",
+    "level": "Nivel {n}",
+    "commentHeading": "💬 Notă",
+    "tagPlaceholder": "nume-etichetă",
+    "tagAria": "Numele etichetei",
+    "textPlaceholder": "Text pentru acest element…",
+    "commentPlaceholder": "Notă…",
+    "containerPlaceholder": "Această etichetă este un container.",
+    "textAria": "Textul elementului",
+    "commentAria": "Textul comentariului",
+    "moveUp": "Mută în sus",
+    "moveDown": "Mută în jos",
+    "copy": "Copiază",
+    "copyTitle": "Copiază elementul selectat",
+    "paste": "Lipește",
+    "pasteTitle": "Lipește elementul copiat",
+    "find": "Caută",
+    "findTitle": "Caută și înlocuiește",
+    "options": "Opțiuni",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Setări Wiki ›",
+    "wikiLang": "Limbă",
+    "wikiChars": "aprox. caractere",
+    "wikiInsert": "Inserează",
+    "wikiClose": "Închide",
+    "wikiLoading": "Se încarcă…",
+    "wikiAria": "Setări Wiki",
+    "back": "Înapoi",
+    "closeEditor": "Închide editorul"
+  },
+  "source": {
+    "title": "Cod XML",
+    "gesamtTitle": "Configurație globală",
+    "options": "Opțiuni",
+    "find": "Caută",
+    "wrapOn": "Încadrare activă",
+    "wrapOff": "Încadrare dezactivată",
+    "wrapTitle": "Comută încadrarea rândurilor",
+    "gesamt": "Globală",
+    "tabXml": "XML-ul filei",
+    "gesamtConfig": "Configurație globală",
+    "gesamtTitleBtn": "Afișează configurația globală a tuturor filelor",
+    "tabXmlTitle": "Afișează XML-ul unei singure file",
+    "close": "Închide XML",
+    "placeholder": "Lipește un prompt XML…",
+    "aria": "Cod sursă XML",
+    "apply": "Aplică",
+    "copy": "Copiază"
+  },
+  "find": {
+    "placeholder": "Caută…",
+    "replacePlaceholder": "Înlocuiește…",
+    "ariaFind": "Termen de căutare",
+    "ariaReplace": "Text de înlocuire",
+    "prev": "Rezultatul anterior",
+    "next": "Rezultatul următor",
+    "prevTitle": "Anterior",
+    "nextTitle": "Următorul",
+    "close": "Închide căutarea",
+    "closeTitle": "Închide",
+    "replace": "Înlocuiește",
+    "replaceTitle": "Înlocuiește rezultatul curent",
+    "replaceAll": "Toate",
+    "replaceAllTitle": "Înlocuiește toate rezultatele",
+    "caseTitle": "Sensibil la majuscule",
+    "regexTitle": "Expresie regulată",
+    "replaced": "{n} înlocuite",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} caractere",
+    "selected": " · {n} selectate"
+  },
+  "validation": {
+    "tagNoName": "Etichetă fără nume – linia {line}",
+    "tagInvalid": "Eticheta <{tag}> conține caractere invalide – linia {line}",
+    "genericTag": "Avertisment: <{tag}> este prea generic. Folosește nume descriptive precum <cerere_client> în loc de <data> (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Avertisment: adâncime de imbricare {depth} în <{tag}>. Mai mult de 4 niveluri îngreunează înțelegerea.{line}",
+    "exampleHint": "Notă: <example> ar trebui învelit în <examples> (XML){line}",
+    "emptyTag": "Notă: <{tag}> este gol{line}",
+    "lineSuffix": " · Linia ~{line}"
+  },
+  "wiki": {
+    "de": "Germană",
+    "en": "Engleză",
+    "fr": "Franceză",
+    "es": "Spaniolă",
+    "it": "Italiană",
+    "pt": "Portugheză",
+    "nl": "Neerlandeză",
+    "pl": "Poloneză",
+    "ru": "Rusă",
+    "ja": "Japoneză",
+    "zh": "Chineză",
+    "random": "Aleatoriu"
+  }
+}

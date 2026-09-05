@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "ga",
+    "name": "Gaeilge",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Araibis)",
+      "local": "Araibis"
+    },
+    "bg": {
+      "native": "Български (Bulgáiris)",
+      "local": "Bulgáiris"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "Boisnis"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "Seicis"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "Danmhairgis"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "Gearmáinis"
+    },
+    "el": {
+      "native": "Ελληνικά (Gréigis)",
+      "local": "Gréigis"
+    },
+    "en": {
+      "native": "English",
+      "local": "Béarla"
+    },
+    "es": {
+      "native": "Español",
+      "local": "Spáinnis"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "Eastóinis"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "Fionlainnis"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "Fraincis"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "Gaeilge"
+    },
+    "hi": {
+      "native": "हिन्दी (Hiondúis)",
+      "local": "Hiondúis"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "Cróitis"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "Ungáiris"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "Iodáilis"
+    },
+    "ja": {
+      "native": "日本語 (Seapáinis)",
+      "local": "Seapáinis"
+    },
+    "ka": {
+      "native": "ქართული (Seoirsis)",
+      "local": "Seoirsis"
+    },
+    "ko": {
+      "native": "한국어 (Cóiréis)",
+      "local": "Cóiréis"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "Liotuáinis"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "Laitvis"
+    },
+    "mk": {
+      "native": "Македонски (Macadóinis)",
+      "local": "Macadóinis"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "Moldáivis"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "Máltais"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "Ollainnis"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "Polainnis"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "Portaingéilis"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "Rómáinis"
+    },
+    "ru": {
+      "native": "Русский (Rúisis)",
+      "local": "Rúisis"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "Slóvaicis"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "Slóivéinis"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "Albáinis"
+    },
+    "sr": {
+      "native": "Српски (Seirbis)",
+      "local": "Seirbis"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "Sualainnis"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "Tuircis"
+    },
+    "uk": {
+      "native": "Українська (Úcráinis)",
+      "local": "Úcráinis"
+    },
+    "zh": {
+      "native": "中文 (Sínis)",
+      "local": "Sínis"
+    }
+  },
+  "app": {
+    "documentTitle": "Tógálaí Leideanna – Eagarthóir XML Struchtúrtha",
+    "title": "Tógálaí Leideanna"
+  },
+  "toolbar": {
+    "example": "Sampla",
+    "templatesOpen": "Oscail teimpléid",
+    "protocol": "Log",
+    "showXml": "Taispeáin XML",
+    "hideXml": "Folaigh XML",
+    "reset": "Athshocraigh",
+    "options": "Roghanna",
+    "language": "Teanga",
+    "templatesLabel": "Teimpléid",
+    "moreTemplates": "Tuilleadh..."
+  },
+  "protocol": {
+    "title": "Log",
+    "clear": "Glan",
+    "close": "Dún an log",
+    "validate": "Deimhnigh",
+    "empty": "Níl aon iontráil ann fós. Brúigh „Deimhnigh“ chun an struchtúr a dheimhniú anois.",
+    "noErrors": "Gan earráidí.",
+    "xmlApplied": "Cuireadh an XML i bhfeidhm go rathúil.",
+    "gesamtApplied": "Cuireadh an chumraíocht chomhcheangailte i bhfeidhm go rathúil.",
+    "mixedContent": "Nóta iompórtála: braitheadh ábhar measctha. Cuireadh {n} bhloc téacs timpeall go huathoibríoch i gclibeanna <Parent_text>.",
+    "containerMoved": "Nóta: aistríodh ábhar <{parent}> go <{leaf}>, ó nár cheart go mbeadh téacs díreach i gclibeanna coimeádáin.",
+    "invalidXml": "XML neamhbhailí.",
+    "invalidXmlDetail": "XML neamhbhailí: {detail}",
+    "invalidXmlLine": "XML neamhbhailí – líne {line}",
+    "invalidXmlLineCol": "XML neamhbhailí – líne {line}, colún {col}",
+    "invalidXmlLineColDetail": "XML neamhbhailí – líne {line}, colún {col}: {detail}",
+    "invalidXmlLineDetail": "XML neamhbhailí – líne {line}: {detail}",
+    "noGesamt": "Níor aimsíodh cumraíocht chomhcheangailte bhailí.",
+    "networkError": "Earráid líonra",
+    "noPage": "Gan leathanach",
+    "textTooShort": "Téacs róghairid",
+    "errorPrefix": "Earráid: ",
+    "linePrefix": "Líne {line}: "
+  },
+  "language": {
+    "title": "Teanga",
+    "close": "Dún roghchlár na teanga",
+    "searchPlaceholder": "Cuardaigh teanga…",
+    "searchAria": "Cuardaigh teanga",
+    "empty": "Níor aimsíodh aon teanga.",
+    "selected": "Roghnaithe"
+  },
+  "tabs": {
+    "namePlaceholder": "Ainm an chluaisín",
+    "nameAria": "Ainm an chluaisín",
+    "duplicate": "Dúblaigh",
+    "duplicateTitle": "Dúblaigh an cluaisín reatha",
+    "close": "Dún an cluaisín",
+    "new": "Cluaisín nua",
+    "defaultTitle": "Leid {n}",
+    "copySuffix": " Cóip",
+    "confirmResetLast": "Athshocraigh an cluaisín deireanach?",
+    "confirmReplaceTemplate": "Cuir an teimpléad in ionad an struchtúir reatha?"
+  },
+  "outline": {
+    "empty": "Níl aon eilimint ann fós. Cruthaigh eilimint nó nóta thíos.",
+    "addElement": "+ Eilimint",
+    "addComment": "+ Nóta",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Fo-mhír",
+    "delete": "Scrios",
+    "copyResult": "Cóipeáil an toradh",
+    "copied": "✓ Cóipeáilte",
+    "copiedShort": "✓",
+    "confirmDelete": "An bhfuil tú cinnte gur mian leat scriosadh?",
+    "confirmReset": "Glan gach rud?",
+    "commentLabel": "Nóta",
+    "noName": "(gan ainm)",
+    "expand": "Leathnaigh",
+    "collapse": "Laghdaigh",
+    "openEditor": "Oscail san eagarthóir"
+  },
+  "detail": {
+    "empty": "Roghnaigh eilimint ar chlé nó cruthaigh ceann nua thíos.",
+    "level": "Leibhéal {n}",
+    "commentHeading": "💬 Nóta",
+    "tagPlaceholder": "ainm-clib",
+    "tagAria": "Ainm na clibe",
+    "textPlaceholder": "Téacs don eilimint seo…",
+    "commentPlaceholder": "Nóta…",
+    "containerPlaceholder": "Is coimeádán í an chlib seo.",
+    "textAria": "Téacs na heiliminte",
+    "commentAria": "Téacs an nóta",
+    "moveUp": "Bog suas",
+    "moveDown": "Bog síos",
+    "copy": "Cóipeáil",
+    "copyTitle": "Cóipeáil an mhír roghnaithe",
+    "paste": "Greamaigh",
+    "pasteTitle": "Greamaigh an mhír chóipeáilte",
+    "find": "Cuardaigh",
+    "findTitle": "Cuardaigh agus ionadaigh",
+    "options": "Roghanna",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Socruithe Wiki ›",
+    "wikiLang": "Teanga",
+    "wikiChars": "carachtair thart ar",
+    "wikiInsert": "Ionsáigh",
+    "wikiClose": "Dún",
+    "wikiLoading": "Á lódáil…",
+    "wikiAria": "Socruithe Wiki",
+    "back": "Ar ais",
+    "closeEditor": "Dún an t-eagarthóir"
+  },
+  "source": {
+    "title": "Cód XML",
+    "gesamtTitle": "Cumraíocht chomhcheangailte",
+    "options": "Roghanna",
+    "find": "Cuardaigh",
+    "wrapOn": "Timfhilleadh ar siúl",
+    "wrapOff": "Timfhilleadh as",
+    "wrapTitle": "Scoránaigh timfhilleadh línte",
+    "gesamt": "Comhcheangailte",
+    "tabXml": "XML an chluaisín",
+    "gesamtConfig": "Cumraíocht chomhcheangailte",
+    "gesamtTitleBtn": "Taispeáin cumraíocht chomhcheangailte gach cluaisín",
+    "tabXmlTitle": "Taispeáin XML cluaisín amháin",
+    "close": "Dún an XML",
+    "placeholder": "Greamaigh leid XML…",
+    "aria": "Cód foinseach XML",
+    "apply": "Cuir i bhfeidhm",
+    "copy": "Cóipeáil"
+  },
+  "find": {
+    "placeholder": "Cuardaigh…",
+    "replacePlaceholder": "Ionadaigh…",
+    "ariaFind": "Téarma cuardaigh",
+    "ariaReplace": "Téacs ionadaithe",
+    "prev": "An sampla roimhe seo",
+    "next": "An chéad sampla eile",
+    "prevTitle": "Roimhe seo",
+    "nextTitle": "An chéad cheann eile",
+    "close": "Dún an cuardach",
+    "closeTitle": "Dún",
+    "replace": "Ionadaigh",
+    "replaceTitle": "Ionadaigh an sampla reatha",
+    "replaceAll": "Uile",
+    "replaceAllTitle": "Ionadaigh gach sampla",
+    "caseTitle": "Cásíogair",
+    "regexTitle": "Slonn ionadaíochta",
+    "replaced": "{n} ionadaithe",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} carachtar",
+    "selected": " · {n} roghnaithe"
+  },
+  "validation": {
+    "tagNoName": "Clib gan ainm – líne {line}",
+    "tagInvalid": "Tá carachtair neamhbhailí i gclib <{tag}> – líne {line}",
+    "genericTag": "Rabhadh: tá <{tag}> róghinearálta. Bain úsáid as ainmneacha tuairisciúla ar nós <iarratas_custaiméara> in ionad <data> (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Rabhadh: doimhneacht neadaithe {depth} i <{tag}>. Cuireann níos mó ná 4 leibhéal deacracht ar an tuiscint.{line}",
+    "exampleHint": "Nóta: ba cheart <example> a bheith timpeallaithe le <examples> (XML){line}",
+    "emptyTag": "Nóta: tá <{tag}> folamh{line}",
+    "lineSuffix": " · Líne ~{line}"
+  },
+  "wiki": {
+    "de": "Gearmáinis",
+    "en": "Béarla",
+    "fr": "Fraincis",
+    "es": "Spáinnis",
+    "it": "Iodáilis",
+    "pt": "Portaingéilis",
+    "nl": "Ollainnis",
+    "pl": "Polainnis",
+    "ru": "Rúisis",
+    "ja": "Seapáinis",
+    "zh": "Sínis",
+    "random": "Randamach"
+  }
+}

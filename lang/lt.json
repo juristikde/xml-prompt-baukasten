@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "lt",
+    "name": "Lietuvių",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Arabų)",
+      "local": "arabų"
+    },
+    "bg": {
+      "native": "Български (Bulgarų)",
+      "local": "bulgarų"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "bosnių"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "čekų"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "danų"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "vokiečių"
+    },
+    "el": {
+      "native": "Ελληνικά (Graikų)",
+      "local": "graikų"
+    },
+    "en": {
+      "native": "English",
+      "local": "anglų"
+    },
+    "es": {
+      "native": "Español",
+      "local": "ispanų"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "estų"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "suomių"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "prancūzų"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "airių"
+    },
+    "hi": {
+      "native": "हिन्दी (Hindi)",
+      "local": "hindi"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "kroatų"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "vengrų"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "italų"
+    },
+    "ja": {
+      "native": "日本語 (Japonų)",
+      "local": "japonų"
+    },
+    "ka": {
+      "native": "ქართული (Gruzinų)",
+      "local": "gruzinų"
+    },
+    "ko": {
+      "native": "한국어 (Korėjiečių)",
+      "local": "korėjiečių"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "lietuvių"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "latvių"
+    },
+    "mk": {
+      "native": "Македонски (Makedonų)",
+      "local": "makedonų"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "moldavų"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "maltiečių"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "olandų"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "lenkų"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "portugalų"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "rumunų"
+    },
+    "ru": {
+      "native": "Русский (Rusų)",
+      "local": "rusų"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "slovakų"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "slovėnų"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "albanų"
+    },
+    "sr": {
+      "native": "Српски (Serbų)",
+      "local": "serbų"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "švedų"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "turkų"
+    },
+    "uk": {
+      "native": "Українська (Ukrainiečių)",
+      "local": "ukrainiečių"
+    },
+    "zh": {
+      "native": "中文 (Kinų)",
+      "local": "kinų"
+    }
+  },
+  "app": {
+    "documentTitle": "Užklausų Konstruktorius – Struktūrizuotas XML redaktorius",
+    "title": "Užklausų Konstruktorius"
+  },
+  "toolbar": {
+    "example": "Pavyzdys",
+    "templatesOpen": "Atverti šablonus",
+    "protocol": "Žurnalas",
+    "showXml": "Rodyti XML",
+    "hideXml": "Slėpti XML",
+    "reset": "Atkurti",
+    "options": "Parinktys",
+    "language": "Kalba",
+    "templatesLabel": "Šablonai",
+    "moreTemplates": "Daugiau..."
+  },
+  "protocol": {
+    "title": "Žurnalas",
+    "clear": "Išvalyti",
+    "close": "Uždaryti žurnalą",
+    "validate": "Tikrinti",
+    "empty": "Įrašų dar nėra. Palieskite „Tikrinti“, kad dabar patikrintumėte struktūrą.",
+    "noErrors": "Klaidų nėra.",
+    "xmlApplied": "XML sėkmingai pritaikytas.",
+    "gesamtApplied": "Bendra konfigūracija sėkmingai pritaikyta.",
+    "mixedContent": "Importavimo pastaba: aptiktas mišrus turinys. {n} teksto blokai automatiškai apgaubti žymomis <Parent_text>.",
+    "containerMoved": "Pastaba: <{parent}> turinys perkeltas į <{leaf}>, nes konteinerio žymos neturėtų turėti tiesioginio teksto.",
+    "invalidXml": "Netinkamas XML.",
+    "invalidXmlDetail": "Netinkamas XML: {detail}",
+    "invalidXmlLine": "Netinkamas XML – eilutė {line}",
+    "invalidXmlLineCol": "Netinkamas XML – eilutė {line}, stulpelis {col}",
+    "invalidXmlLineColDetail": "Netinkamas XML – eilutė {line}, stulpelis {col}: {detail}",
+    "invalidXmlLineDetail": "Netinkamas XML – eilutė {line}: {detail}",
+    "noGesamt": "Nerasta galiojanti bendra konfigūracija.",
+    "networkError": "Tinklo klaida",
+    "noPage": "Nėra puslapio",
+    "textTooShort": "Tekstas per trumpas",
+    "errorPrefix": "Klaida: ",
+    "linePrefix": "Eilutė {line}: "
+  },
+  "language": {
+    "title": "Kalba",
+    "close": "Uždaryti kalbos meniu",
+    "searchPlaceholder": "Ieškoti kalbos…",
+    "searchAria": "Ieškoti kalbos",
+    "empty": "Kalba nerasta.",
+    "selected": "Pasirinkta"
+  },
+  "tabs": {
+    "namePlaceholder": "Skirtuko pavadinimas",
+    "nameAria": "Skirtuko pavadinimas",
+    "duplicate": "Dubliuoti",
+    "duplicateTitle": "Dubliuoti dabartinį skirtuką",
+    "close": "Uždaryti skirtuką",
+    "new": "Naujas skirtukas",
+    "defaultTitle": "Užklausa {n}",
+    "copySuffix": " Kopija",
+    "confirmResetLast": "Atkurti paskutinį skirtuką?",
+    "confirmReplaceTemplate": "Pakeisti dabartinę struktūrą šablonu?"
+  },
+  "outline": {
+    "empty": "Elementų dar nėra. Sukurkite žemiau elementą arba komentarą.",
+    "addElement": "+ Elementas",
+    "addComment": "+ Komentaras",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Papunktis",
+    "delete": "Ištrinti",
+    "copyResult": "Kopijuoti rezultatą",
+    "copied": "✓ Nukopijuota",
+    "copiedShort": "✓",
+    "confirmDelete": "Tikrai ištrinti?",
+    "confirmReset": "Ištrinti viską?",
+    "commentLabel": "Pastaba",
+    "noName": "(be pavadinimo)",
+    "expand": "Išskleisti",
+    "collapse": "Suskleisti",
+    "openEditor": "Atverti redaktoriuje"
+  },
+  "detail": {
+    "empty": "Pasirinkite elementą kairėje arba sukurkite naują žemiau.",
+    "level": "Lygis {n}",
+    "commentHeading": "💬 Pastaba",
+    "tagPlaceholder": "žymos-pavadinimas",
+    "tagAria": "Žymos pavadinimas",
+    "textPlaceholder": "Šio elemento tekstas…",
+    "commentPlaceholder": "Pastaba…",
+    "containerPlaceholder": "Ši žyma yra konteineris.",
+    "textAria": "Elemento tekstas",
+    "commentAria": "Komentaro tekstas",
+    "moveUp": "Perkelti aukštyn",
+    "moveDown": "Perkelti žemyn",
+    "copy": "Kopijuoti",
+    "copyTitle": "Kopijuoti pasirinktą punktą",
+    "paste": "Įklijuoti",
+    "pasteTitle": "Įklijuoti nukopijuotą punktą",
+    "find": "Ieškoti",
+    "findTitle": "Ieškoti ir keisti",
+    "options": "Parinktys",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Wiki nustatymai ›",
+    "wikiLang": "Kalba",
+    "wikiChars": "apytiksliai simbolių",
+    "wikiInsert": "Įterpti",
+    "wikiClose": "Uždaryti",
+    "wikiLoading": "Įkeliama…",
+    "wikiAria": "Wiki nustatymai",
+    "back": "Atgal",
+    "closeEditor": "Uždaryti redaktorių"
+  },
+  "source": {
+    "title": "XML kodas",
+    "gesamtTitle": "Bendra konfigūracija",
+    "options": "Parinktys",
+    "find": "Ieškoti",
+    "wrapOn": "Laužymas įjungtas",
+    "wrapOff": "Laužymas išjungtas",
+    "wrapTitle": "Perjungti eilučių laužymą",
+    "gesamt": "Bendra",
+    "tabXml": "Skirtuko XML",
+    "gesamtConfig": "Bendra konfigūracija",
+    "gesamtTitleBtn": "Rodyti visų skirtukų bendrą konfigūraciją",
+    "tabXmlTitle": "Rodyti vieno skirtuko XML",
+    "close": "Uždaryti XML",
+    "placeholder": "Įklijuokite XML užklausą…",
+    "aria": "XML pirminis kodas",
+    "apply": "Taikyti",
+    "copy": "Kopijuoti"
+  },
+  "find": {
+    "placeholder": "Ieškoti…",
+    "replacePlaceholder": "Keisti…",
+    "ariaFind": "Paieškos terminas",
+    "ariaReplace": "Pakaitinis tekstas",
+    "prev": "Ankstesnis atitikmuo",
+    "next": "Kitas atitikmuo",
+    "prevTitle": "Ankstesnis",
+    "nextTitle": "Kitas",
+    "close": "Uždaryti paiešką",
+    "closeTitle": "Uždaryti",
+    "replace": "Keisti",
+    "replaceTitle": "Pakeisti dabartinį atitikmenį",
+    "replaceAll": "Visus",
+    "replaceAllTitle": "Pakeisti visus atitikmenis",
+    "caseTitle": "Skirti raidžių dydį",
+    "regexTitle": "Reguliarioji išraiška",
+    "replaced": "{n} pakeista",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} simbolių",
+    "selected": " · {n} pasirinkta"
+  },
+  "validation": {
+    "tagNoName": "Žyma be pavadinimo – eilutė {line}",
+    "tagInvalid": "Žymoje <{tag}> yra netinkamų simbolių – eilutė {line}",
+    "genericTag": "Įspėjimas: <{tag}> yra per daug bendrinis. Naudokite aprašomuosius pavadinimus, pvz., <kliento_uzklausa>, o ne <data> (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Įspėjimas: įdėjimo gylis {depth} žymoje <{tag}>. Daugiau nei 4 lygiai apsunkina supratimą.{line}",
+    "exampleHint": "Pastaba: <example> turėtų būti apgaubtas žyma <examples> (XML){line}",
+    "emptyTag": "Pastaba: <{tag}> yra tuščias{line}",
+    "lineSuffix": " · Eilutė ~{line}"
+  },
+  "wiki": {
+    "de": "Vokiečių",
+    "en": "Anglų",
+    "fr": "Prancūzų",
+    "es": "Ispanų",
+    "it": "Italų",
+    "pt": "Portugalų",
+    "nl": "Olandų",
+    "pl": "Lenkų",
+    "ru": "Rusų",
+    "ja": "Japonų",
+    "zh": "Kinų",
+    "random": "Atsitiktinis"
+  }
+}

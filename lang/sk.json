@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "sk",
+    "name": "Slovenčina",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Arabčina)",
+      "local": "arabčina"
+    },
+    "bg": {
+      "native": "Български (Bulharčina)",
+      "local": "bulharčina"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "bosniačtina"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "čeština"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "dánčina"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "nemčina"
+    },
+    "el": {
+      "native": "Ελληνικά (Gréčtina)",
+      "local": "gréčtina"
+    },
+    "en": {
+      "native": "English",
+      "local": "angličtina"
+    },
+    "es": {
+      "native": "Español",
+      "local": "španielčina"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "estónčina"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "fínčina"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "francúzština"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "írčina"
+    },
+    "hi": {
+      "native": "हिन्दी (Hindčina)",
+      "local": "hindčina"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "chorvátčina"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "maďarčina"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "taliančina"
+    },
+    "ja": {
+      "native": "日本語 (Japončina)",
+      "local": "japončina"
+    },
+    "ka": {
+      "native": "ქართული (Gruzínčina)",
+      "local": "gruzínčina"
+    },
+    "ko": {
+      "native": "한국어 (Kórejčina)",
+      "local": "kórejčina"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "litovčina"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "lotyština"
+    },
+    "mk": {
+      "native": "Македонски (Macedónčina)",
+      "local": "macedónčina"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "moldavčina"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "maltčina"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "holandčina"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "poľština"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "portugalčina"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "rumunčina"
+    },
+    "ru": {
+      "native": "Русский (Ruština)",
+      "local": "ruština"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "slovenčina"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "slovinčina"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "albánčina"
+    },
+    "sr": {
+      "native": "Српски (Srbčina)",
+      "local": "srbčina"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "švédčina"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "turečtina"
+    },
+    "uk": {
+      "native": "Українська (Ukrajinčina)",
+      "local": "ukrajinčina"
+    },
+    "zh": {
+      "native": "中文 (Čínština)",
+      "local": "čínština"
+    }
+  },
+  "app": {
+    "documentTitle": "Tvorca Promptov – Štruktúrovaný XML editor",
+    "title": "Tvorca Promptov"
+  },
+  "toolbar": {
+    "example": "Príklad",
+    "templatesOpen": "Otvoriť šablóny",
+    "protocol": "Protokol",
+    "showXml": "Zobraziť XML",
+    "hideXml": "Skryť XML",
+    "reset": "Obnoviť",
+    "options": "Možnosti",
+    "language": "Jazyk",
+    "templatesLabel": "Šablóny",
+    "moreTemplates": "Viac..."
+  },
+  "protocol": {
+    "title": "Protokol",
+    "clear": "Vymazať",
+    "close": "Zavrieť protokol",
+    "validate": "Skontrolovať",
+    "empty": "Zatiaľ žiadne záznamy. Klepnutím na „Skontrolovať“ overíš štruktúru hneď teraz.",
+    "noErrors": "Žiadne chyby.",
+    "xmlApplied": "XML bol úspešne použitý.",
+    "gesamtApplied": "Súhrnná konfigurácia bola úspešne použitá.",
+    "mixedContent": "Poznámka k importu: zistil sa zmiešaný obsah. {n} textové bloky boli automaticky obalené do značiek <Parent_text>.",
+    "containerMoved": "Poznámka: obsah <{parent}> bol presunutý do <{leaf}>, keďže kontajnerové značky by nemali obsahovať priamy text.",
+    "invalidXml": "Neplatný XML.",
+    "invalidXmlDetail": "Neplatný XML: {detail}",
+    "invalidXmlLine": "Neplatný XML – riadok {line}",
+    "invalidXmlLineCol": "Neplatný XML – riadok {line}, stĺpec {col}",
+    "invalidXmlLineColDetail": "Neplatný XML – riadok {line}, stĺpec {col}: {detail}",
+    "invalidXmlLineDetail": "Neplatný XML – riadok {line}: {detail}",
+    "noGesamt": "Nebola nájdená žiadna platná súhrnná konfigurácia.",
+    "networkError": "Chyba siete",
+    "noPage": "Žiadna stránka",
+    "textTooShort": "Text je príliš krátky",
+    "errorPrefix": "Chyba: ",
+    "linePrefix": "Riadok {line}: "
+  },
+  "language": {
+    "title": "Jazyk",
+    "close": "Zavrieť ponuku jazyka",
+    "searchPlaceholder": "Hľadať jazyk…",
+    "searchAria": "Hľadať jazyk",
+    "empty": "Nenašiel sa žiadny jazyk.",
+    "selected": "Vybraté"
+  },
+  "tabs": {
+    "namePlaceholder": "Názov karty",
+    "nameAria": "Názov karty",
+    "duplicate": "Duplikovať",
+    "duplicateTitle": "Duplikovať aktuálnu kartu",
+    "close": "Zavrieť kartu",
+    "new": "Nová karta",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " Kópia",
+    "confirmResetLast": "Obnoviť poslednú kartu?",
+    "confirmReplaceTemplate": "Nahradiť aktuálnu štruktúru šablónou?"
+  },
+  "outline": {
+    "empty": "Zatiaľ žiadne prvky. Vytvor nižšie prvok alebo komentár.",
+    "addElement": "+ Prvok",
+    "addComment": "+ Komentár",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Podpoložka",
+    "delete": "Odstrániť",
+    "copyResult": "Kopírovať výsledok",
+    "copied": "✓ Skopírované",
+    "copiedShort": "✓",
+    "confirmDelete": "Naozaj odstrániť?",
+    "confirmReset": "Vymazať všetko?",
+    "commentLabel": "Poznámka",
+    "noName": "(bez názvu)",
+    "expand": "Rozbaliť",
+    "collapse": "Zbaliť",
+    "openEditor": "Otvoriť v editore"
+  },
+  "detail": {
+    "empty": "Vyber prvok vľavo alebo vytvor nový nižšie.",
+    "level": "Úroveň {n}",
+    "commentHeading": "💬 Poznámka",
+    "tagPlaceholder": "názov-značky",
+    "tagAria": "Názov značky",
+    "textPlaceholder": "Text pre tento prvok…",
+    "commentPlaceholder": "Poznámka…",
+    "containerPlaceholder": "Táto značka je kontajner.",
+    "textAria": "Text prvku",
+    "commentAria": "Text komentára",
+    "moveUp": "Presunúť nahor",
+    "moveDown": "Presunúť nadol",
+    "copy": "Kopírovať",
+    "copyTitle": "Kopírovať vybratú položku",
+    "paste": "Prilepiť",
+    "pasteTitle": "Prilepiť skopírovanú položku",
+    "find": "Hľadať",
+    "findTitle": "Nájsť a nahradiť",
+    "options": "Možnosti",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Nastavenia Wiki ›",
+    "wikiLang": "Jazyk",
+    "wikiChars": "cca znakov",
+    "wikiInsert": "Vložiť",
+    "wikiClose": "Zavrieť",
+    "wikiLoading": "Načítava sa…",
+    "wikiAria": "Nastavenia Wiki",
+    "back": "Späť",
+    "closeEditor": "Zavrieť editor"
+  },
+  "source": {
+    "title": "XML kód",
+    "gesamtTitle": "Súhrnná konfigurácia",
+    "options": "Možnosti",
+    "find": "Hľadať",
+    "wrapOn": "Zalamovanie zap.",
+    "wrapOff": "Zalamovanie vyp.",
+    "wrapTitle": "Prepnúť zalamovanie riadkov",
+    "gesamt": "Súhrnné",
+    "tabXml": "XML karty",
+    "gesamtConfig": "Súhrnná konfigurácia",
+    "gesamtTitleBtn": "Zobraziť súhrnnú konfiguráciu všetkých kariet",
+    "tabXmlTitle": "Zobraziť XML jednej karty",
+    "close": "Zavrieť XML",
+    "placeholder": "Prilepiť XML prompt…",
+    "aria": "Zdrojový kód XML",
+    "apply": "Použiť",
+    "copy": "Kopírovať"
+  },
+  "find": {
+    "placeholder": "Hľadať…",
+    "replacePlaceholder": "Nahradiť…",
+    "ariaFind": "Hľadaný výraz",
+    "ariaReplace": "Náhradný text",
+    "prev": "Predchádzajúci výskyt",
+    "next": "Ďalší výskyt",
+    "prevTitle": "Predchádzajúci",
+    "nextTitle": "Ďalší",
+    "close": "Zavrieť vyhľadávanie",
+    "closeTitle": "Zavrieť",
+    "replace": "Nahradiť",
+    "replaceTitle": "Nahradiť aktuálny výskyt",
+    "replaceAll": "Všetky",
+    "replaceAllTitle": "Nahradiť všetky výskyty",
+    "caseTitle": "Rozlišovať veľkosť písmen",
+    "regexTitle": "Regulárny výraz",
+    "replaced": "{n} nahradených",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} znakov",
+    "selected": " · {n} vybratých"
+  },
+  "validation": {
+    "tagNoName": "Značka bez názvu – riadok {line}",
+    "tagInvalid": "Značka <{tag}> obsahuje neplatné znaky – riadok {line}",
+    "genericTag": "Upozornenie: <{tag}> je príliš všeobecný. Použi popisné názvy ako <ziadost_zakaznika> namiesto <data> (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Upozornenie: hĺbka vnorenia {depth} v <{tag}>. Viac ako 4 úrovne sťažujú pochopenie.{line}",
+    "exampleHint": "Poznámka: <example> by mal byť obalený v <examples> (XML){line}",
+    "emptyTag": "Poznámka: <{tag}> je prázdny{line}",
+    "lineSuffix": " · Riadok ~{line}"
+  },
+  "wiki": {
+    "de": "Nemčina",
+    "en": "Angličtina",
+    "fr": "Francúzština",
+    "es": "Španielčina",
+    "it": "Taliančina",
+    "pt": "Portugalčina",
+    "nl": "Holandčina",
+    "pl": "Poľština",
+    "ru": "Ruština",
+    "ja": "Japončina",
+    "zh": "Čínština",
+    "random": "Náhodné"
+  }
+}

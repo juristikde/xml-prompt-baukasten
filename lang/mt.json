@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "mt",
+    "name": "Malti",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Għarbi)",
+      "local": "Għarbi"
+    },
+    "bg": {
+      "native": "Български (Bulgaru)",
+      "local": "Bulgaru"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "Bożnijaku"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "Ċek"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "Daniż"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "Ġermaniż"
+    },
+    "el": {
+      "native": "Ελληνικά (Grieg)",
+      "local": "Grieg"
+    },
+    "en": {
+      "native": "English",
+      "local": "Ingliż"
+    },
+    "es": {
+      "native": "Español",
+      "local": "Spanjol"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "Estonjan"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "Finlandiż"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "Franċiż"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "Irlandiż"
+    },
+    "hi": {
+      "native": "हिन्दी (Hindi)",
+      "local": "Hindi"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "Kroat"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "Ungeriż"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "Taljan"
+    },
+    "ja": {
+      "native": "日本語 (Ġappuniż)",
+      "local": "Ġappuniż"
+    },
+    "ka": {
+      "native": "ქართული (Ġorġjan)",
+      "local": "Ġorġjan"
+    },
+    "ko": {
+      "native": "한국어 (Korean)",
+      "local": "Korean"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "Litwan"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "Latvjan"
+    },
+    "mk": {
+      "native": "Македонски (Maċedonjan)",
+      "local": "Maċedonjan"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "Moldovan"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "Malti"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "Olandiż"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "Pollakk"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "Portugiż"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "Rumen"
+    },
+    "ru": {
+      "native": "Русский (Russu)",
+      "local": "Russu"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "Slovakk"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "Sloven"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "Albaniż"
+    },
+    "sr": {
+      "native": "Српски (Serb)",
+      "local": "Serb"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "Svediż"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "Tork"
+    },
+    "uk": {
+      "native": "Українська (Ukren)",
+      "local": "Ukren"
+    },
+    "zh": {
+      "native": "中文 (Ċiniż)",
+      "local": "Ċiniż"
+    }
+  },
+  "app": {
+    "documentTitle": "Il-Bennej tal-Prompt – Editur XML Strutturat",
+    "title": "Il-Bennej tal-Prompt"
+  },
+  "toolbar": {
+    "example": "Eżempju",
+    "templatesOpen": "Iftaħ mudelli",
+    "protocol": "Reġistru",
+    "showXml": "Uri XML",
+    "hideXml": "Aħbi XML",
+    "reset": "Irrisettja",
+    "options": "Għażliet",
+    "language": "Lingwa",
+    "templatesLabel": "Mudelli",
+    "moreTemplates": "Aktar..."
+  },
+  "protocol": {
+    "title": "Reġistru",
+    "clear": "Naddaf",
+    "close": "Agħlaq ir-reġistru",
+    "validate": "Iċċekkja",
+    "empty": "Għad m'hemm l-ebda entrata. Agħfas „Iċċekkja“ biex tivvalida l-istruttura issa.",
+    "noErrors": "L-ebda żball.",
+    "xmlApplied": "L-XML ġie applikat b'suċċess.",
+    "gesamtApplied": "Il-konfigurazzjoni ġenerali ġiet applikata b'suċċess.",
+    "mixedContent": "Nota tal-importazzjoni: instab kontenut imħallat. {n} blokki ta' test ġew mgeżwra awtomatikament f'tikketti <Parent_text>.",
+    "containerMoved": "Nota: il-kontenut ta' <{parent}> ġie mċaqlaq għal <{leaf}>, peress li t-tikketti kontenitur m'għandhomx ikun fihom test dirett.",
+    "invalidXml": "XML mhux validu.",
+    "invalidXmlDetail": "XML mhux validu: {detail}",
+    "invalidXmlLine": "XML mhux validu – linja {line}",
+    "invalidXmlLineCol": "XML mhux validu – linja {line}, kolonna {col}",
+    "invalidXmlLineColDetail": "XML mhux validu – linja {line}, kolonna {col}: {detail}",
+    "invalidXmlLineDetail": "XML mhux validu – linja {line}: {detail}",
+    "noGesamt": "Ma nstabet l-ebda konfigurazzjoni ġenerali valida.",
+    "networkError": "Żball fin-network",
+    "noPage": "L-ebda paġna",
+    "textTooShort": "It-test qasir wisq",
+    "errorPrefix": "Żball: ",
+    "linePrefix": "Linja {line}: "
+  },
+  "language": {
+    "title": "Lingwa",
+    "close": "Agħlaq il-menu tal-lingwa",
+    "searchPlaceholder": "Fittex lingwa…",
+    "searchAria": "Fittex lingwa",
+    "empty": "L-ebda lingwa ma nstabet.",
+    "selected": "Magħżul"
+  },
+  "tabs": {
+    "namePlaceholder": "Isem it-tab",
+    "nameAria": "Isem it-tab",
+    "duplicate": "Iddupplika",
+    "duplicateTitle": "Iddupplika t-tab attwali",
+    "close": "Agħlaq it-tab",
+    "new": "Tab ġdid",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " Kopja",
+    "confirmResetLast": "Tirrisettja l-aħħar tab?",
+    "confirmReplaceTemplate": "Tibdel l-istruttura attwali bil-mudell?"
+  },
+  "outline": {
+    "empty": "Għad m'hemm l-ebda element. Oħloq element jew kumment hawn taħt.",
+    "addElement": "+ Element",
+    "addComment": "+ Kumment",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Sottopunt",
+    "delete": "Ħassar",
+    "copyResult": "Ikkopja r-riżultat",
+    "copied": "✓ Ikkopjat",
+    "copiedShort": "✓",
+    "confirmDelete": "Tassew tħassar?",
+    "confirmReset": "Tħassar kollox?",
+    "commentLabel": "Nota",
+    "noName": "(bla isem)",
+    "expand": "Iftaħ",
+    "collapse": "Agħlaq",
+    "openEditor": "Iftaħ fl-editur"
+  },
+  "detail": {
+    "empty": "Agħżel element fuq il-lemin jew oħloq wieħed ġdid hawn taħt.",
+    "level": "Livell {n}",
+    "commentHeading": "💬 Nota",
+    "tagPlaceholder": "isem-tikketta",
+    "tagAria": "Isem it-tikketta",
+    "textPlaceholder": "Test għal dan l-element…",
+    "commentPlaceholder": "Nota…",
+    "containerPlaceholder": "Din it-tikketta hija kontenitur.",
+    "textAria": "Test tal-element",
+    "commentAria": "Test tal-kumment",
+    "moveUp": "Mexxi 'l fuq",
+    "moveDown": "Mexxi 'l isfel",
+    "copy": "Ikkopja",
+    "copyTitle": "Ikkopja l-punt magħżul",
+    "paste": "Waħħal",
+    "pasteTitle": "Waħħal il-punt ikkopjat",
+    "find": "Fittex",
+    "findTitle": "Fittex u ibdel",
+    "options": "Għażliet",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Settings tal-Wiki ›",
+    "wikiLang": "Lingwa",
+    "wikiChars": "madwar karattri",
+    "wikiInsert": "Daħħal",
+    "wikiClose": "Agħlaq",
+    "wikiLoading": "Qed jitgħabba…",
+    "wikiAria": "Settings tal-Wiki",
+    "back": "Lura",
+    "closeEditor": "Agħlaq l-editur"
+  },
+  "source": {
+    "title": "Kodiċi XML",
+    "gesamtTitle": "Konfigurazzjoni ġenerali",
+    "options": "Għażliet",
+    "find": "Fittex",
+    "wrapOn": "Ikklampjar mixgħul",
+    "wrapOff": "Ikklampjar mitfi",
+    "wrapTitle": "Aqleb l-ikklampjar tal-linji",
+    "gesamt": "Ġenerali",
+    "tabXml": "XML tat-tab",
+    "gesamtConfig": "Konfigurazzjoni ġenerali",
+    "gesamtTitleBtn": "Uri l-konfigurazzjoni ġenerali tat-tabs kollha",
+    "tabXmlTitle": "Uri l-XML ta' tab wieħed",
+    "close": "Agħlaq l-XML",
+    "placeholder": "Waħħal prompt XML…",
+    "aria": "Kodiċi sors XML",
+    "apply": "Applika",
+    "copy": "Ikkopja"
+  },
+  "find": {
+    "placeholder": "Fittex…",
+    "replacePlaceholder": "Ibdel…",
+    "ariaFind": "Terminu tat-tfittxija",
+    "ariaReplace": "Test ta' sostituzzjoni",
+    "prev": "Riżultat preċedenti",
+    "next": "Riżultat li jmiss",
+    "prevTitle": "Preċedenti",
+    "nextTitle": "Li jmiss",
+    "close": "Agħlaq it-tfittxija",
+    "closeTitle": "Agħlaq",
+    "replace": "Ibdel",
+    "replaceTitle": "Ibdel ir-riżultat attwali",
+    "replaceAll": "Kollha",
+    "replaceAllTitle": "Ibdel ir-riżultati kollha",
+    "caseTitle": "Sensittiv għall-kejsis",
+    "regexTitle": "Espressjoni regolari",
+    "replaced": "{n} inbidlu",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} karattri",
+    "selected": " · {n} magħżula"
+  },
+  "validation": {
+    "tagNoName": "Tikketta bla isem – linja {line}",
+    "tagInvalid": "It-tikketta <{tag}> fiha karattri mhux validi – linja {line}",
+    "genericTag": "Twissija: <{tag}> hija ġenerika wisq. Uża ismijiet deskrittivi bħal <talba_tal_klijent> minflok <data> (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Twissija: fond ta' innestjar {depth} f'<{tag}>. Aktar minn 4 livelli jagħmluha aktar diffiċli biex tinftiehem.{line}",
+    "exampleHint": "Nota: <example> għandu jkun mgeżwer f'<examples> (XML){line}",
+    "emptyTag": "Nota: <{tag}> vojt{line}",
+    "lineSuffix": " · Linja ~{line}"
+  },
+  "wiki": {
+    "de": "Ġermaniż",
+    "en": "Ingliż",
+    "fr": "Franċiż",
+    "es": "Spanjol",
+    "it": "Taljan",
+    "pt": "Portugiż",
+    "nl": "Olandiż",
+    "pl": "Pollakk",
+    "ru": "Russu",
+    "ja": "Ġappuniż",
+    "zh": "Ċiniż",
+    "random": "Każwali"
+  }
+}

@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "sq",
+    "name": "Shqip",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Arabisht)",
+      "local": "arabisht"
+    },
+    "bg": {
+      "native": "Български (Bullgarisht)",
+      "local": "bullgarisht"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "boshnjakisht"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "çekisht"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "danisht"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "gjermanisht"
+    },
+    "el": {
+      "native": "Ελληνικά (Greqisht)",
+      "local": "greqisht"
+    },
+    "en": {
+      "native": "English",
+      "local": "anglisht"
+    },
+    "es": {
+      "native": "Español",
+      "local": "spanjisht"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "estonisht"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "finlandisht"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "frëngjisht"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "irlandisht"
+    },
+    "hi": {
+      "native": "हिन्दी (Hindisht)",
+      "local": "hindisht"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "kroatisht"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "hungarisht"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "italisht"
+    },
+    "ja": {
+      "native": "日本語 (Japonisht)",
+      "local": "japonisht"
+    },
+    "ka": {
+      "native": "ქართული (Gjeorgjisht)",
+      "local": "gjeorgjisht"
+    },
+    "ko": {
+      "native": "한국어 (Koreanisht)",
+      "local": "koreanisht"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "lituanisht"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "letonisht"
+    },
+    "mk": {
+      "native": "Македонски (Maqedonisht)",
+      "local": "maqedonisht"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "moldavisht"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "maltezisht"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "holandisht"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "polonisht"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "portugalisht"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "rumanisht"
+    },
+    "ru": {
+      "native": "Русский (Rusisht)",
+      "local": "rusisht"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "sllovakisht"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "sllovenisht"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "shqip"
+    },
+    "sr": {
+      "native": "Српски (Serbisht)",
+      "local": "serbisht"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "suedisht"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "turqisht"
+    },
+    "uk": {
+      "native": "Українська (Ukrainisht)",
+      "local": "ukrainisht"
+    },
+    "zh": {
+      "native": "中文 (Kinezisht)",
+      "local": "kinezisht"
+    }
+  },
+  "app": {
+    "documentTitle": "Ndërtues Promptesh – Redaktues XML i strukturuar",
+    "title": "Ndërtues Promptesh"
+  },
+  "toolbar": {
+    "example": "Shembull",
+    "templatesOpen": "Hap shabllonet",
+    "protocol": "Regjistri",
+    "showXml": "Shfaq XML",
+    "hideXml": "Fshih XML",
+    "reset": "Rivendos",
+    "options": "Opsione",
+    "language": "Gjuha",
+    "templatesLabel": "Shabllone",
+    "moreTemplates": "Më shumë..."
+  },
+  "protocol": {
+    "title": "Regjistri",
+    "clear": "Pastro",
+    "close": "Mbyll regjistrin",
+    "validate": "Kontrollo",
+    "empty": "Nuk ka ende hyrje. Shtyp «Kontrollo» për të validuar strukturën tani.",
+    "noErrors": "Nuk ka gabime.",
+    "xmlApplied": "XML u aplikua me sukses.",
+    "gesamtApplied": "Konfigurimi i përgjithshëm u aplikua me sukses.",
+    "mixedContent": "Shënim importi: u zbulua përmbajtje e përzier. {n} blloqe teksti u mbështollën automatikisht në etiketa &lt;Parent_text&gt;.",
+    "containerMoved": "Shënim: përmbajtja e &lt;{parent}&gt; u zhvendos te &lt;{leaf}&gt;, sepse etiketat kontejner nuk duhet të përmbajnë tekst të drejtpërdrejtë.",
+    "invalidXml": "XML i pavlefshëm.",
+    "invalidXmlDetail": "XML i pavlefshëm: {detail}",
+    "invalidXmlLine": "XML i pavlefshëm – rreshti {line}",
+    "invalidXmlLineCol": "XML i pavlefshëm – rreshti {line}, kolonë {col}",
+    "invalidXmlLineColDetail": "XML i pavlefshëm – rreshti {line}, kolonë {col}: {detail}",
+    "invalidXmlLineDetail": "XML i pavlefshëm – rreshti {line}: {detail}",
+    "noGesamt": "Nuk u gjet konfigurim i vlefshëm i përgjithshëm.",
+    "networkError": "Gabim rrjeti",
+    "noPage": "Nuk ka faqe",
+    "textTooShort": "Teksti është shumë i shkurtër",
+    "errorPrefix": "Gabim: ",
+    "linePrefix": "Rreshti {line}: "
+  },
+  "language": {
+    "title": "Gjuha",
+    "close": "Mbyll menunë e gjuhëve",
+    "searchPlaceholder": "Kërko gjuhë…",
+    "searchAria": "Kërko gjuhë",
+    "empty": "Nuk u gjet asnjë gjuhë.",
+    "selected": "E zgjedhur"
+  },
+  "tabs": {
+    "namePlaceholder": "Emri i skedës",
+    "nameAria": "Emri i skedës",
+    "duplicate": "Dubliko",
+    "duplicateTitle": "Dubliko skedën aktuale",
+    "close": "Mbyll skedën",
+    "new": "Skedë e re",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " Kopje",
+    "confirmResetLast": "Të rivendoset skeda e fundit?",
+    "confirmReplaceTemplate": "Të zëvendësohet struktura aktuale me shabllonin?"
+  },
+  "outline": {
+    "empty": "Nuk ka ende elemente. Krijo një element ose koment më poshtë.",
+    "addElement": "+ Element",
+    "addComment": "+ Koment",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Nënçështje",
+    "delete": "Fshi",
+    "copyResult": "Kopjo rezultatin",
+    "copied": "✓ U kopjua",
+    "copiedShort": "✓",
+    "confirmDelete": "Të fshihet vërtet?",
+    "confirmReset": "Të fshihet gjithçka?",
+    "commentLabel": "Shënim",
+    "noName": "(pa emër)",
+    "expand": "Zgjero",
+    "collapse": "Palos",
+    "openEditor": "Hap në redaktues"
+  },
+  "detail": {
+    "empty": "Zgjidh një element majtas ose krijo një të ri më poshtë.",
+    "level": "Niveli {n}",
+    "commentHeading": "💬 Shënim",
+    "tagPlaceholder": "emër-etikete",
+    "tagAria": "Emri i etiketës",
+    "textPlaceholder": "Tekst për këtë element…",
+    "commentPlaceholder": "Shënim…",
+    "containerPlaceholder": "Kjo etiketë është kontejner.",
+    "textAria": "Teksti i elementit",
+    "commentAria": "Teksti i komentit",
+    "moveUp": "Lëviz lart",
+    "moveDown": "Lëviz poshtë",
+    "copy": "Kopjo",
+    "copyTitle": "Kopjo elementin e zgjedhur",
+    "paste": "Ngjit",
+    "pasteTitle": "Ngjit elementin e kopjuar",
+    "find": "Kërko",
+    "findTitle": "Kërko dhe zëvendëso",
+    "options": "Opsione",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Cilësimet Wiki ›",
+    "wikiLang": "Gjuha",
+    "wikiChars": "rreth karaktere",
+    "wikiInsert": "Fut",
+    "wikiClose": "Mbyll",
+    "wikiLoading": "Po ngarkohet…",
+    "wikiAria": "Cilësimet Wiki",
+    "back": "Prapa",
+    "closeEditor": "Mbyll redaktuesin"
+  },
+  "source": {
+    "title": "Kodi XML",
+    "gesamtTitle": "Konfigurimi i përgjithshëm",
+    "options": "Opsione",
+    "find": "Kërko",
+    "wrapOn": "Mbështjellja ndezur",
+    "wrapOff": "Mbështjellja fikur",
+    "wrapTitle": "Ndërro mbështjelljen e rreshtit",
+    "gesamt": "I përgjithshëm",
+    "tabXml": "XML i skedës",
+    "gesamtConfig": "Konfigurimi i përgjithshëm",
+    "gesamtTitleBtn": "Shfaq konfigurimin e përgjithshëm të të gjitha skedave",
+    "tabXmlTitle": "Shfaq XML-in e një skede të vetme",
+    "close": "Mbyll XML",
+    "placeholder": "Ngjit një prompt XML…",
+    "aria": "Kodi burimor XML",
+    "apply": "Apliko",
+    "copy": "Kopjo"
+  },
+  "find": {
+    "placeholder": "Kërko…",
+    "replacePlaceholder": "Zëvendëso…",
+    "ariaFind": "Termi i kërkimit",
+    "ariaReplace": "Teksti i zëvendësimit",
+    "prev": "Përputhja e mëparshme",
+    "next": "Përputhja e radhës",
+    "prevTitle": "E mëparshme",
+    "nextTitle": "E radhës",
+    "close": "Mbyll kërkimin",
+    "closeTitle": "Mbyll",
+    "replace": "Zëvendëso",
+    "replaceTitle": "Zëvendëso përputhjen aktuale",
+    "replaceAll": "Të gjitha",
+    "replaceAllTitle": "Zëvendëso të gjitha përputhjet",
+    "caseTitle": "Respekto shkronjat e mëdha/vogla",
+    "regexTitle": "Shprehje e rregullt",
+    "replaced": "{n} u zëvendësuan",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} karaktere",
+    "selected": " · {n} të zgjedhura"
+  },
+  "validation": {
+    "tagNoName": "Etiketë pa emër – rreshti {line}",
+    "tagInvalid": "Etiketa &lt;{tag}&gt; përmban karaktere të pavlefshme – rreshti {line}",
+    "genericTag": "Paralajmërim: &lt;{tag}&gt; është shumë e përgjithshme. Përdor emra përshkrues si &lt;kerkese_klienti&gt; në vend të &lt;data&gt; (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Paralajmërim: thellësia e futjes {depth} në &lt;{tag}&gt;. Më shumë se 4 nivele e vështirësojnë kuptimin.{line}",
+    "exampleHint": "Shënim: &lt;example&gt; duhet të mbështillet në &lt;examples&gt; (XML){line}",
+    "emptyTag": "Shënim: &lt;{tag}&gt; është bosh{line}",
+    "lineSuffix": " · Rreshti ~{line}"
+  },
+  "wiki": {
+    "de": "Gjermanisht",
+    "en": "Anglisht",
+    "fr": "Frëngjisht",
+    "es": "Spanjisht",
+    "it": "Italisht",
+    "pt": "Portugalisht",
+    "nl": "Holandisht",
+    "pl": "Polonisht",
+    "ru": "Rusisht",
+    "ja": "Japonisht",
+    "zh": "Kinezisht",
+    "random": "Rastësisht"
+  }
+}

@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "hu",
+    "name": "Magyar",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Arab)",
+      "local": "arab"
+    },
+    "bg": {
+      "native": "Български (Bolgár)",
+      "local": "bolgár"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "bosnyák"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "cseh"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "dán"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "német"
+    },
+    "el": {
+      "native": "Ελληνικά (Görög)",
+      "local": "görög"
+    },
+    "en": {
+      "native": "English",
+      "local": "angol"
+    },
+    "es": {
+      "native": "Español",
+      "local": "spanyol"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "észt"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "finn"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "francia"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "ír"
+    },
+    "hi": {
+      "native": "हिन्दी (Hindi)",
+      "local": "hindi"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "horvát"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "magyar"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "olasz"
+    },
+    "ja": {
+      "native": "日本語 (Japán)",
+      "local": "japán"
+    },
+    "ka": {
+      "native": "ქართული (Grúz)",
+      "local": "grúz"
+    },
+    "ko": {
+      "native": "한국어 (Koreai)",
+      "local": "koreai"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "litván"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "lett"
+    },
+    "mk": {
+      "native": "Македонски (Macedón)",
+      "local": "macedón"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "moldáv"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "máltai"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "holland"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "lengyel"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "portugál"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "román"
+    },
+    "ru": {
+      "native": "Русский (Orosz)",
+      "local": "orosz"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "szlovák"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "szlovén"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "albán"
+    },
+    "sr": {
+      "native": "Српски (Szerb)",
+      "local": "szerb"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "svéd"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "török"
+    },
+    "uk": {
+      "native": "Українська (Ukrán)",
+      "local": "ukrán"
+    },
+    "zh": {
+      "native": "中文 (Kínai)",
+      "local": "kínai"
+    }
+  },
+  "app": {
+    "documentTitle": "Prompt Építő – Strukturált XML szerkesztő",
+    "title": "Prompt Építő"
+  },
+  "toolbar": {
+    "example": "Példa",
+    "templatesOpen": "Sablonok megnyitása",
+    "protocol": "Napló",
+    "showXml": "XML megjelenítése",
+    "hideXml": "XML elrejtése",
+    "reset": "Visszaállítás",
+    "options": "Beállítások",
+    "language": "Nyelv",
+    "templatesLabel": "Sablonok",
+    "moreTemplates": "Több..."
+  },
+  "protocol": {
+    "title": "Napló",
+    "clear": "Ürítés",
+    "close": "Napló bezárása",
+    "validate": "Ellenőrzés",
+    "empty": "Még nincsenek bejegyzések. Koppints az „Ellenőrzés” gombra a struktúra azonnali ellenőrzéséhez.",
+    "noErrors": "Nincs hiba.",
+    "xmlApplied": "Az XML sikeresen alkalmazva.",
+    "gesamtApplied": "Az összesített konfiguráció sikeresen alkalmazva.",
+    "mixedContent": "Importálási megjegyzés: vegyes tartalom található. {n} szövegblokk automatikusan <Parent_text> címkékbe lett csomagolva.",
+    "containerMoved": "Megjegyzés: a(z) <{parent}> tartalma áthelyezve ide: <{leaf}>, mivel a konténer címkék nem tartalmazhatnak közvetlen szöveget.",
+    "invalidXml": "Érvénytelen XML.",
+    "invalidXmlDetail": "Érvénytelen XML: {detail}",
+    "invalidXmlLine": "Érvénytelen XML – {line}. sor",
+    "invalidXmlLineCol": "Érvénytelen XML – {line}. sor, {col}. oszlop",
+    "invalidXmlLineColDetail": "Érvénytelen XML – {line}. sor, {col}. oszlop: {detail}",
+    "invalidXmlLineDetail": "Érvénytelen XML – {line}. sor: {detail}",
+    "noGesamt": "Nem található érvényes összesített konfiguráció.",
+    "networkError": "Hálózati hiba",
+    "noPage": "Nincs oldal",
+    "textTooShort": "A szöveg túl rövid",
+    "errorPrefix": "Hiba: ",
+    "linePrefix": "{line}. sor: "
+  },
+  "language": {
+    "title": "Nyelv",
+    "close": "Nyelvi menü bezárása",
+    "searchPlaceholder": "Nyelv keresése…",
+    "searchAria": "Nyelv keresése",
+    "empty": "Nem található nyelv.",
+    "selected": "Kiválasztva"
+  },
+  "tabs": {
+    "namePlaceholder": "Lap neve",
+    "nameAria": "Lap neve",
+    "duplicate": "Duplikálás",
+    "duplicateTitle": "Jelenlegi lap duplikálása",
+    "close": "Lap bezárása",
+    "new": "Új lap",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " Másolat",
+    "confirmResetLast": "Visszaállítod az utolsó lapot?",
+    "confirmReplaceTemplate": "Lecseréled a jelenlegi struktúrát a sablonra?"
+  },
+  "outline": {
+    "empty": "Még nincsenek elemek. Hozz létre alul egy elemet vagy megjegyzést.",
+    "addElement": "+ Elem",
+    "addComment": "+ Megjegyzés",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Alpont",
+    "delete": "Törlés",
+    "copyResult": "Eredmény másolása",
+    "copied": "✓ Másolva",
+    "copiedShort": "✓",
+    "confirmDelete": "Tényleg törlöd?",
+    "confirmReset": "Mindent törölsz?",
+    "commentLabel": "Megjegyzés",
+    "noName": "(névtelen)",
+    "expand": "Kibontás",
+    "collapse": "Összecsukás",
+    "openEditor": "Megnyitás a szerkesztőben"
+  },
+  "detail": {
+    "empty": "Válassz egy elemet balra, vagy hozz létre egy újat alul.",
+    "level": "{n}. szint",
+    "commentHeading": "💬 Megjegyzés",
+    "tagPlaceholder": "címke-neve",
+    "tagAria": "Címke neve",
+    "textPlaceholder": "Szöveg ehhez az elemhez…",
+    "commentPlaceholder": "Megjegyzés…",
+    "containerPlaceholder": "Ez a címke egy konténer.",
+    "textAria": "Elem szövege",
+    "commentAria": "Megjegyzés szövege",
+    "moveUp": "Mozgatás felfelé",
+    "moveDown": "Mozgatás lefelé",
+    "copy": "Másolás",
+    "copyTitle": "Kijelölt elem másolása",
+    "paste": "Beillesztés",
+    "pasteTitle": "Másolt elem beillesztése",
+    "find": "Keresés",
+    "findTitle": "Keresés és csere",
+    "options": "Beállítások",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Wiki-beállítások ›",
+    "wikiLang": "Nyelv",
+    "wikiChars": "kb. karakter",
+    "wikiInsert": "Beszúrás",
+    "wikiClose": "Bezárás",
+    "wikiLoading": "Betöltés…",
+    "wikiAria": "Wiki-beállítások",
+    "back": "Vissza",
+    "closeEditor": "Szerkesztő bezárása"
+  },
+  "source": {
+    "title": "XML kód",
+    "gesamtTitle": "Összesített konfiguráció",
+    "options": "Beállítások",
+    "find": "Keresés",
+    "wrapOn": "Sortördelés be",
+    "wrapOff": "Sortördelés ki",
+    "wrapTitle": "Sortördelés be- és kikapcsolása",
+    "gesamt": "Összesített",
+    "tabXml": "Lap XML-je",
+    "gesamtConfig": "Összesített konfiguráció",
+    "gesamtTitleBtn": "Az összes lap összesített konfigurációjának megjelenítése",
+    "tabXmlTitle": "Egyetlen lap XML-jének megjelenítése",
+    "close": "XML bezárása",
+    "placeholder": "XML prompt beillesztése…",
+    "aria": "XML forráskód",
+    "apply": "Alkalmaz",
+    "copy": "Másolás"
+  },
+  "find": {
+    "placeholder": "Keresés…",
+    "replacePlaceholder": "Csere…",
+    "ariaFind": "Keresett kifejezés",
+    "ariaReplace": "Csereszöveg",
+    "prev": "Előző találat",
+    "next": "Következő találat",
+    "prevTitle": "Előző",
+    "nextTitle": "Következő",
+    "close": "Keresés bezárása",
+    "closeTitle": "Bezárás",
+    "replace": "Csere",
+    "replaceTitle": "Aktuális találat cseréje",
+    "replaceAll": "Összes",
+    "replaceAllTitle": "Az összes találat cseréje",
+    "caseTitle": "Kis- és nagybetű megkülönböztetése",
+    "regexTitle": "Reguláris kifejezés",
+    "replaced": "{n} lecserélve",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} karakter",
+    "selected": " · {n} kijelölve"
+  },
+  "validation": {
+    "tagNoName": "Névtelen címke – {line}. sor",
+    "tagInvalid": "A(z) <{tag}> címke érvénytelen karaktereket tartalmaz – {line}. sor",
+    "genericTag": "Figyelmeztetés: a(z) <{tag}> túl általános. Használj leíró neveket, például <ugyfel_keres> a <data> helyett (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Figyelmeztetés: a beágyazási mélység {depth} a(z) <{tag}> címkében. A 4 szintnél mélyebb beágyazás megnehezíti a megértést.{line}",
+    "exampleHint": "Megjegyzés: a(z) <example>-nek <examples> címkébe kellene csomagolva lennie (XML){line}",
+    "emptyTag": "Megjegyzés: a(z) <{tag}> üres{line}",
+    "lineSuffix": " · {line}. sor körül"
+  },
+  "wiki": {
+    "de": "Német",
+    "en": "Angol",
+    "fr": "Francia",
+    "es": "Spanyol",
+    "it": "Olasz",
+    "pt": "Portugál",
+    "nl": "Holland",
+    "pl": "Lengyel",
+    "ru": "Orosz",
+    "ja": "Japán",
+    "zh": "Kínai",
+    "random": "Véletlenszerű"
+  }
+}

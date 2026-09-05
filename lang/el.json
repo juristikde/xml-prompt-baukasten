@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "el",
+    "name": "Ελληνικά",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (αραβικά)",
+      "local": "αραβικά"
+    },
+    "bg": {
+      "native": "Български (βουλγαρικά)",
+      "local": "βουλγαρικά"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "βοσνιακά"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "τσεχικά"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "δανικά"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "γερμανικά"
+    },
+    "el": {
+      "native": "Ελληνικά (ελληνικά)",
+      "local": "ελληνικά"
+    },
+    "en": {
+      "native": "English",
+      "local": "αγγλικά"
+    },
+    "es": {
+      "native": "Español",
+      "local": "ισπανικά"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "εσθονικά"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "φινλανδικά"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "γαλλικά"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "ιρλανδικά"
+    },
+    "hi": {
+      "native": "हिन्दी (χίντι)",
+      "local": "χίντι"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "κροατικά"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "ουγγρικά"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "ιταλικά"
+    },
+    "ja": {
+      "native": "日本語 (ιαπωνικά)",
+      "local": "ιαπωνικά"
+    },
+    "ka": {
+      "native": "ქართული (γεωργιανά)",
+      "local": "γεωργιανά"
+    },
+    "ko": {
+      "native": "한국어 (κορεατικά)",
+      "local": "κορεατικά"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "λιθουανικά"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "λετονικά"
+    },
+    "mk": {
+      "native": "Македонски (σλαβομακεδονικά)",
+      "local": "σλαβομακεδονικά"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "μολδαβικά"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "μαλτέζικα"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "ολλανδικά"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "πολωνικά"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "πορτογαλικά"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "ρουμανικά"
+    },
+    "ru": {
+      "native": "Русский (ρωσικά)",
+      "local": "ρωσικά"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "σλοβακικά"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "σλοβενικά"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "αλβανικά"
+    },
+    "sr": {
+      "native": "Српски (σερβικά)",
+      "local": "σερβικά"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "σουηδικά"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "τουρκικά"
+    },
+    "uk": {
+      "native": "Українська (ουκρανικά)",
+      "local": "ουκρανικά"
+    },
+    "zh": {
+      "native": "中文 (κινεζικά)",
+      "local": "κινεζικά"
+    }
+  },
+  "app": {
+    "documentTitle": "Κατασκευαστής Prompt – Δομημένος επεξεργαστής XML",
+    "title": "Κατασκευαστής Prompt"
+  },
+  "toolbar": {
+    "example": "Παράδειγμα",
+    "templatesOpen": "Άνοιγμα προτύπων",
+    "protocol": "Αρχείο καταγραφής",
+    "showXml": "Εμφάνιση XML",
+    "hideXml": "Απόκρυψη XML",
+    "reset": "Επαναφορά",
+    "options": "Επιλογές",
+    "language": "Γλώσσα",
+    "templatesLabel": "Πρότυπα",
+    "moreTemplates": "Περισσότερα..."
+  },
+  "protocol": {
+    "title": "Αρχείο καταγραφής",
+    "clear": "Εκκαθάριση",
+    "close": "Κλείσιμο αρχείου καταγραφής",
+    "validate": "Έλεγχος",
+    "empty": "Δεν υπάρχουν ακόμη καταχωρίσεις. Πατήστε «Έλεγχος» για να ελέγξετε τη δομή τώρα.",
+    "noErrors": "Χωρίς σφάλματα.",
+    "xmlApplied": "Το XML εφαρμόστηκε με επιτυχία.",
+    "gesamtApplied": "Η συνολική διαμόρφωση εφαρμόστηκε με επιτυχία.",
+    "mixedContent": "Σημείωση εισαγωγής: εντοπίστηκε μεικτό περιεχόμενο. {n} μπλοκ κειμένου τυλίχθηκαν αυτόματα σε ετικέτες <Parent_text>.",
+    "containerMoved": "Σημείωση: το περιεχόμενο του <{parent}> μετακινήθηκε στο <{leaf}>, καθώς οι ετικέτες-περιέκτες δεν θα πρέπει να περιέχουν απευθείας κείμενο.",
+    "invalidXml": "Μη έγκυρο XML.",
+    "invalidXmlDetail": "Μη έγκυρο XML: {detail}",
+    "invalidXmlLine": "Μη έγκυρο XML – γραμμή {line}",
+    "invalidXmlLineCol": "Μη έγκυρο XML – γραμμή {line}, στήλη {col}",
+    "invalidXmlLineColDetail": "Μη έγκυρο XML – γραμμή {line}, στήλη {col}: {detail}",
+    "invalidXmlLineDetail": "Μη έγκυρο XML – γραμμή {line}: {detail}",
+    "noGesamt": "Δεν βρέθηκε έγκυρη συνολική διαμόρφωση.",
+    "networkError": "Σφάλμα δικτύου",
+    "noPage": "Καμία σελίδα",
+    "textTooShort": "Το κείμενο είναι πολύ σύντομο",
+    "errorPrefix": "Σφάλμα: ",
+    "linePrefix": "Γραμμή {line}: "
+  },
+  "language": {
+    "title": "Γλώσσα",
+    "close": "Κλείσιμο μενού γλώσσας",
+    "searchPlaceholder": "Αναζήτηση γλώσσας…",
+    "searchAria": "Αναζήτηση γλώσσας",
+    "empty": "Δεν βρέθηκε γλώσσα.",
+    "selected": "Επιλεγμένο"
+  },
+  "tabs": {
+    "namePlaceholder": "Όνομα καρτέλας",
+    "nameAria": "Όνομα καρτέλας",
+    "duplicate": "Αντιγραφή",
+    "duplicateTitle": "Αντιγραφή τρέχουσας καρτέλας",
+    "close": "Κλείσιμο καρτέλας",
+    "new": "Νέα καρτέλα",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " Αντίγραφο",
+    "confirmResetLast": "Επαναφορά της τελευταίας καρτέλας;",
+    "confirmReplaceTemplate": "Αντικατάσταση της τρέχουσας δομής με το πρότυπο;"
+  },
+  "outline": {
+    "empty": "Δεν υπάρχουν ακόμη στοιχεία. Δημιουργήστε παρακάτω ένα στοιχείο ή σχόλιο.",
+    "addElement": "+ Στοιχείο",
+    "addComment": "+ Σχόλιο",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Υποσημείο",
+    "delete": "Διαγραφή",
+    "copyResult": "Αντιγραφή αποτελέσματος",
+    "copied": "✓ Αντιγράφηκε",
+    "copiedShort": "✓",
+    "confirmDelete": "Διαγραφή σίγουρα;",
+    "confirmReset": "Διαγραφή όλων;",
+    "commentLabel": "Σημείωση",
+    "noName": "(χωρίς όνομα)",
+    "expand": "Ανάπτυξη",
+    "collapse": "Σύμπτυξη",
+    "openEditor": "Άνοιγμα στον επεξεργαστή"
+  },
+  "detail": {
+    "empty": "Επιλέξτε ένα στοιχείο αριστερά ή δημιουργήστε ένα νέο παρακάτω.",
+    "level": "Επίπεδο {n}",
+    "commentHeading": "💬 Σημείωση",
+    "tagPlaceholder": "όνομα-ετικέτας",
+    "tagAria": "Όνομα ετικέτας",
+    "textPlaceholder": "Κείμενο για αυτό το στοιχείο…",
+    "commentPlaceholder": "Σημείωση…",
+    "containerPlaceholder": "Αυτή η ετικέτα είναι περιέκτης.",
+    "textAria": "Κείμενο στοιχείου",
+    "commentAria": "Κείμενο σχολίου",
+    "moveUp": "Μετακίνηση επάνω",
+    "moveDown": "Μετακίνηση κάτω",
+    "copy": "Αντιγραφή",
+    "copyTitle": "Αντιγραφή επιλεγμένου στοιχείου",
+    "paste": "Επικόλληση",
+    "pasteTitle": "Επικόλληση αντιγραμμένου στοιχείου",
+    "find": "Αναζήτηση",
+    "findTitle": "Εύρεση και αντικατάσταση",
+    "options": "Επιλογές",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Ρυθμίσεις Wiki ›",
+    "wikiLang": "Γλώσσα",
+    "wikiChars": "περ. χαρακτήρες",
+    "wikiInsert": "Εισαγωγή",
+    "wikiClose": "Κλείσιμο",
+    "wikiLoading": "Φόρτωση…",
+    "wikiAria": "Ρυθμίσεις Wiki",
+    "back": "Πίσω",
+    "closeEditor": "Κλείσιμο επεξεργαστή"
+  },
+  "source": {
+    "title": "Κώδικας XML",
+    "gesamtTitle": "Συνολική διαμόρφωση",
+    "options": "Επιλογές",
+    "find": "Αναζήτηση",
+    "wrapOn": "Αναδίπλωση ενεργή",
+    "wrapOff": "Αναδίπλωση ανενεργή",
+    "wrapTitle": "Εναλλαγή αναδίπλωσης γραμμής",
+    "gesamt": "Συνολικό",
+    "tabXml": "XML καρτέλας",
+    "gesamtConfig": "Συνολική διαμόρφωση",
+    "gesamtTitleBtn": "Εμφάνιση συνολικής διαμόρφωσης όλων των καρτελών",
+    "tabXmlTitle": "Εμφάνιση XML μεμονωμένης καρτέλας",
+    "close": "Κλείσιμο XML",
+    "placeholder": "Επικολλήστε XML prompt…",
+    "aria": "Πηγαίος κώδικας XML",
+    "apply": "Εφαρμογή",
+    "copy": "Αντιγραφή"
+  },
+  "find": {
+    "placeholder": "Αναζήτηση…",
+    "replacePlaceholder": "Αντικατάσταση…",
+    "ariaFind": "Όρος αναζήτησης",
+    "ariaReplace": "Κείμενο αντικατάστασης",
+    "prev": "Προηγούμενη εμφάνιση",
+    "next": "Επόμενη εμφάνιση",
+    "prevTitle": "Προηγούμενο",
+    "nextTitle": "Επόμενο",
+    "close": "Κλείσιμο αναζήτησης",
+    "closeTitle": "Κλείσιμο",
+    "replace": "Αντικατάσταση",
+    "replaceTitle": "Αντικατάσταση τρέχουσας εμφάνισης",
+    "replaceAll": "Όλα",
+    "replaceAllTitle": "Αντικατάσταση όλων των εμφανίσεων",
+    "caseTitle": "Διάκριση πεζών/κεφαλαίων",
+    "regexTitle": "Κανονική έκφραση",
+    "replaced": "{n} αντικαταστάθηκαν",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} χαρακτήρες",
+    "selected": " · {n} επιλεγμένα"
+  },
+  "validation": {
+    "tagNoName": "Ετικέτα χωρίς όνομα – γραμμή {line}",
+    "tagInvalid": "Η ετικέτα <{tag}> περιέχει μη έγκυρους χαρακτήρες – γραμμή {line}",
+    "genericTag": "Προειδοποίηση: το <{tag}> είναι πολύ γενικό. Χρησιμοποιήστε περιγραφικά ονόματα όπως <αίτημα_πελάτη> αντί για <data> (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Προειδοποίηση: βάθος ένθεσης {depth} στο <{tag}>. Πάνω από 4 επίπεδα δυσχεραίνουν την κατανόηση.{line}",
+    "exampleHint": "Σημείωση: το <example> θα πρέπει να είναι τυλιγμένο σε <examples> (XML){line}",
+    "emptyTag": "Σημείωση: το <{tag}> είναι κενό{line}",
+    "lineSuffix": " · Γραμμή ~{line}"
+  },
+  "wiki": {
+    "de": "Γερμανικά",
+    "en": "Αγγλικά",
+    "fr": "Γαλλικά",
+    "es": "Ισπανικά",
+    "it": "Ιταλικά",
+    "pt": "Πορτογαλικά",
+    "nl": "Ολλανδικά",
+    "pl": "Πολωνικά",
+    "ru": "Ρωσικά",
+    "ja": "Ιαπωνικά",
+    "zh": "Κινεζικά",
+    "random": "Τυχαίο"
+  }
+}

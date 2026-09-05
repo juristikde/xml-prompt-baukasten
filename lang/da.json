@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "da",
+    "name": "Dansk",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Arabisk)",
+      "local": "arabisk"
+    },
+    "bg": {
+      "native": "Български (Bulgarsk)",
+      "local": "bulgarsk"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "bosnisk"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "tjekkisk"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "dansk"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "tysk"
+    },
+    "el": {
+      "native": "Ελληνικά (Græsk)",
+      "local": "græsk"
+    },
+    "en": {
+      "native": "English",
+      "local": "engelsk"
+    },
+    "es": {
+      "native": "Español",
+      "local": "spansk"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "estisk"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "finsk"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "fransk"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "irsk"
+    },
+    "hi": {
+      "native": "हिन्दी (Hindi)",
+      "local": "hindi"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "kroatisk"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "ungarsk"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "italiensk"
+    },
+    "ja": {
+      "native": "日本語 (Japansk)",
+      "local": "japansk"
+    },
+    "ka": {
+      "native": "ქართული (Georgisk)",
+      "local": "georgisk"
+    },
+    "ko": {
+      "native": "한국어 (Koreansk)",
+      "local": "koreansk"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "litauisk"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "lettisk"
+    },
+    "mk": {
+      "native": "Македонски (Makedonsk)",
+      "local": "makedonsk"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "moldovisk"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "maltesisk"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "nederlandsk"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "polsk"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "portugisisk"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "rumænsk"
+    },
+    "ru": {
+      "native": "Русский (Russisk)",
+      "local": "russisk"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "slovakisk"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "slovensk"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "albansk"
+    },
+    "sr": {
+      "native": "Српски (Serbisk)",
+      "local": "serbisk"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "svensk"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "tyrkisk"
+    },
+    "uk": {
+      "native": "Українська (Ukrainsk)",
+      "local": "ukrainsk"
+    },
+    "zh": {
+      "native": "中文 (Kinesisk)",
+      "local": "kinesisk"
+    }
+  },
+  "app": {
+    "documentTitle": "Prompt Byggesæt – Struktureret XML-editor",
+    "title": "Prompt Byggesæt"
+  },
+  "toolbar": {
+    "example": "Eksempel",
+    "templatesOpen": "Åbn skabeloner",
+    "protocol": "Log",
+    "showXml": "Vis XML",
+    "hideXml": "Skjul XML",
+    "reset": "Nulstil",
+    "options": "Indstillinger",
+    "language": "Sprog",
+    "templatesLabel": "Skabeloner",
+    "moreTemplates": "Flere..."
+  },
+  "protocol": {
+    "title": "Log",
+    "clear": "Ryd",
+    "close": "Luk log",
+    "validate": "Kontrollér",
+    "empty": "Ingen poster endnu. Tryk på „Kontrollér“ for at validere strukturen nu.",
+    "noErrors": "Ingen fejl.",
+    "xmlApplied": "XML anvendt.",
+    "gesamtApplied": "Samlet konfiguration anvendt.",
+    "mixedContent": "Importbemærkning: blandet indhold fundet. {n} tekstblokke blev automatisk pakket ind i <Parent_text>-tags.",
+    "containerMoved": "Bemærk: indholdet af <{parent}> blev flyttet til <{leaf}>, da container-tags ikke bør indeholde direkte tekst.",
+    "invalidXml": "Ugyldig XML.",
+    "invalidXmlDetail": "Ugyldig XML: {detail}",
+    "invalidXmlLine": "Ugyldig XML – linje {line}",
+    "invalidXmlLineCol": "Ugyldig XML – linje {line}, kolonne {col}",
+    "invalidXmlLineColDetail": "Ugyldig XML – linje {line}, kolonne {col}: {detail}",
+    "invalidXmlLineDetail": "Ugyldig XML – linje {line}: {detail}",
+    "noGesamt": "Ingen gyldig samlet konfiguration fundet.",
+    "networkError": "Netværksfejl",
+    "noPage": "Ingen side",
+    "textTooShort": "Tekst for kort",
+    "errorPrefix": "Fejl: ",
+    "linePrefix": "Linje {line}: "
+  },
+  "language": {
+    "title": "Sprog",
+    "close": "Luk sprogmenu",
+    "searchPlaceholder": "Søg sprog…",
+    "searchAria": "Søg sprog",
+    "empty": "Intet sprog fundet.",
+    "selected": "Valgt"
+  },
+  "tabs": {
+    "namePlaceholder": "Fanenavn",
+    "nameAria": "Fanenavn",
+    "duplicate": "Dupliker",
+    "duplicateTitle": "Dupliker aktuel fane",
+    "close": "Luk fane",
+    "new": "Ny fane",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " Kopi",
+    "confirmResetLast": "Nulstil sidste fane?",
+    "confirmReplaceTemplate": "Erstat den aktuelle struktur med skabelonen?"
+  },
+  "outline": {
+    "empty": "Ingen elementer endnu. Opret et element eller en kommentar nedenfor.",
+    "addElement": "+ Element",
+    "addComment": "+ Kommentar",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Underpunkt",
+    "delete": "Slet",
+    "copyResult": "Kopiér resultat",
+    "copied": "✓ Kopieret",
+    "copiedShort": "✓",
+    "confirmDelete": "Slet virkelig?",
+    "confirmReset": "Ryd alt?",
+    "commentLabel": "Note",
+    "noName": "(uden navn)",
+    "expand": "Fold ud",
+    "collapse": "Fold sammen",
+    "openEditor": "Åbn i editor"
+  },
+  "detail": {
+    "empty": "Vælg et element til venstre, eller opret et nyt nedenfor.",
+    "level": "Niveau {n}",
+    "commentHeading": "💬 Note",
+    "tagPlaceholder": "tag-navn",
+    "tagAria": "Tag-navn",
+    "textPlaceholder": "Tekst til dette element…",
+    "commentPlaceholder": "Note…",
+    "containerPlaceholder": "Dette tag er en container.",
+    "textAria": "Elementtekst",
+    "commentAria": "Kommentartekst",
+    "moveUp": "Flyt op",
+    "moveDown": "Flyt ned",
+    "copy": "Kopiér",
+    "copyTitle": "Kopiér valgt punkt",
+    "paste": "Indsæt",
+    "pasteTitle": "Indsæt kopieret punkt",
+    "find": "Søg",
+    "findTitle": "Søg og erstat",
+    "options": "Indstillinger",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Wiki-indstillinger ›",
+    "wikiLang": "Sprog",
+    "wikiChars": "ca. tegn",
+    "wikiInsert": "Indsæt",
+    "wikiClose": "Luk",
+    "wikiLoading": "Indlæser…",
+    "wikiAria": "Wiki-indstillinger",
+    "back": "Tilbage",
+    "closeEditor": "Luk editor"
+  },
+  "source": {
+    "title": "XML-kode",
+    "gesamtTitle": "Samlet konfiguration",
+    "options": "Indstillinger",
+    "find": "Søg",
+    "wrapOn": "Ombrydning til",
+    "wrapOff": "Ombrydning fra",
+    "wrapTitle": "Skift linjeombrydning",
+    "gesamt": "Samlet",
+    "tabXml": "Fane-XML",
+    "gesamtConfig": "Samlet konfiguration",
+    "gesamtTitleBtn": "Vis samlet konfiguration for alle faner",
+    "tabXmlTitle": "Vis XML for en enkelt fane",
+    "close": "Luk XML",
+    "placeholder": "Indsæt XML-prompt…",
+    "aria": "XML-kildekode",
+    "apply": "Anvend",
+    "copy": "Kopiér"
+  },
+  "find": {
+    "placeholder": "Søg…",
+    "replacePlaceholder": "Erstat…",
+    "ariaFind": "Søgeord",
+    "ariaReplace": "Erstatningstekst",
+    "prev": "Forrige forekomst",
+    "next": "Næste forekomst",
+    "prevTitle": "Forrige",
+    "nextTitle": "Næste",
+    "close": "Luk søgning",
+    "closeTitle": "Luk",
+    "replace": "Erstat",
+    "replaceTitle": "Erstat aktuel forekomst",
+    "replaceAll": "Alle",
+    "replaceAllTitle": "Erstat alle forekomster",
+    "caseTitle": "Forskel på store/små bogstaver",
+    "regexTitle": "Regulært udtryk",
+    "replaced": "{n} erstattet",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} tegn",
+    "selected": " · {n} valgt"
+  },
+  "validation": {
+    "tagNoName": "Tag uden navn – linje {line}",
+    "tagInvalid": "Tagget <{tag}> indeholder ugyldige tegn – linje {line}",
+    "genericTag": "Advarsel: <{tag}> er for generisk. Brug beskrivende navne som <kundeforespoergsel> i stedet for <data> (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Advarsel: indlejringsdybde {depth} i <{tag}>. Mere end 4 niveauer gør det sværere at forstå.{line}",
+    "exampleHint": "Bemærk: <example> bør pakkes ind i <examples> (XML){line}",
+    "emptyTag": "Bemærk: <{tag}> er tom{line}",
+    "lineSuffix": " · Linje ~{line}"
+  },
+  "wiki": {
+    "de": "Tysk",
+    "en": "Engelsk",
+    "fr": "Fransk",
+    "es": "Spansk",
+    "it": "Italiensk",
+    "pt": "Portugisisk",
+    "nl": "Nederlandsk",
+    "pl": "Polsk",
+    "ru": "Russisk",
+    "ja": "Japansk",
+    "zh": "Kinesisk",
+    "random": "Tilfældig"
+  }
+}

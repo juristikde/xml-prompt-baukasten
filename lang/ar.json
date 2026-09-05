@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "ar",
+    "name": "العربية",
+    "dir": "rtl"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (العربية)",
+      "local": "العربية"
+    },
+    "bg": {
+      "native": "Български (البلغارية)",
+      "local": "البلغارية"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "البوسنية"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "التشيكية"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "الدنماركية"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "الألمانية"
+    },
+    "el": {
+      "native": "Ελληνικά (اليونانية)",
+      "local": "اليونانية"
+    },
+    "en": {
+      "native": "English",
+      "local": "الإنجليزية"
+    },
+    "es": {
+      "native": "Español",
+      "local": "الإسبانية"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "الإستونية"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "الفنلندية"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "الفرنسية"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "الأيرلندية"
+    },
+    "hi": {
+      "native": "हिन्दी (الهندية)",
+      "local": "الهندية"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "الكرواتية"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "الهنغارية"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "الإيطالية"
+    },
+    "ja": {
+      "native": "日本語 (اليابانية)",
+      "local": "اليابانية"
+    },
+    "ka": {
+      "native": "ქართული (الجورجية)",
+      "local": "الجورجية"
+    },
+    "ko": {
+      "native": "한국어 (الكورية)",
+      "local": "الكورية"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "الليتوانية"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "اللاتفية"
+    },
+    "mk": {
+      "native": "Македонски (المقدونية)",
+      "local": "المقدونية"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "المولدافية"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "المالطية"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "الهولندية"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "البولندية"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "البرتغالية"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "الرومانية"
+    },
+    "ru": {
+      "native": "Русский (الروسية)",
+      "local": "الروسية"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "السلوفاكية"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "السلوفينية"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "الألبانية"
+    },
+    "sr": {
+      "native": "Српски (الصربية)",
+      "local": "الصربية"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "السويدية"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "التركية"
+    },
+    "uk": {
+      "native": "Українська (الأوكرانية)",
+      "local": "الأوكرانية"
+    },
+    "zh": {
+      "native": "中文 (الصينية)",
+      "local": "الصينية"
+    }
+  },
+  "app": {
+    "documentTitle": "منشئ المطالبات – محرر XML منظم",
+    "title": "منشئ المطالبات"
+  },
+  "toolbar": {
+    "example": "مثال",
+    "templatesOpen": "فتح القوالب",
+    "protocol": "السجل",
+    "showXml": "إظهار XML",
+    "hideXml": "إخفاء XML",
+    "reset": "إعادة تعيين",
+    "options": "خيارات",
+    "language": "اللغة",
+    "templatesLabel": "القوالب",
+    "moreTemplates": "المزيد..."
+  },
+  "protocol": {
+    "title": "السجل",
+    "clear": "مسح",
+    "close": "إغلاق السجل",
+    "validate": "تحقق",
+    "empty": "لا توجد إدخالات بعد. اضغط «تحقق» للتحقق من البنية الآن.",
+    "noErrors": "لا أخطاء.",
+    "xmlApplied": "تم تطبيق XML بنجاح.",
+    "gesamtApplied": "تم تطبيق الإعداد العام بنجاح.",
+    "mixedContent": "ملاحظة الاستيراد: تم اكتشاف محتوى مختلط. تم لف {n} كتل نصية تلقائيًا في وسوم &lt;Parent_text&gt;.",
+    "containerMoved": "ملاحظة: تم نقل محتوى &lt;{parent}&gt; إلى &lt;{leaf}&gt;، لأن وسوم الحاوية يجب ألا تحتوي نصًا مباشرًا.",
+    "invalidXml": "XML غير صالح.",
+    "invalidXmlDetail": "XML غير صالح: {detail}",
+    "invalidXmlLine": "XML غير صالح – السطر {line}",
+    "invalidXmlLineCol": "XML غير صالح – السطر {line}، العمود {col}",
+    "invalidXmlLineColDetail": "XML غير صالح – السطر {line}، العمود {col}: {detail}",
+    "invalidXmlLineDetail": "XML غير صالح – السطر {line}: {detail}",
+    "noGesamt": "لم يتم العثور على إعداد عام صالح.",
+    "networkError": "خطأ في الشبكة",
+    "noPage": "لا توجد صفحة",
+    "textTooShort": "النص قصير جدًا",
+    "errorPrefix": "خطأ: ",
+    "linePrefix": "السطر {line}: "
+  },
+  "language": {
+    "title": "اللغة",
+    "close": "إغلاق قائمة اللغات",
+    "searchPlaceholder": "البحث عن لغة…",
+    "searchAria": "البحث عن لغة",
+    "empty": "لم يتم العثور على لغة.",
+    "selected": "محددة"
+  },
+  "tabs": {
+    "namePlaceholder": "اسم التبويب",
+    "nameAria": "اسم التبويب",
+    "duplicate": "تكرار",
+    "duplicateTitle": "تكرار التبويب الحالي",
+    "close": "إغلاق التبويب",
+    "new": "تبويب جديد",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " نسخة",
+    "confirmResetLast": "إعادة تعيين آخر تبويب؟",
+    "confirmReplaceTemplate": "استبدال البنية الحالية بالقالب؟"
+  },
+  "outline": {
+    "empty": "لا توجد عناصر بعد. أنشئ عنصرًا أو تعليقًا أدناه.",
+    "addElement": "+ عنصر",
+    "addComment": "+ تعليق",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ عنصر فرعي",
+    "delete": "حذف",
+    "copyResult": "نسخ النتيجة",
+    "copied": "✓ تم النسخ",
+    "copiedShort": "✓",
+    "confirmDelete": "هل تريد الحذف حقًا؟",
+    "confirmReset": "حذف الكل؟",
+    "commentLabel": "ملاحظة",
+    "noName": "(بدون اسم)",
+    "expand": "توسيع",
+    "collapse": "طي",
+    "openEditor": "فتح في المحرر"
+  },
+  "detail": {
+    "empty": "اختر عنصرًا على اليسار أو أنشئ عنصرًا جديدًا أدناه.",
+    "level": "المستوى {n}",
+    "commentHeading": "💬 ملاحظة",
+    "tagPlaceholder": "اسم-الوسم",
+    "tagAria": "اسم الوسم",
+    "textPlaceholder": "نص هذا العنصر…",
+    "commentPlaceholder": "ملاحظة…",
+    "containerPlaceholder": "هذا الوسم حاوية.",
+    "textAria": "نص العنصر",
+    "commentAria": "نص التعليق",
+    "moveUp": "تحريك لأعلى",
+    "moveDown": "تحريك لأسفل",
+    "copy": "نسخ",
+    "copyTitle": "نسخ العنصر المحدد",
+    "paste": "لصق",
+    "pasteTitle": "لصق العنصر المنسوخ",
+    "find": "بحث",
+    "findTitle": "بحث واستبدال",
+    "options": "خيارات",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "إعدادات Wiki ›",
+    "wikiLang": "اللغة",
+    "wikiChars": "حوالي أحرف",
+    "wikiInsert": "إدراج",
+    "wikiClose": "إغلاق",
+    "wikiLoading": "جاري التحميل…",
+    "wikiAria": "إعدادات Wiki",
+    "back": "رجوع",
+    "closeEditor": "إغلاق المحرر"
+  },
+  "source": {
+    "title": "رمز XML",
+    "gesamtTitle": "الإعداد العام",
+    "options": "خيارات",
+    "find": "بحث",
+    "wrapOn": "التفاف مفعّل",
+    "wrapOff": "التفاف معطّل",
+    "wrapTitle": "تبديل التفاف السطر",
+    "gesamt": "عام",
+    "tabXml": "XML التبويب",
+    "gesamtConfig": "الإعداد العام",
+    "gesamtTitleBtn": "عرض الإعداد العام لجميع التبويبات",
+    "tabXmlTitle": "عرض XML لتبويب واحد",
+    "close": "إغلاق XML",
+    "placeholder": "الصق مطالبة XML…",
+    "aria": "الشيفرة المصدرية لـ XML",
+    "apply": "تطبيق",
+    "copy": "نسخ"
+  },
+  "find": {
+    "placeholder": "بحث…",
+    "replacePlaceholder": "استبدال…",
+    "ariaFind": "مصطلح البحث",
+    "ariaReplace": "نص الاستبدال",
+    "prev": "التطابق السابق",
+    "next": "التطابق التالي",
+    "prevTitle": "السابق",
+    "nextTitle": "التالي",
+    "close": "إغلاق البحث",
+    "closeTitle": "إغلاق",
+    "replace": "استبدال",
+    "replaceTitle": "استبدال التطابق الحالي",
+    "replaceAll": "الكل",
+    "replaceAllTitle": "استبدال كل التطابقات",
+    "caseTitle": "مراعاة حالة الأحرف",
+    "regexTitle": "تعبير نمطي",
+    "replaced": "تم استبدال {n}",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} حرفًا",
+    "selected": " · {n} محدد"
+  },
+  "validation": {
+    "tagNoName": "وسم بدون اسم – السطر {line}",
+    "tagInvalid": "الوسم &lt;{tag}&gt; يحتوي أحرفًا غير صالحة – السطر {line}",
+    "genericTag": "تحذير: &lt;{tag}&gt; عام جدًا. استخدم أسماء وصفية مثل &lt;talab_al3ameel&gt; بدلًا من &lt;data&gt; (XML: Use consistent, descriptive tag names){line}",
+    "depth": "تحذير: عمق التداخل {depth} في &lt;{tag}&gt;. أكثر من 4 مستويات يصعّب الفهم.{line}",
+    "exampleHint": "ملاحظة: يجب لف &lt;example&gt; داخل &lt;examples&gt; (XML){line}",
+    "emptyTag": "ملاحظة: &lt;{tag}&gt; فارغ{line}",
+    "lineSuffix": " · السطر ~{line}"
+  },
+  "wiki": {
+    "de": "الألمانية",
+    "en": "الإنجليزية",
+    "fr": "الفرنسية",
+    "es": "الإسبانية",
+    "it": "الإيطالية",
+    "pt": "البرتغالية",
+    "nl": "الهولندية",
+    "pl": "البولندية",
+    "ru": "الروسية",
+    "ja": "اليابانية",
+    "zh": "الصينية",
+    "random": "عشوائي"
+  }
+}

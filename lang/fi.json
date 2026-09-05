@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "fi",
+    "name": "Suomi",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Arabia)",
+      "local": "arabia"
+    },
+    "bg": {
+      "native": "Български (Bulgaria)",
+      "local": "bulgaria"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "bosnia"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "tšekki"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "tanska"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "saksa"
+    },
+    "el": {
+      "native": "Ελληνικά (Kreikka)",
+      "local": "kreikka"
+    },
+    "en": {
+      "native": "English",
+      "local": "englanti"
+    },
+    "es": {
+      "native": "Español",
+      "local": "espanja"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "viro"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "suomi"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "ranska"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "iiri"
+    },
+    "hi": {
+      "native": "हिन्दी (Hindi)",
+      "local": "hindi"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "kroatia"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "unkari"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "italia"
+    },
+    "ja": {
+      "native": "日本語 (Japani)",
+      "local": "japani"
+    },
+    "ka": {
+      "native": "ქართული (Georgia)",
+      "local": "georgia"
+    },
+    "ko": {
+      "native": "한국어 (Korea)",
+      "local": "korea"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "liettua"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "latvia"
+    },
+    "mk": {
+      "native": "Македонски (Makedonia)",
+      "local": "makedonia"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "moldova"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "malta"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "hollanti"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "puola"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "portugali"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "romania"
+    },
+    "ru": {
+      "native": "Русский (Venäjä)",
+      "local": "venäjä"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "slovakia"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "slovenia"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "albania"
+    },
+    "sr": {
+      "native": "Српски (Serbia)",
+      "local": "serbia"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "ruotsi"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "Turkki"
+    },
+    "uk": {
+      "native": "Українська (Ukraina)",
+      "local": "ukraina"
+    },
+    "zh": {
+      "native": "中文 (Kiina)",
+      "local": "kiina"
+    }
+  },
+  "app": {
+    "documentTitle": "Prompti-rakennussarja – Jäsennelty XML-editori",
+    "title": "Prompti-rakennussarja"
+  },
+  "toolbar": {
+    "example": "Esimerkki",
+    "templatesOpen": "Avaa mallipohjat",
+    "protocol": "Loki",
+    "showXml": "Näytä XML",
+    "hideXml": "Piilota XML",
+    "reset": "Nollaa",
+    "options": "Asetukset",
+    "language": "Kieli",
+    "templatesLabel": "Mallipohjat",
+    "moreTemplates": "Lisää..."
+  },
+  "protocol": {
+    "title": "Loki",
+    "clear": "Tyhjennä",
+    "close": "Sulje loki",
+    "validate": "Tarkista",
+    "empty": "Ei vielä merkintöjä. Napauta „Tarkista“ tarkistaaksesi rakenteen nyt.",
+    "noErrors": "Ei virheitä.",
+    "xmlApplied": "XML otettu käyttöön onnistuneesti.",
+    "gesamtApplied": "Yhdistetty konfiguraatio otettu käyttöön onnistuneesti.",
+    "mixedContent": "Tuontihuomautus: sekasisältöä havaittu. {n} tekstilohkoa käärittiin automaattisesti <Parent_text>-tageihin.",
+    "containerMoved": "Huomautus: elementin <{parent}> sisältö siirrettiin kohteeseen <{leaf}>, koska säilötageilla ei pitäisi olla suoraa tekstiä.",
+    "invalidXml": "Virheellinen XML.",
+    "invalidXmlDetail": "Virheellinen XML: {detail}",
+    "invalidXmlLine": "Virheellinen XML – rivi {line}",
+    "invalidXmlLineCol": "Virheellinen XML – rivi {line}, sarake {col}",
+    "invalidXmlLineColDetail": "Virheellinen XML – rivi {line}, sarake {col}: {detail}",
+    "invalidXmlLineDetail": "Virheellinen XML – rivi {line}: {detail}",
+    "noGesamt": "Kelvollista yhdistettyä konfiguraatiota ei löytynyt.",
+    "networkError": "Verkkovirhe",
+    "noPage": "Ei sivua",
+    "textTooShort": "Teksti liian lyhyt",
+    "errorPrefix": "Virhe: ",
+    "linePrefix": "Rivi {line}: "
+  },
+  "language": {
+    "title": "Kieli",
+    "close": "Sulje kielivalikko",
+    "searchPlaceholder": "Etsi kieltä…",
+    "searchAria": "Etsi kieltä",
+    "empty": "Kieltä ei löytynyt.",
+    "selected": "Valittu"
+  },
+  "tabs": {
+    "namePlaceholder": "Välilehden nimi",
+    "nameAria": "Välilehden nimi",
+    "duplicate": "Monista",
+    "duplicateTitle": "Monista nykyinen välilehti",
+    "close": "Sulje välilehti",
+    "new": "Uusi välilehti",
+    "defaultTitle": "Prompti {n}",
+    "copySuffix": " Kopio",
+    "confirmResetLast": "Nollataanko viimeinen välilehti?",
+    "confirmReplaceTemplate": "Korvataanko nykyinen rakenne mallipohjalla?"
+  },
+  "outline": {
+    "empty": "Ei vielä elementtejä. Lisää alle elementti tai kommentti.",
+    "addElement": "+ Elementti",
+    "addComment": "+ Kommentti",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Alakohta",
+    "delete": "Poista",
+    "copyResult": "Kopioi tulos",
+    "copied": "✓ Kopioitu",
+    "copiedShort": "✓",
+    "confirmDelete": "Poistetaanko varmasti?",
+    "confirmReset": "Tyhjennetäänkö kaikki?",
+    "commentLabel": "Huomautus",
+    "noName": "(nimetön)",
+    "expand": "Laajenna",
+    "collapse": "Supista",
+    "openEditor": "Avaa editorissa"
+  },
+  "detail": {
+    "empty": "Valitse elementti vasemmalta tai luo uusi alle.",
+    "level": "Taso {n}",
+    "commentHeading": "💬 Huomautus",
+    "tagPlaceholder": "tagin-nimi",
+    "tagAria": "Tagin nimi",
+    "textPlaceholder": "Tämän elementin teksti…",
+    "commentPlaceholder": "Huomautus…",
+    "containerPlaceholder": "Tämä tagi on säilö.",
+    "textAria": "Elementin teksti",
+    "commentAria": "Kommentin teksti",
+    "moveUp": "Siirrä ylös",
+    "moveDown": "Siirrä alas",
+    "copy": "Kopioi",
+    "copyTitle": "Kopioi valittu kohta",
+    "paste": "Liitä",
+    "pasteTitle": "Liitä kopioitu kohta",
+    "find": "Etsi",
+    "findTitle": "Etsi ja korvaa",
+    "options": "Asetukset",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Wiki-asetukset ›",
+    "wikiLang": "Kieli",
+    "wikiChars": "n. merkkiä",
+    "wikiInsert": "Lisää",
+    "wikiClose": "Sulje",
+    "wikiLoading": "Ladataan…",
+    "wikiAria": "Wiki-asetukset",
+    "back": "Takaisin",
+    "closeEditor": "Sulje editori"
+  },
+  "source": {
+    "title": "XML-koodi",
+    "gesamtTitle": "Yhdistetty konfiguraatio",
+    "options": "Asetukset",
+    "find": "Etsi",
+    "wrapOn": "Rivitys päällä",
+    "wrapOff": "Rivitys pois",
+    "wrapTitle": "Vaihda rivitys",
+    "gesamt": "Yhdistetty",
+    "tabXml": "Välilehden XML",
+    "gesamtConfig": "Yhdistetty konfiguraatio",
+    "gesamtTitleBtn": "Näytä kaikkien välilehtien yhdistetty konfiguraatio",
+    "tabXmlTitle": "Näytä yksittäisen välilehden XML",
+    "close": "Sulje XML",
+    "placeholder": "Liitä XML-prompti…",
+    "aria": "XML-lähdekoodi",
+    "apply": "Ota käyttöön",
+    "copy": "Kopioi"
+  },
+  "find": {
+    "placeholder": "Etsi…",
+    "replacePlaceholder": "Korvaa…",
+    "ariaFind": "Hakusana",
+    "ariaReplace": "Korvaava teksti",
+    "prev": "Edellinen osuma",
+    "next": "Seuraava osuma",
+    "prevTitle": "Edellinen",
+    "nextTitle": "Seuraava",
+    "close": "Sulje haku",
+    "closeTitle": "Sulje",
+    "replace": "Korvaa",
+    "replaceTitle": "Korvaa nykyinen osuma",
+    "replaceAll": "Kaikki",
+    "replaceAllTitle": "Korvaa kaikki osumat",
+    "caseTitle": "Huomioi kirjainkoko",
+    "regexTitle": "Säännöllinen lauseke",
+    "replaced": "{n} korvattu",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} merkkiä",
+    "selected": " · {n} valittu"
+  },
+  "validation": {
+    "tagNoName": "Tagi ilman nimeä – rivi {line}",
+    "tagInvalid": "Tagi <{tag}> sisältää virheellisiä merkkejä – rivi {line}",
+    "genericTag": "Varoitus: <{tag}> on liian yleinen. Käytä kuvaavia nimiä kuten <asiakaspyynto> kohteen <data> sijaan (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Varoitus: sisäkkäisyyden syvyys {depth} tagissa <{tag}>. Yli 4 tasoa vaikeuttaa ymmärtämistä.{line}",
+    "exampleHint": "Huomautus: <example> tulisi kääriä tagiin <examples> (XML){line}",
+    "emptyTag": "Huomautus: <{tag}> on tyhjä{line}",
+    "lineSuffix": " · Rivi ~{line}"
+  },
+  "wiki": {
+    "de": "Saksa",
+    "en": "Englanti",
+    "fr": "Ranska",
+    "es": "Espanja",
+    "it": "Italia",
+    "pt": "Portugali",
+    "nl": "Hollanti",
+    "pl": "Puola",
+    "ru": "Venäjä",
+    "ja": "Japani",
+    "zh": "Kiina",
+    "random": "Satunnainen"
+  }
+}

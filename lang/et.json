@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "et",
+    "name": "Eesti",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Araabia)",
+      "local": "araabia"
+    },
+    "bg": {
+      "native": "Български (Bulgaaria)",
+      "local": "bulgaaria"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "bosnia"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "tšehhi"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "taani"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "saksa"
+    },
+    "el": {
+      "native": "Ελληνικά (Kreeka)",
+      "local": "kreeka"
+    },
+    "en": {
+      "native": "English",
+      "local": "inglise"
+    },
+    "es": {
+      "native": "Español",
+      "local": "hispaania"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "eesti"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "soome"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "prantsuse"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "iiri"
+    },
+    "hi": {
+      "native": "हिन्दी (Hindi)",
+      "local": "hindi"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "horvaadi"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "ungari"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "itaalia"
+    },
+    "ja": {
+      "native": "日本語 (Jaapani)",
+      "local": "jaapani"
+    },
+    "ka": {
+      "native": "ქართული (Gruusia)",
+      "local": "gruusia"
+    },
+    "ko": {
+      "native": "한국어 (Korea)",
+      "local": "korea"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "leedu"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "läti"
+    },
+    "mk": {
+      "native": "Македонски (Makedoonia)",
+      "local": "makedoonia"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "moldova"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "malta"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "hollandi"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "poola"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "portugali"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "rumeenia"
+    },
+    "ru": {
+      "native": "Русский (Vene)",
+      "local": "vene"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "slovaki"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "sloveeni"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "albaania"
+    },
+    "sr": {
+      "native": "Српски (Serbia)",
+      "local": "serbia"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "rootsi"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "türgi"
+    },
+    "uk": {
+      "native": "Українська (Ukraina)",
+      "local": "ukraina"
+    },
+    "zh": {
+      "native": "中文 (Hiina)",
+      "local": "hiina"
+    }
+  },
+  "app": {
+    "documentTitle": "Prompti Ehitaja – Struktureeritud XML-redaktor",
+    "title": "Prompti Ehitaja"
+  },
+  "toolbar": {
+    "example": "Näide",
+    "templatesOpen": "Ava mallid",
+    "protocol": "Logi",
+    "showXml": "Näita XML-i",
+    "hideXml": "Peida XML",
+    "reset": "Lähtesta",
+    "options": "Valikud",
+    "language": "Keel",
+    "templatesLabel": "Mallid",
+    "moreTemplates": "Rohkem..."
+  },
+  "protocol": {
+    "title": "Logi",
+    "clear": "Tühjenda",
+    "close": "Sulge logi",
+    "validate": "Kontrolli",
+    "empty": "Kirjeid pole veel. Vajuta „Kontrolli“, et struktuuri kohe kontrollida.",
+    "noErrors": "Vigu pole.",
+    "xmlApplied": "XML rakendati edukalt.",
+    "gesamtApplied": "Koondkonfiguratsioon rakendati edukalt.",
+    "mixedContent": "Impordi märkus: tuvastati segasisu. {n} tekstiplokki mähiti automaatselt <Parent_text>-siltidesse.",
+    "containerMoved": "Märkus: <{parent}> sisu liigutati siltide <{leaf}> alla, kuna konteinersildid ei tohiks sisaldada otsest teksti.",
+    "invalidXml": "Vigane XML.",
+    "invalidXmlDetail": "Vigane XML: {detail}",
+    "invalidXmlLine": "Vigane XML – rida {line}",
+    "invalidXmlLineCol": "Vigane XML – rida {line}, veerg {col}",
+    "invalidXmlLineColDetail": "Vigane XML – rida {line}, veerg {col}: {detail}",
+    "invalidXmlLineDetail": "Vigane XML – rida {line}: {detail}",
+    "noGesamt": "Kehtivat koondkonfiguratsiooni ei leitud.",
+    "networkError": "Võrguviga",
+    "noPage": "Lehte pole",
+    "textTooShort": "Tekst on liiga lühike",
+    "errorPrefix": "Viga: ",
+    "linePrefix": "Rida {line}: "
+  },
+  "language": {
+    "title": "Keel",
+    "close": "Sulge keelemenüü",
+    "searchPlaceholder": "Otsi keelt…",
+    "searchAria": "Otsi keelt",
+    "empty": "Keelt ei leitud.",
+    "selected": "Valitud"
+  },
+  "tabs": {
+    "namePlaceholder": "Vahekaardi nimi",
+    "nameAria": "Vahekaardi nimi",
+    "duplicate": "Dubleeri",
+    "duplicateTitle": "Dubleeri praegune vahekaart",
+    "close": "Sulge vahekaart",
+    "new": "Uus vahekaart",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " Koopia",
+    "confirmResetLast": "Kas lähtestada viimane vahekaart?",
+    "confirmReplaceTemplate": "Kas asendada praegune struktuur malliga?"
+  },
+  "outline": {
+    "empty": "Elemente pole veel. Loo allpool element või kommentaar.",
+    "addElement": "+ Element",
+    "addComment": "+ Kommentaar",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Alapunkt",
+    "delete": "Kustuta",
+    "copyResult": "Kopeeri tulemus",
+    "copied": "✓ Kopeeritud",
+    "copiedShort": "✓",
+    "confirmDelete": "Kas tõesti kustutada?",
+    "confirmReset": "Kas kustutada kõik?",
+    "commentLabel": "Märkus",
+    "noName": "(nimetu)",
+    "expand": "Laienda",
+    "collapse": "Ahenda",
+    "openEditor": "Ava redaktoris"
+  },
+  "detail": {
+    "empty": "Vali element vasakult või loo allpool uus.",
+    "level": "Tase {n}",
+    "commentHeading": "💬 Märkus",
+    "tagPlaceholder": "sildi-nimi",
+    "tagAria": "Sildi nimi",
+    "textPlaceholder": "Selle elemendi tekst…",
+    "commentPlaceholder": "Märkus…",
+    "containerPlaceholder": "See silt on konteiner.",
+    "textAria": "Elemendi tekst",
+    "commentAria": "Kommentaari tekst",
+    "moveUp": "Liiguta üles",
+    "moveDown": "Liiguta alla",
+    "copy": "Kopeeri",
+    "copyTitle": "Kopeeri valitud element",
+    "paste": "Kleebi",
+    "pasteTitle": "Kleebi kopeeritud element",
+    "find": "Otsi",
+    "findTitle": "Otsi ja asenda",
+    "options": "Valikud",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Wiki seaded ›",
+    "wikiLang": "Keel",
+    "wikiChars": "u. tähemärki",
+    "wikiInsert": "Lisa",
+    "wikiClose": "Sulge",
+    "wikiLoading": "Laadimine…",
+    "wikiAria": "Wiki seaded",
+    "back": "Tagasi",
+    "closeEditor": "Sulge redaktor"
+  },
+  "source": {
+    "title": "XML-kood",
+    "gesamtTitle": "Koondkonfiguratsioon",
+    "options": "Valikud",
+    "find": "Otsi",
+    "wrapOn": "Reamurdmine sees",
+    "wrapOff": "Reamurdmine väljas",
+    "wrapTitle": "Lülita reamurdmist",
+    "gesamt": "Koond",
+    "tabXml": "Vahekaardi XML",
+    "gesamtConfig": "Koondkonfiguratsioon",
+    "gesamtTitleBtn": "Näita kõigi vahekaartide koondkonfiguratsiooni",
+    "tabXmlTitle": "Näita ühe vahekaardi XML-i",
+    "close": "Sulge XML",
+    "placeholder": "Kleebi XML-prompt…",
+    "aria": "XML lähtekood",
+    "apply": "Rakenda",
+    "copy": "Kopeeri"
+  },
+  "find": {
+    "placeholder": "Otsi…",
+    "replacePlaceholder": "Asenda…",
+    "ariaFind": "Otsingusõna",
+    "ariaReplace": "Asendustekst",
+    "prev": "Eelmine vaste",
+    "next": "Järgmine vaste",
+    "prevTitle": "Eelmine",
+    "nextTitle": "Järgmine",
+    "close": "Sulge otsing",
+    "closeTitle": "Sulge",
+    "replace": "Asenda",
+    "replaceTitle": "Asenda praegune vaste",
+    "replaceAll": "Kõik",
+    "replaceAllTitle": "Asenda kõik vasted",
+    "caseTitle": "Tõstutundlik",
+    "regexTitle": "Regulaaravaldis",
+    "replaced": "{n} asendatud",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} tähemärki",
+    "selected": " · {n} valitud"
+  },
+  "validation": {
+    "tagNoName": "Nimetu silt – rida {line}",
+    "tagInvalid": "Silt <{tag}> sisaldab vigaseid märke – rida {line}",
+    "genericTag": "Hoiatus: <{tag}> on liiga üldine. Kasuta kirjeldavaid nimesid nagu <kliendi_paring> asemel <data> (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Hoiatus: pesastussügavus {depth} sildis <{tag}>. Rohkem kui 4 taset raskendab mõistmist.{line}",
+    "exampleHint": "Märkus: <example> peaks olema mähitud siltidesse <examples> (XML){line}",
+    "emptyTag": "Märkus: <{tag}> on tühi{line}",
+    "lineSuffix": " · Rida ~{line}"
+  },
+  "wiki": {
+    "de": "Saksa",
+    "en": "Inglise",
+    "fr": "Prantsuse",
+    "es": "Hispaania",
+    "it": "Itaalia",
+    "pt": "Portugali",
+    "nl": "Hollandi",
+    "pl": "Poola",
+    "ru": "Vene",
+    "ja": "Jaapani",
+    "zh": "Hiina",
+    "random": "Juhuslik"
+  }
+}

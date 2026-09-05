@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "uk",
+    "name": "Українська",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (арабська)",
+      "local": "арабська"
+    },
+    "bg": {
+      "native": "Български (болгарська)",
+      "local": "болгарська"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "боснійська"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "чеська"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "данська"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "німецька"
+    },
+    "el": {
+      "native": "Ελληνικά (грецька)",
+      "local": "грецька"
+    },
+    "en": {
+      "native": "English",
+      "local": "англійська"
+    },
+    "es": {
+      "native": "Español",
+      "local": "іспанська"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "естонська"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "фінська"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "французька"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "ірландська"
+    },
+    "hi": {
+      "native": "हिन्दी (гінді)",
+      "local": "гінді"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "хорватська"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "угорська"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "італійська"
+    },
+    "ja": {
+      "native": "日本語 (японська)",
+      "local": "японська"
+    },
+    "ka": {
+      "native": "ქართული (грузинська)",
+      "local": "грузинська"
+    },
+    "ko": {
+      "native": "한국어 (корейська)",
+      "local": "корейська"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "литовська"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "латиська"
+    },
+    "mk": {
+      "native": "Македонски (македонська)",
+      "local": "македонська"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "молдовська"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "мальтійська"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "нідерландська"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "польська"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "португальська"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "румунська"
+    },
+    "ru": {
+      "native": "Русский (російська)",
+      "local": "російська"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "словацька"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "словенська"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "албанська"
+    },
+    "sr": {
+      "native": "Српски (сербська)",
+      "local": "сербська"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "шведська"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "турецька"
+    },
+    "uk": {
+      "native": "Українська (українська)",
+      "local": "українська"
+    },
+    "zh": {
+      "native": "中文 (китайська)",
+      "local": "китайська"
+    }
+  },
+  "app": {
+    "documentTitle": "Конструктор промптів – Структурований XML-редактор",
+    "title": "Конструктор промптів"
+  },
+  "toolbar": {
+    "example": "Приклад",
+    "templatesOpen": "Відкрити шаблони",
+    "protocol": "Журнал",
+    "showXml": "Показати XML",
+    "hideXml": "Сховати XML",
+    "reset": "Скинути",
+    "options": "Параметри",
+    "language": "Мова",
+    "templatesLabel": "Шаблони",
+    "moreTemplates": "Більше..."
+  },
+  "protocol": {
+    "title": "Журнал",
+    "clear": "Очистити",
+    "close": "Закрити журнал",
+    "validate": "Перевірити",
+    "empty": "Записів ще немає. Натисніть «Перевірити», щоб перевірити структуру зараз.",
+    "noErrors": "Помилок немає.",
+    "xmlApplied": "XML успішно застосовано.",
+    "gesamtApplied": "Загальну конфігурацію успішно застосовано.",
+    "mixedContent": "Примітка імпорту: виявлено змішаний вміст. {n} текстових блоків автоматично обгорнуто в теги &lt;Parent_text&gt;.",
+    "containerMoved": "Примітка: вміст &lt;{parent}&gt; перенесено до &lt;{leaf}&gt;, оскільки контейнерні теги не повинні містити прямий текст.",
+    "invalidXml": "Недійсний XML.",
+    "invalidXmlDetail": "Недійсний XML: {detail}",
+    "invalidXmlLine": "Недійсний XML – рядок {line}",
+    "invalidXmlLineCol": "Недійсний XML – рядок {line}, стовпець {col}",
+    "invalidXmlLineColDetail": "Недійсний XML – рядок {line}, стовпець {col}: {detail}",
+    "invalidXmlLineDetail": "Недійсний XML – рядок {line}: {detail}",
+    "noGesamt": "Дійсну загальну конфігурацію не знайдено.",
+    "networkError": "Помилка мережі",
+    "noPage": "Немає сторінки",
+    "textTooShort": "Текст занадто короткий",
+    "errorPrefix": "Помилка: ",
+    "linePrefix": "Рядок {line}: "
+  },
+  "language": {
+    "title": "Мова",
+    "close": "Закрити меню мов",
+    "searchPlaceholder": "Шукати мову…",
+    "searchAria": "Шукати мову",
+    "empty": "Мову не знайдено.",
+    "selected": "Вибрано"
+  },
+  "tabs": {
+    "namePlaceholder": "Назва вкладки",
+    "nameAria": "Назва вкладки",
+    "duplicate": "Дублювати",
+    "duplicateTitle": "Дублювати поточну вкладку",
+    "close": "Закрити вкладку",
+    "new": "Нова вкладка",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " Копія",
+    "confirmResetLast": "Скинути останню вкладку?",
+    "confirmReplaceTemplate": "Замінити поточну структуру шаблоном?"
+  },
+  "outline": {
+    "empty": "Елементів ще немає. Створіть елемент або коментар нижче.",
+    "addElement": "+ Елемент",
+    "addComment": "+ Коментар",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Підпункт",
+    "delete": "Видалити",
+    "copyResult": "Копіювати результат",
+    "copied": "✓ Скопійовано",
+    "copiedShort": "✓",
+    "confirmDelete": "Справді видалити?",
+    "confirmReset": "Видалити все?",
+    "commentLabel": "Примітка",
+    "noName": "(без назви)",
+    "expand": "Розгорнути",
+    "collapse": "Згорнути",
+    "openEditor": "Відкрити в редакторі"
+  },
+  "detail": {
+    "empty": "Виберіть елемент ліворуч або створіть новий нижче.",
+    "level": "Рівень {n}",
+    "commentHeading": "💬 Примітка",
+    "tagPlaceholder": "ім'я-тегу",
+    "tagAria": "Ім'я тегу",
+    "textPlaceholder": "Текст для цього елемента…",
+    "commentPlaceholder": "Примітка…",
+    "containerPlaceholder": "Цей тег є контейнером.",
+    "textAria": "Текст елемента",
+    "commentAria": "Текст коментаря",
+    "moveUp": "Перемістити вгору",
+    "moveDown": "Перемістити вниз",
+    "copy": "Копіювати",
+    "copyTitle": "Копіювати вибраний пункт",
+    "paste": "Вставити",
+    "pasteTitle": "Вставити скопійований пункт",
+    "find": "Знайти",
+    "findTitle": "Знайти й замінити",
+    "options": "Параметри",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Налаштування Wiki ›",
+    "wikiLang": "Мова",
+    "wikiChars": "прибл. символів",
+    "wikiInsert": "Вставити",
+    "wikiClose": "Закрити",
+    "wikiLoading": "Завантаження…",
+    "wikiAria": "Налаштування Wiki",
+    "back": "Назад",
+    "closeEditor": "Закрити редактор"
+  },
+  "source": {
+    "title": "XML-код",
+    "gesamtTitle": "Загальна конфігурація",
+    "options": "Параметри",
+    "find": "Знайти",
+    "wrapOn": "Перенесення увімк.",
+    "wrapOff": "Перенесення вимк.",
+    "wrapTitle": "Перемкнути перенесення рядків",
+    "gesamt": "Загальна",
+    "tabXml": "XML вкладки",
+    "gesamtConfig": "Загальна конфігурація",
+    "gesamtTitleBtn": "Показати загальну конфігурацію всіх вкладок",
+    "tabXmlTitle": "Показати XML однієї вкладки",
+    "close": "Закрити XML",
+    "placeholder": "Вставте XML-промпт…",
+    "aria": "Вихідний код XML",
+    "apply": "Застосувати",
+    "copy": "Копіювати"
+  },
+  "find": {
+    "placeholder": "Знайти…",
+    "replacePlaceholder": "Замінити…",
+    "ariaFind": "Пошуковий запит",
+    "ariaReplace": "Текст заміни",
+    "prev": "Попередній збіг",
+    "next": "Наступний збіг",
+    "prevTitle": "Попередній",
+    "nextTitle": "Наступний",
+    "close": "Закрити пошук",
+    "closeTitle": "Закрити",
+    "replace": "Замінити",
+    "replaceTitle": "Замінити поточний збіг",
+    "replaceAll": "Усі",
+    "replaceAllTitle": "Замінити всі збіги",
+    "caseTitle": "Враховувати регістр",
+    "regexTitle": "Регулярний вираз",
+    "replaced": "{n} замінено",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} символів",
+    "selected": " · {n} виділено"
+  },
+  "validation": {
+    "tagNoName": "Тег без імені – рядок {line}",
+    "tagInvalid": "Тег &lt;{tag}&gt; містить недопустимі символи – рядок {line}",
+    "genericTag": "Попередження: &lt;{tag}&gt; занадто загальний. Використовуйте описові імена на кшталт &lt;zapyt_kliyenta&gt; замість &lt;data&gt; (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Попередження: глибина вкладеності {depth} у &lt;{tag}&gt;. Більш ніж 4 рівні ускладнюють розуміння.{line}",
+    "exampleHint": "Примітка: &lt;example&gt; слід обгорнути в &lt;examples&gt; (XML){line}",
+    "emptyTag": "Примітка: &lt;{tag}&gt; порожній{line}",
+    "lineSuffix": " · Рядок ~{line}"
+  },
+  "wiki": {
+    "de": "Німецька",
+    "en": "Англійська",
+    "fr": "Французька",
+    "es": "Іспанська",
+    "it": "Італійська",
+    "pt": "Португальська",
+    "nl": "Нідерландська",
+    "pl": "Польська",
+    "ru": "Російська",
+    "ja": "Японська",
+    "zh": "Китайська",
+    "random": "Випадково"
+  }
+}

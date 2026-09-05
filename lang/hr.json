@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "hr",
+    "name": "Hrvatski",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Arapski)",
+      "local": "arapski"
+    },
+    "bg": {
+      "native": "Български (Bugarski)",
+      "local": "bugarski"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "bosanski"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "češki"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "danski"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "njemački"
+    },
+    "el": {
+      "native": "Ελληνικά (Grčki)",
+      "local": "grčki"
+    },
+    "en": {
+      "native": "English",
+      "local": "engleski"
+    },
+    "es": {
+      "native": "Español",
+      "local": "španjolski"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "estonski"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "finski"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "francuski"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "irski"
+    },
+    "hi": {
+      "native": "हिन्दी (Hindski)",
+      "local": "hindski"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "hrvatski"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "mađarski"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "talijanski"
+    },
+    "ja": {
+      "native": "日本語 (Japanski)",
+      "local": "japanski"
+    },
+    "ka": {
+      "native": "ქართული (Gruzijski)",
+      "local": "gruzijski"
+    },
+    "ko": {
+      "native": "한국어 (Korejski)",
+      "local": "korejski"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "litavski"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "latvijski"
+    },
+    "mk": {
+      "native": "Македонски (Makedonski)",
+      "local": "makedonski"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "moldavski"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "malteški"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "nizozemski"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "poljski"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "portugalski"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "rumunjski"
+    },
+    "ru": {
+      "native": "Русский (Ruski)",
+      "local": "ruski"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "slovački"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "slovenski"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "albanski"
+    },
+    "sr": {
+      "native": "Српски (Srpski)",
+      "local": "srpski"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "švedski"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "turski"
+    },
+    "uk": {
+      "native": "Українська (Ukrajinski)",
+      "local": "ukrajinski"
+    },
+    "zh": {
+      "native": "中文 (Kineski)",
+      "local": "kineski"
+    }
+  },
+  "app": {
+    "documentTitle": "Graditelj Prompta – Strukturirani XML uređivač",
+    "title": "Graditelj Prompta"
+  },
+  "toolbar": {
+    "example": "Primjer",
+    "templatesOpen": "Otvori predloške",
+    "protocol": "Zapisnik",
+    "showXml": "Prikaži XML",
+    "hideXml": "Sakrij XML",
+    "reset": "Poništi",
+    "options": "Opcije",
+    "language": "Jezik",
+    "templatesLabel": "Predlošci",
+    "moreTemplates": "Više..."
+  },
+  "protocol": {
+    "title": "Zapisnik",
+    "clear": "Očisti",
+    "close": "Zatvori zapisnik",
+    "validate": "Provjeri",
+    "empty": "Još nema unosa. Dodirni „Provjeri“ za provjeru strukture sada.",
+    "noErrors": "Nema pogrešaka.",
+    "xmlApplied": "XML je uspješno primijenjen.",
+    "gesamtApplied": "Ukupna konfiguracija uspješno je primijenjena.",
+    "mixedContent": "Napomena o uvozu: otkriven je mješoviti sadržaj. {n} tekstualnih blokova automatski je omotano u oznake <Parent_text>.",
+    "containerMoved": "Napomena: sadržaj <{parent}> premješten je u <{leaf}>, jer oznake spremnika ne bi trebale sadržavati izravan tekst.",
+    "invalidXml": "Nevažeći XML.",
+    "invalidXmlDetail": "Nevažeći XML: {detail}",
+    "invalidXmlLine": "Nevažeći XML – redak {line}",
+    "invalidXmlLineCol": "Nevažeći XML – redak {line}, stupac {col}",
+    "invalidXmlLineColDetail": "Nevažeći XML – redak {line}, stupac {col}: {detail}",
+    "invalidXmlLineDetail": "Nevažeći XML – redak {line}: {detail}",
+    "noGesamt": "Nije pronađena važeća ukupna konfiguracija.",
+    "networkError": "Mrežna pogreška",
+    "noPage": "Nema stranice",
+    "textTooShort": "Tekst je prekratak",
+    "errorPrefix": "Pogreška: ",
+    "linePrefix": "Redak {line}: "
+  },
+  "language": {
+    "title": "Jezik",
+    "close": "Zatvori izbornik jezika",
+    "searchPlaceholder": "Pretraži jezik…",
+    "searchAria": "Pretraži jezik",
+    "empty": "Jezik nije pronađen.",
+    "selected": "Odabrano"
+  },
+  "tabs": {
+    "namePlaceholder": "Naziv kartice",
+    "nameAria": "Naziv kartice",
+    "duplicate": "Dupliciraj",
+    "duplicateTitle": "Dupliciraj trenutnu karticu",
+    "close": "Zatvori karticu",
+    "new": "Nova kartica",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " Kopija",
+    "confirmResetLast": "Poništiti posljednju karticu?",
+    "confirmReplaceTemplate": "Zamijeniti trenutnu strukturu predloškom?"
+  },
+  "outline": {
+    "empty": "Još nema elemenata. Ispod dodaj element ili komentar.",
+    "addElement": "+ Element",
+    "addComment": "+ Komentar",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Podstavka",
+    "delete": "Izbriši",
+    "copyResult": "Kopiraj rezultat",
+    "copied": "✓ Kopirano",
+    "copiedShort": "✓",
+    "confirmDelete": "Zaista izbrisati?",
+    "confirmReset": "Izbrisati sve?",
+    "commentLabel": "Napomena",
+    "noName": "(bez naziva)",
+    "expand": "Proširi",
+    "collapse": "Sažmi",
+    "openEditor": "Otvori u uređivaču"
+  },
+  "detail": {
+    "empty": "Odaberi element lijevo ili ispod izradi novi.",
+    "level": "Razina {n}",
+    "commentHeading": "💬 Napomena",
+    "tagPlaceholder": "naziv-oznake",
+    "tagAria": "Naziv oznake",
+    "textPlaceholder": "Tekst za ovaj element…",
+    "commentPlaceholder": "Napomena…",
+    "containerPlaceholder": "Ova oznaka je spremnik.",
+    "textAria": "Tekst elementa",
+    "commentAria": "Tekst komentara",
+    "moveUp": "Pomakni gore",
+    "moveDown": "Pomakni dolje",
+    "copy": "Kopiraj",
+    "copyTitle": "Kopiraj odabranu stavku",
+    "paste": "Zalijepi",
+    "pasteTitle": "Zalijepi kopiranu stavku",
+    "find": "Pretraži",
+    "findTitle": "Pronađi i zamijeni",
+    "options": "Opcije",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Wiki postavke ›",
+    "wikiLang": "Jezik",
+    "wikiChars": "otprilike znakova",
+    "wikiInsert": "Umetni",
+    "wikiClose": "Zatvori",
+    "wikiLoading": "Učitavanje…",
+    "wikiAria": "Wiki postavke",
+    "back": "Natrag",
+    "closeEditor": "Zatvori uređivač"
+  },
+  "source": {
+    "title": "XML kôd",
+    "gesamtTitle": "Ukupna konfiguracija",
+    "options": "Opcije",
+    "find": "Pretraži",
+    "wrapOn": "Prijelom uključen",
+    "wrapOff": "Prijelom isključen",
+    "wrapTitle": "Uklj./isklj. prijelom redaka",
+    "gesamt": "Ukupno",
+    "tabXml": "XML kartice",
+    "gesamtConfig": "Ukupna konfiguracija",
+    "gesamtTitleBtn": "Prikaži ukupnu konfiguraciju svih kartica",
+    "tabXmlTitle": "Prikaži XML pojedinačne kartice",
+    "close": "Zatvori XML",
+    "placeholder": "Zalijepi XML prompt…",
+    "aria": "XML izvorni kôd",
+    "apply": "Primijeni",
+    "copy": "Kopiraj"
+  },
+  "find": {
+    "placeholder": "Pretraži…",
+    "replacePlaceholder": "Zamijeni…",
+    "ariaFind": "Pojam pretrage",
+    "ariaReplace": "Zamjenski tekst",
+    "prev": "Prethodno podudaranje",
+    "next": "Sljedeće podudaranje",
+    "prevTitle": "Prethodno",
+    "nextTitle": "Sljedeće",
+    "close": "Zatvori pretragu",
+    "closeTitle": "Zatvori",
+    "replace": "Zamijeni",
+    "replaceTitle": "Zamijeni trenutno podudaranje",
+    "replaceAll": "Sve",
+    "replaceAllTitle": "Zamijeni sva podudaranja",
+    "caseTitle": "Razlikuj velika/mala slova",
+    "regexTitle": "Regularni izraz",
+    "replaced": "{n} zamijenjeno",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} znakova",
+    "selected": " · {n} odabrano"
+  },
+  "validation": {
+    "tagNoName": "Oznaka bez naziva – redak {line}",
+    "tagInvalid": "Oznaka <{tag}> sadrži nevažeće znakove – redak {line}",
+    "genericTag": "Upozorenje: <{tag}> je previše općenit. Koristi opisne nazive poput <upit_korisnika> umjesto <data> (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Upozorenje: dubina ugnježđivanja {depth} u <{tag}>. Više od 4 razine otežava razumijevanje.{line}",
+    "exampleHint": "Napomena: <example> trebao bi biti omotan u <examples> (XML){line}",
+    "emptyTag": "Napomena: <{tag}> je prazan{line}",
+    "lineSuffix": " · Redak ~{line}"
+  },
+  "wiki": {
+    "de": "Njemački",
+    "en": "Engleski",
+    "fr": "Francuski",
+    "es": "Španjolski",
+    "it": "Talijanski",
+    "pt": "Portugalski",
+    "nl": "Nizozemski",
+    "pl": "Poljski",
+    "ru": "Ruski",
+    "ja": "Japanski",
+    "zh": "Kineski",
+    "random": "Nasumično"
+  }
+}

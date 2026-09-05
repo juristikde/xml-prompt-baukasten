@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "ko",
+    "name": "한국어",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (아랍어)",
+      "local": "아랍어"
+    },
+    "bg": {
+      "native": "Български (불가리아어)",
+      "local": "불가리아어"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "보스니아어"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "체코어"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "덴마크어"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "독일어"
+    },
+    "el": {
+      "native": "Ελληνικά (그리스어)",
+      "local": "그리스어"
+    },
+    "en": {
+      "native": "English",
+      "local": "영어"
+    },
+    "es": {
+      "native": "Español",
+      "local": "스페인어"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "에스토니아어"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "핀란드어"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "프랑스어"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "아일랜드어"
+    },
+    "hi": {
+      "native": "हिन्दी (힌디어)",
+      "local": "힌디어"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "크로아티아어"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "헝가리어"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "이탈리아어"
+    },
+    "ja": {
+      "native": "日本語 (일본어)",
+      "local": "일본어"
+    },
+    "ka": {
+      "native": "ქართული (조지아어)",
+      "local": "조지아어"
+    },
+    "ko": {
+      "native": "한국어 (한국어)",
+      "local": "한국어"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "리투아니아어"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "라트비아어"
+    },
+    "mk": {
+      "native": "Македонски (마케도니아어)",
+      "local": "마케도니아어"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "몰도바어"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "몰타어"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "네덜란드어"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "폴란드어"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "포르투갈어"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "루마니아어"
+    },
+    "ru": {
+      "native": "Русский (러시아어)",
+      "local": "러시아어"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "슬로바키아어"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "슬로베니아어"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "알바니아어"
+    },
+    "sr": {
+      "native": "Српски (세르비아어)",
+      "local": "세르비아어"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "스웨덴어"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "터키어"
+    },
+    "uk": {
+      "native": "Українська (우크라이나어)",
+      "local": "우크라이나어"
+    },
+    "zh": {
+      "native": "中文 (중국어)",
+      "local": "중국어"
+    }
+  },
+  "app": {
+    "documentTitle": "프롬프트 빌더 – 구조화된 XML 편집기",
+    "title": "프롬프트 빌더"
+  },
+  "toolbar": {
+    "example": "예시",
+    "templatesOpen": "템플릿 열기",
+    "protocol": "로그",
+    "showXml": "XML 표시",
+    "hideXml": "XML 숨기기",
+    "reset": "초기화",
+    "options": "옵션",
+    "language": "언어",
+    "templatesLabel": "템플릿",
+    "moreTemplates": "더 보기..."
+  },
+  "protocol": {
+    "title": "로그",
+    "clear": "지우기",
+    "close": "로그 닫기",
+    "validate": "검사",
+    "empty": "아직 항목이 없습니다. 지금 구조를 검증하려면 “검사”를 누르세요.",
+    "noErrors": "오류 없음.",
+    "xmlApplied": "XML이 성공적으로 적용되었습니다.",
+    "gesamtApplied": "전체 구성이 성공적으로 적용되었습니다.",
+    "mixedContent": "가져오기 안내: 혼합된 콘텐츠가 감지되었습니다. {n}개의 텍스트 블록이 자동으로 <Parent_text> 태그로 감싸졌습니다.",
+    "containerMoved": "안내: 컨테이너 태그는 직접적인 텍스트를 포함해서는 안 되므로 <{parent}>의 내용이 <{leaf}>로 이동되었습니다.",
+    "invalidXml": "잘못된 XML입니다.",
+    "invalidXmlDetail": "잘못된 XML: {detail}",
+    "invalidXmlLine": "잘못된 XML – {line}번째 줄",
+    "invalidXmlLineCol": "잘못된 XML – {line}번째 줄, {col}번째 열",
+    "invalidXmlLineColDetail": "잘못된 XML – {line}번째 줄, {col}번째 열: {detail}",
+    "invalidXmlLineDetail": "잘못된 XML – {line}번째 줄: {detail}",
+    "noGesamt": "유효한 전체 구성을 찾을 수 없습니다.",
+    "networkError": "네트워크 오류",
+    "noPage": "페이지 없음",
+    "textTooShort": "텍스트가 너무 짧습니다",
+    "errorPrefix": "오류: ",
+    "linePrefix": "{line}번째 줄: "
+  },
+  "language": {
+    "title": "언어",
+    "close": "언어 메뉴 닫기",
+    "searchPlaceholder": "언어 검색…",
+    "searchAria": "언어 검색",
+    "empty": "언어를 찾을 수 없습니다.",
+    "selected": "선택됨"
+  },
+  "tabs": {
+    "namePlaceholder": "탭 이름",
+    "nameAria": "탭 이름",
+    "duplicate": "복제",
+    "duplicateTitle": "현재 탭 복제",
+    "close": "탭 닫기",
+    "new": "새 탭",
+    "defaultTitle": "프롬프트 {n}",
+    "copySuffix": " 사본",
+    "confirmResetLast": "마지막 탭을 초기화할까요?",
+    "confirmReplaceTemplate": "현재 구조를 템플릿으로 바꿀까요?"
+  },
+  "outline": {
+    "empty": "아직 요소가 없습니다. 아래에서 요소나 코멘트를 추가하세요.",
+    "addElement": "+ 요소",
+    "addComment": "+ 코멘트",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ 하위 항목",
+    "delete": "삭제",
+    "copyResult": "결과 복사",
+    "copied": "✓ 복사됨",
+    "copiedShort": "✓",
+    "confirmDelete": "정말 삭제할까요?",
+    "confirmReset": "모두 지울까요?",
+    "commentLabel": "메모",
+    "noName": "(이름 없음)",
+    "expand": "펼치기",
+    "collapse": "접기",
+    "openEditor": "편집기에서 열기"
+  },
+  "detail": {
+    "empty": "왼쪽에서 요소를 선택하거나 아래에서 새 요소를 만드세요.",
+    "level": "{n}단계",
+    "commentHeading": "💬 메모",
+    "tagPlaceholder": "태그 이름",
+    "tagAria": "태그 이름",
+    "textPlaceholder": "이 요소의 텍스트…",
+    "commentPlaceholder": "메모…",
+    "containerPlaceholder": "이 태그는 컨테이너입니다.",
+    "textAria": "요소 텍스트",
+    "commentAria": "코멘트 텍스트",
+    "moveUp": "위로 이동",
+    "moveDown": "아래로 이동",
+    "copy": "복사",
+    "copyTitle": "선택한 항목 복사",
+    "paste": "붙여넣기",
+    "pasteTitle": "복사한 항목 붙여넣기",
+    "find": "검색",
+    "findTitle": "찾기 및 바꾸기",
+    "options": "옵션",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "위키 설정 ›",
+    "wikiLang": "언어",
+    "wikiChars": "약 글자 수",
+    "wikiInsert": "삽입",
+    "wikiClose": "닫기",
+    "wikiLoading": "불러오는 중…",
+    "wikiAria": "위키 설정",
+    "back": "뒤로",
+    "closeEditor": "편집기 닫기"
+  },
+  "source": {
+    "title": "XML 코드",
+    "gesamtTitle": "전체 구성",
+    "options": "옵션",
+    "find": "검색",
+    "wrapOn": "줄바꿈 켜짐",
+    "wrapOff": "줄바꿈 꺼짐",
+    "wrapTitle": "줄바꿈 전환",
+    "gesamt": "전체",
+    "tabXml": "탭 XML",
+    "gesamtConfig": "전체 구성",
+    "gesamtTitleBtn": "모든 탭의 전체 구성 표시",
+    "tabXmlTitle": "단일 탭의 XML 표시",
+    "close": "XML 닫기",
+    "placeholder": "XML 프롬프트 붙여넣기…",
+    "aria": "XML 소스 코드",
+    "apply": "적용",
+    "copy": "복사"
+  },
+  "find": {
+    "placeholder": "검색…",
+    "replacePlaceholder": "바꾸기…",
+    "ariaFind": "검색어",
+    "ariaReplace": "바꿀 텍스트",
+    "prev": "이전 항목",
+    "next": "다음 항목",
+    "prevTitle": "이전",
+    "nextTitle": "다음",
+    "close": "검색 닫기",
+    "closeTitle": "닫기",
+    "replace": "바꾸기",
+    "replaceTitle": "현재 항목 바꾸기",
+    "replaceAll": "모두",
+    "replaceAllTitle": "모든 항목 바꾸기",
+    "caseTitle": "대소문자 구분",
+    "regexTitle": "정규식",
+    "replaced": "{n}개 바꿈",
+    "regexError": "정규식 오류!"
+  },
+  "chars": {
+    "count": "{n}자",
+    "selected": " · {n}개 선택됨"
+  },
+  "validation": {
+    "tagNoName": "이름 없는 태그 – {line}번째 줄",
+    "tagInvalid": "태그 <{tag}>에 잘못된 문자가 포함되어 있습니다 – {line}번째 줄",
+    "genericTag": "경고: <{tag}>는 너무 일반적입니다. <data> 대신 <customer_request>처럼 구체적인 이름을 사용하세요 (XML: Use consistent, descriptive tag names){line}",
+    "depth": "경고: <{tag}>의 중첩 깊이가 {depth}입니다. 4단계를 초과하면 이해하기 어려워집니다.{line}",
+    "exampleHint": "안내: <example>은 <examples>로 감싸야 합니다 (XML){line}",
+    "emptyTag": "안내: <{tag}>가 비어 있습니다{line}",
+    "lineSuffix": " · {line}번째 줄 근처"
+  },
+  "wiki": {
+    "de": "독일어",
+    "en": "영어",
+    "fr": "프랑스어",
+    "es": "스페인어",
+    "it": "이탈리아어",
+    "pt": "포르투갈어",
+    "nl": "네덜란드어",
+    "pl": "폴란드어",
+    "ru": "러시아어",
+    "ja": "일본어",
+    "zh": "중국어",
+    "random": "무작위"
+  }
+}

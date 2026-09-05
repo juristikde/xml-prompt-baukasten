@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "nl",
+    "name": "Nederlands",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Arabisch)",
+      "local": "Arabisch"
+    },
+    "bg": {
+      "native": "Български (Bulgaars)",
+      "local": "Bulgaars"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "Bosnisch"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "Tsjechisch"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "Deens"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "Duits"
+    },
+    "el": {
+      "native": "Ελληνικά (Grieks)",
+      "local": "Grieks"
+    },
+    "en": {
+      "native": "English",
+      "local": "Engels"
+    },
+    "es": {
+      "native": "Español",
+      "local": "Spaans"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "Estisch"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "Fins"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "Frans"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "Iers"
+    },
+    "hi": {
+      "native": "हिन्दी (Hindi)",
+      "local": "Hindi"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "Kroatisch"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "Hongaars"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "Italiaans"
+    },
+    "ja": {
+      "native": "日本語 (Japans)",
+      "local": "Japans"
+    },
+    "ka": {
+      "native": "ქართული (Georgisch)",
+      "local": "Georgisch"
+    },
+    "ko": {
+      "native": "한국어 (Koreaans)",
+      "local": "Koreaans"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "Litouws"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "Lets"
+    },
+    "mk": {
+      "native": "Македонски (Macedonisch)",
+      "local": "Macedonisch"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "Moldavisch"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "Maltees"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "Nederlands"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "Pools"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "Portugees"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "Roemeens"
+    },
+    "ru": {
+      "native": "Русский (Russisch)",
+      "local": "Russisch"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "Slowaaks"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "Sloveens"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "Albanees"
+    },
+    "sr": {
+      "native": "Српски (Servisch)",
+      "local": "Servisch"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "Zweeds"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "Turks"
+    },
+    "uk": {
+      "native": "Українська (Oekraïens)",
+      "local": "Oekraïens"
+    },
+    "zh": {
+      "native": "中文 (Chinees)",
+      "local": "Chinees"
+    }
+  },
+  "app": {
+    "documentTitle": "Prompt Bouwpakket – Gestructureerde XML-editor",
+    "title": "Prompt Bouwpakket"
+  },
+  "toolbar": {
+    "example": "Voorbeeld",
+    "templatesOpen": "Sjablonen openen",
+    "protocol": "Logboek",
+    "showXml": "XML tonen",
+    "hideXml": "XML verbergen",
+    "reset": "Resetten",
+    "options": "Opties",
+    "language": "Taal",
+    "templatesLabel": "Sjablonen",
+    "moreTemplates": "Meer..."
+  },
+  "protocol": {
+    "title": "Logboek",
+    "clear": "Wissen",
+    "close": "Logboek sluiten",
+    "validate": "Controleren",
+    "empty": "Nog geen items. Tik op „Controleren” om de structuur nu te valideren.",
+    "noErrors": "Geen fouten.",
+    "xmlApplied": "XML succesvol toegepast.",
+    "gesamtApplied": "Totale configuratie succesvol toegepast.",
+    "mixedContent": "Importmelding: gemengde inhoud gedetecteerd. {n} tekstblokken zijn automatisch verpakt in <Parent_text>-tags.",
+    "containerMoved": "Let op: de inhoud van <{parent}> is verplaatst naar <{leaf}>, omdat containertags geen directe tekst mogen bevatten.",
+    "invalidXml": "Ongeldige XML.",
+    "invalidXmlDetail": "Ongeldige XML: {detail}",
+    "invalidXmlLine": "Ongeldige XML – regel {line}",
+    "invalidXmlLineCol": "Ongeldige XML – regel {line}, kolom {col}",
+    "invalidXmlLineColDetail": "Ongeldige XML – regel {line}, kolom {col}: {detail}",
+    "invalidXmlLineDetail": "Ongeldige XML – regel {line}: {detail}",
+    "noGesamt": "Geen geldige totale configuratie gevonden.",
+    "networkError": "Netwerkfout",
+    "noPage": "Geen pagina",
+    "textTooShort": "Tekst te kort",
+    "errorPrefix": "Fout: ",
+    "linePrefix": "Regel {line}: "
+  },
+  "language": {
+    "title": "Taal",
+    "close": "Taalmenu sluiten",
+    "searchPlaceholder": "Taal zoeken…",
+    "searchAria": "Taal zoeken",
+    "empty": "Geen taal gevonden.",
+    "selected": "Geselecteerd"
+  },
+  "tabs": {
+    "namePlaceholder": "Tabnaam",
+    "nameAria": "Tabnaam",
+    "duplicate": "Dupliceren",
+    "duplicateTitle": "Huidig tabblad dupliceren",
+    "close": "Tabblad sluiten",
+    "new": "Nieuw tabblad",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " Kopie",
+    "confirmResetLast": "Laatste tabblad resetten?",
+    "confirmReplaceTemplate": "Huidige structuur vervangen door het sjabloon?"
+  },
+  "outline": {
+    "empty": "Nog geen elementen. Maak hieronder een element of opmerking aan.",
+    "addElement": "+ Element",
+    "addComment": "+ Opmerking",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Subitem",
+    "delete": "Verwijderen",
+    "copyResult": "Resultaat kopiëren",
+    "copied": "✓ Gekopieerd",
+    "copiedShort": "✓",
+    "confirmDelete": "Echt verwijderen?",
+    "confirmReset": "Alles wissen?",
+    "commentLabel": "Opmerking",
+    "noName": "(naamloos)",
+    "expand": "Uitklappen",
+    "collapse": "Inklappen",
+    "openEditor": "Openen in editor"
+  },
+  "detail": {
+    "empty": "Selecteer links een element of maak hieronder een nieuw element aan.",
+    "level": "Niveau {n}",
+    "commentHeading": "💬 Opmerking",
+    "tagPlaceholder": "tagnaam",
+    "tagAria": "Tagnaam",
+    "textPlaceholder": "Tekst voor dit element…",
+    "commentPlaceholder": "Opmerking…",
+    "containerPlaceholder": "Deze tag is een container.",
+    "textAria": "Elementtekst",
+    "commentAria": "Opmerkingstekst",
+    "moveUp": "Omhoog verplaatsen",
+    "moveDown": "Omlaag verplaatsen",
+    "copy": "Kopiëren",
+    "copyTitle": "Geselecteerd item kopiëren",
+    "paste": "Plakken",
+    "pasteTitle": "Gekopieerd item plakken",
+    "find": "Zoeken",
+    "findTitle": "Zoeken en vervangen",
+    "options": "Opties",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Wiki-instellingen ›",
+    "wikiLang": "Taal",
+    "wikiChars": "ca. tekens",
+    "wikiInsert": "Invoegen",
+    "wikiClose": "Sluiten",
+    "wikiLoading": "Laden…",
+    "wikiAria": "Wiki-instellingen",
+    "back": "Terug",
+    "closeEditor": "Editor sluiten"
+  },
+  "source": {
+    "title": "XML-code",
+    "gesamtTitle": "Totale configuratie",
+    "options": "Opties",
+    "find": "Zoeken",
+    "wrapOn": "Terugloop aan",
+    "wrapOff": "Terugloop uit",
+    "wrapTitle": "Tekstterugloop wisselen",
+    "gesamt": "Totaal",
+    "tabXml": "Tab-XML",
+    "gesamtConfig": "Totale configuratie",
+    "gesamtTitleBtn": "Totale configuratie van alle tabbladen tonen",
+    "tabXmlTitle": "XML van één tabblad tonen",
+    "close": "XML sluiten",
+    "placeholder": "XML-prompt plakken…",
+    "aria": "XML-broncode",
+    "apply": "Toepassen",
+    "copy": "Kopiëren"
+  },
+  "find": {
+    "placeholder": "Zoeken…",
+    "replacePlaceholder": "Vervangen…",
+    "ariaFind": "Zoekterm",
+    "ariaReplace": "Vervangende tekst",
+    "prev": "Vorige overeenkomst",
+    "next": "Volgende overeenkomst",
+    "prevTitle": "Vorige",
+    "nextTitle": "Volgende",
+    "close": "Zoeken sluiten",
+    "closeTitle": "Sluiten",
+    "replace": "Vervangen",
+    "replaceTitle": "Huidige overeenkomst vervangen",
+    "replaceAll": "Alles",
+    "replaceAllTitle": "Alle overeenkomsten vervangen",
+    "caseTitle": "Hoofdlettergevoelig",
+    "regexTitle": "Reguliere expressie",
+    "replaced": "{n} vervangen",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} tekens",
+    "selected": " · {n} geselecteerd"
+  },
+  "validation": {
+    "tagNoName": "Tag zonder naam – regel {line}",
+    "tagInvalid": "Tag <{tag}> bevat ongeldige tekens – regel {line}",
+    "genericTag": "Waarschuwing: <{tag}> is te algemeen. Gebruik beschrijvende namen zoals <klantverzoek> in plaats van <data> (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Waarschuwing: nestingsdiepte {depth} in <{tag}>. Meer dan 4 niveaus bemoeilijkt het begrip.{line}",
+    "exampleHint": "Let op: <example> moet verpakt zijn in <examples> (XML){line}",
+    "emptyTag": "Let op: <{tag}> is leeg{line}",
+    "lineSuffix": " · Regel ~{line}"
+  },
+  "wiki": {
+    "de": "Duits",
+    "en": "Engels",
+    "fr": "Frans",
+    "es": "Spaans",
+    "it": "Italiaans",
+    "pt": "Portugees",
+    "nl": "Nederlands",
+    "pl": "Pools",
+    "ru": "Russisch",
+    "ja": "Japans",
+    "zh": "Chinees",
+    "random": "Willekeurig"
+  }
+}

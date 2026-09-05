@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "zh",
+    "name": "中文",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (阿拉伯语)",
+      "local": "阿拉伯语"
+    },
+    "bg": {
+      "native": "Български (保加利亚语)",
+      "local": "保加利亚语"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "波斯尼亚语"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "捷克语"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "丹麦语"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "德语"
+    },
+    "el": {
+      "native": "Ελληνικά (希腊语)",
+      "local": "希腊语"
+    },
+    "en": {
+      "native": "English",
+      "local": "英语"
+    },
+    "es": {
+      "native": "Español",
+      "local": "西班牙语"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "爱沙尼亚语"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "芬兰语"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "法语"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "爱尔兰语"
+    },
+    "hi": {
+      "native": "हिन्दी (印地语)",
+      "local": "印地语"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "克罗地亚语"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "匈牙利语"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "意大利语"
+    },
+    "ja": {
+      "native": "日本語 (日语)",
+      "local": "日语"
+    },
+    "ka": {
+      "native": "ქართული (格鲁吉亚语)",
+      "local": "格鲁吉亚语"
+    },
+    "ko": {
+      "native": "한국어 (韩语)",
+      "local": "韩语"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "立陶宛语"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "拉脱维亚语"
+    },
+    "mk": {
+      "native": "Македонски (马其顿语)",
+      "local": "马其顿语"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "摩尔多瓦语"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "马耳他语"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "荷兰语"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "波兰语"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "葡萄牙语"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "罗马尼亚语"
+    },
+    "ru": {
+      "native": "Русский (俄语)",
+      "local": "俄语"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "斯洛伐克语"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "斯洛文尼亚语"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "阿尔巴尼亚语"
+    },
+    "sr": {
+      "native": "Српски (塞尔维亚语)",
+      "local": "塞尔维亚语"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "瑞典语"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "土耳其语"
+    },
+    "uk": {
+      "native": "Українська (乌克兰语)",
+      "local": "乌克兰语"
+    },
+    "zh": {
+      "native": "中文 (中文)",
+      "local": "中文"
+    }
+  },
+  "app": {
+    "documentTitle": "提示词构建器 – 结构化 XML 编辑器",
+    "title": "提示词构建器"
+  },
+  "toolbar": {
+    "example": "示例",
+    "templatesOpen": "打开模板",
+    "protocol": "日志",
+    "showXml": "显示 XML",
+    "hideXml": "隐藏 XML",
+    "reset": "重置",
+    "options": "选项",
+    "language": "语言",
+    "templatesLabel": "模板",
+    "moreTemplates": "更多..."
+  },
+  "protocol": {
+    "title": "日志",
+    "clear": "清空",
+    "close": "关闭日志",
+    "validate": "检查",
+    "empty": "暂无条目。点击“检查”立即验证结构。",
+    "noErrors": "没有错误。",
+    "xmlApplied": "XML 已成功应用。",
+    "gesamtApplied": "总体配置已成功应用。",
+    "mixedContent": "导入提示：检测到混合内容。{n} 个文本块已自动包裹进 <Parent_text> 标签中。",
+    "containerMoved": "提示：<{parent}> 的内容已移动到 <{leaf}>，因为容器标签不应包含直接文本。",
+    "invalidXml": "XML 无效。",
+    "invalidXmlDetail": "XML 无效：{detail}",
+    "invalidXmlLine": "XML 无效 – 第 {line} 行",
+    "invalidXmlLineCol": "XML 无效 – 第 {line} 行，第 {col} 列",
+    "invalidXmlLineColDetail": "XML 无效 – 第 {line} 行，第 {col} 列：{detail}",
+    "invalidXmlLineDetail": "XML 无效 – 第 {line} 行：{detail}",
+    "noGesamt": "未找到有效的总体配置。",
+    "networkError": "网络错误",
+    "noPage": "没有页面",
+    "textTooShort": "文本过短",
+    "errorPrefix": "错误：",
+    "linePrefix": "第 {line} 行："
+  },
+  "language": {
+    "title": "语言",
+    "close": "关闭语言菜单",
+    "searchPlaceholder": "搜索语言…",
+    "searchAria": "搜索语言",
+    "empty": "未找到语言。",
+    "selected": "已选择"
+  },
+  "tabs": {
+    "namePlaceholder": "标签页名称",
+    "nameAria": "标签页名称",
+    "duplicate": "复制",
+    "duplicateTitle": "复制当前标签页",
+    "close": "关闭标签页",
+    "new": "新建标签页",
+    "defaultTitle": "提示词 {n}",
+    "copySuffix": " 副本",
+    "confirmResetLast": "要重置最后一个标签页吗？",
+    "confirmReplaceTemplate": "要用模板替换当前结构吗？"
+  },
+  "outline": {
+    "empty": "暂无元素。请在下方创建一个元素或注释。",
+    "addElement": "+ 元素",
+    "addComment": "+ 注释",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ 子项",
+    "delete": "删除",
+    "copyResult": "复制结果",
+    "copied": "✓ 已复制",
+    "copiedShort": "✓",
+    "confirmDelete": "确定要删除吗？",
+    "confirmReset": "要清空所有内容吗？",
+    "commentLabel": "注释",
+    "noName": "（未命名）",
+    "expand": "展开",
+    "collapse": "折叠",
+    "openEditor": "在编辑器中打开"
+  },
+  "detail": {
+    "empty": "请在左侧选择一个元素，或在下方创建新元素。",
+    "level": "第 {n} 级",
+    "commentHeading": "💬 注释",
+    "tagPlaceholder": "标签名称",
+    "tagAria": "标签名称",
+    "textPlaceholder": "此元素的文本…",
+    "commentPlaceholder": "注释…",
+    "containerPlaceholder": "此标签是一个容器。",
+    "textAria": "元素文本",
+    "commentAria": "注释文本",
+    "moveUp": "上移",
+    "moveDown": "下移",
+    "copy": "复制",
+    "copyTitle": "复制所选项目",
+    "paste": "粘贴",
+    "pasteTitle": "粘贴已复制的项目",
+    "find": "搜索",
+    "findTitle": "查找和替换",
+    "options": "选项",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Wiki 设置 ›",
+    "wikiLang": "语言",
+    "wikiChars": "约字符数",
+    "wikiInsert": "插入",
+    "wikiClose": "关闭",
+    "wikiLoading": "加载中…",
+    "wikiAria": "Wiki 设置",
+    "back": "返回",
+    "closeEditor": "关闭编辑器"
+  },
+  "source": {
+    "title": "XML 代码",
+    "gesamtTitle": "总体配置",
+    "options": "选项",
+    "find": "搜索",
+    "wrapOn": "已启用自动换行",
+    "wrapOff": "已禁用自动换行",
+    "wrapTitle": "切换自动换行",
+    "gesamt": "总体",
+    "tabXml": "标签页 XML",
+    "gesamtConfig": "总体配置",
+    "gesamtTitleBtn": "显示所有标签页的总体配置",
+    "tabXmlTitle": "显示单个标签页的 XML",
+    "close": "关闭 XML",
+    "placeholder": "粘贴 XML 提示词…",
+    "aria": "XML 源代码",
+    "apply": "应用",
+    "copy": "复制"
+  },
+  "find": {
+    "placeholder": "搜索…",
+    "replacePlaceholder": "替换…",
+    "ariaFind": "搜索词",
+    "ariaReplace": "替换文本",
+    "prev": "上一个匹配项",
+    "next": "下一个匹配项",
+    "prevTitle": "上一个",
+    "nextTitle": "下一个",
+    "close": "关闭搜索",
+    "closeTitle": "关闭",
+    "replace": "替换",
+    "replaceTitle": "替换当前匹配项",
+    "replaceAll": "全部",
+    "replaceAllTitle": "替换所有匹配项",
+    "caseTitle": "区分大小写",
+    "regexTitle": "正则表达式",
+    "replaced": "已替换 {n} 处",
+    "regexError": "正则表达式错误！"
+  },
+  "chars": {
+    "count": "{n} 个字符",
+    "selected": " · 已选 {n} 个"
+  },
+  "validation": {
+    "tagNoName": "标签没有名称 – 第 {line} 行",
+    "tagInvalid": "标签 <{tag}> 包含无效字符 – 第 {line} 行",
+    "genericTag": "警告：<{tag}> 过于笼统。请使用具描述性的名称，例如用 <customer_request> 代替 <data>（XML：Use consistent, descriptive tag names）{line}",
+    "depth": "警告：<{tag}> 中的嵌套深度为 {depth}。超过 4 层会增加理解难度。{line}",
+    "exampleHint": "提示：<example> 应包裹在 <examples> 中（XML）{line}",
+    "emptyTag": "提示：<{tag}> 为空{line}",
+    "lineSuffix": " · 第 ~{line} 行"
+  },
+  "wiki": {
+    "de": "德语",
+    "en": "英语",
+    "fr": "法语",
+    "es": "西班牙语",
+    "it": "意大利语",
+    "pt": "葡萄牙语",
+    "nl": "荷兰语",
+    "pl": "波兰语",
+    "ru": "俄语",
+    "ja": "日语",
+    "zh": "中文",
+    "random": "随机"
+  }
+}

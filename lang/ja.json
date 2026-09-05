@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "ja",
+    "name": "日本語",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (アラビア語)",
+      "local": "アラビア語"
+    },
+    "bg": {
+      "native": "Български (ブルガリア語)",
+      "local": "ブルガリア語"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "ボスニア語"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "チェコ語"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "デンマーク語"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "ドイツ語"
+    },
+    "el": {
+      "native": "Ελληνικά (ギリシャ語)",
+      "local": "ギリシャ語"
+    },
+    "en": {
+      "native": "English",
+      "local": "英語"
+    },
+    "es": {
+      "native": "Español",
+      "local": "スペイン語"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "エストニア語"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "フィンランド語"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "フランス語"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "アイルランド語"
+    },
+    "hi": {
+      "native": "हिन्दी (ヒンディー語)",
+      "local": "ヒンディー語"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "クロアチア語"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "ハンガリー語"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "イタリア語"
+    },
+    "ja": {
+      "native": "日本語 (日本語)",
+      "local": "日本語"
+    },
+    "ka": {
+      "native": "ქართული (グルジア語)",
+      "local": "グルジア語"
+    },
+    "ko": {
+      "native": "한국어 (韓国語)",
+      "local": "韓国語"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "リトアニア語"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "ラトビア語"
+    },
+    "mk": {
+      "native": "Македонски (マケドニア語)",
+      "local": "マケドニア語"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "モルドバ語"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "マルタ語"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "オランダ語"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "ポーランド語"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "ポルトガル語"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "ルーマニア語"
+    },
+    "ru": {
+      "native": "Русский (ロシア語)",
+      "local": "ロシア語"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "スロバキア語"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "スロベニア語"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "アルバニア語"
+    },
+    "sr": {
+      "native": "Српски (セルビア語)",
+      "local": "セルビア語"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "スウェーデン語"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "トルコ語"
+    },
+    "uk": {
+      "native": "Українська (ウクライナ語)",
+      "local": "ウクライナ語"
+    },
+    "zh": {
+      "native": "中文 (中国語)",
+      "local": "中国語"
+    }
+  },
+  "app": {
+    "documentTitle": "プロンプトビルダー – 構造化 XML エディター",
+    "title": "プロンプトビルダー"
+  },
+  "toolbar": {
+    "example": "例",
+    "templatesOpen": "テンプレートを開く",
+    "protocol": "ログ",
+    "showXml": "XMLを表示",
+    "hideXml": "XMLを非表示",
+    "reset": "リセット",
+    "options": "オプション",
+    "language": "言語",
+    "templatesLabel": "テンプレート",
+    "moreTemplates": "もっと見る..."
+  },
+  "protocol": {
+    "title": "ログ",
+    "clear": "クリア",
+    "close": "ログを閉じる",
+    "validate": "チェック",
+    "empty": "まだ項目がありません。「チェック」をタップして今すぐ構造を検証してください。",
+    "noErrors": "エラーはありません。",
+    "xmlApplied": "XMLが正常に適用されました。",
+    "gesamtApplied": "統合構成が正常に適用されました。",
+    "mixedContent": "インポートに関する注記：混在コンテンツが検出されました。{n}個のテキストブロックが自動的に<Parent_text>タグで囲まれました。",
+    "containerMoved": "注記：コンテナタグに直接テキストを含めるべきではないため、<{parent}>の内容が<{leaf}>に移動されました。",
+    "invalidXml": "無効なXMLです。",
+    "invalidXmlDetail": "無効なXML: {detail}",
+    "invalidXmlLine": "無効なXML – {line}行目",
+    "invalidXmlLineCol": "無効なXML – {line}行目、{col}列目",
+    "invalidXmlLineColDetail": "無効なXML – {line}行目、{col}列目: {detail}",
+    "invalidXmlLineDetail": "無効なXML – {line}行目: {detail}",
+    "noGesamt": "有効な統合構成が見つかりません。",
+    "networkError": "ネットワークエラー",
+    "noPage": "ページがありません",
+    "textTooShort": "テキストが短すぎます",
+    "errorPrefix": "エラー: ",
+    "linePrefix": "{line}行目: "
+  },
+  "language": {
+    "title": "言語",
+    "close": "言語メニューを閉じる",
+    "searchPlaceholder": "言語を検索…",
+    "searchAria": "言語を検索",
+    "empty": "言語が見つかりません。",
+    "selected": "選択済み"
+  },
+  "tabs": {
+    "namePlaceholder": "タブ名",
+    "nameAria": "タブ名",
+    "duplicate": "複製",
+    "duplicateTitle": "現在のタブを複製",
+    "close": "タブを閉じる",
+    "new": "新しいタブ",
+    "defaultTitle": "プロンプト {n}",
+    "copySuffix": " コピー",
+    "confirmResetLast": "最後のタブをリセットしますか？",
+    "confirmReplaceTemplate": "現在の構造をテンプレートに置き換えますか？"
+  },
+  "outline": {
+    "empty": "まだ要素がありません。下に要素またはコメントを作成してください。",
+    "addElement": "+ 要素",
+    "addComment": "+ コメント",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ サブ項目",
+    "delete": "削除",
+    "copyResult": "結果をコピー",
+    "copied": "✓ コピーしました",
+    "copiedShort": "✓",
+    "confirmDelete": "本当に削除しますか？",
+    "confirmReset": "すべて削除しますか？",
+    "commentLabel": "メモ",
+    "noName": "（名前なし）",
+    "expand": "展開",
+    "collapse": "折りたたむ",
+    "openEditor": "エディターで開く"
+  },
+  "detail": {
+    "empty": "左側で要素を選択するか、下に新しい要素を作成してください。",
+    "level": "レベル {n}",
+    "commentHeading": "💬 メモ",
+    "tagPlaceholder": "タグ名",
+    "tagAria": "タグ名",
+    "textPlaceholder": "この要素のテキスト…",
+    "commentPlaceholder": "メモ…",
+    "containerPlaceholder": "このタグはコンテナです。",
+    "textAria": "要素のテキスト",
+    "commentAria": "コメントのテキスト",
+    "moveUp": "上に移動",
+    "moveDown": "下に移動",
+    "copy": "コピー",
+    "copyTitle": "選択した項目をコピー",
+    "paste": "貼り付け",
+    "pasteTitle": "コピーした項目を貼り付け",
+    "find": "検索",
+    "findTitle": "検索と置換",
+    "options": "オプション",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Wiki設定 ›",
+    "wikiLang": "言語",
+    "wikiChars": "約文字数",
+    "wikiInsert": "挿入",
+    "wikiClose": "閉じる",
+    "wikiLoading": "読み込み中…",
+    "wikiAria": "Wiki設定",
+    "back": "戻る",
+    "closeEditor": "エディターを閉じる"
+  },
+  "source": {
+    "title": "XMLコード",
+    "gesamtTitle": "統合構成",
+    "options": "オプション",
+    "find": "検索",
+    "wrapOn": "折り返しオン",
+    "wrapOff": "折り返しオフ",
+    "wrapTitle": "折り返しを切り替え",
+    "gesamt": "統合",
+    "tabXml": "タブのXML",
+    "gesamtConfig": "統合構成",
+    "gesamtTitleBtn": "すべてのタブの統合構成を表示",
+    "tabXmlTitle": "単一タブのXMLを表示",
+    "close": "XMLを閉じる",
+    "placeholder": "XMLプロンプトを貼り付け…",
+    "aria": "XMLソースコード",
+    "apply": "適用",
+    "copy": "コピー"
+  },
+  "find": {
+    "placeholder": "検索…",
+    "replacePlaceholder": "置換…",
+    "ariaFind": "検索語",
+    "ariaReplace": "置換テキスト",
+    "prev": "前の一致",
+    "next": "次の一致",
+    "prevTitle": "前へ",
+    "nextTitle": "次へ",
+    "close": "検索を閉じる",
+    "closeTitle": "閉じる",
+    "replace": "置換",
+    "replaceTitle": "現在の一致を置換",
+    "replaceAll": "すべて",
+    "replaceAllTitle": "すべての一致を置換",
+    "caseTitle": "大文字と小文字を区別",
+    "regexTitle": "正規表現",
+    "replaced": "{n}件を置換しました",
+    "regexError": "正規表現エラー！"
+  },
+  "chars": {
+    "count": "{n}文字",
+    "selected": " ・{n}件選択中"
+  },
+  "validation": {
+    "tagNoName": "名前のないタグ – {line}行目",
+    "tagInvalid": "タグ <{tag}> に無効な文字が含まれています – {line}行目",
+    "genericTag": "警告：<{tag}> は汎用的すぎます。<data> の代わりに <customer_request> のような説明的な名前を使用してください（XML: Use consistent, descriptive tag names）{line}",
+    "depth": "警告：<{tag}> のネストの深さが {depth} です。4階層を超えると理解が難しくなります。{line}",
+    "exampleHint": "注記：<example> は <examples> で囲む必要があります（XML）{line}",
+    "emptyTag": "注記：<{tag}> は空です{line}",
+    "lineSuffix": " ・{line}行目付近"
+  },
+  "wiki": {
+    "de": "ドイツ語",
+    "en": "英語",
+    "fr": "フランス語",
+    "es": "スペイン語",
+    "it": "イタリア語",
+    "pt": "ポルトガル語",
+    "nl": "オランダ語",
+    "pl": "ポーランド語",
+    "ru": "ロシア語",
+    "ja": "日本語",
+    "zh": "中国語",
+    "random": "ランダム"
+  }
+}

@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "sv",
+    "name": "Svenska",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Arabiska)",
+      "local": "arabiska"
+    },
+    "bg": {
+      "native": "Български (Bulgariska)",
+      "local": "bulgariska"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "bosniska"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "tjeckiska"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "danska"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "tyska"
+    },
+    "el": {
+      "native": "Ελληνικά (Grekiska)",
+      "local": "grekiska"
+    },
+    "en": {
+      "native": "English",
+      "local": "engelska"
+    },
+    "es": {
+      "native": "Español",
+      "local": "spanska"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "estniska"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "finska"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "franska"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "iriska"
+    },
+    "hi": {
+      "native": "हिन्दी (Hindi)",
+      "local": "hindi"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "kroatiska"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "ungerska"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "italienska"
+    },
+    "ja": {
+      "native": "日本語 (Japanska)",
+      "local": "japanska"
+    },
+    "ka": {
+      "native": "ქართული (Georgiska)",
+      "local": "georgiska"
+    },
+    "ko": {
+      "native": "한국어 (Koreanska)",
+      "local": "koreanska"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "litauiska"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "lettiska"
+    },
+    "mk": {
+      "native": "Македонски (Makedonska)",
+      "local": "makedonska"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "moldaviska"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "maltesiska"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "nederländska"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "polska"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "portugisiska"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "rumänska"
+    },
+    "ru": {
+      "native": "Русский (Ryska)",
+      "local": "ryska"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "slovakiska"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "slovenska"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "albanska"
+    },
+    "sr": {
+      "native": "Српски (Serbiska)",
+      "local": "serbiska"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "svenska"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "turkiska"
+    },
+    "uk": {
+      "native": "Українська (Ukrainska)",
+      "local": "ukrainska"
+    },
+    "zh": {
+      "native": "中文 (Kinesiska)",
+      "local": "kinesiska"
+    }
+  },
+  "app": {
+    "documentTitle": "Prompt-byggsats – Strukturerad XML-editor",
+    "title": "Prompt-byggsats"
+  },
+  "toolbar": {
+    "example": "Exempel",
+    "templatesOpen": "Öppna mallar",
+    "protocol": "Logg",
+    "showXml": "Visa XML",
+    "hideXml": "Dölj XML",
+    "reset": "Återställ",
+    "options": "Alternativ",
+    "language": "Språk",
+    "templatesLabel": "Mallar",
+    "moreTemplates": "Fler..."
+  },
+  "protocol": {
+    "title": "Logg",
+    "clear": "Rensa",
+    "close": "Stäng logg",
+    "validate": "Kontrollera",
+    "empty": "Inga poster ännu. Tryck på ”Kontrollera” för att validera strukturen nu.",
+    "noErrors": "Inga fel.",
+    "xmlApplied": "XML tillämpades.",
+    "gesamtApplied": "Samlad konfiguration tillämpades.",
+    "mixedContent": "Importnotering: blandat innehåll upptäcktes. {n} textblock omslöts automatiskt med <Parent_text>-taggar.",
+    "containerMoved": "Obs: innehållet i <{parent}> flyttades till <{leaf}>, eftersom container-taggar inte bör innehålla direkt text.",
+    "invalidXml": "Ogiltig XML.",
+    "invalidXmlDetail": "Ogiltig XML: {detail}",
+    "invalidXmlLine": "Ogiltig XML – rad {line}",
+    "invalidXmlLineCol": "Ogiltig XML – rad {line}, kolumn {col}",
+    "invalidXmlLineColDetail": "Ogiltig XML – rad {line}, kolumn {col}: {detail}",
+    "invalidXmlLineDetail": "Ogiltig XML – rad {line}: {detail}",
+    "noGesamt": "Ingen giltig samlad konfiguration hittades.",
+    "networkError": "Nätverksfel",
+    "noPage": "Ingen sida",
+    "textTooShort": "Texten är för kort",
+    "errorPrefix": "Fel: ",
+    "linePrefix": "Rad {line}: "
+  },
+  "language": {
+    "title": "Språk",
+    "close": "Stäng språkmenyn",
+    "searchPlaceholder": "Sök språk…",
+    "searchAria": "Sök språk",
+    "empty": "Inget språk hittades.",
+    "selected": "Vald"
+  },
+  "tabs": {
+    "namePlaceholder": "Flikens namn",
+    "nameAria": "Flikens namn",
+    "duplicate": "Duplicera",
+    "duplicateTitle": "Duplicera aktuell flik",
+    "close": "Stäng flik",
+    "new": "Ny flik",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " Kopia",
+    "confirmResetLast": "Återställa den senaste fliken?",
+    "confirmReplaceTemplate": "Ersätta den aktuella strukturen med mallen?"
+  },
+  "outline": {
+    "empty": "Inga element ännu. Skapa ett element eller en kommentar nedan.",
+    "addElement": "+ Element",
+    "addComment": "+ Kommentar",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Underpunkt",
+    "delete": "Ta bort",
+    "copyResult": "Kopiera resultat",
+    "copied": "✓ Kopierat",
+    "copiedShort": "✓",
+    "confirmDelete": "Verkligen ta bort?",
+    "confirmReset": "Rensa allt?",
+    "commentLabel": "Anteckning",
+    "noName": "(namnlös)",
+    "expand": "Expandera",
+    "collapse": "Fäll ihop",
+    "openEditor": "Öppna i editor"
+  },
+  "detail": {
+    "empty": "Välj ett element till vänster eller skapa ett nytt nedan.",
+    "level": "Nivå {n}",
+    "commentHeading": "💬 Anteckning",
+    "tagPlaceholder": "tagg-namn",
+    "tagAria": "Taggens namn",
+    "textPlaceholder": "Text för detta element…",
+    "commentPlaceholder": "Anteckning…",
+    "containerPlaceholder": "Denna tagg är en container.",
+    "textAria": "Elementtext",
+    "commentAria": "Kommentarstext",
+    "moveUp": "Flytta upp",
+    "moveDown": "Flytta ner",
+    "copy": "Kopiera",
+    "copyTitle": "Kopiera vald punkt",
+    "paste": "Klistra in",
+    "pasteTitle": "Klistra in kopierad punkt",
+    "find": "Sök",
+    "findTitle": "Sök och ersätt",
+    "options": "Alternativ",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Wiki-inställningar ›",
+    "wikiLang": "Språk",
+    "wikiChars": "ca tecken",
+    "wikiInsert": "Infoga",
+    "wikiClose": "Stäng",
+    "wikiLoading": "Laddar…",
+    "wikiAria": "Wiki-inställningar",
+    "back": "Tillbaka",
+    "closeEditor": "Stäng editor"
+  },
+  "source": {
+    "title": "XML-kod",
+    "gesamtTitle": "Samlad konfiguration",
+    "options": "Alternativ",
+    "find": "Sök",
+    "wrapOn": "Radbrytning på",
+    "wrapOff": "Radbrytning av",
+    "wrapTitle": "Växla radbrytning",
+    "gesamt": "Samlad",
+    "tabXml": "Flikens XML",
+    "gesamtConfig": "Samlad konfiguration",
+    "gesamtTitleBtn": "Visa samlad konfiguration för alla flikar",
+    "tabXmlTitle": "Visa XML för en enskild flik",
+    "close": "Stäng XML",
+    "placeholder": "Klistra in XML-prompt…",
+    "aria": "XML-källkod",
+    "apply": "Tillämpa",
+    "copy": "Kopiera"
+  },
+  "find": {
+    "placeholder": "Sök…",
+    "replacePlaceholder": "Ersätt…",
+    "ariaFind": "Sökterm",
+    "ariaReplace": "Ersättningstext",
+    "prev": "Föregående träff",
+    "next": "Nästa träff",
+    "prevTitle": "Föregående",
+    "nextTitle": "Nästa",
+    "close": "Stäng sökning",
+    "closeTitle": "Stäng",
+    "replace": "Ersätt",
+    "replaceTitle": "Ersätt aktuell träff",
+    "replaceAll": "Alla",
+    "replaceAllTitle": "Ersätt alla träffar",
+    "caseTitle": "Skiftlägeskänslig",
+    "regexTitle": "Reguljärt uttryck",
+    "replaced": "{n} ersatta",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} tecken",
+    "selected": " · {n} valda"
+  },
+  "validation": {
+    "tagNoName": "Tagg utan namn – rad {line}",
+    "tagInvalid": "Taggen <{tag}> innehåller ogiltiga tecken – rad {line}",
+    "genericTag": "Varning: <{tag}> är för generisk. Använd beskrivande namn som <kundforfragan> istället för <data> (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Varning: nästlingsdjup {depth} i <{tag}>. Fler än 4 nivåer försvårar förståelsen.{line}",
+    "exampleHint": "Obs: <example> bör omslutas av <examples> (XML){line}",
+    "emptyTag": "Obs: <{tag}> är tom{line}",
+    "lineSuffix": " · Rad ~{line}"
+  },
+  "wiki": {
+    "de": "Tyska",
+    "en": "Engelska",
+    "fr": "Franska",
+    "es": "Spanska",
+    "it": "Italienska",
+    "pt": "Portugisiska",
+    "nl": "Nederländska",
+    "pl": "Polska",
+    "ru": "Ryska",
+    "ja": "Japanska",
+    "zh": "Kinesiska",
+    "random": "Slumpmässig"
+  }
+}

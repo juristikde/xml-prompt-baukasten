@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "ka",
+    "name": "ქართული",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (არაბული)",
+      "local": "არაბული"
+    },
+    "bg": {
+      "native": "Български (ბულგარული)",
+      "local": "ბულგარული"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "ბოსნიური"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "ჩეხური"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "დანიური"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "გერმანული"
+    },
+    "el": {
+      "native": "Ελληνικά (ბერძნული)",
+      "local": "ბერძნული"
+    },
+    "en": {
+      "native": "English",
+      "local": "ინგლისური"
+    },
+    "es": {
+      "native": "Español",
+      "local": "ესპანური"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "ესტონური"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "ფინური"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "ფრანგული"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "ირლანდიური"
+    },
+    "hi": {
+      "native": "हिन्दी (ჰინდი)",
+      "local": "ჰინდი"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "ხორვატული"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "უნგრული"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "იტალიური"
+    },
+    "ja": {
+      "native": "日本語 (იაპონური)",
+      "local": "იაპონური"
+    },
+    "ka": {
+      "native": "ქართული (ქართული)",
+      "local": "ქართული"
+    },
+    "ko": {
+      "native": "한국어 (კორეული)",
+      "local": "კორეული"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "ლიტვური"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "ლატვიური"
+    },
+    "mk": {
+      "native": "Македонски (მაკედონური)",
+      "local": "მაკედონური"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "მოლდავური"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "მალტური"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "ნიდერლანდური"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "პოლონური"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "პორტუგალიური"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "რუმინული"
+    },
+    "ru": {
+      "native": "Русский (რუსული)",
+      "local": "რუსული"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "სლოვაკური"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "სლოვენური"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "ალბანური"
+    },
+    "sr": {
+      "native": "Српски (სერბული)",
+      "local": "სერბული"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "შვედური"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "თურქული"
+    },
+    "uk": {
+      "native": "Українська (უკრაინული)",
+      "local": "უკრაინული"
+    },
+    "zh": {
+      "native": "中文 (ჩინური)",
+      "local": "ჩინური"
+    }
+  },
+  "app": {
+    "documentTitle": "პრომპტების კონსტრუქტორი – სტრუქტურირებული XML რედაქტორი",
+    "title": "პრომპტების კონსტრუქტორი"
+  },
+  "toolbar": {
+    "example": "მაგალითი",
+    "templatesOpen": "შაბლონების გახსნა",
+    "protocol": "ჟურნალი",
+    "showXml": "XML-ის ჩვენება",
+    "hideXml": "XML-ის დამალვა",
+    "reset": "გადატვირთვა",
+    "options": "პარამეტრები",
+    "language": "ენა",
+    "templatesLabel": "შაბლონები",
+    "moreTemplates": "მეტი..."
+  },
+  "protocol": {
+    "title": "ჟურნალი",
+    "clear": "გასუფთავება",
+    "close": "ჟურნალის დახურვა",
+    "validate": "შემოწმება",
+    "empty": "ჩანაწერები ჯერ არ არის. შეეხეთ „შემოწმება“-ს სტრუქტურის ახლა შესამოწმებლად.",
+    "noErrors": "შეცდომები არ არის.",
+    "xmlApplied": "XML წარმატებით გამოყენებულია.",
+    "gesamtApplied": "საერთო კონფიგურაცია წარმატებით გამოყენებულია.",
+    "mixedContent": "იმპორტის შენიშვნა: აღმოჩენილია შერეული შიგთავსი. {n} ტექსტური ბლოკი ავტომატურად შეიფუთა &lt;Parent_text&gt; ტეგებში.",
+    "containerMoved": "შენიშვნა: &lt;{parent}&gt;-ის შიგთავსი გადატანილია &lt;{leaf}&gt;-ში, რადგან კონტეინერულ ტეგებს პირდაპირი ტექსტი არ უნდა ჰქონდეთ.",
+    "invalidXml": "არასწორი XML.",
+    "invalidXmlDetail": "არასწორი XML: {detail}",
+    "invalidXmlLine": "არასწორი XML – ხაზი {line}",
+    "invalidXmlLineCol": "არასწორი XML – ხაზი {line}, სვეტი {col}",
+    "invalidXmlLineColDetail": "არასწორი XML – ხაზი {line}, სვეტი {col}: {detail}",
+    "invalidXmlLineDetail": "არასწორი XML – ხაზი {line}: {detail}",
+    "noGesamt": "მოქმედი საერთო კონფიგურაცია ვერ მოიძებნა.",
+    "networkError": "ქსელის შეცდომა",
+    "noPage": "გვერდი არ არის",
+    "textTooShort": "ტექსტი ძალიან მოკლეა",
+    "errorPrefix": "შეცდომა: ",
+    "linePrefix": "ხაზი {line}: "
+  },
+  "language": {
+    "title": "ენა",
+    "close": "ენების მენიუს დახურვა",
+    "searchPlaceholder": "ენის ძებნა…",
+    "searchAria": "ენის ძებნა",
+    "empty": "ენა ვერ მოიძებნა.",
+    "selected": "არჩეული"
+  },
+  "tabs": {
+    "namePlaceholder": "ჩანართის სახელი",
+    "nameAria": "ჩანართის სახელი",
+    "duplicate": "დუბლირება",
+    "duplicateTitle": "მიმდინარე ჩანართის დუბლირება",
+    "close": "ჩანართის დახურვა",
+    "new": "ახალი ჩანართი",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " ასლი",
+    "confirmResetLast": "ბოლო ჩანართის გადატვირთვა?",
+    "confirmReplaceTemplate": "მიმდინარე სტრუქტურა შაბლონით შეიცვალოს?"
+  },
+  "outline": {
+    "empty": "ელემენტები ჯერ არ არის. ქვემოთ შექმენით ელემენტი ან კომენტარი.",
+    "addElement": "+ ელემენტი",
+    "addComment": "+ კომენტარი",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ ქვეპუნქტი",
+    "delete": "წაშლა",
+    "copyResult": "შედეგის კოპირება",
+    "copied": "✓ დაკოპირებულია",
+    "copiedShort": "✓",
+    "confirmDelete": "ნამდვილად წაიშალოს?",
+    "confirmReset": "ყველაფერი წაიშალოს?",
+    "commentLabel": "შენიშვნა",
+    "noName": "(უსახელო)",
+    "expand": "გაშლა",
+    "collapse": "ჩაკეცვა",
+    "openEditor": "რედაქტორში გახსნა"
+  },
+  "detail": {
+    "empty": "აირჩიეთ ელემენტი მარცხნივ ან შექმენით ახალი ქვემოთ.",
+    "level": "დონე {n}",
+    "commentHeading": "💬 შენიშვნა",
+    "tagPlaceholder": "ტეგის-სახელი",
+    "tagAria": "ტეგის სახელი",
+    "textPlaceholder": "ტექსტი ამ ელემენტისთვის…",
+    "commentPlaceholder": "შენიშვნა…",
+    "containerPlaceholder": "ეს ტეგი კონტეინერია.",
+    "textAria": "ელემენტის ტექსტი",
+    "commentAria": "კომენტარის ტექსტი",
+    "moveUp": "ზემოთ გადატანა",
+    "moveDown": "ქვემოთ გადატანა",
+    "copy": "კოპირება",
+    "copyTitle": "არჩეული პუნქტის კოპირება",
+    "paste": "ჩასმა",
+    "pasteTitle": "დაკოპირებული პუნქტის ჩასმა",
+    "find": "ძებნა",
+    "findTitle": "ძებნა და ჩანაცვლება",
+    "options": "პარამეტრები",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Wiki პარამეტრები ›",
+    "wikiLang": "ენა",
+    "wikiChars": "დაახლ. სიმბოლო",
+    "wikiInsert": "ჩასმა",
+    "wikiClose": "დახურვა",
+    "wikiLoading": "იტვირთება…",
+    "wikiAria": "Wiki პარამეტრები",
+    "back": "უკან",
+    "closeEditor": "რედაქტორის დახურვა"
+  },
+  "source": {
+    "title": "XML კოდი",
+    "gesamtTitle": "საერთო კონფიგურაცია",
+    "options": "პარამეტრები",
+    "find": "ძებნა",
+    "wrapOn": "გადატანა ჩართულია",
+    "wrapOff": "გადატანა გამორთულია",
+    "wrapTitle": "ხაზის გადატანის გადართვა",
+    "gesamt": "საერთო",
+    "tabXml": "ჩანართის XML",
+    "gesamtConfig": "საერთო კონფიგურაცია",
+    "gesamtTitleBtn": "ყველა ჩანართის საერთო კონფიგურაციის ჩვენება",
+    "tabXmlTitle": "ერთი ჩანართის XML-ის ჩვენება",
+    "close": "XML-ის დახურვა",
+    "placeholder": "ჩასვით XML პრომპტი…",
+    "aria": "XML საწყისი კოდი",
+    "apply": "გამოყენება",
+    "copy": "კოპირება"
+  },
+  "find": {
+    "placeholder": "ძებნა…",
+    "replacePlaceholder": "ჩანაცვლება…",
+    "ariaFind": "საძიებო ტერმინი",
+    "ariaReplace": "ჩასანაცვლებელი ტექსტი",
+    "prev": "წინა დამთხვევა",
+    "next": "შემდეგი დამთხვევა",
+    "prevTitle": "წინა",
+    "nextTitle": "შემდეგი",
+    "close": "ძებნის დახურვა",
+    "closeTitle": "დახურვა",
+    "replace": "ჩანაცვლება",
+    "replaceTitle": "მიმდინარე დამთხვევის ჩანაცვლება",
+    "replaceAll": "ყველა",
+    "replaceAllTitle": "ყველა დამთხვევის ჩანაცვლება",
+    "caseTitle": "რეგისტრის გათვალისწინება",
+    "regexTitle": "რეგულარული გამოსახულება",
+    "replaced": "{n} ჩანაცვლებულია",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} სიმბოლო",
+    "selected": " · {n} მონიშნული"
+  },
+  "validation": {
+    "tagNoName": "ტეგი სახელის გარეშე – ხაზი {line}",
+    "tagInvalid": "ტეგი &lt;{tag}&gt; შეიცავს დაუშვებელ სიმბოლოებს – ხაზი {line}",
+    "genericTag": "გაფრთხილება: &lt;{tag}&gt; ზედმეტად ზოგადია. გამოიყენეთ აღწერითი სახელები, როგორიცაა &lt;klientis_motxovna&gt;, &lt;data&gt;-ს ნაცვლად (XML: Use consistent, descriptive tag names){line}",
+    "depth": "გაფრთხილება: ჩადგმის სიღრმე {depth} ტეგში &lt;{tag}&gt;. 4-ზე მეტი დონე ართულებს გაგებას.{line}",
+    "exampleHint": "შენიშვნა: &lt;example&gt; უნდაიფუთოს &lt;examples&gt;-ში (XML){line}",
+    "emptyTag": "შენიშვნა: &lt;{tag}&gt; ცარიელია{line}",
+    "lineSuffix": " · ხაზი ~{line}"
+  },
+  "wiki": {
+    "de": "გერმანული",
+    "en": "ინგლისური",
+    "fr": "ფრანგული",
+    "es": "ესპანური",
+    "it": "იტალიური",
+    "pt": "პორტუგალიური",
+    "nl": "ჰოლანდიური",
+    "pl": "პოლონური",
+    "ru": "რუსული",
+    "ja": "იაპონური",
+    "zh": "ჩინური",
+    "random": "შემთხვევითი"
+  }
+}

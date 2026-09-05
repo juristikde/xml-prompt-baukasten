@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "de",
+    "name": "Deutsch",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Arabisch)",
+      "local": "Arabisch"
+    },
+    "bg": {
+      "native": "Български (Bulgarisch)",
+      "local": "Bulgarisch"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "Bosnisch"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "Tschechisch"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "Dänisch"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "Deutsch"
+    },
+    "el": {
+      "native": "Ελληνικά (Griechisch)",
+      "local": "Griechisch"
+    },
+    "en": {
+      "native": "English",
+      "local": "Englisch"
+    },
+    "es": {
+      "native": "Español",
+      "local": "Spanisch"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "Estnisch"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "Finnisch"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "Französisch"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "Irisch"
+    },
+    "hi": {
+      "native": "हिन्दी (Hindi)",
+      "local": "Hindi"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "Kroatisch"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "Ungarisch"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "Italienisch"
+    },
+    "ja": {
+      "native": "日本語 (Japanisch)",
+      "local": "Japanisch"
+    },
+    "ka": {
+      "native": "ქართული (Georgisch)",
+      "local": "Georgisch"
+    },
+    "ko": {
+      "native": "한국어 (Koreanisch)",
+      "local": "Koreanisch"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "Litauisch"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "Lettisch"
+    },
+    "mk": {
+      "native": "Македонски (Mazedonisch)",
+      "local": "Mazedonisch"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "Moldawisch"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "Maltesisch"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "Niederländisch"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "Polnisch"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "Portugiesisch"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "Rumänisch"
+    },
+    "ru": {
+      "native": "Русский (Russisch)",
+      "local": "Russisch"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "Slowakisch"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "Slowenisch"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "Albanisch"
+    },
+    "sr": {
+      "native": "Српски (Serbisch)",
+      "local": "Serbisch"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "Schwedisch"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "Türkisch"
+    },
+    "uk": {
+      "native": "Українська (Ukrainisch)",
+      "local": "Ukrainisch"
+    },
+    "zh": {
+      "native": "中文 (Chinesisch)",
+      "local": "Chinesisch"
+    }
+  },
+  "app": {
+    "documentTitle": "Prompt Baukasten – Strukturierter XML-Editor",
+    "title": "Prompt Baukasten"
+  },
+  "toolbar": {
+    "example": "Beispiel",
+    "templatesOpen": "Vorlagen öffnen",
+    "protocol": "Protokoll",
+    "showXml": "XML anzeigen",
+    "hideXml": "XML ausblenden",
+    "reset": "Zurücksetzen",
+    "options": "Optionen",
+    "language": "Sprache",
+    "templatesLabel": "Vorlagen",
+    "moreTemplates": "Weitere..."
+  },
+  "protocol": {
+    "title": "Protokoll",
+    "clear": "Leeren",
+    "close": "Protokoll schließen",
+    "validate": "Prüfen",
+    "empty": "Noch keine Einträge. Tippe auf „Prüfen“, um die Struktur jetzt zu prüfen.",
+    "noErrors": "Keine Fehler.",
+    "xmlApplied": "XML erfolgreich übernommen.",
+    "gesamtApplied": "Gesamt-Config erfolgreich übernommen.",
+    "mixedContent": "Import-Hinweis: Mixed Content erkannt. {n} Text-Blöcke wurden automatisch in <Parent_text>-Tags umgewandelt.",
+    "containerMoved": "Hinweis: Inhalt von <{parent}> wurde nach <{leaf}> verschoben, da Container-Tags keinen direkten Text enthalten sollten.",
+    "invalidXml": "XML ungültig.",
+    "invalidXmlDetail": "XML ungültig: {detail}",
+    "invalidXmlLine": "XML ungültig – Zeile {line}",
+    "invalidXmlLineCol": "XML ungültig – Zeile {line}, Spalte {col}",
+    "invalidXmlLineColDetail": "XML ungültig – Zeile {line}, Spalte {col}: {detail}",
+    "invalidXmlLineDetail": "XML ungültig – Zeile {line}: {detail}",
+    "noGesamt": "Keine gültige Gesamt-Config gefunden.",
+    "networkError": "Netzwerkfehler",
+    "noPage": "Keine Seite",
+    "textTooShort": "Text zu kurz",
+    "errorPrefix": "Fehler: ",
+    "linePrefix": "Zeile {line}: "
+  },
+  "language": {
+    "title": "Sprache",
+    "close": "Sprachnenü schließen",
+    "searchPlaceholder": "Sprache suchen…",
+    "searchAria": "Sprache suchen",
+    "empty": "Keine Sprache gefunden.",
+    "selected": "Ausgewählt"
+  },
+  "tabs": {
+    "namePlaceholder": "Tab-Name",
+    "nameAria": "Tab-Name",
+    "duplicate": "Duplizieren",
+    "duplicateTitle": "Aktuellen Tab duplizieren",
+    "close": "Tab schließen",
+    "new": "Neuer Tab",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " Kopie",
+    "confirmResetLast": "Letzten Tab zurücksetzen?",
+    "confirmReplaceTemplate": "Aktuelle Struktur durch die Vorlage ersetzen?"
+  },
+  "outline": {
+    "empty": "Noch keine Elemente. Lege unten ein Element oder einen Kommentar an.",
+    "addElement": "+ Element",
+    "addComment": "+ Kommentar",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Unterpunkt",
+    "delete": "Löschen",
+    "copyResult": "Ergebnis kopieren",
+    "copied": "✓ Kopiert",
+    "copiedShort": "✓",
+    "confirmDelete": "Wirklich löschen?",
+    "confirmReset": "Alles löschen?",
+    "commentLabel": "Anmerkung",
+    "noName": "(ohne Namen)",
+    "expand": "Aufklappen",
+    "collapse": "Zuklappen",
+    "openEditor": "Im Editor öffnen"
+  },
+  "detail": {
+    "empty": "Wähle links ein Element aus oder lege unten ein neues an.",
+    "level": "Ebene {n}",
+    "commentHeading": "💬 Anmerkung",
+    "tagPlaceholder": "tag-name",
+    "tagAria": "Tag-Name",
+    "textPlaceholder": "Text für dieses Element…",
+    "commentPlaceholder": "Anmerkung…",
+    "containerPlaceholder": "Dieser Tag ist ein Container.",
+    "textAria": "Elementtext",
+    "commentAria": "Kommentartext",
+    "moveUp": "Nach oben",
+    "moveDown": "Nach unten",
+    "copy": "Kopieren",
+    "copyTitle": "Ausgewählten Punkt kopieren",
+    "paste": "Einfügen",
+    "pasteTitle": "Kopierten Punkt einfügen",
+    "find": "Suchen",
+    "findTitle": "Suchen und Ersetzen",
+    "options": "Optionen",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Wiki-Einstellungen ›",
+    "wikiLang": "Sprache",
+    "wikiChars": "ca. Zeichen",
+    "wikiInsert": "Einfügen",
+    "wikiClose": "Schließen",
+    "wikiLoading": "Lade…",
+    "wikiAria": "Wiki-Einstellungen",
+    "back": "Zurück",
+    "closeEditor": "Editor schließen"
+  },
+  "source": {
+    "title": "XML-Code",
+    "gesamtTitle": "Gesamt-Config",
+    "options": "Optionen",
+    "find": "Suchen",
+    "wrapOn": "Umbruch an",
+    "wrapOff": "Umbruch aus",
+    "wrapTitle": "Zeilenumbruch umschalten",
+    "gesamt": "Gesamt",
+    "tabXml": "Tab-XML",
+    "gesamtConfig": "Gesamt-Config",
+    "gesamtTitleBtn": "Gesamt-Config aller Tabs anzeigen",
+    "tabXmlTitle": "Einzelnen Tab-XML anzeigen",
+    "close": "XML schließen",
+    "placeholder": "XML-Prompt einfügen…",
+    "aria": "XML-Quellcode",
+    "apply": "Übernehmen",
+    "copy": "Kopieren"
+  },
+  "find": {
+    "placeholder": "Suchen…",
+    "replacePlaceholder": "Ersetzen…",
+    "ariaFind": "Suchbegriff",
+    "ariaReplace": "Ersatztext",
+    "prev": "Vorheriges Vorkommen",
+    "next": "Nächstes Vorkommen",
+    "prevTitle": "Vorheriges",
+    "nextTitle": "Nächstes",
+    "close": "Suche schließen",
+    "closeTitle": "Schließen",
+    "replace": "Ersetzen",
+    "replaceTitle": "Aktuelles Vorkommen ersetzen",
+    "replaceAll": "Alle",
+    "replaceAllTitle": "Alle Vorkommen ersetzen",
+    "caseTitle": "Groß-/Kleinschreibung beachten",
+    "regexTitle": "Regulärer Ausdruck",
+    "replaced": "{n} ersetzt",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} Zeichen",
+    "selected": " · {n} ausgewählt"
+  },
+  "validation": {
+    "tagNoName": "Tag ohne Namen – Zeile {line}",
+    "tagInvalid": "Tag <{tag}> enthält ungültige Zeichen – Zeile {line}",
+    "genericTag": "Warnung: <{tag}> ist zu generisch. Nutze beschreibende Namen wie <kunden_anfrage> statt <data> (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Warnung: Verschachtelungstiefe {depth} in <{tag}>. Mehr als 4 Ebenen erschweren das Verständnis.{line}",
+    "exampleHint": "Hinweis: <example> sollte in <examples> verpackt sein (XML){line}",
+    "emptyTag": "Hinweis: <{tag}> ist leer{line}",
+    "lineSuffix": " · Zeile ~{line}"
+  },
+  "wiki": {
+    "de": "Deutsch",
+    "en": "English",
+    "fr": "Français",
+    "es": "Español",
+    "it": "Italiano",
+    "pt": "Português",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "ru": "Русский",
+    "ja": "日本語",
+    "zh": "中文",
+    "random": "Zufällig"
+  }
+}

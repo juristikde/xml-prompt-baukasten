@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "it",
+    "name": "Italiano",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Arabo)",
+      "local": "arabo"
+    },
+    "bg": {
+      "native": "Български (Bulgaro)",
+      "local": "bulgaro"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "bosniaco"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "ceco"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "danese"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "tedesco"
+    },
+    "el": {
+      "native": "Ελληνικά (Greco)",
+      "local": "greco"
+    },
+    "en": {
+      "native": "English",
+      "local": "inglese"
+    },
+    "es": {
+      "native": "Español",
+      "local": "spagnolo"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "estone"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "finlandese"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "francese"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "irlandese"
+    },
+    "hi": {
+      "native": "हिन्दी (Hindi)",
+      "local": "hindi"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "croato"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "ungherese"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "italiano"
+    },
+    "ja": {
+      "native": "日本語 (Giapponese)",
+      "local": "giapponese"
+    },
+    "ka": {
+      "native": "ქართული (Georgiano)",
+      "local": "georgiano"
+    },
+    "ko": {
+      "native": "한국어 (Coreano)",
+      "local": "coreano"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "lituano"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "lettone"
+    },
+    "mk": {
+      "native": "Македонски (Macedone)",
+      "local": "macedone"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "moldavo"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "maltese"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "olandese"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "polacco"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "portoghese"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "rumeno"
+    },
+    "ru": {
+      "native": "Русский (Russo)",
+      "local": "russo"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "slovacco"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "sloveno"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "albanese"
+    },
+    "sr": {
+      "native": "Српски (Serbo)",
+      "local": "serbo"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "svedese"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "turco"
+    },
+    "uk": {
+      "native": "Українська (Ucraino)",
+      "local": "ucraino"
+    },
+    "zh": {
+      "native": "中文 (Cinese)",
+      "local": "cinese"
+    }
+  },
+  "app": {
+    "documentTitle": "Costruttore di Prompt – Editor XML strutturato",
+    "title": "Costruttore di Prompt"
+  },
+  "toolbar": {
+    "example": "Esempio",
+    "templatesOpen": "Apri modelli",
+    "protocol": "Registro",
+    "showXml": "Mostra XML",
+    "hideXml": "Nascondi XML",
+    "reset": "Reimposta",
+    "options": "Opzioni",
+    "language": "Lingua",
+    "templatesLabel": "Modelli",
+    "moreTemplates": "Altro..."
+  },
+  "protocol": {
+    "title": "Registro",
+    "clear": "Svuota",
+    "close": "Chiudi registro",
+    "validate": "Verifica",
+    "empty": "Ancora nessuna voce. Tocca «Verifica» per convalidare subito la struttura.",
+    "noErrors": "Nessun errore.",
+    "xmlApplied": "XML applicato con successo.",
+    "gesamtApplied": "Configurazione complessiva applicata con successo.",
+    "mixedContent": "Nota di importazione: rilevato contenuto misto. {n} blocchi di testo sono stati racchiusi automaticamente in tag <Parent_text>.",
+    "containerMoved": "Nota: il contenuto di <{parent}> è stato spostato in <{leaf}>, poiché i tag contenitore non dovrebbero contenere testo diretto.",
+    "invalidXml": "XML non valido.",
+    "invalidXmlDetail": "XML non valido: {detail}",
+    "invalidXmlLine": "XML non valido – riga {line}",
+    "invalidXmlLineCol": "XML non valido – riga {line}, colonna {col}",
+    "invalidXmlLineColDetail": "XML non valido – riga {line}, colonna {col}: {detail}",
+    "invalidXmlLineDetail": "XML non valido – riga {line}: {detail}",
+    "noGesamt": "Nessuna configurazione complessiva valida trovata.",
+    "networkError": "Errore di rete",
+    "noPage": "Nessuna pagina",
+    "textTooShort": "Testo troppo breve",
+    "errorPrefix": "Errore: ",
+    "linePrefix": "Riga {line}: "
+  },
+  "language": {
+    "title": "Lingua",
+    "close": "Chiudi menu lingua",
+    "searchPlaceholder": "Cerca lingua…",
+    "searchAria": "Cerca lingua",
+    "empty": "Nessuna lingua trovata.",
+    "selected": "Selezionata"
+  },
+  "tabs": {
+    "namePlaceholder": "Nome scheda",
+    "nameAria": "Nome scheda",
+    "duplicate": "Duplica",
+    "duplicateTitle": "Duplica la scheda corrente",
+    "close": "Chiudi scheda",
+    "new": "Nuova scheda",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " Copia",
+    "confirmResetLast": "Reimpostare l'ultima scheda?",
+    "confirmReplaceTemplate": "Sostituire la struttura corrente con il modello?"
+  },
+  "outline": {
+    "empty": "Ancora nessun elemento. Crea un elemento o un commento qui sotto.",
+    "addElement": "+ Elemento",
+    "addComment": "+ Commento",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Sottopunto",
+    "delete": "Elimina",
+    "copyResult": "Copia risultato",
+    "copied": "✓ Copiato",
+    "copiedShort": "✓",
+    "confirmDelete": "Eliminare davvero?",
+    "confirmReset": "Cancellare tutto?",
+    "commentLabel": "Nota",
+    "noName": "(senza nome)",
+    "expand": "Espandi",
+    "collapse": "Comprimi",
+    "openEditor": "Apri nell'editor"
+  },
+  "detail": {
+    "empty": "Seleziona un elemento a sinistra o creane uno nuovo qui sotto.",
+    "level": "Livello {n}",
+    "commentHeading": "💬 Nota",
+    "tagPlaceholder": "nome-tag",
+    "tagAria": "Nome del tag",
+    "textPlaceholder": "Testo per questo elemento…",
+    "commentPlaceholder": "Nota…",
+    "containerPlaceholder": "Questo tag è un contenitore.",
+    "textAria": "Testo dell'elemento",
+    "commentAria": "Testo del commento",
+    "moveUp": "Sposta su",
+    "moveDown": "Sposta giù",
+    "copy": "Copia",
+    "copyTitle": "Copia elemento selezionato",
+    "paste": "Incolla",
+    "pasteTitle": "Incolla elemento copiato",
+    "find": "Cerca",
+    "findTitle": "Trova e sostituisci",
+    "options": "Opzioni",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Impostazioni Wiki ›",
+    "wikiLang": "Lingua",
+    "wikiChars": "caratteri circa",
+    "wikiInsert": "Inserisci",
+    "wikiClose": "Chiudi",
+    "wikiLoading": "Caricamento…",
+    "wikiAria": "Impostazioni Wiki",
+    "back": "Indietro",
+    "closeEditor": "Chiudi editor"
+  },
+  "source": {
+    "title": "Codice XML",
+    "gesamtTitle": "Configurazione complessiva",
+    "options": "Opzioni",
+    "find": "Cerca",
+    "wrapOn": "A capo automatico attivo",
+    "wrapOff": "A capo automatico disattivo",
+    "wrapTitle": "Attiva/disattiva a capo automatico",
+    "gesamt": "Complessiva",
+    "tabXml": "XML della scheda",
+    "gesamtConfig": "Configurazione complessiva",
+    "gesamtTitleBtn": "Mostra la configurazione complessiva di tutte le schede",
+    "tabXmlTitle": "Mostra l'XML di una singola scheda",
+    "close": "Chiudi XML",
+    "placeholder": "Incolla prompt XML…",
+    "aria": "Codice sorgente XML",
+    "apply": "Applica",
+    "copy": "Copia"
+  },
+  "find": {
+    "placeholder": "Cerca…",
+    "replacePlaceholder": "Sostituisci…",
+    "ariaFind": "Termine di ricerca",
+    "ariaReplace": "Testo sostitutivo",
+    "prev": "Occorrenza precedente",
+    "next": "Occorrenza successiva",
+    "prevTitle": "Precedente",
+    "nextTitle": "Successiva",
+    "close": "Chiudi ricerca",
+    "closeTitle": "Chiudi",
+    "replace": "Sostituisci",
+    "replaceTitle": "Sostituisci l'occorrenza corrente",
+    "replaceAll": "Tutte",
+    "replaceAllTitle": "Sostituisci tutte le occorrenze",
+    "caseTitle": "Maiuscole/minuscole",
+    "regexTitle": "Espressione regolare",
+    "replaced": "{n} sostituite",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} caratteri",
+    "selected": " · {n} selezionati"
+  },
+  "validation": {
+    "tagNoName": "Tag senza nome – riga {line}",
+    "tagInvalid": "Il tag <{tag}> contiene caratteri non validi – riga {line}",
+    "genericTag": "Avviso: <{tag}> è troppo generico. Usa nomi descrittivi come <richiesta_cliente> invece di <data> (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Avviso: profondità di annidamento {depth} in <{tag}>. Più di 4 livelli rende la comprensione più difficile.{line}",
+    "exampleHint": "Nota: <example> dovrebbe essere racchiuso in <examples> (XML){line}",
+    "emptyTag": "Nota: <{tag}> è vuoto{line}",
+    "lineSuffix": " · Riga ~{line}"
+  },
+  "wiki": {
+    "de": "Tedesco",
+    "en": "Inglese",
+    "fr": "Francese",
+    "es": "Spagnolo",
+    "it": "Italiano",
+    "pt": "Portoghese",
+    "nl": "Olandese",
+    "pl": "Polacco",
+    "ru": "Russo",
+    "ja": "Giapponese",
+    "zh": "Cinese",
+    "random": "Casuale"
+  }
+}

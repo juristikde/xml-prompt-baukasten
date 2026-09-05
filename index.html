@@ -14,6 +14,27 @@
 <meta name="theme-color" content="#faf9f5">
 
 <title>Prompt Baukasten – Strukturierter XML-Editor</title>
+
+<!--
+  =============================================================================
+  KI-HINWEIS / AI INSTRUCTION – IMMER BEACHTEN
+  =============================================================================
+  Diese Webapp nutzt i18n. UI-Texte liegen in JSON-Dateien unter /lang/
+  (z. B. lang/de.json, lang/en.json) nach ISO 639-1.
+
+  Bei JEDER Änderung an dieser HTML/JS-Datei MUSS die KI:
+  1. Prüfen, ob neue oder geänderte sichtbare Texte betroffen sind.
+  2. Entsprechende Keys in allen lang/*.json anlegen, anpassen oder entfernen.
+  3. Den User zusätzlich zum eigentlichen Request darauf hinweisen, welche
+     JSON-Dateien/Keys aktualisiert werden müssen (oder bereits aktualisiert
+     wurden) und dass i18n aktiv ist.
+  4. Niemals Beispiel-Prompts / TEMPLATES-Inhalte übersetzen – nur UI-Chrome.
+  5. Neue UI-Strings ausschließlich über t('key.path') bzw. data-i18n-*
+     Attribute führen, nicht hardcoden.
+
+  URL-Parameter: setLanguage=de (Fallback: Systemsprache, sonst de).
+  =============================================================================
+-->
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -262,6 +283,69 @@
   .btn.icon-only {
     padding: 0;
     width: var(--touch-min);
+  }
+
+  /*
+   * i18n-LAYOUT-REGEL (Referenz: deutsches Layout)
+   * ------------------------------------------------
+   * Die App wird in Deutsch entwickelt; das deutsche Layout ist die Referenz.
+   * Längere Übersetzungen dürfen Buttons, Menüs, Panel-Köpfe und Fenster
+   * NICHT breiter/höher machen oder in eine zweite Reihe schieben
+   * (Apple HIG: Truncation). Stattdessen Ellipsis (…) innerhalb der
+   * bestehenden Box. Gilt für alle Sprachen und alle UI-Chromes.
+   * @see https://developer.apple.com/design/human-interface-guidelines
+   */
+  .btn:not(.icon-only):not(.block),
+  .split-btn .split-main,
+  .opt-item,
+  .tpl-item,
+  .menu-back,
+  .protocol-head h2,
+  .language-head h2,
+  .panel-head h2,
+  .language-item .lang-name,
+  #btnLanguage {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  .btn:not(.icon-only):not(.block) {
+    max-width: 12rem;
+  }
+
+  /* Volle Breite in Aktionsleisten (Protokoll, Sprache, Source) – Truncation greift dort nicht */
+  .protocol-actions .btn,
+  .language-actions .btn,
+  .source-actions .btn,
+  .protocol-actions .btn:not(.icon-only):not(.block),
+  .source-actions .btn:not(.icon-only):not(.block) {
+    max-width: none;
+    width: 100%;
+    flex: 1;
+  }
+
+  .toolbar-desktop .btn:not(.icon-only),
+  .toolbar-mobile .btn:not(.icon-only) {
+    max-width: 10.5rem;
+  }
+
+  .panel-head-tools .btn.small,
+  .protocol-head-tools .btn.small,
+  .source-actions .btn {
+    max-width: 9rem;
+  }
+
+  .opt-item,
+  .tpl-item {
+    max-width: none;
+  }
+
+  .protocol-head h2,
+  .language-head h2,
+  .panel-head h2 {
+    max-width: min(50%, 14rem);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -1374,91 +1458,401 @@
     flex: none;
   }
 
-  .banner {
-    margin: 0;
-    padding: var(--space-3) var(--space-4);
-    padding-right: var(--space-7);
-    border-radius: var(--radius-sm);
-    font-size: var(--text-subhead);
-    line-height: 1.35;
+  /* ===== Protokoll (schwebendes Fenster, modal) ===== */
+  .protocol-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(38, 49, 63, 0.28);
+    z-index: 11990;
     display: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .protocol-overlay.open {
+    display: block;
+  }
+
+  .protocol-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(420px, calc(100vw - 32px));
+    height: min(70vh, 560px);
+    max-height: min(70vh, 560px);
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-raised), 0 12px 40px -12px rgba(38,49,63,.22);
+    z-index: 12000;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .protocol-panel.open {
+    display: flex;
+  }
+
+  .protocol-head {
+    display: flex;
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--line);
     flex: none;
-    position: relative;
-    box-sizing: border-box;
-    max-height: 9.5rem;
-    overflow-x: hidden;
-    overflow-y: auto;
-    scrollbar-width: thin;
+    min-height: 52px;
+    gap: var(--space-2);
   }
 
-  .banner.show { display: block; }
-
-  .banner.error {
-    background: var(--color-destructive-soft);
-    color: #7a2f1f;
-    border: 1px solid #e2b3a4;
+  .protocol-head h2 {
+    font-family: var(--font-serif);
+    font-size: var(--text-headline);
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+    min-width: 0;
+    flex: none;
   }
 
-  .banner.ok {
-    background: var(--color-success-soft);
-    color: #33452f;
-    border: 1px solid #b9cbb0;
+  .protocol-head-tools {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex: none;
   }
 
-  .banner.warning {
-    background: var(--color-warning-soft);
-    color: #5c4218;
-    border: 1px solid #e0cfa0;
-  }
-
-  .banner ul {
-    margin: var(--space-1) 0 0;
-    padding-left: var(--space-4);
-  }
-
-  .banner li,
-  .banner .banner-item {
-    margin-bottom: 2px;
-    cursor: default;
-    text-decoration: none;
-  }
-
-  .banner-close {
-    position: absolute;
-    top: var(--space-2);
-    right: var(--space-2);
-    background: none;
+  .protocol-close {
+    appearance: none;
     border: none;
-    color: inherit;
-    font-size: 1.1rem;
-    line-height: 1;
-    cursor: pointer;
-    opacity: 0.6;
+    background: var(--color-muted-soft);
+    color: var(--ink-soft);
     width: 32px;
     height: 32px;
-    border-radius: var(--radius-sm);
+    border-radius: 50%;
+    font-size: 1.15rem;
+    line-height: 1;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0;
-    float: none;
-    z-index: 2;
+    padding: 0;
+    flex: none;
+    margin-left: auto;
+  }
+
+  .protocol-close:focus-visible {
+    outline: 2px solid var(--color-action);
+    outline-offset: 2px;
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .banner-close:hover {
-      opacity: 1;
-      background: rgba(0, 0, 0, 0.06);
+    .protocol-close:hover {
+      background: rgba(0,0,0,.1);
+      color: var(--ink);
     }
   }
 
-  .banner-close:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 0;
+  .protocol-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    scrollbar-width: thin;
   }
 
-  @media (max-width: 900px) {
-    .banner { max-height: 8rem; }
+  .protocol-empty {
+    padding: var(--space-5) var(--space-3);
+    text-align: center;
+    color: var(--ink-faint);
+    font-size: var(--text-subhead);
+    line-height: 1.45;
+  }
+
+  .protocol-entry {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-footnote);
+    line-height: 1.4;
+  }
+
+  .protocol-entry.type-ok {
+    background: var(--color-success-soft);
+    color: #33452f;
+  }
+
+  .protocol-entry.type-error {
+    background: var(--color-destructive-soft);
+    color: #7a2f1f;
+  }
+
+  .protocol-entry.type-warning,
+  .protocol-entry.type-hint {
+    background: var(--color-warning-soft);
+    color: #5c4218;
+  }
+
+  .protocol-ts {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    flex: none;
+    opacity: 0.85;
+    min-width: 4.6em;
+  }
+
+  .protocol-msg {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+  }
+
+  .protocol-actions {
+    display: flex;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--line);
+    flex: none;
+    background: var(--paper-sunken);
+  }
+
+  .protocol-actions .btn {
+    flex: 1;
+  }
+
+  /* Error-Badge (flexibel an jedem Protokoll-Trigger) – fixe Größe, Zahl skaliert */
+  .has-error-mark {
+    position: relative;
+  }
+
+  .protocol-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    background: var(--color-destructive);
+    color: #fff;
+    border-radius: 50%;
+    border: 2px solid var(--paper-raised);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    box-sizing: border-box;
+    z-index: 2;
+  }
+
+  .protocol-badge.digits-2 {
+    font-size: 0.55rem;
+  }
+
+  .protocol-badge.digits-3 {
+    font-size: 0.48rem;
+  }
+
+  /* Badge im Options-Menü neben „Protokoll“ */
+  .opt-item.has-error-mark {
+    position: relative;
+    padding-right: 36px;
+  }
+
+  .opt-item .protocol-badge {
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+  }
+
+  /* ===== Sprache (gleiches Feel wie Protokoll) ===== */
+  .language-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(420px, calc(100vw - 32px));
+    height: min(70vh, 560px);
+    max-height: min(70vh, 560px);
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-raised), 0 12px 40px -12px rgba(38,49,63,.22);
+    z-index: 12000;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .language-panel.open {
+    display: flex;
+  }
+
+  .language-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(38, 49, 63, 0.28);
+    z-index: 11990;
+    display: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .language-overlay.open {
+    display: block;
+  }
+
+  .language-head {
+    display: flex;
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--line);
+    flex: none;
+    min-height: 52px;
+    gap: var(--space-2);
+  }
+
+  .language-head h2 {
+    font-family: var(--font-serif);
+    font-size: var(--text-headline);
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+    min-width: 0;
+    flex: none;
+  }
+
+  .language-close {
+    appearance: none;
+    border: none;
+    background: var(--color-muted-soft);
+    color: var(--ink-soft);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 1.15rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    flex: none;
+    margin-left: auto;
+  }
+
+  .language-close:focus-visible {
+    outline: 2px solid var(--color-action);
+    outline-offset: 2px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .language-close:hover {
+      background: rgba(0,0,0,.1);
+      color: var(--ink);
+    }
+  }
+
+  .language-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: var(--space-2);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    scrollbar-width: thin;
+  }
+
+  .language-empty {
+    padding: var(--space-5) var(--space-3);
+    text-align: center;
+    color: var(--ink-faint);
+    font-size: var(--text-subhead);
+    line-height: 1.45;
+  }
+
+  .language-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: transparent;
+    min-height: 44px;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: var(--text-subhead);
+    font-weight: 500;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .language-item .lang-name {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .language-item .lang-check {
+    flex: none;
+    color: var(--color-success);
+    font-size: 1.1rem;
+    font-weight: 700;
+    width: 1.25em;
+    text-align: center;
+    opacity: 0;
+  }
+
+  .language-item.selected .lang-check {
+    opacity: 1;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .language-item:hover {
+      background: var(--color-action-soft);
+      color: var(--color-action);
+    }
+  }
+
+  .language-item:focus-visible {
+    outline: 2px solid var(--color-action);
+    outline-offset: -2px;
+  }
+
+  .language-actions {
+    display: flex;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--line);
+    flex: none;
+    background: var(--paper-sunken);
+  }
+
+  .language-actions input[type="search"] {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 0 var(--space-3);
+    font-family: inherit;
+    font-size: var(--text-subhead);
+    min-height: var(--touch-min);
+    background: #fff;
+    color: var(--ink);
+  }
+
+  .language-actions input[type="search"]:focus {
+    outline: 2px solid var(--color-action);
+    outline-offset: 0;
+    border-color: var(--color-action);
   }
 
   #sourceText {
@@ -1780,43 +2174,70 @@
             <img src="https://raw.githubusercontent.com/juristikde/xml-prompt-baukasten/main/icons/logo-24.png" width="24" height="24" alt="" decoding="async" loading="eager">
           </picture>
         </span>
-        <span class="title-text">Prompt Baukasten</span>
+        <span class="title-text" data-i18n="app.title">Prompt Baukasten</span>
       </h1>
     </div>
     <div class="toolbar">
       <div class="toolbar-desktop">
+        <button type="button" class="btn" id="btnLanguage" aria-haspopup="true" aria-expanded="false">Deutsch</button>
         <div class="template-wrap" id="templateWrap">
           <div class="split-btn">
-            <button type="button" class="split-main" id="btnExample">Beispiel</button>
+            <button type="button" class="split-main" id="btnExample" data-i18n="toolbar.example">Beispiel</button>
             <div class="split-sep"></div>
-            <button type="button" class="split-caret" id="btnTemplateCaret" aria-label="Vorlagen öffnen">
+            <button type="button" class="split-caret" id="btnTemplateCaret" data-i18n-aria="toolbar.templatesOpen" aria-label="Vorlagen öffnen">
               <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4.5L6 7.5L9 4.5"/></svg>
             </button>
           </div>
           <div class="template-menu" id="templateMenu" role="menu"></div>
         </div>
-        <button class="btn" id="btnValidate">Prüfen</button>
-        <button class="btn" id="btnToggleSource">XML anzeigen</button>
-        <button class="btn danger" id="btnReset">Zurücksetzen</button>
+        <button class="btn" id="btnValidate" data-i18n="toolbar.protocol">Protokoll</button>
+        <button class="btn" id="btnToggleSource" data-i18n="toolbar.showXml">XML anzeigen</button>
+        <button class="btn danger" id="btnReset" data-i18n="toolbar.reset">Zurücksetzen</button>
       </div>
 
       <div class="toolbar-mobile">
         <div class="options-wrap" id="optionsWrap">
-          <button type="button" class="btn" id="btnOptions" aria-haspopup="true" aria-expanded="false">Optionen</button>
+          <button type="button" class="btn" id="btnOptions" aria-haspopup="true" aria-expanded="false" data-i18n="toolbar.options">Optionen</button>
           <div class="options-menu" id="optionsMenu" role="menu">
-            <span class="opt-label">Vorlagen</span>
+            <span class="opt-label" data-i18n="toolbar.templatesLabel">Vorlagen</span>
             <div id="optionsTemplateItems"></div>
             <div class="opt-sep"></div>
-            <button type="button" class="opt-item" id="optValidate" role="menuitem">Prüfen</button>
-            <button type="button" class="opt-item" id="optToggleSource" role="menuitem">XML anzeigen</button>
+            <button type="button" class="opt-item" id="optLanguage" role="menuitem" data-i18n="toolbar.language">Sprache</button>
+            <button type="button" class="opt-item" id="optValidate" role="menuitem" data-i18n="toolbar.protocol">Protokoll</button>
+            <button type="button" class="opt-item" id="optToggleSource" role="menuitem" data-i18n="toolbar.showXml">XML anzeigen</button>
           </div>
         </div>
-        <button class="btn danger" id="btnResetMobile">Zurücksetzen</button>
+        <button class="btn danger" id="btnResetMobile" data-i18n="toolbar.reset">Zurücksetzen</button>
       </div>
     </div>
   </header>
 
-  <div id="validationBanner" class="banner error" role="alert"></div>
+  <div id="protocolOverlay" class="protocol-overlay" hidden></div>
+  <div id="protocolPanel" class="protocol-panel" role="dialog" aria-labelledby="protocolTitle" aria-modal="true">
+    <div class="protocol-head">
+      <h2 id="protocolTitle" data-i18n="protocol.title">Protokoll</h2>
+      <div class="protocol-head-tools">
+        <button type="button" class="btn small" id="btnProtocolClear" data-i18n="protocol.clear">Leeren</button>
+      </div>
+      <button type="button" class="protocol-close" id="btnProtocolClose" data-i18n-aria="protocol.close" aria-label="Protokoll schließen">×</button>
+    </div>
+    <div class="protocol-body" id="protocolList"></div>
+    <div class="protocol-actions">
+      <button type="button" class="btn primary" id="btnProtocolValidate" data-i18n="protocol.validate">Prüfen</button>
+    </div>
+  </div>
+
+  <div id="languageOverlay" class="language-overlay" hidden></div>
+  <div id="languagePanel" class="language-panel" role="dialog" aria-labelledby="languageTitle" aria-modal="true">
+    <div class="language-head">
+      <h2 id="languageTitle" data-i18n="language.title">Sprache</h2>
+      <button type="button" class="language-close" id="btnLanguageClose" data-i18n-aria="language.close" aria-label="Sprachnenü schließen">×</button>
+    </div>
+    <div class="language-body" id="languageList"></div>
+    <div class="language-actions">
+      <input type="search" id="languageSearch" data-i18n-placeholder="language.searchPlaceholder" placeholder="Sprache suchen…" autocomplete="off" spellcheck="false" aria-label="Sprache suchen">
+    </div>
+  </div>
 
   <div class="tabs-shell tabs-horizontal" id="tabsShell">
     <div class="tab-bar" id="tabBar">
@@ -1826,9 +2247,9 @@
       <div class="layout" id="layout">
         <section class="panel">
           <div class="panel-head">
-            <input type="text" id="panelStructureTitle" class="panel-title-input" value="Prompt 1" placeholder="Tab-Name" autocomplete="off" spellcheck="false" aria-label="Tab-Name" />
+            <input type="text" id="panelStructureTitle" class="panel-title-input" value="Prompt 1" data-i18n-placeholder="tabs.namePlaceholder" placeholder="Tab-Name" autocomplete="off" spellcheck="false" data-i18n-aria="tabs.nameAria" aria-label="Tab-Name" />
             <div class="panel-head-tools">
-              <button type="button" class="btn small" id="btnDuplicateTab" title="Aktuellen Tab duplizieren">Duplizieren</button>
+              <button type="button" class="btn small" id="btnDuplicateTab" data-i18n="tabs.duplicate" data-i18n-title="tabs.duplicateTitle" title="Aktuellen Tab duplizieren">Duplizieren</button>
             </div>
           </div>
           <div class="split-body" id="splitBody">
@@ -1837,18 +2258,18 @@
               <div class="outline-footer">
                 <div class="footer-static">
                   <div class="add-row">
-                    <button class="btn primary" id="btnAddRoot">+ Element</button>
-                    <button class="btn" id="btnAddRootComment">+ Kommentar</button>
+                    <button class="btn primary" id="btnAddRoot" data-i18n="outline.addElement">+ Element</button>
+                    <button class="btn" id="btnAddRootComment" data-i18n="outline.addComment">+ Kommentar</button>
                   </div>
                   <div class="template-row">
-                    <button class="btn" id="btnAddUser">+ user</button>
-                    <button class="btn" id="btnAddAssistant">+ assistant</button>
+                    <button class="btn" id="btnAddUser" data-i18n="outline.addUser">+ user</button>
+                    <button class="btn" id="btnAddAssistant" data-i18n="outline.addAssistant">+ assistant</button>
                   </div>
                   <div class="action-row">
-                    <button class="btn" id="btnAddChild">+ Unterpunkt</button>
-                    <button class="btn danger" id="btnDelete">Löschen</button>
+                    <button class="btn" id="btnAddChild" data-i18n="outline.addChild">+ Unterpunkt</button>
+                    <button class="btn danger" id="btnDelete" data-i18n="outline.delete">Löschen</button>
                   </div>
-                  <button class="btn primary block" id="btnCopyResult">Ergebnis kopieren</button>
+                  <button class="btn primary block" id="btnCopyResult" data-i18n="outline.copyResult">Ergebnis kopieren</button>
                   <div class="char-count char-count-global" id="resultCharCount" aria-live="polite" hidden>0 Zeichen</div>
                 </div>
               </div>
@@ -1860,23 +2281,23 @@
         </section>
         <section class="panel" id="sourcePanel" style="display:none;" aria-label="XML-Code">
           <div class="panel-head">
-            <h2 id="sourcePanelTitle">XML-Code</h2>
+            <h2 id="sourcePanelTitle" data-i18n="source.title">XML-Code</h2>
             <div class="panel-head-tools" id="sourceHeadTools">
               <div class="options-wrap" id="sourceOptionsWrap">
-                <button type="button" class="btn small" id="btnSourceOptions" aria-haspopup="true" aria-expanded="false">Optionen</button>
+                <button type="button" class="btn small" id="btnSourceOptions" aria-haspopup="true" aria-expanded="false" data-i18n="source.options">Optionen</button>
                 <div class="options-menu source-options-menu" id="sourceOptionsMenu" role="menu">
-                  <button type="button" class="opt-item" id="optSourceFind" role="menuitem">Suchen</button>
-                  <button type="button" class="opt-item" id="optSourceWrap" role="menuitem">Umbruch aus</button>
+                  <button type="button" class="opt-item" id="optSourceFind" role="menuitem" data-i18n="source.find">Suchen</button>
+                  <button type="button" class="opt-item" id="optSourceWrap" role="menuitem" data-i18n="source.wrapOff">Umbruch aus</button>
                 </div>
               </div>
             </div>
-            <button type="button" class="source-close" id="btnSourceClose" aria-label="XML schließen">×</button>
+            <button type="button" class="source-close" id="btnSourceClose" data-i18n-aria="source.close" aria-label="XML schließen">×</button>
           </div>
           <div class="panel-body">
-            <textarea id="sourceText" spellcheck="false" placeholder="XML-Prompt einfügen…" aria-label="XML-Quellcode"></textarea>
+            <textarea id="sourceText" spellcheck="false" data-i18n-placeholder="source.placeholder" placeholder="XML-Prompt einfügen…" data-i18n-aria="source.aria" aria-label="XML-Quellcode"></textarea>
             <div class="source-actions">
-              <button class="btn primary" id="btnApplySource">Übernehmen</button>
-              <button class="btn" id="btnCopySource">Kopieren</button>
+              <button class="btn primary" id="btnApplySource" data-i18n="source.apply">Übernehmen</button>
+              <button class="btn" id="btnCopySource" data-i18n="source.copy">Kopieren</button>
             </div>
           </div>
         </section>
@@ -1887,6 +2308,244 @@
 
 <script>
 (function(){
+  /* ===== i18n =====
+   * Texte in lang/{code}.json (ISO 639-1). TEMPLATES/Prompts werden nie übersetzt.
+   * Bei UI-Änderungen immer lang/*.json mitpflegen (siehe KI-Hinweis im <head>).
+   * Verfügbare Sprachen = Keys in i18nDict.languages der geladenen JSON (kein Ordner-Scan).
+   * Anzeige: native Name; Suche: native + local (Name in aktueller UI-Sprache) + Code.
+   */
+  const LANG_BASE = 'lang/';
+  let currentLang = 'de';
+  let i18nDict = {};
+  let languageSearchQuery = '';
+
+  function getAvailableLanguages(){
+    const map = (i18nDict && i18nDict.languages) || {};
+    return Object.keys(map).map(code => {
+      const entry = map[code] || {};
+      return {
+        code,
+        native: entry.native || code,
+        local: entry.local || entry.native || code
+      };
+    }).sort((a, b) => a.native.localeCompare(b.local, currentLang || 'de')); // Sortierung der Sprachen in lokaler Sprache
+  }
+
+  function detectSystemLanguage(){
+    const nav = (navigator.languages && navigator.languages[0]) || navigator.language || navigator.userLanguage || 'de';
+    const code = String(nav).slice(0, 2).toLowerCase();
+    return code || 'de';
+  }
+
+  /**
+   * UI-Text mit deutschem Default im Quelltext; JSON überschreibt über key.
+   * t('Kopieren', 'detail.copy') oder t('…{n}…', 'chars.count', {n:3})
+   * Ohne JSON bleibt immer das deutsche Default — nie der Key-Platzhalter.
+   */
+  function t(de, key, vars){
+    if(typeof key === 'object' && key !== null && vars === undefined){
+      /* Absicherung falls doch t(key, vars) */
+      vars = key; key = de; de = null;
+    }
+    let cur = i18nDict;
+    if(typeof key === 'string' && key){
+      const parts = key.split('.');
+      for(let i = 0; i < parts.length; i++){
+        if(cur == null || typeof cur !== 'object'){ cur = undefined; break; }
+        cur = cur[parts[i]];
+      }
+    } else {
+      cur = undefined;
+    }
+    let s = (typeof cur === 'string') ? cur : null;
+    if(s == null){
+      s = (typeof de === 'string' && de !== '') ? de : (typeof key === 'string' ? key : '');
+    }
+    if(vars && typeof vars === 'object'){
+      Object.keys(vars).forEach(k => {
+        s = s.replace(new RegExp('\{' + k + '\}', 'g'), String(vars[k]));
+      });
+    }
+    return s;
+  }
+
+
+
+  function applyI18nDom(root){
+    const scope = root || document;
+    /* HTML trägt deutsches Default; JSON überschreibt nur wenn Eintrag existiert */
+    scope.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if(!key) return;
+      el.textContent = t(el.textContent, key);
+    });
+    scope.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      if(!key) return;
+      el.setAttribute('placeholder', t(el.getAttribute('placeholder') || '', key));
+    });
+    scope.querySelectorAll('[data-i18n-aria]').forEach(el => {
+      const key = el.getAttribute('data-i18n-aria');
+      if(!key) return;
+      el.setAttribute('aria-label', t(el.getAttribute('aria-label') || '', key));
+    });
+    scope.querySelectorAll('[data-i18n-title]').forEach(el => {
+      const key = el.getAttribute('data-i18n-title');
+      if(!key) return;
+      el.setAttribute('title', t(el.getAttribute('title') || '', key));
+    });
+  }
+
+  async function loadLanguage(code){
+    const safe = (code || 'de').toLowerCase().slice(0, 2);
+    try{
+      const res = await fetch(LANG_BASE + safe + '.json', { cache: 'no-cache' });
+      if(!res.ok) throw new Error('missing');
+      const data = await res.json();
+      i18nDict = data || {};
+      currentLang = (data && data.meta && data.meta.code) ? data.meta.code : safe;
+    }catch(err){
+      if(safe !== 'de') return loadLanguage('de');
+      i18nDict = {};
+      currentLang = 'de';
+    }
+    document.documentElement.lang = currentLang;
+    if(i18nDict.app && i18nDict.app.documentTitle) document.title = i18nDict.app.documentTitle;
+    applyI18nDom(document);
+    if(typeof setSourceLabels === 'function'){
+      const open = sourcePanel && sourcePanel.style.display !== 'none' && sourcePanel.style.display !== '';
+      setSourceLabels(!!open && !isMobileLayout() ? true : (typeof activeSheet !== 'undefined' && activeSheet === 'source'));
+    }
+    if(typeof updateSourcePanelTitle === 'function') updateSourcePanelTitle();
+    if(typeof updateSourceHeadTools === 'function') updateSourceHeadTools();
+    if(typeof renderTemplateMenus === 'function') renderTemplateMenus();
+    if(typeof render === 'function') render();
+    if(typeof renderProtocolList === 'function' && isProtocolOpen && isProtocolOpen()) renderProtocolList();
+    updateLanguageButton();
+    writeHashState();
+  }
+
+  function currentLanguageNativeName(){
+    const langs = getAvailableLanguages();
+    const hit = langs.find(l => l.code === currentLang);
+    return (hit && hit.native) || currentLang.toUpperCase();
+  }
+
+  function updateLanguageButton(){
+    const name = currentLanguageNativeName();
+    const btn = document.getElementById('btnLanguage');
+    if(btn){
+      btn.textContent = name;
+      btn.title = name;
+    }
+    const opt = document.getElementById('optLanguage');
+    if(opt){
+      const base = t('Sprache', 'toolbar.language');
+      opt.textContent = base + (base ? ' · ' : '') + name;
+    }
+  }
+
+  function normalizeSearch(s){
+    return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function fuzzyMatch(query, target){
+    const q = normalizeSearch(query).trim();
+    const tnorm = normalizeSearch(target);
+    if(!q) return true;
+    if(tnorm.indexOf(q) !== -1) return true;
+    let ti = 0;
+    for(let qi = 0; qi < q.length; qi++){
+      const ch = q[qi];
+      ti = tnorm.indexOf(ch, ti);
+      if(ti === -1) return false;
+      ti++;
+    }
+    return true;
+  }
+
+  function renderLanguageList(){
+    const list = document.getElementById('languageList');
+    if(!list) return;
+    list.innerHTML = '';
+    /* Nur Sprachen aus der aktuellen JSON (languages-Objekt), kein Ordner-Scan */
+    const all = getAvailableLanguages();
+    const filtered = all.filter(l =>
+      fuzzyMatch(languageSearchQuery, l.native) ||
+      fuzzyMatch(languageSearchQuery, l.local) ||
+      fuzzyMatch(languageSearchQuery, l.code)
+    );
+    if(!filtered.length){
+      const empty = document.createElement('div');
+      empty.className = 'language-empty';
+      empty.textContent = t('Keine Sprache gefunden.', 'language.empty');
+      list.appendChild(empty);
+      return;
+    }
+    filtered.forEach(l => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'language-item' + (l.code === currentLang ? ' selected' : '');
+      btn.setAttribute('role', 'option');
+      btn.setAttribute('aria-selected', l.code === currentLang ? 'true' : 'false');
+      const name = document.createElement('span');
+      name.className = 'lang-name';
+      /* Anzeige immer in Muttersprache der Zielsprache */
+      name.textContent = l.native;
+      const check = document.createElement('span');
+      check.className = 'lang-check';
+      check.textContent = '✓';
+      check.setAttribute('aria-label', t('Ausgewählt', 'language.selected'));
+      btn.appendChild(name);
+      btn.appendChild(check);
+      btn.onclick = () => {
+        if(l.code === currentLang){
+          closeLanguagePanel();
+          return;
+        }
+        loadLanguage(l.code).then(() => closeLanguagePanel());
+      };
+      list.appendChild(btn);
+    });
+  }
+
+  function openLanguagePanel(){
+    closeAllWikiMenus();
+    closeTemplateMenu();
+    closeOptionsMenu();
+    if(typeof closeProtocol === 'function') closeProtocol();
+    const panel = document.getElementById('languagePanel');
+    const overlay = document.getElementById('languageOverlay');
+    if(!panel) return;
+    languageSearchQuery = '';
+    const search = document.getElementById('languageSearch');
+    if(search) search.value = '';
+    renderLanguageList();
+    if(overlay){
+      overlay.hidden = false;
+      overlay.classList.add('open');
+    }
+    panel.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    if(search) setTimeout(() => search.focus(), 50);
+  }
+
+  function closeLanguagePanel(){
+    const panel = document.getElementById('languagePanel');
+    const overlay = document.getElementById('languageOverlay');
+    if(panel) panel.classList.remove('open');
+    if(overlay){
+      overlay.classList.remove('open');
+      overlay.hidden = true;
+    }
+    if(!isProtocolOpen || !isProtocolOpen()) document.body.style.overflow = '';
+  }
+
+  function isLanguagePanelOpen(){
+    const panel = document.getElementById('languagePanel');
+    return panel && panel.classList.contains('open');
+  }
+
   /* ===== Tab-Zustand und globale UI-Flags ===== */
   let tabs = [];
   let activeTabId = null;
@@ -2147,12 +2806,6 @@
     else if(params.tabBarLocation === 'top') tabsOrientation = 'horizontal';
     if(params.tabBarShown === 'false') tabsVisible = false;
     else if(params.tabBarShown === 'true') tabsVisible = true;
-    if(Object.prototype.hasOwnProperty.call(params, 'skipNonErrorNotifications')){
-      const v = params.skipNonErrorNotifications;
-      skipNonErrorNotifications = (v === 'true' || v === '1');
-    } else {
-      skipNonErrorNotifications = false;
-    }
     if(Object.prototype.hasOwnProperty.call(params, 'xmlCodeLineWrap')){
       const v = params.xmlCodeLineWrap;
       xmlCodeLineWrap = (v === 'true' || v === '1');
@@ -2165,16 +2818,29 @@
     } else {
       unpackMobileOptionsButton = false;
     }
+    if(Object.prototype.hasOwnProperty.call(params, 'protocolThreshold')){
+      const n = parseInt(params.protocolThreshold, 10);
+      if(Number.isInteger(n) && n > 0 && n <= 1000) protocolThreshold = n;
+      else protocolThreshold = 20;
+    } else {
+      protocolThreshold = 20;
+    }
+    if(Object.prototype.hasOwnProperty.call(params, 'setLanguage')){
+      const code = String(params.setLanguage || '').toLowerCase().slice(0, 2);
+      if(code) currentLang = code;
+    }
   }
 
   function writeHashState(){
+    /* setLanguage immer als erster Hash-Parameter */
     const parts = [];
+    parts.push('setLanguage=' + currentLang);
     parts.push('tabBarLocation=' + (tabsOrientation === 'vertical' ? 'left' : 'top'));
     parts.push('tabBarShown=' + (tabsVisible ? 'true' : 'false'));
     parts.push('showCharacterCount=' + (showCharacterCount ? 'true' : 'false'));
-    parts.push('skipNonErrorNotifications=' + (skipNonErrorNotifications ? 'true' : 'false'));
     parts.push('xmlCodeLineWrap=' + (xmlCodeLineWrap ? 'true' : 'false'));
     parts.push('unpackMobileOptionsButton=' + (unpackMobileOptionsButton ? 'true' : 'false'));
+    parts.push('protocolThreshold=' + protocolThreshold);
     const next = '#' + parts.join('&');
     if(location.hash !== next){
       history.replaceState(null, '', next);
@@ -2184,11 +2850,14 @@
   /* ===== Baum- und Editor-Zustand ===== */
   let tree = [], idCounter = 1, sourceFocused = false, selectedId = null, focusDetailField = false;
   let showCharacterCount = false;
-  let skipNonErrorNotifications = false;
-  let bannerHideTimer = null;
+  let protocolLog = [];
+  let hasProtocolErrors = false;
+  let protocolErrorCount = 0;
+  let protocolThreshold = 20;
+  const protocolTriggerEls = [];
   let xmlCodeLineWrap = true;
   let sourceGesamtMode = false;
-  let wikiSettings = {lang:'de', chars:450}, openWikiMenu = null, openTemplateMenu = null, openOptionsMenu = null;
+  let wikiSettings = {lang:'de', chars:1200}, openWikiMenu = null, openTemplateMenu = null, openOptionsMenu = null;
 
   let nodeClipboard = null;
 
@@ -2204,7 +2873,6 @@
   const sourceText = document.getElementById('sourceText');
   const sourcePanel = document.getElementById('sourcePanel');
   const layout = document.getElementById('layout');
-  const validationBanner = document.getElementById('validationBanner');
   const tabsShell = document.getElementById('tabsShell');
   const tabList = document.getElementById('tabList');
   const panelStructureTitle = document.getElementById('panelStructureTitle');
@@ -2227,9 +2895,9 @@
 
   /* ===== Tab-Verwaltung ===== */
   function createTabState(title, treeData){
-    const t = {
+    const tabState = {
       id: 'tab'+(tabIdCounter++),
-      title: title || ('Prompt '+tabIdCounter),
+      title: title || t('Prompt {n}', 'tabs.defaultTitle', {n: tabIdCounter}),
       tree: treeData || [],
       selectedId: null,
       idCounter: 1,
@@ -2245,10 +2913,10 @@
           if(n.children) walk(n.children);
         });
       })(treeData);
-      t.idCounter = max + 1;
-      t.selectedId = firstNavigableId(treeData);
+      tabState.idCounter = max + 1;
+      tabState.selectedId = firstNavigableId(treeData);
     }
-    return t;
+    return tabState;
   }
 
   function saveActiveTab(){
@@ -2296,23 +2964,23 @@
 
   function duplicateActiveTab(){
     saveActiveTab();
-    const t = tabs.find(x => x.id === activeTabId);
-    if(!t) return;
-    const clonedTree = cloneTree(t.tree);
-    const baseTitle = (t.title || 'Prompt').trim() || 'Prompt';
-    addNewTab(baseTitle + ' Kopie', clonedTree);
+    const activeTab = tabs.find(x => x.id === activeTabId);
+    if(!activeTab) return;
+    const clonedTree = cloneTree(activeTab.tree);
+    const baseTitle = (activeTab.title || 'Prompt').trim() || 'Prompt';
+    addNewTab(baseTitle + t(' Kopie', 'tabs.copySuffix'), clonedTree);
   }
 
   function closeTab(tabId, evt){
     if(evt) evt.stopPropagation();
     if(tabs.length <= 1){
-      if(confirm('Letzten Tab zurücksetzen?')){
-        const t = tabs[0];
-        t.tree = [];
-        t.selectedId = null;
-        t.idCounter = 1;
-        t.title = 'Prompt 1';
-        loadTab(t.id);
+      if(confirm(t('Letzten Tab zurücksetzen?', 'tabs.confirmResetLast'))){
+        const lastTab = tabs[0];
+        lastTab.tree = [];
+        lastTab.selectedId = null;
+        lastTab.idCounter = 1;
+        lastTab.title = t('Prompt {n}', 'tabs.defaultTitle', {n: 1});
+        loadTab(lastTab.id);
       }
       return;
     }
@@ -2331,45 +2999,45 @@
 
   function updatePanelStructureTitle(){
     if(!panelStructureTitle) return;
-    const t = tabs.find(x => x.id === activeTabId);
-    const name = t ? t.title : 'Prompt 1';
+    const activeTab = tabs.find(x => x.id === activeTabId);
+    const name = activeTab ? activeTab.title : t('Prompt {n}', 'tabs.defaultTitle', {n: 1});
     if(document.activeElement !== panelStructureTitle){
       panelStructureTitle.value = name;
     }
   }
 
   function applyPanelTitleToTab(){
-    const t = tabs.find(x => x.id === activeTabId);
-    if(!t) return;
+    const activeTab = tabs.find(x => x.id === activeTabId);
+    if(!activeTab) return;
     const name = (panelStructureTitle.value || '').trim() || 'Prompt';
-    if(t.title === name) return;
-    t.title = name;
+    if(activeTab.title === name) return;
+    activeTab.title = name;
     const label = tabList.querySelector('.tab-item.active .tab-title');
     if(label) label.textContent = name;
   }
 
   function renderTabs(){
     tabList.innerHTML = '';
-    tabs.forEach(t => {
+    tabs.forEach(tab => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'tab-item' + (t.id === activeTabId ? ' active' : '');
+      btn.className = 'tab-item' + (tab.id === activeTabId ? ' active' : '');
       btn.setAttribute('role', 'tab');
-      btn.setAttribute('aria-selected', t.id === activeTabId ? 'true' : 'false');
-      btn.onclick = () => { if(t.id !== activeTabId) loadTab(t.id); };
+      btn.setAttribute('aria-selected', tab.id === activeTabId ? 'true' : 'false');
+      btn.onclick = () => { if(tab.id !== activeTabId) loadTab(tab.id); };
 
       const title = document.createElement('span');
       title.className = 'tab-title';
-      title.textContent = t.title;
+      title.textContent = tab.title;
       btn.appendChild(title);
 
       const close = document.createElement('button');
       close.type = 'button';
       close.className = 'tab-close';
-      close.title = 'Tab schließen';
-      close.setAttribute('aria-label', 'Tab schließen');
+      close.title = t('Tab schließen', 'tabs.close');
+      close.setAttribute('aria-label', t('Tab schließen', 'tabs.close'));
       close.textContent = '×';
-      close.onclick = e => closeTab(t.id, e);
+      close.onclick = e => closeTab(tab.id, e);
       btn.appendChild(close);
 
       tabList.appendChild(btn);
@@ -2378,12 +3046,12 @@
     const addBtn = document.createElement('button');
     addBtn.type = 'button';
     addBtn.className = 'tab-new';
-    addBtn.title = 'Neuer Tab';
-    addBtn.setAttribute('aria-label', 'Neuer Tab');
+    addBtn.title = t('Neuer Tab', 'tabs.new');
+    addBtn.setAttribute('aria-label', t('Neuer Tab', 'tabs.new'));
     addBtn.textContent = '+';
     addBtn.onclick = e => {
       e.stopPropagation();
-      addNewTab('Prompt '+(tabs.length+1), []);
+      addNewTab(t('Prompt {n}', 'tabs.defaultTitle', {n: tabs.length+1}), []);
     };
     tabList.appendChild(addBtn);
 
@@ -2413,13 +3081,13 @@
     const limit = Math.max(80, Math.min(2000, chars||450));
     let useLang = lang==='random' ? LANG_CODES[Math.floor(Math.random()*LANG_CODES.length)] : lang;
     const url = `https://${useLang}.wikipedia.org/w/api.php?action=query&generator=random&grnnamespace=0&prop=extracts|info&inprop=url&exintro&explaintext&exchars=${limit}&format=json&origin=*`;
-    const res = await fetch(url); if(!res.ok) throw new Error('Netzwerkfehler');
+    const res = await fetch(url); if(!res.ok) throw new Error(t('Netzwerkfehler', 'protocol.networkError'));
     const data = await res.json(); const pages = data.query?.pages;
-    if(!pages) throw new Error('Keine Seite');
+    if(!pages) throw new Error(t('Keine Seite', 'protocol.noPage'));
     const page = Object.values(pages)[0];
     let extract = (page.extract||'').trim().replace(/\s+/g,' ');
     if(extract.endsWith('...')) extract = extract.slice(0,-3).trim();
-    if(!extract || extract.length < 30) throw new Error('Text zu kurz');
+    if(!extract || extract.length < 30) throw new Error(t('Text zu kurz', 'protocol.textTooShort'));
     return extract;
   }
 
@@ -2500,27 +3168,25 @@
   function createWikiSplitButton(textarea){
     const wrap = document.createElement('div'); wrap.className = 'wiki-wrap';
     const split = document.createElement('div'); split.className = 'split-btn';
-    const mainBtn = document.createElement('button'); mainBtn.type = 'button'; mainBtn.className = 'split-main'; mainBtn.innerHTML = '+ WikiText';
+    const mainBtn = document.createElement('button'); mainBtn.type = 'button'; mainBtn.className = 'split-main'; mainBtn.innerHTML = t('+ WikiText', 'detail.wikiText');
     const sep = document.createElement('div'); sep.className = 'split-sep';
     const caretBtn = document.createElement('button'); caretBtn.type = 'button'; caretBtn.className = 'split-caret';
-    caretBtn.setAttribute('aria-label', 'Wiki-Einstellungen');
+    caretBtn.setAttribute('aria-label', t('Wiki-Einstellungen', 'detail.wikiAria'));
     caretBtn.innerHTML = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4.5L6 7.5L9 4.5"/></svg>';
     const menu = document.createElement('div'); menu.className = 'wiki-menu';
-    menu.innerHTML = `<label>Sprache</label><select class="wiki-lang">
-      <option value="de">Deutsch</option><option value="en">English</option><option value="fr">Français</option>
-      <option value="es">Español</option><option value="it">Italiano</option><option value="pt">Português</option>
-      <option value="nl">Nederlands</option><option value="pl">Polski</option><option value="ru">Русский</option>
-      <option value="ja">日本語</option><option value="zh">中文</option><option value="random">Zufällig</option>
-    </select><label>ca. Zeichen</label><input type="number" class="wiki-chars" value="450" min="80" max="2000" step="50">
-    <div class="menu-actions"><button type="button" class="btn small primary wiki-insert">Einfügen</button>
-    <button type="button" class="btn small wiki-close">Schließen</button></div>`;
+    const wikiOpts = ['de','en','fr','es','it','pt','nl','pl','ru','ja','zh','random']
+      .map(c => { const wk='wiki.'+c; return '<option value="'+c+'">'+t({'de':'Deutsch','en':'English','fr':'Français','es':'Español','it':'Italiano','pt':'Português','nl':'Nederlands','pl':'Polski','ru':'Русский','ja':'日本語','zh':'中文','random':'Zufällig'}[c]||c, wk)+'</option>'; }).join('');
+    menu.innerHTML = '<label>'+t('Sprache', 'detail.wikiLang')+'</label><select class="wiki-lang">'+wikiOpts+
+      '</select><label>'+t('ca. Zeichen', 'detail.wikiChars')+'</label><input type="number" class="wiki-chars" value="450" min="80" max="2000" step="50">'+
+      '<div class="menu-actions"><button type="button" class="btn small primary wiki-insert">'+t('Einfügen', 'detail.wikiInsert')+'</button>'+
+      '<button type="button" class="btn small wiki-close">'+t('Schließen', 'detail.wikiClose')+'</button></div>';
     menu.querySelector('.wiki-lang').value = wikiSettings.lang;
     menu.querySelector('.wiki-chars').value = wikiSettings.chars;
 
     async function doInsert(){
       const lang = menu.querySelector('.wiki-lang').value;
       let chars = parseInt(menu.querySelector('.wiki-chars').value,10)||450;
-      wikiSettings = {lang, chars}; mainBtn.disabled = true; mainBtn.textContent = 'Lade…';
+      wikiSettings = {lang, chars}; mainBtn.disabled = true; mainBtn.textContent = t('Lade…', 'detail.wikiLoading');
       try{
         const text = await fetchWikiText(lang, chars);
         const s = textarea.selectionStart, e = textarea.selectionEnd;
@@ -2528,8 +3194,8 @@
         textarea.dispatchEvent(new Event('input',{bubbles:true}));
         textarea.focus(); textarea.setSelectionRange(s+text.length, s+text.length);
         closeAllWikiMenus();
-      }catch(err){ alert('Fehler: '+err.message); }
-      finally{ mainBtn.disabled = false; mainBtn.innerHTML = '+ WikiText'; }
+      }catch(err){ alert(t('Fehler: ', 'protocol.errorPrefix')+err.message); }
+      finally{ mainBtn.disabled = false; mainBtn.innerHTML = t('+ WikiText', 'detail.wikiText'); }
     }
 
     mainBtn.onclick = e => { e.stopPropagation(); doInsert(); };
@@ -2659,7 +3325,7 @@
       more.type = 'button';
       more.className = (i === 0 ? 'tpl-item' : 'opt-item') + ' tpl-more';
       more.setAttribute('role', 'menuitem');
-      more.textContent = 'Weitere...';
+      more.textContent = t('Weitere...', 'toolbar.moreTemplates');
       more.onclick = e => { e.stopPropagation(); openMoreTemplatesLink(); };
       container.appendChild(more);
     });
@@ -2668,7 +3334,7 @@
   function loadTemplate(index){
     const tpl = TEMPLATES[index];
     if(!tpl) return;
-    if(tree.length && !confirm('Aktuelle Struktur durch die Vorlage ersetzen?')) return;
+    if(tree.length && !confirm(t('Aktuelle Struktur durch die Vorlage ersetzen?', 'tabs.confirmReplaceTemplate'))) return;
     sourceText.value = tpl.xml;
     applySourceToTree();
     closeTemplateMenu();
@@ -2717,11 +3383,11 @@
     const raw = str || '';
     const leading = raw.match(/^\s*/)?.[0] || '';
     const leadingNL = (leading.match(/\n/g) || []).length;
-    const t = raw.trim();
-    if(!t) return { tree: [], errors: [], migrated: 0 };
+    const rawTrim = raw.trim();
+    if(!rawTrim) return { tree: [], errors: [], migrated: 0 };
 
     const prefix = '<__root__>';
-    const wrapped = prefix + replaceStrayAmpersands(t, '&amp;') + '</__root__>';
+    const wrapped = prefix + replaceStrayAmpersands(rawTrim, '&amp;') + '</__root__>';
     const doc = new DOMParser().parseFromString(wrapped, 'text/xml');
     const pe = doc.querySelector('parsererror');
 
@@ -2736,9 +3402,12 @@
       const detail = cleanParserErrorText(loc.detail);
       let message;
       if(line != null){
-        message = 'XML ungültig – Zeile ' + line + (col != null ? ', Spalte ' + col : '') + (detail ? ': ' + detail : '');
-      } else if(detail) message = 'XML ungültig: ' + detail;
-      else message = 'XML ungültig.';
+        if(col != null && detail) message = t('XML ungültig – Zeile {line}, Spalte {col}: {detail}', 'protocol.invalidXmlLineColDetail', {line, col, detail});
+        else if(col != null) message = t('XML ungültig – Zeile {line}, Spalte {col}', 'protocol.invalidXmlLineCol', {line, col});
+        else if(detail) message = t('XML ungültig – Zeile {line}: {detail}', 'protocol.invalidXmlLineDetail', {line, detail});
+        else message = t('XML ungültig – Zeile {line}', 'protocol.invalidXmlLine', {line});
+      } else if(detail) message = t('XML ungültig: {detail}', 'protocol.invalidXmlDetail', {detail});
+      else message = t('XML ungültig.', 'protocol.invalidXml');
       return { tree: null, errors: [message], migrated: 0 };
     }
 
@@ -2837,10 +3506,10 @@
   function serializeGesamtConfig(){
     saveActiveTab();
     const parts = ['<!-- GESAMT-CONFIG -->'];
-    tabs.forEach(t => {
-      const title = ((t.title || 'Prompt') + '').replace(/--/g, '- -');
+    tabs.forEach(tab => {
+      const title = ((tab.title || 'Prompt') + '').replace(/--/g, '- -');
       parts.push('<!-- TAB: ' + title + ' -->');
-      parts.push(('<prompt>\n' + serializeTree(t.tree || [], 1) + '</prompt>').trim());
+      parts.push(('<prompt>\n' + serializeTree(tab.tree || [], 1) + '</prompt>').trim());
     });
     return parts.join('\n\n');
   }
@@ -2950,8 +3619,8 @@
     meter.hidden = false;
     const len = (field.value || '').length;
     const sel = selectionLength(field);
-    if(sel > 0) meter.innerHTML = len + ' Zeichen<span class="char-sel"> · ' + sel + ' ausgewählt</span>';
-    else meter.textContent = len + ' Zeichen';
+    if(sel > 0) meter.innerHTML = t('{n} Zeichen', 'chars.count', {n: len}) + '<span class="char-sel">' + t(' · {n} ausgewählt', 'chars.selected', {n: sel}) + '</span>';
+    else meter.textContent = t('{n} Zeichen', 'chars.count', {n: len});
   }
 
   function updateResultCharCount(){
@@ -2959,7 +3628,7 @@
     if(!el) return;
     if(!showCharacterCount){ el.hidden = true; return; }
     el.hidden = false;
-    el.textContent = serializeFull().trim().length + ' Zeichen';
+    el.textContent = t('{n} Zeichen', 'chars.count', {n: serializeFull().trim().length});
   }
 
   /* ===== Baum-Navigation ===== */
@@ -3014,10 +3683,7 @@
       parent.children = parent.children || [];
       parent.children.unshift(textNode);
       parent.text = '';
-      showBanner('ok', [
-        'Hinweis: Inhalt von <' + (parentTag || 'element') +
-        '> wurde nach <' + leafTag + '> verschoben, da Container-Tags keinen direkten Text enthalten sollten.'
-      ]);
+      showBanner('ok', [t('Hinweis: Inhalt von <{parent}> wurde nach <{leaf}> verschoben, da Container-Tags keinen direkten Text enthalten sollten.', 'protocol.containerMoved', {parent: parentTag || 'element', leaf: leafTag})]);
     }
     const n = isComment ? newCommentNode('') : newNode('','');
     parent.children.push(n);
@@ -3070,23 +3736,23 @@
     const findInput = document.createElement('input');
     findInput.type = 'text';
     findInput.className = 'find-input';
-    findInput.placeholder = 'Suchen…';
-    findInput.setAttribute('aria-label', 'Suchbegriff');
+    findInput.placeholder = t('Suchen…', 'find.placeholder');
+    findInput.setAttribute('aria-label', t('Suchbegriff', 'find.ariaFind'));
     findInput.autocomplete = 'off';
     findInput.spellcheck = false;
 
     const btnPrev = document.createElement('button');
     btnPrev.type = 'button';
     btnPrev.className = 'btn small icon-only';
-    btnPrev.setAttribute('aria-label', 'Vorheriges Vorkommen');
-    btnPrev.title = 'Vorheriges';
+    btnPrev.setAttribute('aria-label', t('Vorheriges Vorkommen', 'find.prev'));
+    btnPrev.title = t('Vorheriges', 'find.prevTitle');
     btnPrev.textContent = '↑';
 
     const btnNext = document.createElement('button');
     btnNext.type = 'button';
     btnNext.className = 'btn small icon-only';
-    btnNext.setAttribute('aria-label', 'Nächstes Vorkommen');
-    btnNext.title = 'Nächstes';
+    btnNext.setAttribute('aria-label', t('Nächstes Vorkommen', 'find.next'));
+    btnNext.title = t('Nächstes', 'find.nextTitle');
     btnNext.textContent = '↓';
 
     const status = document.createElement('span');
@@ -3097,8 +3763,8 @@
     const btnClose = document.createElement('button');
     btnClose.type = 'button';
     btnClose.className = 'btn small icon-only';
-    btnClose.setAttribute('aria-label', 'Suche schließen');
-    btnClose.title = 'Schließen';
+    btnClose.setAttribute('aria-label', t('Suche schließen', 'find.close'));
+    btnClose.title = t('Schließen', 'find.closeTitle');
     btnClose.textContent = '×';
 
     findRow.appendChild(findInput);
@@ -3113,22 +3779,22 @@
     const replaceInput = document.createElement('input');
     replaceInput.type = 'text';
     replaceInput.className = 'replace-input';
-    replaceInput.placeholder = 'Ersetzen…';
-    replaceInput.setAttribute('aria-label', 'Ersatztext');
+    replaceInput.placeholder = t('Ersetzen…', 'find.replacePlaceholder');
+    replaceInput.setAttribute('aria-label', t('Ersatztext', 'find.ariaReplace'));
     replaceInput.autocomplete = 'off';
     replaceInput.spellcheck = false;
 
     const btnReplace = document.createElement('button');
     btnReplace.type = 'button';
     btnReplace.className = 'btn small';
-    btnReplace.textContent = 'Ersetzen';
-    btnReplace.title = 'Aktuelles Vorkommen ersetzen';
+    btnReplace.textContent = t('Ersetzen', 'find.replace');
+    btnReplace.title = t('Aktuelles Vorkommen ersetzen', 'find.replaceTitle');
 
     const btnReplaceAll = document.createElement('button');
     btnReplaceAll.type = 'button';
     btnReplaceAll.className = 'btn small';
-    btnReplaceAll.textContent = 'Alle';
-    btnReplaceAll.title = 'Alle Vorkommen ersetzen';
+    btnReplaceAll.textContent = t('Alle', 'find.replaceAll');
+    btnReplaceAll.title = t('Alle Vorkommen ersetzen', 'find.replaceAllTitle');
 
     replaceRow.appendChild(replaceInput);
     replaceRow.appendChild(btnReplace);
@@ -3143,7 +3809,7 @@
     caseCheck.className = 'find-case';
     caseLabel.appendChild(caseCheck);
     caseLabel.appendChild(document.createTextNode(' Aa'));
-    caseLabel.title = 'Groß-/Kleinschreibung beachten';
+    caseLabel.title = t('Groß-/Kleinschreibung beachten', 'find.caseTitle');
 
     const regexLabel = document.createElement('label');
     const regexCheck = document.createElement('input');
@@ -3151,7 +3817,7 @@
     regexCheck.className = 'find-regex';
     regexLabel.appendChild(regexCheck);
     regexLabel.appendChild(document.createTextNode(' .*'));
-    regexLabel.title = 'Regulärer Ausdruck';
+    regexLabel.title = t('Regulärer Ausdruck', 'find.regexTitle');
 
     options.appendChild(caseLabel);
     options.appendChild(regexLabel);
@@ -3171,7 +3837,7 @@
         if(regexCheck.checked) return new RegExp(q, flags);
         return new RegExp(escapeRegExp(q), flags);
       }catch(err){
-        status.textContent = 'RegEx!';
+        status.textContent = t('RegEx!', 'find.regexError');
         return null;
       }
     }
@@ -3258,7 +3924,7 @@
       textarea.value = newText;
       textarea.dispatchEvent(new Event('input', { bubbles: true }));
       collectMatches();
-      status.textContent = count + ' ersetzt';
+      status.textContent = t('{n} ersetzt', 'find.replaced', {n: count});
       textarea.focus();
     }
 
@@ -3327,7 +3993,7 @@
 
   function updateSourcePanelTitle(){
     const h2 = document.getElementById('sourcePanelTitle');
-    if(h2) h2.textContent = sourceGesamtMode ? 'Gesamt-Config' : 'XML-Code';
+    if(h2) h2.textContent = sourceGesamtMode ? t('Gesamt-Config', 'source.gesamtTitle') : t('XML-Code', 'source.title');
   }
 
   function toggleGesamtMode(){
@@ -3350,8 +4016,8 @@
       btnGesamt.type = 'button';
       btnGesamt.className = 'btn small';
       btnGesamt.id = 'btnGesamtConfig';
-      btnGesamt.title = sourceGesamtMode ? 'Einzelnen Tab-XML anzeigen' : 'Gesamt-Config aller Tabs anzeigen';
-      btnGesamt.textContent = sourceGesamtMode ? 'Tab-XML' : 'Gesamt';
+      btnGesamt.title = sourceGesamtMode ? t('Einzelnen Tab-XML anzeigen', 'source.tabXmlTitle') : t('Gesamt-Config aller Tabs anzeigen', 'source.gesamtTitleBtn');
+      btnGesamt.textContent = sourceGesamtMode ? t('Tab-XML', 'source.tabXml') : t('Gesamt', 'source.gesamt');
       btnGesamt.onclick = () => toggleGesamtMode();
       tools.appendChild(btnGesamt);
 
@@ -3359,8 +4025,8 @@
       btnFind.type = 'button';
       btnFind.className = 'btn small';
       btnFind.id = 'btnFindSource';
-      btnFind.title = 'Suchen und Ersetzen';
-      btnFind.textContent = 'Suchen';
+      btnFind.title = t('Suchen und Ersetzen', 'detail.findTitle');
+      btnFind.textContent = t('Suchen', 'source.find');
       btnFind.onclick = () => openFindReplace(sourceText);
       tools.appendChild(btnFind);
 
@@ -3369,8 +4035,8 @@
       btnWrap.className = 'btn small';
       btnWrap.id = 'btnToggleWrap';
       btnWrap.setAttribute('aria-pressed', xmlCodeLineWrap ? 'true' : 'false');
-      btnWrap.title = 'Zeilenumbruch umschalten';
-      btnWrap.textContent = xmlCodeLineWrap ? 'Umbruch an' : 'Umbruch aus';
+      btnWrap.title = t('Zeilenumbruch umschalten', 'source.wrapTitle');
+      btnWrap.textContent = xmlCodeLineWrap ? t('Umbruch an', 'source.wrapOn') : t('Umbruch aus', 'source.wrapOff');
       btnWrap.onclick = () => {
         xmlCodeLineWrap = !xmlCodeLineWrap;
         writeHashState();
@@ -3388,7 +4054,7 @@
       btn.id = 'btnSourceOptions';
       btn.setAttribute('aria-haspopup', 'true');
       btn.setAttribute('aria-expanded', 'false');
-      btn.textContent = 'Optionen';
+      btn.textContent = t('Optionen', 'source.options');
 
       const menu = document.createElement('div');
       menu.className = 'options-menu source-options-menu';
@@ -3399,7 +4065,7 @@
       optGesamt.type = 'button';
       optGesamt.className = 'opt-item';
       optGesamt.setAttribute('role', 'menuitem');
-      optGesamt.textContent = sourceGesamtMode ? 'Tab-XML' : 'Gesamt-Config';
+      optGesamt.textContent = sourceGesamtMode ? t('Tab-XML', 'source.tabXml') : t('Gesamt-Config', 'source.gesamtConfig');
       optGesamt.onclick = e => {
         e.stopPropagation();
         closeOptionsMenu();
@@ -3411,7 +4077,7 @@
       optFind.type = 'button';
       optFind.className = 'opt-item';
       optFind.setAttribute('role', 'menuitem');
-      optFind.textContent = 'Suchen';
+      optFind.textContent = t('Suchen', 'source.find');
       optFind.onclick = e => {
         e.stopPropagation();
         closeOptionsMenu();
@@ -3423,13 +4089,13 @@
       optWrap.type = 'button';
       optWrap.className = 'opt-item';
       optWrap.setAttribute('role', 'menuitem');
-      optWrap.textContent = xmlCodeLineWrap ? 'Umbruch an' : 'Umbruch aus';
+      optWrap.textContent = xmlCodeLineWrap ? t('Umbruch an', 'source.wrapOn') : t('Umbruch aus', 'source.wrapOff');
       optWrap.onclick = e => {
         e.stopPropagation();
         xmlCodeLineWrap = !xmlCodeLineWrap;
         writeHashState();
         applySourceWrap();
-        optWrap.textContent = xmlCodeLineWrap ? 'Umbruch an' : 'Umbruch aus';
+        optWrap.textContent = xmlCodeLineWrap ? t('Umbruch an', 'source.wrapOn') : t('Umbruch aus', 'source.wrapOff');
         closeOptionsMenu();
       };
       menu.appendChild(optWrap);
@@ -3491,7 +4157,7 @@
     if(!tree.length){
       const e = document.createElement('div');
       e.className = 'outline-empty';
-      e.textContent = 'Noch keine Elemente. Lege unten ein Element oder einen Kommentar an.';
+      e.textContent = t('Noch keine Elemente. Lege unten ein Element oder einen Kommentar an.', 'outline.empty');
       outlineList.appendChild(e);
       restoreOutlineScroll();
       return;
@@ -3617,17 +4283,17 @@
     const hasCh = node.kind === 'element' && node.children && node.children.length;
     const chev = document.createElement('button');
     chev.className = 'outline-chevron'+(hasCh?'':' invisible');
-    chev.setAttribute('aria-label', node.collapsed ? 'Aufklappen' : 'Zuklappen');
+    chev.setAttribute('aria-label', node.collapsed ? t('Aufklappen', 'outline.expand') : t('Zuklappen', 'outline.collapse'));
     chev.textContent = node.collapsed ? '▸' : '▾';
     chev.onclick = e => toggleCollapse(node.id, e);
     row.appendChild(chev);
 
     if(node.kind === 'comment'){
       const lab = document.createElement('span'); lab.className = 'outline-comment';
-      lab.textContent = '💬 '+((node.text||'').trim().slice(0,32)||'Anmerkung'); row.appendChild(lab);
+      lab.textContent = '💬 '+((node.text||'').trim().slice(0,32)||t('Anmerkung', 'outline.commentLabel')); row.appendChild(lab);
     } else {
       const lab = document.createElement('span'); lab.className = 'outline-tag'+(node.tag.trim()?'':' empty');
-      lab.textContent = node.tag.trim()||'(ohne Namen)'; row.appendChild(lab);
+      lab.textContent = node.tag.trim()||t('(ohne Namen)', 'outline.noName'); row.appendChild(lab);
       const prev = document.createElement('span'); prev.className = 'outline-preview'; prev.textContent = getPreviewText(node); row.appendChild(prev);
       if(hasCh){ const c = document.createElement('span'); c.className = 'outline-count'; c.textContent = node.children.length; row.appendChild(c); }
     }
@@ -3635,7 +4301,7 @@
     const openBtn = document.createElement('button');
     openBtn.type = 'button';
     openBtn.className = 'outline-open';
-    openBtn.setAttribute('aria-label', 'Im Editor öffnen');
+    openBtn.setAttribute('aria-label', t('Im Editor öffnen', 'outline.openEditor'));
     openBtn.textContent = '›';
     openBtn.onclick = e => {
       e.stopPropagation();
@@ -3668,7 +4334,7 @@
 
     if(node.kind === 'comment'){
       const head = document.createElement('div'); head.className = 'detail-heading-row';
-      const h = document.createElement('span'); h.className = 'comment-heading'; h.textContent = '💬 Anmerkung';
+      const h = document.createElement('span'); h.className = 'comment-heading'; h.textContent = t('💬 Anmerkung', 'detail.commentHeading');
       head.appendChild(h); detailScroll.appendChild(head);
     } else {
       const head = document.createElement('div'); head.className = 'detail-heading-row';
@@ -3676,8 +4342,8 @@
       head.appendChild(oa);
       const tagInput = document.createElement('input');
       tagInput.className = 'detail-tag-input'; tagInput.type = 'text'; tagInput.value = node.tag;
-      tagInput.placeholder = 'tag-name'; tagInput.autocomplete = 'off'; tagInput.spellcheck = false;
-      tagInput.setAttribute('aria-label', 'Tag-Name');
+      tagInput.placeholder = t('tag-name', 'detail.tagPlaceholder'); tagInput.autocomplete = 'off'; tagInput.spellcheck = false;
+      tagInput.setAttribute('aria-label', t('Tag-Name', 'detail.tagAria'));
       tagInput.oninput = e => { node.tag = e.target.value.replace(/\s+/g,'-'); e.target.value = node.tag; updateOutlineLabelFor(node.id, node.tag); updateSourceFromTree(); };
       head.appendChild(tagInput);
       const ca = document.createElement('span'); ca.className = 'detail-angle'; ca.textContent = '>';
@@ -3692,13 +4358,13 @@
     const btnUp = document.createElement('button');
     btnUp.type = 'button';
     btnUp.className = 'btn small icon-only';
-    btnUp.setAttribute('aria-label', 'Nach oben');
+    btnUp.setAttribute('aria-label', t('Nach oben', 'detail.moveUp'));
     btnUp.textContent = '↑';
     btnUp.onclick = () => { if(selectedId) moveNode(selectedId, -1); };
     const btnDown = document.createElement('button');
     btnDown.type = 'button';
     btnDown.className = 'btn small icon-only';
-    btnDown.setAttribute('aria-label', 'Nach unten');
+    btnDown.setAttribute('aria-label', t('Nach unten', 'detail.moveDown'));
     btnDown.textContent = '↓';
     btnDown.onclick = () => { if(selectedId) moveNode(selectedId, 1); };
     moveGroup.appendChild(btnUp);
@@ -3711,13 +4377,13 @@
     const isContainer = node.kind === 'element' && node.children && node.children.length > 0;
     if(isContainer){
       textarea.disabled = true;
-      textarea.placeholder = 'Dieser Tag ist ein Container.';
+      textarea.placeholder = t('Dieser Tag ist ein Container.', 'detail.containerPlaceholder');
       textarea.value = '';
     } else {
-      textarea.placeholder = node.kind==='comment'?'Anmerkung…':'Text für dieses Element…';
+      textarea.placeholder = node.kind==='comment'?t('Anmerkung…', 'detail.commentPlaceholder'):t('Text für dieses Element…', 'detail.textPlaceholder');
       textarea.value = node.text||'';
     }
-    textarea.setAttribute('aria-label', node.kind==='comment' ? 'Kommentartext' : 'Elementtext');
+    textarea.setAttribute('aria-label', node.kind==='comment' ? t('Kommentartext', 'detail.commentAria') : t('Elementtext', 'detail.textAria'));
     textarea.oninput = e => {
       if(isContainer) return;
       node.text = e.target.value;
@@ -3739,16 +4405,16 @@
       const btnCopyNode = document.createElement('button');
       btnCopyNode.type = 'button';
       btnCopyNode.className = 'btn small';
-      btnCopyNode.textContent = 'Kopieren';
-      btnCopyNode.title = 'Ausgewählten Punkt kopieren';
+      btnCopyNode.textContent = t('Kopieren', 'detail.copy');
+      btnCopyNode.title = t('Ausgewählten Punkt kopieren', 'detail.copyTitle');
       btnCopyNode.onclick = () => copySelectedNode();
       tools.appendChild(btnCopyNode);
 
       const btnPasteNode = document.createElement('button');
       btnPasteNode.type = 'button';
       btnPasteNode.className = 'btn small btn-paste-node';
-      btnPasteNode.textContent = 'Einfügen';
-      btnPasteNode.title = 'Kopierten Punkt einfügen';
+      btnPasteNode.textContent = t('Einfügen', 'detail.paste');
+      btnPasteNode.title = t('Kopierten Punkt einfügen', 'detail.pasteTitle');
       btnPasteNode.disabled = !nodeClipboard;
       btnPasteNode.onclick = () => pasteNode();
       tools.appendChild(btnPasteNode);
@@ -3756,8 +4422,8 @@
       const btnFind = document.createElement('button');
       btnFind.type = 'button';
       btnFind.className = 'btn small';
-      btnFind.textContent = 'Suchen';
-      btnFind.title = 'Suchen und Ersetzen';
+      btnFind.textContent = t('Suchen', 'detail.find');
+      btnFind.title = t('Suchen und Ersetzen', 'detail.findTitle');
       btnFind.onclick = () => openFindReplace(textarea);
       tools.appendChild(btnFind);
 
@@ -3775,7 +4441,7 @@
       btnOptions.className = 'btn small';
       btnOptions.setAttribute('aria-haspopup', 'true');
       btnOptions.setAttribute('aria-expanded', 'false');
-      btnOptions.textContent = 'Optionen';
+      btnOptions.textContent = t('Optionen', 'detail.options');
 
       const menu = document.createElement('div');
       menu.className = 'options-menu tools-options-menu';
@@ -3790,7 +4456,7 @@
       optCopy.type = 'button';
       optCopy.className = 'opt-item';
       optCopy.setAttribute('role', 'menuitem');
-      optCopy.textContent = 'Kopieren';
+      optCopy.textContent = t('Kopieren', 'detail.copy');
       optCopy.onclick = e => {
         e.stopPropagation();
         copySelectedNode();
@@ -3804,7 +4470,7 @@
       optPaste.type = 'button';
       optPaste.className = 'opt-item btn-paste-node';
       optPaste.setAttribute('role', 'menuitem');
-      optPaste.textContent = 'Einfügen';
+      optPaste.textContent = t('Einfügen', 'detail.paste');
       optPaste.disabled = !nodeClipboard;
       optPaste.onclick = e => {
         e.stopPropagation();
@@ -3817,7 +4483,7 @@
       optFind.type = 'button';
       optFind.className = 'opt-item';
       optFind.setAttribute('role', 'menuitem');
-      optFind.textContent = 'Suchen';
+      optFind.textContent = t('Suchen', 'detail.find');
       optFind.onclick = e => {
         e.stopPropagation();
         closeOptionsMenu();
@@ -3833,7 +4499,7 @@
       optWiki.type = 'button';
       optWiki.className = 'opt-item';
       optWiki.setAttribute('role', 'menuitem');
-      optWiki.textContent = '+ WikiText';
+      optWiki.textContent = t('+ WikiText', 'detail.wikiText');
       optWiki.onclick = e => {
         e.stopPropagation();
         closeOptionsMenu();
@@ -3846,7 +4512,7 @@
       optWikiSettings.type = 'button';
       optWikiSettings.className = 'opt-item';
       optWikiSettings.setAttribute('role', 'menuitem');
-      optWikiSettings.textContent = 'Wiki-Einstellungen ›';
+      optWikiSettings.textContent = t('Wiki-Einstellungen ›', 'detail.wikiSettings');
       optWikiSettings.onclick = e => {
         e.stopPropagation();
         level0.classList.remove('active');
@@ -3864,7 +4530,7 @@
       const backBtn = document.createElement('button');
       backBtn.type = 'button';
       backBtn.className = 'menu-back';
-      backBtn.textContent = 'Zurück';
+      backBtn.textContent = t('Zurück', 'detail.back');
       backBtn.onclick = e => {
         e.stopPropagation();
         level1.classList.remove('active');
@@ -3873,25 +4539,21 @@
       level1.appendChild(backBtn);
 
       const langLabel = document.createElement('label');
-      langLabel.textContent = 'Sprache';
+      langLabel.textContent = t('Sprache', 'detail.wikiLang');
       level1.appendChild(langLabel);
 
       const langSelect = document.createElement('select');
       langSelect.className = 'wiki-lang';
-      [
-        ['de','Deutsch'],['en','English'],['fr','Français'],['es','Español'],
-        ['it','Italiano'],['pt','Português'],['nl','Nederlands'],['pl','Polski'],
-        ['ru','Русский'],['ja','日本語'],['zh','中文'],['random','Zufällig']
-      ].forEach(([v,l]) => {
+      ['de','en','fr','es','it','pt','nl','pl','ru','ja','zh','random'].forEach(v => {
         const o = document.createElement('option');
-        o.value = v; o.textContent = l;
+        o.value = v; o.textContent = t(({'de':'Deutsch','en':'English','fr':'Français','es':'Español','it':'Italiano','pt':'Português','nl':'Nederlands','pl':'Polski','ru':'Русский','ja':'日本語','zh':'中文','random':'Zufällig'})[v]||v, 'wiki.'+v);
         langSelect.appendChild(o);
       });
       langSelect.value = wikiSettings.lang;
       level1.appendChild(langSelect);
 
       const charsLabel = document.createElement('label');
-      charsLabel.textContent = 'ca. Zeichen';
+      charsLabel.textContent = t('ca. Zeichen', 'detail.wikiChars');
       level1.appendChild(charsLabel);
 
       const charsInput = document.createElement('input');
@@ -3909,14 +4571,14 @@
       const insertBtn = document.createElement('button');
       insertBtn.type = 'button';
       insertBtn.className = 'btn small primary';
-      insertBtn.textContent = 'Einfügen';
+      insertBtn.textContent = t('Einfügen', 'detail.wikiInsert');
       insertBtn.onclick = async e => {
         e.stopPropagation();
         const lang = langSelect.value;
         let chars = parseInt(charsInput.value, 10) || 450;
         wikiSettings = { lang, chars };
         insertBtn.disabled = true;
-        insertBtn.textContent = 'Lade…';
+        insertBtn.textContent = t('Lade…', 'detail.wikiLoading');
         try {
           const text = await fetchWikiText(lang, chars);
           const s = textarea.selectionStart, ee = textarea.selectionEnd;
@@ -3926,10 +4588,10 @@
           textarea.setSelectionRange(s + text.length, s + text.length);
           closeOptionsMenu();
         } catch(err) {
-          alert('Fehler: ' + err.message);
+          alert(t('Fehler: ', 'protocol.errorPrefix') + err.message);
         } finally {
           insertBtn.disabled = false;
-          insertBtn.textContent = 'Einfügen';
+          insertBtn.textContent = t('Einfügen', 'detail.wikiInsert');
         }
       };
       actions.appendChild(insertBtn);
@@ -3964,7 +4626,7 @@
   function buildLevelBar(path, depth){
     const bar = document.createElement('div'); bar.className = 'level-bar';
     const badge = document.createElement('div'); badge.className = 'level-badge';
-    badge.innerHTML = '<span class="lvl-num">'+depth+'</span> Ebene '+depth;
+    badge.innerHTML = '<span class="lvl-num">'+depth+'</span> '+t('Ebene {n}', 'detail.level', {n: depth});
     bar.appendChild(badge);
     const bc = document.createElement('div'); bc.className = 'breadcrumb';
     path.forEach((n,i) => {
@@ -3980,7 +4642,7 @@
     const closeBtn = document.createElement('button');
     closeBtn.type = 'button';
     closeBtn.className = 'detail-close';
-    closeBtn.setAttribute('aria-label', 'Editor schließen');
+    closeBtn.setAttribute('aria-label', t('Editor schließen', 'detail.closeEditor'));
     closeBtn.textContent = '×';
     closeBtn.onclick = () => closeMobileDetail();
     bar.appendChild(closeBtn);
@@ -3989,14 +4651,14 @@
 
   function buildEmptyState(){
     const empty = document.createElement('div'); empty.className = 'detail-empty';
-    empty.innerHTML = '<p>Wähle links ein Element aus oder lege unten ein neues an.</p>';
+    empty.innerHTML = '<p>' + t('Wähle links ein Element aus oder lege unten ein neues an.', 'detail.empty') + '</p>';
     return empty;
   }
 
   function updateOutlineLabelFor(id, tagValue, commentValue){
     const row = outlineList.querySelector('.outline-row[data-id="'+id+'"]'); if(!row) return;
-    if(tagValue != null){ const lab = row.querySelector('.outline-tag'); if(lab){ const t = tagValue.trim(); lab.textContent = t||'(ohne Namen)'; lab.classList.toggle('empty', !t); } }
-    if(commentValue != null){ const lab = row.querySelector('.outline-comment'); if(lab) lab.textContent = '💬 '+((commentValue||'').trim().slice(0,32)||'Anmerkung'); }
+    if(tagValue != null){ const lab = row.querySelector('.outline-tag'); if(lab){ const tv = tagValue.trim(); lab.textContent = tv||t('(ohne Namen)', 'outline.noName'); lab.classList.toggle('empty', !tv); } }
+    if(commentValue != null){ const lab = row.querySelector('.outline-comment'); if(lab) lab.textContent = '💬 '+((commentValue||'').trim().slice(0,32)||t('Anmerkung', 'outline.commentLabel')); }
   }
   function updateOutlinePreview(id, text){
     const row = outlineList.querySelector('.outline-row[data-id="'+id+'"]'); if(!row) return;
@@ -4015,11 +4677,11 @@
     const { tree: parsed, errors, migrated } = parseXMLString(sourceText.value);
     if(errors.length){ showBanner('error', errors); return; }
     if(!parsed || !parsed.length){
-      showBanner('error', ['Keine gültige Gesamt-Config gefunden.']);
+      showBanner('error', [t('Keine gültige Gesamt-Config gefunden.', 'protocol.noGesamt')]);
       return;
     }
     const newTabs = [];
-    let currentTitle = 'Prompt 1';
+    let currentTitle = t('Prompt {n}', 'tabs.defaultTitle', {n: 1});
     let currentChildren = [];
     function flush(){
       if(currentChildren.length || newTabs.length === 0){
@@ -4027,8 +4689,8 @@
         if(currentChildren.length === 1 && currentChildren[0].kind === 'element' && (currentChildren[0].tag || '').toLowerCase() === 'prompt'){
           treeData = currentChildren[0].children || [];
         }
-        const t = createTabState(currentTitle, treeData);
-        newTabs.push(t);
+        const tabState = createTabState(currentTitle, treeData);
+        newTabs.push(tabState);
       }
       currentChildren = [];
     }
@@ -4038,7 +4700,7 @@
         const m = /^TAB:\s*(.+)$/i.exec(txt);
         if(m){
           flush();
-          currentTitle = m[1].trim() || 'Prompt';
+          currentTitle = m[1].trim() || t('Prompt {n}', 'tabs.defaultTitle', {n: newTabs.length+1});
         }
       } else {
         currentChildren.push(n);
@@ -4046,7 +4708,7 @@
     });
     flush();
     if(!newTabs.length){
-      showBanner('error', ['Keine gültige Gesamt-Config gefunden.']);
+      showBanner('error', [t('Keine gültige Gesamt-Config gefunden.', 'protocol.noGesamt')]);
       return;
     }
     tabs = newTabs;
@@ -4058,12 +4720,10 @@
     focusDetailField = false;
     sourceGesamtMode = false;
     updateSourcePanelTitle();
-    hideBanner();
     if(migrated > 0){
-      showBanner('ok', [
-        'Import-Hinweis: Mixed Content erkannt. ' + migrated +
-        ' Text-Blöcke wurden automatisch in <Parent_text>-Tags umgewandelt.'
-      ]);
+      showBanner('ok', [t('Import-Hinweis: Mixed Content erkannt. {n} Text-Blöcke wurden automatisch in <Parent_text>-Tags umgewandelt.', 'protocol.mixedContent', { n: migrated })]);
+    } else {
+      showBanner('ok', [t('Gesamt-Config erfolgreich übernommen.', 'protocol.gesamtApplied')]);
     }
     renderTabs();
     render();
@@ -4084,11 +4744,10 @@
     }
     selectedId = firstNavigableId(tree);
     if(migrated > 0){
-      showBanner('ok', [
-        'Import-Hinweis: Mixed Content erkannt. ' + migrated +
-        ' Text-Blöcke wurden automatisch in <Parent_text>-Tags umgewandelt.'
-      ]);
-    } else hideBanner();
+      showBanner('ok', [t('Import-Hinweis: Mixed Content erkannt. {n} Text-Blöcke wurden automatisch in <Parent_text>-Tags umgewandelt.', 'protocol.mixedContent', { n: migrated })]);
+    } else {
+      showBanner('ok', [t('XML erfolgreich übernommen.', 'protocol.xmlApplied')]);
+    }
     render();
   }
 
@@ -4111,31 +4770,32 @@
     (function walk(nodes, depth, parentTag){
       nodes.forEach(n => {
         if(n.kind === 'comment') return;
-        const t = (n.tag || '').trim();
+        const tagName = (n.tag || '').trim();
         const line = lineState.map[n.id] || null;
         n._line = line;
-        if(!t || !tagNameRe.test(t)){
+        const lineSuf = line ? t(' · Zeile ~{line}', 'validation.lineSuffix', {line}) : '';
+        if(!tagName || !tagNameRe.test(tagName)){
           hard.push({
             id: n.id, line,
-            message: !t ? 'Tag ohne Namen – Zeile ' + line : 'Tag <' + t + '> enthält ungültige Zeichen – Zeile ' + line
+            message: !tagName ? t('Tag ohne Namen – Zeile {line}', 'validation.tagNoName', {line}) : t('Tag <{tag}> enthält ungültige Zeichen – Zeile {line}', 'validation.tagInvalid', {tag: tagName, line})
           });
         }
-        if(t && GENERIC_TAGS.has(t.toLowerCase())){
+        if(tagName && GENERIC_TAGS.has(tagName.toLowerCase())){
           soft.push({
             id:n.id, line, level:'warning',
-            message:'Warnung: <' + t + '> ist zu generisch. Nutze beschreibende Namen wie <kunden_anfrage> statt <data> (XML: Use consistent, descriptive tag names)' + (line ? ' · Zeile ~' + line : '')
+            message: t('Warnung: <{tag}> ist zu generisch. Nutze beschreibende Namen wie <kunden_anfrage> statt <data> (XML: Use consistent, descriptive tag names){line}', 'validation.genericTag', {tag: tagName, line: lineSuf})
           });
         }
         if(depth > 4){
           soft.push({
             id:n.id, line, level:'warning',
-            message:'Warnung: Verschachtelungstiefe ' + depth + ' in <' + (t||'?') + '>. Mehr als 4 Ebenen erschweren das Verständnis.' + (line ? ' · Zeile ~' + line : '')
+            message: t('Warnung: Verschachtelungstiefe {depth} in <{tag}>. Mehr als 4 Ebenen erschweren das Verständnis.{line}', 'validation.depth', {depth, tag: tagName||'?', line: lineSuf})
           });
         }
-        if(t.toLowerCase() === 'example' && (parentTag||'').toLowerCase() !== 'examples'){
+        if(tagName.toLowerCase() === 'example' && (parentTag||'').toLowerCase() !== 'examples'){
           soft.push({
             id:n.id, line, level:'hint',
-            message:'Hinweis: <example> sollte in <examples> verpackt sein (XML)' + (line ? ' · Zeile ~' + line : '')
+            message: t('Hinweis: <example> sollte in <examples> verpackt sein (XML){line}', 'validation.exampleHint', {line: lineSuf})
           });
         }
         const hasText = (n.text||'').trim() !== '';
@@ -4143,20 +4803,96 @@
         if(!hasText && !hasKids){
           soft.push({
             id:n.id, line, level:'hint',
-            message:'Hinweis: <' + (t||'?') + '> ist leer' + (line ? ' · Zeile ~' + line : '')
+            message: t('Hinweis: <{tag}> ist leer{line}', 'validation.emptyTag', {tag: tagName||'?', line: lineSuf})
           });
         }
-        if(n.children && n.children.length) walk(n.children, depth + 1, t);
+        if(n.children && n.children.length) walk(n.children, depth + 1, tagName);
       });
     })(tree, 1, null);
     return {hard, soft};
+  }
+
+  function formatProtocolTime(){
+    const d = new Date();
+    return d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+  }
+
+  function isProtocolOpen(){
+    const panel = document.getElementById('protocolPanel');
+    return panel && panel.classList.contains('open');
+  }
+
+  function registerProtocolTrigger(el){
+    if(el && !protocolTriggerEls.includes(el)) protocolTriggerEls.push(el);
+  }
+
+  function protocolBadgeLabel(count){
+    if(count > 99) return '99+';
+    return String(count);
+  }
+
+  function ensureProtocolBadge(el, count){
+    if(!el) return;
+    let badge = el.querySelector(':scope > .protocol-badge');
+    if(count <= 0){
+      el.classList.remove('has-error-mark');
+      if(badge) badge.remove();
+      return;
+    }
+    el.classList.add('has-error-mark');
+    if(!badge){
+      badge = document.createElement('span');
+      badge.className = 'protocol-badge';
+      badge.setAttribute('aria-hidden', 'true');
+      el.appendChild(badge);
+    }
+    const label = protocolBadgeLabel(count);
+    badge.textContent = label;
+    badge.classList.toggle('digits-2', label.length === 2);
+    badge.classList.toggle('digits-3', label.length >= 3);
+  }
+
+  function updateProtocolMarks(){
+    const count = hasProtocolErrors ? Math.max(1, protocolErrorCount) : 0;
+    protocolTriggerEls.forEach(el => ensureProtocolBadge(el, count));
+    /* Mobile: Badge auch am Menüpunkt „Protokoll“, falls Options-Menü offen */
+    const optValidate = document.getElementById('optValidate');
+    if(optValidate) ensureProtocolBadge(optValidate, count);
+  }
+
+  function setProtocolErrorMark(on){
+    /* Mark nur setzen, wenn Protokoll geschlossen ist (wie Handy-Badge) */
+    if(on && isProtocolOpen()){
+      hasProtocolErrors = false;
+      /* Zähler bleibt erhalten, Badge wird beim Schließen ggf. neu gesetzt – beim Öffnen wird Zähler genullt */
+    } else if(on){
+      hasProtocolErrors = true;
+    } else {
+      hasProtocolErrors = false;
+    }
+    updateProtocolMarks();
+  }
+
+  function addToProtocol(type, msgs){
+    const ts = formatProtocolTime();
+    const list = Array.isArray(msgs) ? msgs : [msgs];
+    list.forEach(m => {
+      const message = typeof m === 'string' ? m : (m && m.message ? m.message : String(m));
+      protocolLog.push({ ts, type, message });
+      if(type === 'error') protocolErrorCount += 1;
+    });
+    while(protocolLog.length > protocolThreshold) protocolLog.shift();
+    setProtocolErrorMark(protocolErrorCount > 0);
+    if(isProtocolOpen()) renderProtocolList();
   }
 
   function runValidation(){
     clearErrorFlags(tree);
     const {hard, soft} = validateTree();
     if(!hard.length && !soft.length){
-      showBanner('ok', ['Keine Fehler.']);
+      protocolErrorCount = 0;
+      setProtocolErrorMark(false);
+      showBanner('ok', [t('Keine Fehler.', 'protocol.noErrors')]);
       renderOutline();
       return;
     }
@@ -4164,31 +4900,15 @@
       const f = findNode(tree, i.id);
       if(f) f.node._hasError = true;
     });
+    /* Fehleranzahl kommt über addToProtocol (je Message +1) */
     renderOutline();
     showBannerMixed(hard, soft);
   }
 
   function escapeHTML(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-  function bannerCloseBtn(){
-    const btn = document.createElement('button');
-    btn.type = 'button'; btn.className = 'banner-close'; btn.setAttribute('aria-label','Schließen');
-    btn.innerHTML = '✕'; btn.onclick = hideBanner;
-    return btn;
-  }
-
   function showBanner(type, msgs){
-    clearBannerTimer();
-    validationBanner.className = 'banner show ' + type;
-    const title = type === 'error' ? 'Achtung' : type === 'warning' ? 'Hinweise' : 'Alles gut';
-    validationBanner.innerHTML =
-      '<strong>' + title + '</strong><ul>' +
-      msgs.map(m =>
-        '<li class="banner-item">' + escapeHTML(typeof m === 'string' ? m : (m.message || String(m))) + '</li>'
-      ).join('') +
-      '</ul>';
-    validationBanner.appendChild(bannerCloseBtn());
-    if(type === 'ok' || type === 'warning') scheduleNonErrorHide();
+    addToProtocol(type, msgs);
   }
 
   function jumpToIssue(issue){
@@ -4231,55 +4951,81 @@
   }
 
   function showBannerMixed(hard, soft){
-    clearBannerTimer();
-    const hasHard = hard.length > 0;
-    validationBanner.className = 'banner show ' + (hasHard ? 'error' : 'warning');
-    const title = hasHard
-      ? (hard.length + ' Fehler' + (soft.length ? ', ' + soft.length + ' Hinweise' : ''))
-      : (soft.length + ' Hinweise');
-    validationBanner.innerHTML = '<strong>' + title + '</strong><ul></ul>';
-    const ul = validationBanner.querySelector('ul');
-    [...hard, ...soft].forEach(issue => {
-      const li = document.createElement('li');
-      li.textContent = (issue.line ? 'Zeile ' + issue.line + ': ' : '') + issue.message + ' → springen';
-      li.onclick = () => jumpToIssue(issue);
-      ul.appendChild(li);
-    });
-    validationBanner.appendChild(bannerCloseBtn());
-    if(!hasHard){
-      if(!skipNonErrorNotifications){
-        const skipBtn = document.createElement('button');
-        skipBtn.type = 'button';
-        skipBtn.className = 'btn small plain';
-        skipBtn.style.marginTop = '8px';
-        skipBtn.textContent = 'Nicht mehr dauerhaft anzeigen';
-        skipBtn.onclick = (e) => { e.stopPropagation(); enableSkipNonError(); };
-        validationBanner.appendChild(skipBtn);
-      }
-      scheduleNonErrorHide();
-    }
-  }
-
-  function clearBannerTimer(){
-    if(bannerHideTimer){ clearTimeout(bannerHideTimer); bannerHideTimer = null; }
+    if(hard.length) addToProtocol('error', hard.map(i => (i.line ? t('Zeile {line}: ', 'protocol.linePrefix', {line: i.line}) : '') + i.message));
+    if(soft.length) addToProtocol('warning', soft.map(i => (i.line ? t('Zeile {line}: ', 'protocol.linePrefix', {line: i.line}) : '') + i.message));
   }
 
   function hideBanner(){
-    clearBannerTimer();
-    validationBanner.className = 'banner';
-    validationBanner.innerHTML = '';
+    /* Kein Banner mehr – nur noch Protokoll */
   }
 
-  function scheduleNonErrorHide(){
-    clearBannerTimer();
-    if(!skipNonErrorNotifications) return;
-    bannerHideTimer = setTimeout(() => hideBanner(), 5000);
+  /* ===== Protokoll-UI ===== */
+  function renderProtocolList(){
+    const list = document.getElementById('protocolList');
+    if(!list) return;
+    list.innerHTML = '';
+    if(!protocolLog.length){
+      const empty = document.createElement('div');
+      empty.className = 'protocol-empty';
+      empty.textContent = t('Noch keine Einträge. Tippe auf „Prüfen“, um die Struktur jetzt zu prüfen.', 'protocol.empty');
+      list.appendChild(empty);
+      return;
+    }
+    protocolLog.forEach(entry => {
+      const row = document.createElement('div');
+      row.className = 'protocol-entry type-' + (entry.type || 'ok');
+      const ts = document.createElement('span');
+      ts.className = 'protocol-ts';
+      ts.textContent = entry.ts;
+      const msg = document.createElement('span');
+      msg.className = 'protocol-msg';
+      msg.textContent = entry.message;
+      row.appendChild(ts);
+      row.appendChild(msg);
+      list.appendChild(row);
+    });
+    list.scrollTop = list.scrollHeight;
   }
 
-  function enableSkipNonError(){
-    skipNonErrorNotifications = true;
-    writeHashState();
-    hideBanner();
+  function openProtocol(){
+    closeAllWikiMenus();
+    closeTemplateMenu();
+    closeOptionsMenu();
+    const panel = document.getElementById('protocolPanel');
+    const overlay = document.getElementById('protocolOverlay');
+    if(!panel) return;
+    /* Badge verschwindet beim Öffnen (wie Handy-Benachrichtigung) */
+    protocolErrorCount = 0;
+    hasProtocolErrors = false;
+    updateProtocolMarks();
+    renderProtocolList();
+    if(overlay){
+      overlay.hidden = false;
+      overlay.classList.add('open');
+    }
+    panel.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    const closeBtn = document.getElementById('btnProtocolClose');
+    if(closeBtn) closeBtn.focus();
+  }
+
+  function closeProtocol(){
+    const panel = document.getElementById('protocolPanel');
+    const overlay = document.getElementById('protocolOverlay');
+    if(panel) panel.classList.remove('open');
+    if(overlay){
+      overlay.classList.remove('open');
+      overlay.hidden = true;
+    }
+    document.body.style.overflow = '';
+  }
+
+  function clearProtocol(){
+    protocolLog = [];
+    protocolErrorCount = 0;
+    hasProtocolErrors = false;
+    updateProtocolMarks();
+    renderProtocolList();
   }
 
   /* ===== XML-Quellpanel ===== */
@@ -4287,26 +5033,26 @@
     sourceText.classList.toggle('wrap-on', xmlCodeLineWrap);
     const btn = document.getElementById('btnToggleWrap');
     if(btn){
-      btn.textContent = xmlCodeLineWrap ? 'Umbruch an' : 'Umbruch aus';
+      btn.textContent = xmlCodeLineWrap ? t('Umbruch an', 'source.wrapOn') : t('Umbruch aus', 'source.wrapOff');
       btn.setAttribute('aria-pressed', xmlCodeLineWrap ? 'true' : 'false');
     }
     const opt = document.getElementById('optSourceWrap');
-    if(opt) opt.textContent = xmlCodeLineWrap ? 'Umbruch an' : 'Umbruch aus';
+    if(opt) opt.textContent = xmlCodeLineWrap ? t('Umbruch an', 'source.wrapOn') : t('Umbruch aus', 'source.wrapOff');
   }
 
   function resetAll(){
-    if(tree.length && !confirm('Alles löschen?')) return;
+    if(tree.length && !confirm(t('Alles löschen?', 'outline.confirmReset'))) return;
     tree = []; selectedId = null; hideBanner(); closeSheet(true); render();
   }
-  function copySource(){ sourceText.select(); navigator.clipboard.writeText(sourceText.value).then(() => flashButton('btnCopySource','✓')).catch(() => document.execCommand('copy')); }
+  function copySource(){ sourceText.select(); navigator.clipboard.writeText(sourceText.value).then(() => flashButton('btnCopySource', t('✓', 'outline.copiedShort'))).catch(() => document.execCommand('copy')); }
   function copyResult(){
     const xml = serializeFull().trim();
-    navigator.clipboard.writeText(xml).then(() => flashButton('btnCopyResult','✓ Kopiert'))
-      .catch(() => { const t = document.createElement('textarea'); t.value = xml; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); flashButton('btnCopyResult','✓'); });
+    navigator.clipboard.writeText(xml).then(() => flashButton('btnCopyResult', t('✓ Kopiert', 'outline.copied')))
+      .catch(() => { const ta = document.createElement('textarea'); ta.value = xml; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); flashButton('btnCopyResult', t('✓', 'outline.copiedShort')); });
   }
   function flashButton(id, label){ const b = document.getElementById(id); if(!b) return; const o = b.textContent; b.textContent = label; setTimeout(() => b.textContent = o, 1300); }
   function setSourceLabels(open){
-    const label = open ? 'XML ausblenden' : 'XML anzeigen';
+    const label = open ? t('XML ausblenden', 'toolbar.hideXml') : t('XML anzeigen', 'toolbar.showXml');
     const desk = document.getElementById('btnToggleSource');
     const mob = document.getElementById('optToggleSource');
     if(desk) desk.textContent = label;
@@ -4382,13 +5128,20 @@
       positionMenu(btn, menu);
       btn.setAttribute('aria-expanded', 'true');
       openOptionsMenu = menu;
+      /* Badge auch am Menüpunkt „Protokoll“ anzeigen */
+      updateProtocolMarks();
     }
   };
 
   document.getElementById('optValidate').onclick = e => {
     e.stopPropagation();
     closeOptionsMenu();
-    runValidation();
+    openProtocol();
+  };
+  document.getElementById('optLanguage').onclick = e => {
+    e.stopPropagation();
+    closeOptionsMenu();
+    openLanguagePanel();
   };
   document.getElementById('optToggleSource').onclick = e => {
     e.stopPropagation();
@@ -4396,6 +5149,10 @@
     toggleSourcePanel();
   };
   document.getElementById('btnResetMobile').onclick = resetAll;
+  document.getElementById('btnLanguage').onclick = e => {
+    e.stopPropagation();
+    openLanguagePanel();
+  };
 
   document.getElementById('btnAddRoot').onclick = addRootNode;
   document.getElementById('btnAddRootComment').onclick = addRootComment;
@@ -4408,9 +5165,42 @@
     }
   };
   document.getElementById('btnDelete').onclick = () => {
-    if(selectedId && confirm('Wirklich löschen?')) deleteNode(selectedId);
+    if(selectedId && confirm(t('Wirklich löschen?', 'outline.confirmDelete'))) deleteNode(selectedId);
   };
-  document.getElementById('btnValidate').onclick = runValidation;
+  document.getElementById('btnValidate').onclick = openProtocol;
+  document.getElementById('btnProtocolClose').onclick = closeProtocol;
+  document.getElementById('btnProtocolClear').onclick = clearProtocol;
+  document.getElementById('btnProtocolValidate').onclick = () => {
+    runValidation();
+    renderProtocolList();
+  };
+  const protocolOverlayEl = document.getElementById('protocolOverlay');
+  if(protocolOverlayEl){
+    protocolOverlayEl.addEventListener('click', closeProtocol);
+  }
+  const languageOverlayEl = document.getElementById('languageOverlay');
+  if(languageOverlayEl){
+    languageOverlayEl.addEventListener('click', closeLanguagePanel);
+  }
+  document.getElementById('btnLanguageClose').onclick = closeLanguagePanel;
+  const languageSearchEl = document.getElementById('languageSearch');
+  if(languageSearchEl){
+    languageSearchEl.addEventListener('input', () => {
+      languageSearchQuery = languageSearchEl.value || '';
+      renderLanguageList();
+    });
+  }
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && isLanguagePanelOpen()){
+      e.preventDefault();
+      closeLanguagePanel();
+      return;
+    }
+    if(e.key === 'Escape' && isProtocolOpen()){
+      e.preventDefault();
+      closeProtocol();
+    }
+  });
   document.getElementById('btnReset').onclick = resetAll;
   document.getElementById('btnToggleSource').onclick = toggleSourcePanel;
   document.getElementById('btnApplySource').onclick = applySourceToTree;
@@ -4435,12 +5225,14 @@
   });
 
   window.addEventListener('hashchange', () => {
+    const prevLang = currentLang;
     readHashState();
     readShowCharacterCount();
     applySourceWrap();
     updateSourceHeadTools();
     renderTabs();
     render();
+    if(currentLang !== prevLang) loadLanguage(currentLang).catch(() => {});
   });
 
   window.addEventListener('resize', () => {
@@ -4463,15 +5255,26 @@
 
   /* ===== Start ===== */
   readHashState();
+  /* Sprache: URL setLanguage, sonst System, Fallback de */
+  (function initLang(){
+    const params = parseHashParams();
+    if(Object.prototype.hasOwnProperty.call(params, 'setLanguage') && params.setLanguage){
+      currentLang = String(params.setLanguage).toLowerCase().slice(0, 2);
+    } else {
+      currentLang = detectSystemLanguage();
+    }
+  })();
   writeHashState();
 
   idCounter = 1;
-  const first = createTabState('Prompt 1', []);
+  const first = createTabState(t('Prompt {n}', 'tabs.defaultTitle', {n: 1}), []);
   tabs = [first];
   activeTabId = first.id;
   tree = first.tree;
   selectedId = first.selectedId;
   idCounter = first.idCounter;
+  registerProtocolTrigger(document.getElementById('btnValidate'));
+  registerProtocolTrigger(document.getElementById('btnOptions'));
   bindOutlineScroll();
   ensureDetailParent();
   if(isMobileLayout()){
@@ -4485,6 +5288,7 @@
   renderTabs();
   render();
   updateResultCharCount();
+  loadLanguage(currentLang).catch(() => {});
 })();
 </script>
 </body>

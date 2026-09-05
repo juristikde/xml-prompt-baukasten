@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "lv",
+    "name": "Latviešu",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Arābu)",
+      "local": "arābu"
+    },
+    "bg": {
+      "native": "Български (Bulgāru)",
+      "local": "bulgāru"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "bosniešu"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "čehu"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "dāņu"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "vācu"
+    },
+    "el": {
+      "native": "Ελληνικά (Grieķu)",
+      "local": "grieķu"
+    },
+    "en": {
+      "native": "English",
+      "local": "angļu"
+    },
+    "es": {
+      "native": "Español",
+      "local": "spāņu"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "igauņu"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "somu"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "franču"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "īru"
+    },
+    "hi": {
+      "native": "हिन्दी (Hindi)",
+      "local": "hindi"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "horvātu"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "ungāru"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "itāļu"
+    },
+    "ja": {
+      "native": "日本語 (Japāņu)",
+      "local": "japāņu"
+    },
+    "ka": {
+      "native": "ქართული (Gruzīnu)",
+      "local": "gruzīnu"
+    },
+    "ko": {
+      "native": "한국어 (Korejiešu)",
+      "local": "korejiešu"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "lietuviešu"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "latviešu"
+    },
+    "mk": {
+      "native": "Македонски (Maķedoniešu)",
+      "local": "maķedoniešu"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "moldāvu"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "maltiešu"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "holandiešu"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "poļu"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "portugāļu"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "rumāņu"
+    },
+    "ru": {
+      "native": "Русский (Krievu)",
+      "local": "krievu"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "slovāku"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "slovēņu"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "albāņu"
+    },
+    "sr": {
+      "native": "Српски (Serbu)",
+      "local": "serbu"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "zviedru"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "turku"
+    },
+    "uk": {
+      "native": "Українська (Ukraiņu)",
+      "local": "ukraiņu"
+    },
+    "zh": {
+      "native": "中文 (Ķīniešu)",
+      "local": "ķīniešu"
+    }
+  },
+  "app": {
+    "documentTitle": "Uzvednes Konstruktors – Strukturēts XML redaktors",
+    "title": "Uzvednes Konstruktors"
+  },
+  "toolbar": {
+    "example": "Piemērs",
+    "templatesOpen": "Atvērt veidnes",
+    "protocol": "Žurnāls",
+    "showXml": "Rādīt XML",
+    "hideXml": "Slēpt XML",
+    "reset": "Atiestatīt",
+    "options": "Opcijas",
+    "language": "Valoda",
+    "templatesLabel": "Veidnes",
+    "moreTemplates": "Vairāk..."
+  },
+  "protocol": {
+    "title": "Žurnāls",
+    "clear": "Notīrīt",
+    "close": "Aizvērt žurnālu",
+    "validate": "Pārbaudīt",
+    "empty": "Vēl nav ierakstu. Pieskaries „Pārbaudīt“, lai tagad pārbaudītu struktūru.",
+    "noErrors": "Kļūdu nav.",
+    "xmlApplied": "XML veiksmīgi piemērots.",
+    "gesamtApplied": "Kopējā konfigurācija veiksmīgi piemērota.",
+    "mixedContent": "Importēšanas piezīme: konstatēts jaukts saturs. {n} teksta bloki tika automātiski ietverti <Parent_text> tagos.",
+    "containerMoved": "Piezīme: <{parent}> saturs pārvietots uz <{leaf}>, jo konteinera tagos nedrīkst būt tiešs teksts.",
+    "invalidXml": "Nederīgs XML.",
+    "invalidXmlDetail": "Nederīgs XML: {detail}",
+    "invalidXmlLine": "Nederīgs XML – rinda {line}",
+    "invalidXmlLineCol": "Nederīgs XML – rinda {line}, kolonna {col}",
+    "invalidXmlLineColDetail": "Nederīgs XML – rinda {line}, kolonna {col}: {detail}",
+    "invalidXmlLineDetail": "Nederīgs XML – rinda {line}: {detail}",
+    "noGesamt": "Netika atrasta derīga kopējā konfigurācija.",
+    "networkError": "Tīkla kļūda",
+    "noPage": "Nav lapas",
+    "textTooShort": "Teksts ir pārāk īss",
+    "errorPrefix": "Kļūda: ",
+    "linePrefix": "Rinda {line}: "
+  },
+  "language": {
+    "title": "Valoda",
+    "close": "Aizvērt valodas izvēlni",
+    "searchPlaceholder": "Meklēt valodu…",
+    "searchAria": "Meklēt valodu",
+    "empty": "Valoda nav atrasta.",
+    "selected": "Atlasīts"
+  },
+  "tabs": {
+    "namePlaceholder": "Cilnes nosaukums",
+    "nameAria": "Cilnes nosaukums",
+    "duplicate": "Dublēt",
+    "duplicateTitle": "Dublēt pašreizējo cilni",
+    "close": "Aizvērt cilni",
+    "new": "Jauna cilne",
+    "defaultTitle": "Uzvedne {n}",
+    "copySuffix": " Kopija",
+    "confirmResetLast": "Atiestatīt pēdējo cilni?",
+    "confirmReplaceTemplate": "Aizstāt pašreizējo struktūru ar veidni?"
+  },
+  "outline": {
+    "empty": "Vēl nav elementu. Izveido zemāk elementu vai komentāru.",
+    "addElement": "+ Elements",
+    "addComment": "+ Komentārs",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Apakšpunkts",
+    "delete": "Dzēst",
+    "copyResult": "Kopēt rezultātu",
+    "copied": "✓ Nokopēts",
+    "copiedShort": "✓",
+    "confirmDelete": "Tiešām dzēst?",
+    "confirmReset": "Dzēst visu?",
+    "commentLabel": "Piezīme",
+    "noName": "(bez nosaukuma)",
+    "expand": "Izvērst",
+    "collapse": "Sakļaut",
+    "openEditor": "Atvērt redaktorā"
+  },
+  "detail": {
+    "empty": "Izvēlies elementu kreisajā pusē vai izveido jaunu zemāk.",
+    "level": "Līmenis {n}",
+    "commentHeading": "💬 Piezīme",
+    "tagPlaceholder": "taga-nosaukums",
+    "tagAria": "Taga nosaukums",
+    "textPlaceholder": "Teksts šim elementam…",
+    "commentPlaceholder": "Piezīme…",
+    "containerPlaceholder": "Šis tags ir konteiners.",
+    "textAria": "Elementa teksts",
+    "commentAria": "Komentāra teksts",
+    "moveUp": "Pārvietot augšup",
+    "moveDown": "Pārvietot lejup",
+    "copy": "Kopēt",
+    "copyTitle": "Kopēt atlasīto vienumu",
+    "paste": "Ielīmēt",
+    "pasteTitle": "Ielīmēt kopēto vienumu",
+    "find": "Meklēt",
+    "findTitle": "Meklēt un aizstāt",
+    "options": "Opcijas",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Wiki iestatījumi ›",
+    "wikiLang": "Valoda",
+    "wikiChars": "aptuveni rakstzīmes",
+    "wikiInsert": "Ievietot",
+    "wikiClose": "Aizvērt",
+    "wikiLoading": "Ielādē…",
+    "wikiAria": "Wiki iestatījumi",
+    "back": "Atpakaļ",
+    "closeEditor": "Aizvērt redaktoru"
+  },
+  "source": {
+    "title": "XML kods",
+    "gesamtTitle": "Kopējā konfigurācija",
+    "options": "Opcijas",
+    "find": "Meklēt",
+    "wrapOn": "Aplaušana ieslēgta",
+    "wrapOff": "Aplaušana izslēgta",
+    "wrapTitle": "Pārslēgt rindu aplaušanu",
+    "gesamt": "Kopējā",
+    "tabXml": "Cilnes XML",
+    "gesamtConfig": "Kopējā konfigurācija",
+    "gesamtTitleBtn": "Rādīt visu ciļņu kopējo konfigurāciju",
+    "tabXmlTitle": "Rādīt vienas cilnes XML",
+    "close": "Aizvērt XML",
+    "placeholder": "Ielīmēt XML uzvedni…",
+    "aria": "XML pirmkods",
+    "apply": "Piemērot",
+    "copy": "Kopēt"
+  },
+  "find": {
+    "placeholder": "Meklēt…",
+    "replacePlaceholder": "Aizstāt…",
+    "ariaFind": "Meklēšanas termins",
+    "ariaReplace": "Aizstājējteksts",
+    "prev": "Iepriekšējā atbilstība",
+    "next": "Nākamā atbilstība",
+    "prevTitle": "Iepriekšējā",
+    "nextTitle": "Nākamā",
+    "close": "Aizvērt meklēšanu",
+    "closeTitle": "Aizvērt",
+    "replace": "Aizstāt",
+    "replaceTitle": "Aizstāt pašreizējo atbilstību",
+    "replaceAll": "Visas",
+    "replaceAllTitle": "Aizstāt visas atbilstības",
+    "caseTitle": "Reģistrjutīgs",
+    "regexTitle": "Regulāra izteiksme",
+    "replaced": "{n} aizstātas",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} rakstzīmes",
+    "selected": " · {n} atlasītas"
+  },
+  "validation": {
+    "tagNoName": "Tags bez nosaukuma – rinda {line}",
+    "tagInvalid": "Tags <{tag}> satur nederīgas rakstzīmes – rinda {line}",
+    "genericTag": "Brīdinājums: <{tag}> ir pārāk vispārīgs. Izmanto aprakstošus nosaukumus, piemēram, <klienta_pieprasijums>, nevis <data> (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Brīdinājums: ligzdošanas dziļums {depth} tagā <{tag}>. Vairāk par 4 līmeņiem apgrūtina izpratni.{line}",
+    "exampleHint": "Piezīme: <example> vajadzētu ietvert tagā <examples> (XML){line}",
+    "emptyTag": "Piezīme: <{tag}> ir tukšs{line}",
+    "lineSuffix": " · Rinda ~{line}"
+  },
+  "wiki": {
+    "de": "Vācu",
+    "en": "Angļu",
+    "fr": "Franču",
+    "es": "Spāņu",
+    "it": "Itāļu",
+    "pt": "Portugāļu",
+    "nl": "Holandiešu",
+    "pl": "Poļu",
+    "ru": "Krievu",
+    "ja": "Japāņu",
+    "zh": "Ķīniešu",
+    "random": "Nejaušs"
+  }
+}

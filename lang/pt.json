@@ -1,0 +1,337 @@
+{
+  "meta": {
+    "code": "pt",
+    "name": "Português",
+    "dir": "ltr"
+  },
+  "languages": {
+    "ar": {
+      "native": "العربية (Árabe)",
+      "local": "árabe"
+    },
+    "bg": {
+      "native": "Български (Búlgaro)",
+      "local": "búlgaro"
+    },
+    "bs": {
+      "native": "Bosanski",
+      "local": "bósnio"
+    },
+    "cs": {
+      "native": "Čeština",
+      "local": "checo"
+    },
+    "da": {
+      "native": "Dansk",
+      "local": "dinamarquês"
+    },
+    "de": {
+      "native": "Deutsch",
+      "local": "alemão"
+    },
+    "el": {
+      "native": "Ελληνικά (Grego)",
+      "local": "grego"
+    },
+    "en": {
+      "native": "English",
+      "local": "inglês"
+    },
+    "es": {
+      "native": "Español",
+      "local": "espanhol"
+    },
+    "et": {
+      "native": "Eesti",
+      "local": "estoniano"
+    },
+    "fi": {
+      "native": "Suomi",
+      "local": "finlandês"
+    },
+    "fr": {
+      "native": "Français",
+      "local": "francês"
+    },
+    "ga": {
+      "native": "Gaeilge",
+      "local": "irlandês"
+    },
+    "hi": {
+      "native": "हिन्दी (Hindi)",
+      "local": "hindi"
+    },
+    "hr": {
+      "native": "Hrvatski",
+      "local": "croata"
+    },
+    "hu": {
+      "native": "Magyar",
+      "local": "húngaro"
+    },
+    "it": {
+      "native": "Italiano",
+      "local": "italiano"
+    },
+    "ja": {
+      "native": "日本語 (Japonês)",
+      "local": "japonês"
+    },
+    "ka": {
+      "native": "ქართული (Georgiano)",
+      "local": "georgiano"
+    },
+    "ko": {
+      "native": "한국어 (Coreano)",
+      "local": "coreano"
+    },
+    "lt": {
+      "native": "Lietuvių",
+      "local": "lituano"
+    },
+    "lv": {
+      "native": "Latviešu",
+      "local": "letão"
+    },
+    "mk": {
+      "native": "Македонски (Macedónio)",
+      "local": "macedónio"
+    },
+    "mo": {
+      "native": "Moldovenească",
+      "local": "moldavo"
+    },
+    "mt": {
+      "native": "Malti",
+      "local": "maltês"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "local": "neerlandês"
+    },
+    "pl": {
+      "native": "Polski",
+      "local": "polaco"
+    },
+    "pt": {
+      "native": "Português",
+      "local": "português"
+    },
+    "ro": {
+      "native": "Română",
+      "local": "romeno"
+    },
+    "ru": {
+      "native": "Русский (Russo)",
+      "local": "russo"
+    },
+    "sk": {
+      "native": "Slovenčina",
+      "local": "eslovaco"
+    },
+    "sl": {
+      "native": "Slovenščina",
+      "local": "esloveno"
+    },
+    "sq": {
+      "native": "Shqip",
+      "local": "albanês"
+    },
+    "sr": {
+      "native": "Српски (Sérvio)",
+      "local": "sérvio"
+    },
+    "sv": {
+      "native": "Svenska",
+      "local": "sueco"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "local": "turco"
+    },
+    "uk": {
+      "native": "Українська (Ucraniano)",
+      "local": "ucraniano"
+    },
+    "zh": {
+      "native": "中文 (Chinês)",
+      "local": "chinês"
+    }
+  },
+  "app": {
+    "documentTitle": "Construtor de Prompts – Editor XML Estruturado",
+    "title": "Construtor de Prompts"
+  },
+  "toolbar": {
+    "example": "Exemplo",
+    "templatesOpen": "Abrir modelos",
+    "protocol": "Registo",
+    "showXml": "Mostrar XML",
+    "hideXml": "Ocultar XML",
+    "reset": "Repor",
+    "options": "Opções",
+    "language": "Idioma",
+    "templatesLabel": "Modelos",
+    "moreTemplates": "Mais..."
+  },
+  "protocol": {
+    "title": "Registo",
+    "clear": "Limpar",
+    "close": "Fechar registo",
+    "validate": "Verificar",
+    "empty": "Ainda não há entradas. Toque em «Verificar» para validar a estrutura agora.",
+    "noErrors": "Sem erros.",
+    "xmlApplied": "XML aplicado com sucesso.",
+    "gesamtApplied": "Configuração global aplicada com sucesso.",
+    "mixedContent": "Nota de importação: detetado conteúdo misto. {n} blocos de texto foram automaticamente envolvidos em etiquetas <Parent_text>.",
+    "containerMoved": "Nota: o conteúdo de <{parent}> foi movido para <{leaf}>, uma vez que as etiquetas contentoras não devem conter texto direto.",
+    "invalidXml": "XML inválido.",
+    "invalidXmlDetail": "XML inválido: {detail}",
+    "invalidXmlLine": "XML inválido – linha {line}",
+    "invalidXmlLineCol": "XML inválido – linha {line}, coluna {col}",
+    "invalidXmlLineColDetail": "XML inválido – linha {line}, coluna {col}: {detail}",
+    "invalidXmlLineDetail": "XML inválido – linha {line}: {detail}",
+    "noGesamt": "Não foi encontrada nenhuma configuração global válida.",
+    "networkError": "Erro de rede",
+    "noPage": "Sem página",
+    "textTooShort": "Texto demasiado curto",
+    "errorPrefix": "Erro: ",
+    "linePrefix": "Linha {line}: "
+  },
+  "language": {
+    "title": "Idioma",
+    "close": "Fechar menu de idioma",
+    "searchPlaceholder": "Pesquisar idioma…",
+    "searchAria": "Pesquisar idioma",
+    "empty": "Nenhum idioma encontrado.",
+    "selected": "Selecionado"
+  },
+  "tabs": {
+    "namePlaceholder": "Nome do separador",
+    "nameAria": "Nome do separador",
+    "duplicate": "Duplicar",
+    "duplicateTitle": "Duplicar separador atual",
+    "close": "Fechar separador",
+    "new": "Novo separador",
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " Cópia",
+    "confirmResetLast": "Repor o último separador?",
+    "confirmReplaceTemplate": "Substituir a estrutura atual pelo modelo?"
+  },
+  "outline": {
+    "empty": "Ainda não há elementos. Crie abaixo um elemento ou comentário.",
+    "addElement": "+ Elemento",
+    "addComment": "+ Comentário",
+    "addUser": "+ user",
+    "addAssistant": "+ assistant",
+    "addChild": "+ Subitem",
+    "delete": "Eliminar",
+    "copyResult": "Copiar resultado",
+    "copied": "✓ Copiado",
+    "copiedShort": "✓",
+    "confirmDelete": "Eliminar mesmo?",
+    "confirmReset": "Apagar tudo?",
+    "commentLabel": "Nota",
+    "noName": "(sem nome)",
+    "expand": "Expandir",
+    "collapse": "Recolher",
+    "openEditor": "Abrir no editor"
+  },
+  "detail": {
+    "empty": "Selecione um elemento à esquerda ou crie um novo abaixo.",
+    "level": "Nível {n}",
+    "commentHeading": "💬 Nota",
+    "tagPlaceholder": "nome-da-etiqueta",
+    "tagAria": "Nome da etiqueta",
+    "textPlaceholder": "Texto para este elemento…",
+    "commentPlaceholder": "Nota…",
+    "containerPlaceholder": "Esta etiqueta é um contentor.",
+    "textAria": "Texto do elemento",
+    "commentAria": "Texto do comentário",
+    "moveUp": "Mover para cima",
+    "moveDown": "Mover para baixo",
+    "copy": "Copiar",
+    "copyTitle": "Copiar item selecionado",
+    "paste": "Colar",
+    "pasteTitle": "Colar item copiado",
+    "find": "Pesquisar",
+    "findTitle": "Localizar e substituir",
+    "options": "Opções",
+    "wikiText": "+ WikiText",
+    "wikiSettings": "Definições da Wiki ›",
+    "wikiLang": "Idioma",
+    "wikiChars": "aprox. carateres",
+    "wikiInsert": "Inserir",
+    "wikiClose": "Fechar",
+    "wikiLoading": "A carregar…",
+    "wikiAria": "Definições da Wiki",
+    "back": "Voltar",
+    "closeEditor": "Fechar editor"
+  },
+  "source": {
+    "title": "Código XML",
+    "gesamtTitle": "Configuração global",
+    "options": "Opções",
+    "find": "Pesquisar",
+    "wrapOn": "Ajuste de linha ativo",
+    "wrapOff": "Ajuste de linha inativo",
+    "wrapTitle": "Alternar ajuste de linha",
+    "gesamt": "Global",
+    "tabXml": "XML do separador",
+    "gesamtConfig": "Configuração global",
+    "gesamtTitleBtn": "Mostrar a configuração global de todos os separadores",
+    "tabXmlTitle": "Mostrar o XML de um único separador",
+    "close": "Fechar XML",
+    "placeholder": "Colar prompt XML…",
+    "aria": "Código-fonte XML",
+    "apply": "Aplicar",
+    "copy": "Copiar"
+  },
+  "find": {
+    "placeholder": "Pesquisar…",
+    "replacePlaceholder": "Substituir…",
+    "ariaFind": "Termo de pesquisa",
+    "ariaReplace": "Texto de substituição",
+    "prev": "Ocorrência anterior",
+    "next": "Ocorrência seguinte",
+    "prevTitle": "Anterior",
+    "nextTitle": "Seguinte",
+    "close": "Fechar pesquisa",
+    "closeTitle": "Fechar",
+    "replace": "Substituir",
+    "replaceTitle": "Substituir ocorrência atual",
+    "replaceAll": "Todas",
+    "replaceAllTitle": "Substituir todas as ocorrências",
+    "caseTitle": "Diferenciar maiúsculas/minúsculas",
+    "regexTitle": "Expressão regular",
+    "replaced": "{n} substituídas",
+    "regexError": "RegEx!"
+  },
+  "chars": {
+    "count": "{n} carateres",
+    "selected": " · {n} selecionados"
+  },
+  "validation": {
+    "tagNoName": "Etiqueta sem nome – linha {line}",
+    "tagInvalid": "A etiqueta <{tag}> contém carateres inválidos – linha {line}",
+    "genericTag": "Aviso: <{tag}> é demasiado genérico. Use nomes descritivos como <pedido_cliente> em vez de <data> (XML: Use consistent, descriptive tag names){line}",
+    "depth": "Aviso: profundidade de aninhamento {depth} em <{tag}>. Mais de 4 níveis dificulta a compreensão.{line}",
+    "exampleHint": "Nota: <example> deve estar envolvido em <examples> (XML){line}",
+    "emptyTag": "Nota: <{tag}> está vazio{line}",
+    "lineSuffix": " · Linha ~{line}"
+  },
+  "wiki": {
+    "de": "Alemão",
+    "en": "Inglês",
+    "fr": "Francês",
+    "es": "Espanhol",
+    "it": "Italiano",
+    "pt": "Português",
+    "nl": "Neerlandês",
+    "pl": "Polaco",
+    "ru": "Russo",
+    "ja": "Japonês",
+    "zh": "Chinês",
+    "random": "Aleatório"
+  }
+}

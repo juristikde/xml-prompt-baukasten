@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <!-- ========= FAVICON ========= -->
-<link rel="icon" href="https://raw.githubusercontent.com/juristikde/xml-prompt-baukasten/main/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="16x16" href="https://raw.githubusercontent.com/juristikde/xml-prompt-baukasten/main/icons/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://raw.githubusercontent.com/juristikde/xml-prompt-baukasten/main/icons/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="48x48" href="https://raw.githubusercontent.com/juristikde/xml-prompt-baukasten/main/icons/favicon-48x48.png">
-<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/juristikde/xml-prompt-baukasten/main/icons/apple-touch-icon.png">
-<link rel="manifest" href="https://raw.githubusercontent.com/juristikde/xml-prompt-baukasten/main/site.webmanifest">
+<link rel="icon" href="https://raw.githubusercontent.com/juristikde/design/main/website/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="16x16" href="https://raw.githubusercontent.com/juristikde/design/main/website/icons/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://raw.githubusercontent.com/juristikde/design/main/website/icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="https://raw.githubusercontent.com/juristikde/design/main/website/icons/favicon-48x48.png">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/juristikde/design/main/website/icons/apple-touch-icon.png">
+<link rel="manifest" href="https://raw.githubusercontent.com/juristikde/design/main/website/site.webmanifest">
 <meta name="theme-color" content="#faf9f5">
 
 <title>Prompt Baukasten – Strukturierter XML-Editor</title>
@@ -2168,10 +2168,10 @@
         <span class="mark" id="appMark" aria-hidden="true">
           <picture>
             <!-- Bei guter Verbindung: hohe Auflösung für Retina, aber WebP -->
-            <source type="image/webp" srcset="https://raw.githubusercontent.com/juristikde/xml-prompt-baukasten/main/icons/logo-24.webp 1x, https://raw.githubusercontent.com/juristikde/xml-prompt-baukasten/main/icons/logo-48.webp 2x">
+            <source type="image/webp" srcset="https://raw.githubusercontent.com/juristikde/design/main/website/icons/logo-24.webp 1x, https://raw.githubusercontent.com/juristikde/design/main/website/icons/logo-48.webp 2x">
             <!-- PNG Fallback -->
-            <source type="image/png" srcset="https://raw.githubusercontent.com/juristikde/xml-prompt-baukasten/main/icons/logo-24.png 1x, https://raw.githubusercontent.com/juristikde/xml-prompt-baukasten/main/icons/logo-48.png 2x">
-            <img src="https://raw.githubusercontent.com/juristikde/xml-prompt-baukasten/main/icons/logo-24.png" width="24" height="24" alt="" decoding="async" loading="eager">
+            <source type="image/png" srcset="https://raw.githubusercontent.com/juristikde/design/main/website/icons/logo-24.png 1x, https://raw.githubusercontent.com/juristikde/design/main/website/icons/logo-48.png 2x">
+            <img src="https://raw.githubusercontent.com/juristikde/design/main/website/icons/logo-24.png" width="24" height="24" alt="" decoding="async" loading="eager">
           </picture>
         </span>
         <span class="title-text" data-i18n="app.title">Prompt Baukasten</span>
@@ -2527,7 +2527,6 @@
     }
     panel.classList.add('open');
     document.body.style.overflow = 'hidden';
-    if(search) setTimeout(() => search.focus(), 50);
   }
 
   function closeLanguagePanel(){
@@ -3284,7 +3283,7 @@
     }
   ];
 
-  const TEMPLATES_MORE_URL = 'baustelle/';
+  const TEMPLATES_MORE_URL = 'https://juristikde.github.io/xml-prompt-bibliothek/';
 
   function openMoreTemplatesLink(){
     window.open(TEMPLATES_MORE_URL, '_blank', 'noopener');

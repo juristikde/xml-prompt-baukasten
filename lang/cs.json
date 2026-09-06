@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Arabština)",
+      "native": "العربية",
       "local": "arabština"
     },
     "bg": {
-      "native": "Български (Bulharština)",
+      "native": "Български",
       "local": "bulharština"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "němčina"
     },
     "el": {
-      "native": "Ελληνικά (Řečtina)",
+      "native": "Ελληνικά",
       "local": "řečtina"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "irština"
     },
     "hi": {
-      "native": "हिन्दी (Hindština)",
+      "native": "हिन्दी",
       "local": "hindština"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "italština"
     },
     "ja": {
-      "native": "日本語 (Japonština)",
+      "native": "日本語",
       "local": "japonština"
     },
     "ka": {
-      "native": "ქართული (Gruzínština)",
+      "native": "ქართული",
       "local": "gruzínština"
     },
     "ko": {
-      "native": "한국어 (Korejština)",
+      "native": "한국어",
       "local": "korejština"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "lotyština"
     },
     "mk": {
-      "native": "Македонски (Makedonština)",
+      "native": "Македонски",
       "local": "makedonština"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "rumunština"
     },
     "ru": {
-      "native": "Русский (Ruština)",
+      "native": "Русский",
       "local": "ruština"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "albánština"
     },
     "sr": {
-      "native": "Српски (Srbština)",
+      "native": "Српски",
       "local": "srbština"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "turečtina"
     },
     "uk": {
-      "native": "Українська (Ukrajinština)",
+      "native": "Українська",
       "local": "ukrajinština"
     },
     "zh": {
-      "native": "中文 (Čínština)",
+      "native": "中文",
       "local": "čínština"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Tvůrce Promptů"
   },
   "toolbar": {
-    "example": "Příklad",
-    "templatesOpen": "Otevřít šablony",
     "protocol": "Protokol",
     "showXml": "Zobrazit XML",
     "hideXml": "Skrýt XML",
     "reset": "Resetovat",
     "options": "Možnosti",
     "language": "Jazyk",
-    "templatesLabel": "Šablony",
-    "moreTemplates": "Více..."
+    "library": "Knihovna"
   },
   "protocol": {
     "title": "Protokol",

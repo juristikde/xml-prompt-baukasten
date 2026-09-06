@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Arabiska)",
+      "native": "العربية",
       "local": "arabiska"
     },
     "bg": {
-      "native": "Български (Bulgariska)",
+      "native": "Български",
       "local": "bulgariska"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "tyska"
     },
     "el": {
-      "native": "Ελληνικά (Grekiska)",
+      "native": "Ελληνικά",
       "local": "grekiska"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "iriska"
     },
     "hi": {
-      "native": "हिन्दी (Hindi)",
+      "native": "हिन्दी",
       "local": "hindi"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "italienska"
     },
     "ja": {
-      "native": "日本語 (Japanska)",
+      "native": "日本語",
       "local": "japanska"
     },
     "ka": {
-      "native": "ქართული (Georgiska)",
+      "native": "ქართული",
       "local": "georgiska"
     },
     "ko": {
-      "native": "한국어 (Koreanska)",
+      "native": "한국어",
       "local": "koreanska"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "lettiska"
     },
     "mk": {
-      "native": "Македонски (Makedonska)",
+      "native": "Македонски",
       "local": "makedonska"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "rumänska"
     },
     "ru": {
-      "native": "Русский (Ryska)",
+      "native": "Русский",
       "local": "ryska"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "albanska"
     },
     "sr": {
-      "native": "Српски (Serbiska)",
+      "native": "Српски",
       "local": "serbiska"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "turkiska"
     },
     "uk": {
-      "native": "Українська (Ukrainska)",
+      "native": "Українська",
       "local": "ukrainska"
     },
     "zh": {
-      "native": "中文 (Kinesiska)",
+      "native": "中文",
       "local": "kinesiska"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Prompt-byggsats"
   },
   "toolbar": {
-    "example": "Exempel",
-    "templatesOpen": "Öppna mallar",
     "protocol": "Logg",
     "showXml": "Visa XML",
     "hideXml": "Dölj XML",
     "reset": "Återställ",
     "options": "Alternativ",
     "language": "Språk",
-    "templatesLabel": "Mallar",
-    "moreTemplates": "Fler..."
+    "library": "Bibliotek"
   },
   "protocol": {
     "title": "Logg",

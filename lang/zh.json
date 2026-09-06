@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (阿拉伯语)",
+      "native": "العربية",
       "local": "阿拉伯语"
     },
     "bg": {
-      "native": "Български (保加利亚语)",
+      "native": "Български",
       "local": "保加利亚语"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "德语"
     },
     "el": {
-      "native": "Ελληνικά (希腊语)",
+      "native": "Ελληνικά",
       "local": "希腊语"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "爱尔兰语"
     },
     "hi": {
-      "native": "हिन्दी (印地语)",
+      "native": "हिन्दी",
       "local": "印地语"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "意大利语"
     },
     "ja": {
-      "native": "日本語 (日语)",
+      "native": "日本語",
       "local": "日语"
     },
     "ka": {
-      "native": "ქართული (格鲁吉亚语)",
+      "native": "ქართული",
       "local": "格鲁吉亚语"
     },
     "ko": {
-      "native": "한국어 (韩语)",
+      "native": "한국어",
       "local": "韩语"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "拉脱维亚语"
     },
     "mk": {
-      "native": "Македонски (马其顿语)",
+      "native": "Македонски",
       "local": "马其顿语"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "罗马尼亚语"
     },
     "ru": {
-      "native": "Русский (俄语)",
+      "native": "Русский",
       "local": "俄语"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "阿尔巴尼亚语"
     },
     "sr": {
-      "native": "Српски (塞尔维亚语)",
+      "native": "Српски",
       "local": "塞尔维亚语"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "土耳其语"
     },
     "uk": {
-      "native": "Українська (乌克兰语)",
+      "native": "Українська",
       "local": "乌克兰语"
     },
     "zh": {
-      "native": "中文 (中文)",
+      "native": "中文",
       "local": "中文"
     }
   },
@@ -163,16 +163,13 @@
     "title": "提示词构建器"
   },
   "toolbar": {
-    "example": "示例",
-    "templatesOpen": "打开模板",
     "protocol": "日志",
     "showXml": "显示 XML",
     "hideXml": "隐藏 XML",
     "reset": "重置",
     "options": "选项",
     "language": "语言",
-    "templatesLabel": "模板",
-    "moreTemplates": "更多..."
+    "library": "模板库"
   },
   "protocol": {
     "title": "日志",

@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Arabščina)",
+      "native": "العربية",
       "local": "arabščina"
     },
     "bg": {
-      "native": "Български (Bolgarščina)",
+      "native": "Български",
       "local": "bolgarščina"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "nemščina"
     },
     "el": {
-      "native": "Ελληνικά (Grščina)",
+      "native": "Ελληνικά",
       "local": "grščina"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "irščina"
     },
     "hi": {
-      "native": "हिन्दी (Hindijščina)",
+      "native": "हिन्दी",
       "local": "hindijščina"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "italijanščina"
     },
     "ja": {
-      "native": "日本語 (Japonščina)",
+      "native": "日本語",
       "local": "japonščina"
     },
     "ka": {
-      "native": "ქართული (Gruzinščina)",
+      "native": "ქართული",
       "local": "gruzinščina"
     },
     "ko": {
-      "native": "한국어 (Korejščina)",
+      "native": "한국어",
       "local": "korejščina"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "latvijščina"
     },
     "mk": {
-      "native": "Македонски (Makedonščina)",
+      "native": "Македонски",
       "local": "makedonščina"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "romunščina"
     },
     "ru": {
-      "native": "Русский (Ruščina)",
+      "native": "Русский",
       "local": "ruščina"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "albanščina"
     },
     "sr": {
-      "native": "Српски (Srbščina)",
+      "native": "Српски",
       "local": "srbščina"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "turščina"
     },
     "uk": {
-      "native": "Українська (Ukrajinščina)",
+      "native": "Українська",
       "local": "ukrajinščina"
     },
     "zh": {
-      "native": "中文 (Kitajščina)",
+      "native": "中文",
       "local": "kitajščina"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Graditelj Promptov"
   },
   "toolbar": {
-    "example": "Primer",
-    "templatesOpen": "Odpri predloge",
     "protocol": "Dnevnik",
     "showXml": "Prikaži XML",
     "hideXml": "Skrij XML",
     "reset": "Ponastavi",
     "options": "Možnosti",
     "language": "Jezik",
-    "templatesLabel": "Predloge",
-    "moreTemplates": "Več..."
+    "library": "Knjižnica"
   },
   "protocol": {
     "title": "Dnevnik",

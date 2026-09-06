@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Araabia)",
+      "native": "العربية",
       "local": "araabia"
     },
     "bg": {
-      "native": "Български (Bulgaaria)",
+      "native": "Български",
       "local": "bulgaaria"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "saksa"
     },
     "el": {
-      "native": "Ελληνικά (Kreeka)",
+      "native": "Ελληνικά",
       "local": "kreeka"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "iiri"
     },
     "hi": {
-      "native": "हिन्दी (Hindi)",
+      "native": "हिन्दी",
       "local": "hindi"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "itaalia"
     },
     "ja": {
-      "native": "日本語 (Jaapani)",
+      "native": "日本語",
       "local": "jaapani"
     },
     "ka": {
-      "native": "ქართული (Gruusia)",
+      "native": "ქართული",
       "local": "gruusia"
     },
     "ko": {
-      "native": "한국어 (Korea)",
+      "native": "한국어",
       "local": "korea"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "läti"
     },
     "mk": {
-      "native": "Македонски (Makedoonia)",
+      "native": "Македонски",
       "local": "makedoonia"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "rumeenia"
     },
     "ru": {
-      "native": "Русский (Vene)",
+      "native": "Русский",
       "local": "vene"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "albaania"
     },
     "sr": {
-      "native": "Српски (Serbia)",
+      "native": "Српски",
       "local": "serbia"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "türgi"
     },
     "uk": {
-      "native": "Українська (Ukraina)",
+      "native": "Українська",
       "local": "ukraina"
     },
     "zh": {
-      "native": "中文 (Hiina)",
+      "native": "中文",
       "local": "hiina"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Prompti Ehitaja"
   },
   "toolbar": {
-    "example": "Näide",
-    "templatesOpen": "Ava mallid",
     "protocol": "Logi",
     "showXml": "Näita XML-i",
     "hideXml": "Peida XML",
     "reset": "Lähtesta",
     "options": "Valikud",
     "language": "Keel",
-    "templatesLabel": "Mallid",
-    "moreTemplates": "Rohkem..."
+    "library": "Malliteek"
   },
   "protocol": {
     "title": "Logi",

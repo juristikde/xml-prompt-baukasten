@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Arabisht)",
+      "native": "العربية",
       "local": "arabisht"
     },
     "bg": {
-      "native": "Български (Bullgarisht)",
+      "native": "Български",
       "local": "bullgarisht"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "gjermanisht"
     },
     "el": {
-      "native": "Ελληνικά (Greqisht)",
+      "native": "Ελληνικά",
       "local": "greqisht"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "irlandisht"
     },
     "hi": {
-      "native": "हिन्दी (Hindisht)",
+      "native": "हिन्दी",
       "local": "hindisht"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "italisht"
     },
     "ja": {
-      "native": "日本語 (Japonisht)",
+      "native": "日本語",
       "local": "japonisht"
     },
     "ka": {
-      "native": "ქართული (Gjeorgjisht)",
+      "native": "ქართული",
       "local": "gjeorgjisht"
     },
     "ko": {
-      "native": "한국어 (Koreanisht)",
+      "native": "한국어",
       "local": "koreanisht"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "letonisht"
     },
     "mk": {
-      "native": "Македонски (Maqedonisht)",
+      "native": "Македонски",
       "local": "maqedonisht"
     },
     "mo": {
@@ -111,7 +111,7 @@
     },
     "pl": {
       "native": "Polski",
-      "local": "polonisht"
+      "local": "polisht"
     },
     "pt": {
       "native": "Português",
@@ -122,7 +122,7 @@
       "local": "rumanisht"
     },
     "ru": {
-      "native": "Русский (Rusisht)",
+      "native": "Русский",
       "local": "rusisht"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "shqip"
     },
     "sr": {
-      "native": "Српски (Serbisht)",
+      "native": "Српски",
       "local": "serbisht"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "turqisht"
     },
     "uk": {
-      "native": "Українська (Ukrainisht)",
+      "native": "Українська",
       "local": "ukrainisht"
     },
     "zh": {
-      "native": "中文 (Kinezisht)",
+      "native": "中文",
       "local": "kinezisht"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Ndërtues Promptesh"
   },
   "toolbar": {
-    "example": "Shembull",
-    "templatesOpen": "Hap shabllonet",
     "protocol": "Regjistri",
     "showXml": "Shfaq XML",
     "hideXml": "Fshih XML",
     "reset": "Rivendos",
     "options": "Opsione",
     "language": "Gjuha",
-    "templatesLabel": "Shabllone",
-    "moreTemplates": "Më shumë..."
+    "library": "Biblioteka"
   },
   "protocol": {
     "title": "Regjistri",

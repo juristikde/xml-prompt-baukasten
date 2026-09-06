@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Árabe)",
+      "native": "العربية",
       "local": "árabe"
     },
     "bg": {
-      "native": "Български (Búlgaro)",
+      "native": "Български",
       "local": "búlgaro"
     },
     "bs": {
@@ -19,7 +19,7 @@
     },
     "cs": {
       "native": "Čeština",
-      "local": "checo"
+      "local": "tcheco"
     },
     "da": {
       "native": "Dansk",
@@ -30,7 +30,7 @@
       "local": "alemão"
     },
     "el": {
-      "native": "Ελληνικά (Grego)",
+      "native": "Ελληνικά",
       "local": "grego"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "irlandês"
     },
     "hi": {
-      "native": "हिन्दी (Hindi)",
+      "native": "हिन्दी",
       "local": "hindi"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "italiano"
     },
     "ja": {
-      "native": "日本語 (Japonês)",
+      "native": "日本語",
       "local": "japonês"
     },
     "ka": {
-      "native": "ქართული (Georgiano)",
+      "native": "ქართული",
       "local": "georgiano"
     },
     "ko": {
-      "native": "한국어 (Coreano)",
+      "native": "한국어",
       "local": "coreano"
     },
     "lt": {
@@ -94,12 +94,12 @@
       "local": "letão"
     },
     "mk": {
-      "native": "Македонски (Macedónio)",
-      "local": "macedónio"
+      "native": "Македонски",
+      "local": "macedônio"
     },
     "mo": {
       "native": "Moldovenească",
-      "local": "moldavo"
+      "local": "moldávio"
     },
     "mt": {
       "native": "Malti",
@@ -107,11 +107,11 @@
     },
     "nl": {
       "native": "Nederlands",
-      "local": "neerlandês"
+      "local": "holandês"
     },
     "pl": {
       "native": "Polski",
-      "local": "polaco"
+      "local": "polonês"
     },
     "pt": {
       "native": "Português",
@@ -122,7 +122,7 @@
       "local": "romeno"
     },
     "ru": {
-      "native": "Русский (Russo)",
+      "native": "Русский",
       "local": "russo"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "albanês"
     },
     "sr": {
-      "native": "Српски (Sérvio)",
+      "native": "Српски",
       "local": "sérvio"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "turco"
     },
     "uk": {
-      "native": "Українська (Ucraniano)",
+      "native": "Українська",
       "local": "ucraniano"
     },
     "zh": {
-      "native": "中文 (Chinês)",
+      "native": "中文",
       "local": "chinês"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Construtor de Prompts"
   },
   "toolbar": {
-    "example": "Exemplo",
-    "templatesOpen": "Abrir modelos",
     "protocol": "Registo",
     "showXml": "Mostrar XML",
     "hideXml": "Ocultar XML",
     "reset": "Repor",
     "options": "Opções",
     "language": "Idioma",
-    "templatesLabel": "Modelos",
-    "moreTemplates": "Mais..."
+    "library": "Biblioteca"
   },
   "protocol": {
     "title": "Registo",

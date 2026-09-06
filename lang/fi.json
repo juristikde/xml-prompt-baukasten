@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Arabia)",
+      "native": "العربية",
       "local": "arabia"
     },
     "bg": {
-      "native": "Български (Bulgaria)",
+      "native": "Български",
       "local": "bulgaria"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "saksa"
     },
     "el": {
-      "native": "Ελληνικά (Kreikka)",
+      "native": "Ελληνικά",
       "local": "kreikka"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "iiri"
     },
     "hi": {
-      "native": "हिन्दी (Hindi)",
+      "native": "हिन्दी",
       "local": "hindi"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "italia"
     },
     "ja": {
-      "native": "日本語 (Japani)",
+      "native": "日本語",
       "local": "japani"
     },
     "ka": {
-      "native": "ქართული (Georgia)",
+      "native": "ქართული",
       "local": "georgia"
     },
     "ko": {
-      "native": "한국어 (Korea)",
+      "native": "한국어",
       "local": "korea"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "latvia"
     },
     "mk": {
-      "native": "Македонски (Makedonia)",
+      "native": "Македонски",
       "local": "makedonia"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "romania"
     },
     "ru": {
-      "native": "Русский (Venäjä)",
+      "native": "Русский",
       "local": "venäjä"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "albania"
     },
     "sr": {
-      "native": "Српски (Serbia)",
+      "native": "Српски",
       "local": "serbia"
     },
     "sv": {
@@ -147,14 +147,14 @@
     },
     "tr": {
       "native": "Türkçe",
-      "local": "Turkki"
+      "local": "turkki"
     },
     "uk": {
-      "native": "Українська (Ukraina)",
+      "native": "Українська",
       "local": "ukraina"
     },
     "zh": {
-      "native": "中文 (Kiina)",
+      "native": "中文",
       "local": "kiina"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Prompti-rakennussarja"
   },
   "toolbar": {
-    "example": "Esimerkki",
-    "templatesOpen": "Avaa mallipohjat",
     "protocol": "Loki",
     "showXml": "Näytä XML",
     "hideXml": "Piilota XML",
     "reset": "Nollaa",
     "options": "Asetukset",
     "language": "Kieli",
-    "templatesLabel": "Mallipohjat",
-    "moreTemplates": "Lisää..."
+    "library": "Kirjasto"
   },
   "protocol": {
     "title": "Loki",

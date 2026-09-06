@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Arabų)",
+      "native": "العربية",
       "local": "arabų"
     },
     "bg": {
-      "native": "Български (Bulgarų)",
+      "native": "Български",
       "local": "bulgarų"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "vokiečių"
     },
     "el": {
-      "native": "Ελληνικά (Graikų)",
+      "native": "Ελληνικά",
       "local": "graikų"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "airių"
     },
     "hi": {
-      "native": "हिन्दी (Hindi)",
+      "native": "हिन्दी",
       "local": "hindi"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "italų"
     },
     "ja": {
-      "native": "日本語 (Japonų)",
+      "native": "日本語",
       "local": "japonų"
     },
     "ka": {
-      "native": "ქართული (Gruzinų)",
+      "native": "ქართული",
       "local": "gruzinų"
     },
     "ko": {
-      "native": "한국어 (Korėjiečių)",
+      "native": "한국어",
       "local": "korėjiečių"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "latvių"
     },
     "mk": {
-      "native": "Македонски (Makedonų)",
+      "native": "Македонски",
       "local": "makedonų"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "rumunų"
     },
     "ru": {
-      "native": "Русский (Rusų)",
+      "native": "Русский",
       "local": "rusų"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "albanų"
     },
     "sr": {
-      "native": "Српски (Serbų)",
+      "native": "Српски",
       "local": "serbų"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "turkų"
     },
     "uk": {
-      "native": "Українська (Ukrainiečių)",
+      "native": "Українська",
       "local": "ukrainiečių"
     },
     "zh": {
-      "native": "中文 (Kinų)",
+      "native": "中文",
       "local": "kinų"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Užklausų Konstruktorius"
   },
   "toolbar": {
-    "example": "Pavyzdys",
-    "templatesOpen": "Atverti šablonus",
     "protocol": "Žurnalas",
     "showXml": "Rodyti XML",
     "hideXml": "Slėpti XML",
     "reset": "Atkurti",
     "options": "Parinktys",
     "language": "Kalba",
-    "templatesLabel": "Šablonai",
-    "moreTemplates": "Daugiau..."
+    "library": "Biblioteka"
   },
   "protocol": {
     "title": "Žurnalas",

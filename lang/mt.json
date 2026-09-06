@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Għarbi)",
+      "native": "العربية",
       "local": "Għarbi"
     },
     "bg": {
-      "native": "Български (Bulgaru)",
+      "native": "Български",
       "local": "Bulgaru"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "Ġermaniż"
     },
     "el": {
-      "native": "Ελληνικά (Grieg)",
+      "native": "Ελληνικά",
       "local": "Grieg"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "Irlandiż"
     },
     "hi": {
-      "native": "हिन्दी (Hindi)",
+      "native": "हिन्दी",
       "local": "Hindi"
     },
     "hr": {
@@ -74,16 +74,16 @@
       "local": "Taljan"
     },
     "ja": {
-      "native": "日本語 (Ġappuniż)",
+      "native": "日本語",
       "local": "Ġappuniż"
     },
     "ka": {
-      "native": "ქართული (Ġorġjan)",
+      "native": "ქართული",
       "local": "Ġorġjan"
     },
     "ko": {
-      "native": "한국어 (Korean)",
-      "local": "Korean"
+      "native": "한국어",
+      "local": "Korejan"
     },
     "lt": {
       "native": "Lietuvių",
@@ -94,7 +94,7 @@
       "local": "Latvjan"
     },
     "mk": {
-      "native": "Македонски (Maċedonjan)",
+      "native": "Македонски",
       "local": "Maċedonjan"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "Rumen"
     },
     "ru": {
-      "native": "Русский (Russu)",
+      "native": "Русский",
       "local": "Russu"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "Albaniż"
     },
     "sr": {
-      "native": "Српски (Serb)",
+      "native": "Српски",
       "local": "Serb"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "Tork"
     },
     "uk": {
-      "native": "Українська (Ukren)",
+      "native": "Українська",
       "local": "Ukren"
     },
     "zh": {
-      "native": "中文 (Ċiniż)",
+      "native": "中文",
       "local": "Ċiniż"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Il-Bennej tal-Prompt"
   },
   "toolbar": {
-    "example": "Eżempju",
-    "templatesOpen": "Iftaħ mudelli",
     "protocol": "Reġistru",
     "showXml": "Uri XML",
     "hideXml": "Aħbi XML",
     "reset": "Irrisettja",
     "options": "Għażliet",
     "language": "Lingwa",
-    "templatesLabel": "Mudelli",
-    "moreTemplates": "Aktar..."
+    "library": "Biblioteka"
   },
   "protocol": {
     "title": "Reġistru",

@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Arabe)",
+      "native": "العربية",
       "local": "arabe"
     },
     "bg": {
-      "native": "Български (Bulgare)",
+      "native": "Български",
       "local": "bulgare"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "allemand"
     },
     "el": {
-      "native": "Ελληνικά (Grec)",
+      "native": "Ελληνικά",
       "local": "grec"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "irlandais"
     },
     "hi": {
-      "native": "हिन्दी (Hindi)",
+      "native": "हिन्दी",
       "local": "hindi"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "italien"
     },
     "ja": {
-      "native": "日本語 (Japonais)",
+      "native": "日本語",
       "local": "japonais"
     },
     "ka": {
-      "native": "ქართული (Géorgien)",
+      "native": "ქართული",
       "local": "géorgien"
     },
     "ko": {
-      "native": "한국어 (Coréen)",
+      "native": "한국어",
       "local": "coréen"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "letton"
     },
     "mk": {
-      "native": "Македонски (Macédonien)",
+      "native": "Македонски",
       "local": "macédonien"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "roumain"
     },
     "ru": {
-      "native": "Русский (Russe)",
+      "native": "Русский",
       "local": "russe"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "albanais"
     },
     "sr": {
-      "native": "Српски (Serbe)",
+      "native": "Српски",
       "local": "serbe"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "turc"
     },
     "uk": {
-      "native": "Українська (Ukrainien)",
+      "native": "Українська",
       "local": "ukrainien"
     },
     "zh": {
-      "native": "中文 (Chinois)",
+      "native": "中文",
       "local": "chinois"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Générateur de Prompts"
   },
   "toolbar": {
-    "example": "Exemple",
-    "templatesOpen": "Ouvrir les modèles",
     "protocol": "Journal",
     "showXml": "Afficher le XML",
     "hideXml": "Masquer le XML",
     "reset": "Réinitialiser",
     "options": "Options",
     "language": "Langue",
-    "templatesLabel": "Modèles",
-    "moreTemplates": "Plus..."
+    "library": "Bibliothèque"
   },
   "protocol": {
     "title": "Journal",

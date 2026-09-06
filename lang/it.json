@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Arabo)",
+      "native": "العربية",
       "local": "arabo"
     },
     "bg": {
-      "native": "Български (Bulgaro)",
+      "native": "Български",
       "local": "bulgaro"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "tedesco"
     },
     "el": {
-      "native": "Ελληνικά (Greco)",
+      "native": "Ελληνικά",
       "local": "greco"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "irlandese"
     },
     "hi": {
-      "native": "हिन्दी (Hindi)",
+      "native": "हिन्दी",
       "local": "hindi"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "italiano"
     },
     "ja": {
-      "native": "日本語 (Giapponese)",
+      "native": "日本語",
       "local": "giapponese"
     },
     "ka": {
-      "native": "ქართული (Georgiano)",
+      "native": "ქართული",
       "local": "georgiano"
     },
     "ko": {
-      "native": "한국어 (Coreano)",
+      "native": "한국어",
       "local": "coreano"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "lettone"
     },
     "mk": {
-      "native": "Македонски (Macedone)",
+      "native": "Македонски",
       "local": "macedone"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "rumeno"
     },
     "ru": {
-      "native": "Русский (Russo)",
+      "native": "Русский",
       "local": "russo"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "albanese"
     },
     "sr": {
-      "native": "Српски (Serbo)",
+      "native": "Српски",
       "local": "serbo"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "turco"
     },
     "uk": {
-      "native": "Українська (Ucraino)",
+      "native": "Українська",
       "local": "ucraino"
     },
     "zh": {
-      "native": "中文 (Cinese)",
+      "native": "中文",
       "local": "cinese"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Costruttore di Prompt"
   },
   "toolbar": {
-    "example": "Esempio",
-    "templatesOpen": "Apri modelli",
     "protocol": "Registro",
     "showXml": "Mostra XML",
     "hideXml": "Nascondi XML",
     "reset": "Reimposta",
     "options": "Opzioni",
     "language": "Lingua",
-    "templatesLabel": "Modelli",
-    "moreTemplates": "Altro..."
+    "library": "Biblioteca"
   },
   "protocol": {
     "title": "Registro",

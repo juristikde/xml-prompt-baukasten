@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Arab)",
+      "native": "العربية",
       "local": "arab"
     },
     "bg": {
-      "native": "Български (Bolgár)",
+      "native": "Български",
       "local": "bolgár"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "német"
     },
     "el": {
-      "native": "Ελληνικά (Görög)",
+      "native": "Ελληνικά",
       "local": "görög"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "ír"
     },
     "hi": {
-      "native": "हिन्दी (Hindi)",
+      "native": "हिन्दी",
       "local": "hindi"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "olasz"
     },
     "ja": {
-      "native": "日本語 (Japán)",
+      "native": "日本語",
       "local": "japán"
     },
     "ka": {
-      "native": "ქართული (Grúz)",
+      "native": "ქართული",
       "local": "grúz"
     },
     "ko": {
-      "native": "한국어 (Koreai)",
+      "native": "한국어",
       "local": "koreai"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "lett"
     },
     "mk": {
-      "native": "Македонски (Macedón)",
+      "native": "Македонски",
       "local": "macedón"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "román"
     },
     "ru": {
-      "native": "Русский (Orosz)",
+      "native": "Русский",
       "local": "orosz"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "albán"
     },
     "sr": {
-      "native": "Српски (Szerb)",
+      "native": "Српски",
       "local": "szerb"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "török"
     },
     "uk": {
-      "native": "Українська (Ukrán)",
+      "native": "Українська",
       "local": "ukrán"
     },
     "zh": {
-      "native": "中文 (Kínai)",
+      "native": "中文",
       "local": "kínai"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Prompt Építő"
   },
   "toolbar": {
-    "example": "Példa",
-    "templatesOpen": "Sablonok megnyitása",
     "protocol": "Napló",
     "showXml": "XML megjelenítése",
     "hideXml": "XML elrejtése",
     "reset": "Visszaállítás",
     "options": "Beállítások",
     "language": "Nyelv",
-    "templatesLabel": "Sablonok",
-    "moreTemplates": "Több..."
+    "library": "Könyvtár"
   },
   "protocol": {
     "title": "Napló",

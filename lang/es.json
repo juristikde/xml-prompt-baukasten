@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Árabe)",
+      "native": "العربية",
       "local": "árabe"
     },
     "bg": {
-      "native": "Български (Búlgaro)",
+      "native": "Български",
       "local": "búlgaro"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "alemán"
     },
     "el": {
-      "native": "Ελληνικά (Griego)",
+      "native": "Ελληνικά",
       "local": "griego"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "irlandés"
     },
     "hi": {
-      "native": "हिन्दी (Hindi)",
+      "native": "हिन्दी",
       "local": "hindi"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "italiano"
     },
     "ja": {
-      "native": "日本語 (Japonés)",
+      "native": "日本語",
       "local": "japonés"
     },
     "ka": {
-      "native": "ქართული (Georgiano)",
+      "native": "ქართული",
       "local": "georgiano"
     },
     "ko": {
-      "native": "한국어 (Coreano)",
+      "native": "한국어",
       "local": "coreano"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "letón"
     },
     "mk": {
-      "native": "Македонски (Macedonio)",
+      "native": "Македонски",
       "local": "macedonio"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "rumano"
     },
     "ru": {
-      "native": "Русский (Ruso)",
+      "native": "Русский",
       "local": "ruso"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "albanés"
     },
     "sr": {
-      "native": "Српски (Serbio)",
+      "native": "Српски",
       "local": "serbio"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "turco"
     },
     "uk": {
-      "native": "Українська (Ucraniano)",
+      "native": "Українська",
       "local": "ucraniano"
     },
     "zh": {
-      "native": "中文 (Chino)",
+      "native": "中文",
       "local": "chino"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Constructor de Prompts"
   },
   "toolbar": {
-    "example": "Ejemplo",
-    "templatesOpen": "Abrir plantillas",
     "protocol": "Registro",
     "showXml": "Mostrar XML",
     "hideXml": "Ocultar XML",
     "reset": "Restablecer",
     "options": "Opciones",
     "language": "Idioma",
-    "templatesLabel": "Plantillas",
-    "moreTemplates": "Más..."
+    "library": "Biblioteca"
   },
   "protocol": {
     "title": "Registro",

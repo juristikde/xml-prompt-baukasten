@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Arabic)",
+      "native": "العربية",
       "local": "Arabic"
     },
     "bg": {
-      "native": "Български (Bulgarian)",
+      "native": "Български",
       "local": "Bulgarian"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "German"
     },
     "el": {
-      "native": "Ελληνικά (Greek)",
+      "native": "Ελληνικά",
       "local": "Greek"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "Irish"
     },
     "hi": {
-      "native": "हिन्दी (Hindi)",
+      "native": "हिन्दी",
       "local": "Hindi"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "Italian"
     },
     "ja": {
-      "native": "日本語 (Japanese)",
+      "native": "日本語",
       "local": "Japanese"
     },
     "ka": {
-      "native": "ქართული (Georgian)",
+      "native": "ქართული",
       "local": "Georgian"
     },
     "ko": {
-      "native": "한국어 (Korean)",
+      "native": "한국어",
       "local": "Korean"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "Latvian"
     },
     "mk": {
-      "native": "Македонски (Macedonian)",
+      "native": "Македонски",
       "local": "Macedonian"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "Romanian"
     },
     "ru": {
-      "native": "Русский (Russian)",
+      "native": "Русский",
       "local": "Russian"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "Albanian"
     },
     "sr": {
-      "native": "Српски (Serbian)",
+      "native": "Српски",
       "local": "Serbian"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "Turkish"
     },
     "uk": {
-      "native": "Українська (Ukrainian)",
+      "native": "Українська",
       "local": "Ukrainian"
     },
     "zh": {
-      "native": "中文 (Chinese)",
+      "native": "中文",
       "local": "Chinese"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Prompt Builder"
   },
   "toolbar": {
-    "example": "Example",
-    "templatesOpen": "Open templates",
     "protocol": "Log",
     "showXml": "Show XML",
     "hideXml": "Hide XML",
     "reset": "Reset",
     "options": "Options",
     "language": "Language",
-    "templatesLabel": "Templates",
-    "moreTemplates": "More..."
+    "library": "Library"
   },
   "protocol": {
     "title": "Log",

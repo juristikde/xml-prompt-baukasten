@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Arabčina)",
+      "native": "العربية",
       "local": "arabčina"
     },
     "bg": {
-      "native": "Български (Bulharčina)",
+      "native": "Български",
       "local": "bulharčina"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "nemčina"
     },
     "el": {
-      "native": "Ελληνικά (Gréčtina)",
+      "native": "Ελληνικά",
       "local": "gréčtina"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "írčina"
     },
     "hi": {
-      "native": "हिन्दी (Hindčina)",
+      "native": "हिन्दी",
       "local": "hindčina"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "taliančina"
     },
     "ja": {
-      "native": "日本語 (Japončina)",
+      "native": "日本語",
       "local": "japončina"
     },
     "ka": {
-      "native": "ქართული (Gruzínčina)",
+      "native": "ქართული",
       "local": "gruzínčina"
     },
     "ko": {
-      "native": "한국어 (Kórejčina)",
+      "native": "한국어",
       "local": "kórejčina"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "lotyština"
     },
     "mk": {
-      "native": "Македонски (Macedónčina)",
+      "native": "Македонски",
       "local": "macedónčina"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "rumunčina"
     },
     "ru": {
-      "native": "Русский (Ruština)",
+      "native": "Русский",
       "local": "ruština"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "albánčina"
     },
     "sr": {
-      "native": "Српски (Srbčina)",
+      "native": "Српски",
       "local": "srbčina"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "turečtina"
     },
     "uk": {
-      "native": "Українська (Ukrajinčina)",
+      "native": "Українська",
       "local": "ukrajinčina"
     },
     "zh": {
-      "native": "中文 (Čínština)",
+      "native": "中文",
       "local": "čínština"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Tvorca Promptov"
   },
   "toolbar": {
-    "example": "Príklad",
-    "templatesOpen": "Otvoriť šablóny",
     "protocol": "Protokol",
     "showXml": "Zobraziť XML",
     "hideXml": "Skryť XML",
     "reset": "Obnoviť",
     "options": "Možnosti",
     "language": "Jazyk",
-    "templatesLabel": "Šablóny",
-    "moreTemplates": "Viac..."
+    "library": "Knižnica"
   },
   "protocol": {
     "title": "Protokol",

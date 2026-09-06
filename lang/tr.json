@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Arapça)",
+      "native": "العربية",
       "local": "Arapça"
     },
     "bg": {
-      "native": "Български (Bulgarca)",
+      "native": "Български",
       "local": "Bulgarca"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "Almanca"
     },
     "el": {
-      "native": "Ελληνικά (Yunanca)",
+      "native": "Ελληνικά",
       "local": "Yunanca"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "İrlandaca"
     },
     "hi": {
-      "native": "हिन्दी (Hintçe)",
+      "native": "हिन्दी",
       "local": "Hintçe"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "İtalyanca"
     },
     "ja": {
-      "native": "日本語 (Japonca)",
+      "native": "日本語",
       "local": "Japonca"
     },
     "ka": {
-      "native": "ქართული (Gürcüce)",
+      "native": "ქართული",
       "local": "Gürcüce"
     },
     "ko": {
-      "native": "한국어 (Korece)",
+      "native": "한국어",
       "local": "Korece"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "Letonca"
     },
     "mk": {
-      "native": "Македонски (Makedonca)",
+      "native": "Македонски",
       "local": "Makedonca"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "Romence"
     },
     "ru": {
-      "native": "Русский (Rusça)",
+      "native": "Русский",
       "local": "Rusça"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "Arnavutça"
     },
     "sr": {
-      "native": "Српски (Sırpça)",
+      "native": "Српски",
       "local": "Sırpça"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "Türkçe"
     },
     "uk": {
-      "native": "Українська (Ukraynaca)",
+      "native": "Українська",
       "local": "Ukraynaca"
     },
     "zh": {
-      "native": "中文 (Çince)",
+      "native": "中文",
       "local": "Çince"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Prompt Oluşturucu"
   },
   "toolbar": {
-    "example": "Örnek",
-    "templatesOpen": "Şablonları aç",
     "protocol": "Günlük",
     "showXml": "XML’i göster",
     "hideXml": "XML’i gizle",
     "reset": "Sıfırla",
     "options": "Seçenekler",
     "language": "Dil",
-    "templatesLabel": "Şablonlar",
-    "moreTemplates": "Daha fazla..."
+    "library": "Kütüphane"
   },
   "protocol": {
     "title": "Günlük",

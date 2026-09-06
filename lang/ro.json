@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Arabă)",
+      "native": "العربية",
       "local": "arabă"
     },
     "bg": {
-      "native": "Български (Bulgară)",
+      "native": "Български",
       "local": "bulgară"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "germană"
     },
     "el": {
-      "native": "Ελληνικά (Greacă)",
+      "native": "Ελληνικά",
       "local": "greacă"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "irlandeză"
     },
     "hi": {
-      "native": "हिन्दी (Hindi)",
+      "native": "हिन्दी",
       "local": "hindi"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "italiană"
     },
     "ja": {
-      "native": "日本語 (Japoneză)",
+      "native": "日本語",
       "local": "japoneză"
     },
     "ka": {
-      "native": "ქართული (Georgiană)",
+      "native": "ქართული",
       "local": "georgiană"
     },
     "ko": {
-      "native": "한국어 (Coreeană)",
+      "native": "한국어",
       "local": "coreeană"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "letonă"
     },
     "mk": {
-      "native": "Македонски (Macedoneană)",
+      "native": "Македонски",
       "local": "macedoneană"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "română"
     },
     "ru": {
-      "native": "Русский (Rusă)",
+      "native": "Русский",
       "local": "rusă"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "albaneză"
     },
     "sr": {
-      "native": "Српски (Sârbă)",
+      "native": "Српски",
       "local": "sârbă"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "turcă"
     },
     "uk": {
-      "native": "Українська (Ucraineană)",
+      "native": "Українська",
       "local": "ucraineană"
     },
     "zh": {
-      "native": "中文 (Chineză)",
+      "native": "中文",
       "local": "chineză"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Constructor de Prompturi"
   },
   "toolbar": {
-    "example": "Exemplu",
-    "templatesOpen": "Deschide șabloane",
     "protocol": "Jurnal",
     "showXml": "Afișează XML",
     "hideXml": "Ascunde XML",
     "reset": "Resetează",
     "options": "Opțiuni",
     "language": "Limbă",
-    "templatesLabel": "Șabloane",
-    "moreTemplates": "Mai multe..."
+    "library": "Bibliotecă"
   },
   "protocol": {
     "title": "Jurnal",

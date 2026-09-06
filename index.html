@@ -505,6 +505,8 @@
     font-weight: 500;
     color: var(--ink);
     cursor: pointer;
+    text-decoration: none;
+    box-sizing: border-box;
   }
 
   .options-menu .opt-item:disabled {
@@ -2180,16 +2182,7 @@
     <div class="toolbar">
       <div class="toolbar-desktop">
         <button type="button" class="btn" id="btnLanguage" aria-haspopup="true" aria-expanded="false">Deutsch</button>
-        <div class="template-wrap" id="templateWrap">
-          <div class="split-btn">
-            <button type="button" class="split-main" id="btnExample" data-i18n="toolbar.example">Beispiel</button>
-            <div class="split-sep"></div>
-            <button type="button" class="split-caret" id="btnTemplateCaret" data-i18n-aria="toolbar.templatesOpen" aria-label="Vorlagen öffnen">
-              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4.5L6 7.5L9 4.5"/></svg>
-            </button>
-          </div>
-          <div class="template-menu" id="templateMenu" role="menu"></div>
-        </div>
+        <a class="btn" id="btnLibrary" href="https://juristikde.github.io/xml-prompt-bibliothek/" target="_blank" rel="noopener" data-i18n="toolbar.library">Bibliothek</a>
         <button class="btn" id="btnValidate" data-i18n="toolbar.protocol">Protokoll</button>
         <button class="btn" id="btnToggleSource" data-i18n="toolbar.showXml">XML anzeigen</button>
         <button class="btn danger" id="btnReset" data-i18n="toolbar.reset">Zurücksetzen</button>
@@ -2199,8 +2192,7 @@
         <div class="options-wrap" id="optionsWrap">
           <button type="button" class="btn" id="btnOptions" aria-haspopup="true" aria-expanded="false" data-i18n="toolbar.options">Optionen</button>
           <div class="options-menu" id="optionsMenu" role="menu">
-            <span class="opt-label" data-i18n="toolbar.templatesLabel">Vorlagen</span>
-            <div id="optionsTemplateItems"></div>
+            <a class="opt-item" id="optLibrary" role="menuitem" href="https://juristikde.github.io/xml-prompt-bibliothek/" target="_blank" rel="noopener" data-i18n="toolbar.library">Bibliothek</a>
             <div class="opt-sep"></div>
             <button type="button" class="opt-item" id="optLanguage" role="menuitem" data-i18n="toolbar.language">Sprache</button>
             <button type="button" class="opt-item" id="optValidate" role="menuitem" data-i18n="toolbar.protocol">Protokoll</button>
@@ -3217,72 +3209,7 @@
   }
 
   /* ===== Vorlagen ===== */
-  const TEMPLATES = [
-    {
-      title: 'Kundenservice',
-      xml: `<prompt>
-    <rolle>Du bist ein hilfsbereiter Assistent für Kundenanfragen im Onlineshop.</rolle>
-    <aufgabe>Beantworte die Kundenfrage freundlich und präzise.</aufgabe>
-    <regeln>
-      <regel>Nenne niemals interne Artikelnummern.</regel>
-      <!-- Interner Hinweis: pro Mandant anpassen. -->
-      <regel>Antworte auf Deutsch, außer die Frage ist auf Englisch.</regel>
-    </regeln>
-    <beispiele>
-      <beispiel>
-        <eingabe>Wo bleibt meine Bestellung?</eingabe>
-        <ausgabe>Ich prüfe das gerne – kannst du mir die Bestellnummer nennen?</ausgabe>
-      </beispiel>
-    </beispiele>
-  </prompt>`
-    },
-    {
-      title: 'Strukturierter System-Prompt',
-      xml: `<prompt>
-    <rolle>Du bist [Rolle eintragen]. Deine Aufgabe ist es, [Kernmission in einem Satz].</rolle>
-    <kernprinzipien>Priorisiere in dieser Reihenfolge: 1) Sicherheit und Wahrhaftigkeit, 2) Nützlichkeit für den Nutzer, 3) Klarheit und Präzision.</kernprinzipien>
-    <ton>Warm, direkt und respektvoll. Keine Floskeln, kein übertriebenes Lob.</ton>
-    <antwortverhalten>
-      <format>Strukturiere Antworten klar. Nutze Aufzählungen nur, wenn sie die Lesbarkeit verbessern.</format>
-      <laenge>So ausführlich wie nötig, so knapp wie möglich.</laenge>
-      <unklarheit>Bei unklaren Anfragen die sinnvollste Interpretation wählen, kurz benennen und dann antworten.</unklarheit>
-    </antwortverhalten>
-    <grenzen>
-      <nicht>Keine Anleitungen zu Waffen, illegalen Aktivitäten oder schädlichen Handlungen.</nicht>
-      <vorsicht>Bei medizinischen, rechtlichen oder finanziellen Fragen Fakten liefern, aber keine verbindlichen Empfehlungen geben.</vorsicht>
-    </grenzen>
-  </prompt>`
-    },
-    {
-      title: 'Kundensupport Agent',
-      xml: `<prompt>
-    <rolle>Du bist ein Customer-Support-Agent für [Produkt/Firma].</rolle>
-    <ziel>Löse das Anliegen möglichst in einer Interaktion.</ziel>
-    <regeln>
-      <regel>Keine internen Systemdetails, Passwörter oder Artikelnummern nennen.</regel>
-      <regel>Keine Zusagen zu Erstattungen, die außerhalb der Richtlinie liegen.</regel>
-    </regeln>
-  </prompt>`
-    },
-    {
-      title: 'Recherche & Analyse',
-      xml: `<prompt>
-    <rolle>Du bist ein Recherche- und Analyse-Assistent.</rolle>
-    <prinzipien>
-      <prinzip>Unterscheide klar zwischen Fakten, Schlussfolgerungen und Spekulation.</prinzip>
-      <prinzip>Widersprüchliche Quellen benennen, statt eine Seite zu bevorzugen.</prinzip>
-    </prinzipien>
-  </prompt>`
-    },
-    {
-      title: 'Kreatives Schreiben',
-      xml: `<prompt>
-    <rolle>Du bist ein kreativer Schreibpartner.</rolle>
-    <ton>Anregend und konkret. Vorschläge machen, nicht belehrend wirken.</ton>
-  </prompt>`
-    }
-  ];
-
+  /* Vorlagen-Menü entfernt: „Bibliothek“ öffnet die externe Bibliothek */
   const TEMPLATES_MORE_URL = 'https://juristikde.github.io/xml-prompt-bibliothek/';
 
   function openMoreTemplatesLink(){
@@ -3292,52 +3219,11 @@
   }
 
   function renderTemplateMenus(){
-    const desktopMenu = document.getElementById('templateMenu');
-    const mobileList = document.getElementById('optionsTemplateItems');
-    if(desktopMenu) desktopMenu.innerHTML = '';
-    if(mobileList) mobileList.innerHTML = '';
-
-    TEMPLATES.forEach((tpl, idx) => {
-      if(desktopMenu){
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'tpl-item';
-        btn.setAttribute('role', 'menuitem');
-        btn.textContent = tpl.title;
-        btn.onclick = e => { e.stopPropagation(); loadTemplate(idx); };
-        desktopMenu.appendChild(btn);
-      }
-      if(mobileList){
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'opt-item';
-        btn.setAttribute('role', 'menuitem');
-        btn.textContent = tpl.title;
-        btn.onclick = e => { e.stopPropagation(); loadTemplate(idx); };
-        mobileList.appendChild(btn);
-      }
-    });
-
-    [desktopMenu, mobileList].forEach((container, i) => {
-      if(!container) return;
-      const more = document.createElement('button');
-      more.type = 'button';
-      more.className = (i === 0 ? 'tpl-item' : 'opt-item') + ' tpl-more';
-      more.setAttribute('role', 'menuitem');
-      more.textContent = t('Weitere...', 'toolbar.moreTemplates');
-      more.onclick = e => { e.stopPropagation(); openMoreTemplatesLink(); };
-      container.appendChild(more);
-    });
+    /* keine eingebetteten Vorlagen mehr */
   }
 
-  function loadTemplate(index){
-    const tpl = TEMPLATES[index];
-    if(!tpl) return;
-    if(tree.length && !confirm(t('Aktuelle Struktur durch die Vorlage ersetzen?', 'tabs.confirmReplaceTemplate'))) return;
-    sourceText.value = tpl.xml;
-    applySourceToTree();
-    closeTemplateMenu();
-    closeOptionsMenu();
+  function loadTemplate(){
+    /* deaktiviert – externe Bibliothek */
   }
 
   /* ===== XML-Parsing / Serialisierung (unverändert in Logik) ===== */
@@ -5097,23 +4983,7 @@
   }
 
   /* ===== Event-Bindings ===== */
-  document.getElementById('btnExample').onclick = e => {
-    e.stopPropagation();
-    loadTemplate(0);
-  };
-  document.getElementById('btnTemplateCaret').onclick = e => {
-    e.stopPropagation();
-    const menu = document.getElementById('templateMenu');
-    const isOpen = menu.classList.contains('open');
-    closeAllWikiMenus();
-    closeTemplateMenu();
-    closeOptionsMenu();
-    if(!isOpen){
-      const btn = document.getElementById('btnTemplateCaret');
-      positionMenu(btn, menu);
-      openTemplateMenu = menu;
-    }
-  };
+  /* btnLibrary ist ein <a target="_blank"> – kein JS-Handler nötig */
 
   document.getElementById('btnOptions').onclick = e => {
     e.stopPropagation();

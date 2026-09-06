@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Arapski)",
+      "native": "العربية",
       "local": "arapski"
     },
     "bg": {
-      "native": "Български (Bugarski)",
+      "native": "Български",
       "local": "bugarski"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "njemački"
     },
     "el": {
-      "native": "Ελληνικά (Grčki)",
+      "native": "Ελληνικά",
       "local": "grčki"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "irski"
     },
     "hi": {
-      "native": "हिन्दी (Hindski)",
+      "native": "हिन्दी",
       "local": "hindski"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "italijanski"
     },
     "ja": {
-      "native": "日本語 (Japanski)",
+      "native": "日本語",
       "local": "japanski"
     },
     "ka": {
-      "native": "ქართული (Gruzijski)",
+      "native": "ქართული",
       "local": "gruzijski"
     },
     "ko": {
-      "native": "한국어 (Korejski)",
+      "native": "한국어",
       "local": "korejski"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "latvijski"
     },
     "mk": {
-      "native": "Македонски (Makedonski)",
+      "native": "Македонски",
       "local": "makedonski"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "rumunski"
     },
     "ru": {
-      "native": "Русский (Ruski)",
+      "native": "Русский",
       "local": "ruski"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "albanski"
     },
     "sr": {
-      "native": "Српски (Srpski)",
+      "native": "Српски",
       "local": "srpski"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "turski"
     },
     "uk": {
-      "native": "Українська (Ukrajinski)",
+      "native": "Українська",
       "local": "ukrajinski"
     },
     "zh": {
-      "native": "中文 (Kineski)",
+      "native": "中文",
       "local": "kineski"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Konstruktor promptova"
   },
   "toolbar": {
-    "example": "Primjer",
-    "templatesOpen": "Otvori predloške",
     "protocol": "Zapisnik",
     "showXml": "Prikaži XML",
     "hideXml": "Sakrij XML",
     "reset": "Poništi",
     "options": "Opcije",
     "language": "Jezik",
-    "templatesLabel": "Predlošci",
-    "moreTemplates": "Više..."
+    "library": "Biblioteka"
   },
   "protocol": {
     "title": "Zapisnik",

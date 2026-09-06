@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Arabisch)",
+      "native": "العربية",
       "local": "Arabisch"
     },
     "bg": {
-      "native": "Български (Bulgaars)",
+      "native": "Български",
       "local": "Bulgaars"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "Duits"
     },
     "el": {
-      "native": "Ελληνικά (Grieks)",
+      "native": "Ελληνικά",
       "local": "Grieks"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "Iers"
     },
     "hi": {
-      "native": "हिन्दी (Hindi)",
+      "native": "हिन्दी",
       "local": "Hindi"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "Italiaans"
     },
     "ja": {
-      "native": "日本語 (Japans)",
+      "native": "日本語",
       "local": "Japans"
     },
     "ka": {
-      "native": "ქართული (Georgisch)",
+      "native": "ქართული",
       "local": "Georgisch"
     },
     "ko": {
-      "native": "한국어 (Koreaans)",
+      "native": "한국어",
       "local": "Koreaans"
     },
     "lt": {
@@ -94,7 +94,7 @@
       "local": "Lets"
     },
     "mk": {
-      "native": "Македонски (Macedonisch)",
+      "native": "Македонски",
       "local": "Macedonisch"
     },
     "mo": {
@@ -122,7 +122,7 @@
       "local": "Roemeens"
     },
     "ru": {
-      "native": "Русский (Russisch)",
+      "native": "Русский",
       "local": "Russisch"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "Albanees"
     },
     "sr": {
-      "native": "Српски (Servisch)",
+      "native": "Српски",
       "local": "Servisch"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "Turks"
     },
     "uk": {
-      "native": "Українська (Oekraïens)",
+      "native": "Українська",
       "local": "Oekraïens"
     },
     "zh": {
-      "native": "中文 (Chinees)",
+      "native": "中文",
       "local": "Chinees"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Prompt Bouwpakket"
   },
   "toolbar": {
-    "example": "Voorbeeld",
-    "templatesOpen": "Sjablonen openen",
     "protocol": "Logboek",
     "showXml": "XML tonen",
     "hideXml": "XML verbergen",
     "reset": "Resetten",
     "options": "Opties",
     "language": "Taal",
-    "templatesLabel": "Sjablonen",
-    "moreTemplates": "Meer..."
+    "library": "Bibliotheek"
   },
   "protocol": {
     "title": "Logboek",

@@ -6,11 +6,11 @@
   },
   "languages": {
     "ar": {
-      "native": "العربية (Araibis)",
+      "native": "العربية",
       "local": "Araibis"
     },
     "bg": {
-      "native": "Български (Bulgáiris)",
+      "native": "Български",
       "local": "Bulgáiris"
     },
     "bs": {
@@ -30,7 +30,7 @@
       "local": "Gearmáinis"
     },
     "el": {
-      "native": "Ελληνικά (Gréigis)",
+      "native": "Ελληνικά",
       "local": "Gréigis"
     },
     "en": {
@@ -58,7 +58,7 @@
       "local": "Gaeilge"
     },
     "hi": {
-      "native": "हिन्दी (Hiondúis)",
+      "native": "हिन्दी",
       "local": "Hiondúis"
     },
     "hr": {
@@ -74,15 +74,15 @@
       "local": "Iodáilis"
     },
     "ja": {
-      "native": "日本語 (Seapáinis)",
+      "native": "日本語",
       "local": "Seapáinis"
     },
     "ka": {
-      "native": "ქართული (Seoirsis)",
+      "native": "ქართული",
       "local": "Seoirsis"
     },
     "ko": {
-      "native": "한국어 (Cóiréis)",
+      "native": "한국어",
       "local": "Cóiréis"
     },
     "lt": {
@@ -94,12 +94,12 @@
       "local": "Laitvis"
     },
     "mk": {
-      "native": "Македонски (Macadóinis)",
+      "native": "Македонски",
       "local": "Macadóinis"
     },
     "mo": {
       "native": "Moldovenească",
-      "local": "Moldáivis"
+      "local": "Moldóivis"
     },
     "mt": {
       "native": "Malti",
@@ -122,7 +122,7 @@
       "local": "Rómáinis"
     },
     "ru": {
-      "native": "Русский (Rúisis)",
+      "native": "Русский",
       "local": "Rúisis"
     },
     "sk": {
@@ -138,7 +138,7 @@
       "local": "Albáinis"
     },
     "sr": {
-      "native": "Српски (Seirbis)",
+      "native": "Српски",
       "local": "Seirbis"
     },
     "sv": {
@@ -150,11 +150,11 @@
       "local": "Tuircis"
     },
     "uk": {
-      "native": "Українська (Úcráinis)",
+      "native": "Українська",
       "local": "Úcráinis"
     },
     "zh": {
-      "native": "中文 (Sínis)",
+      "native": "中文",
       "local": "Sínis"
     }
   },
@@ -163,16 +163,13 @@
     "title": "Tógálaí Leideanna"
   },
   "toolbar": {
-    "example": "Sampla",
-    "templatesOpen": "Oscail teimpléid",
     "protocol": "Log",
     "showXml": "Taispeáin XML",
     "hideXml": "Folaigh XML",
     "reset": "Athshocraigh",
     "options": "Roghanna",
     "language": "Teanga",
-    "templatesLabel": "Teimpléid",
-    "moreTemplates": "Tuilleadh..."
+    "library": "Leabharlann"
   },
   "protocol": {
     "title": "Log",

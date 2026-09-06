@@ -2,14 +2,16 @@
 
 <div align="center">
 
-**Visueller Editor für strukturierte LLM-Prompts. Kein Backend. Eine einzige HTML-Datei.**
+**Visueller Editor für strukturierte LLM-Prompts.**  
+Kein Backend · eine HTML-Datei · offline-fähig · mehrsprachig
 
-[Single File](https://img.shields.io/badge/single%20file-HTML-blue?style=flat-square)
-[Offline](https://img.shields.io/badge/offline-fähig-75C46B?style=flat-square)
-[No Dependencies](https://img.shields.io/badge/dependencies-0-lightgrey?style=flat-square)
-[License: MIT](https://img.shields.io/badge/license-MIT-00ACD7?style=flat-square)
+[![Single File](https://img.shields.io/badge/single%20file-HTML-blue?style=flat-square)](#technik)
+[![Offline](https://img.shields.io/badge/offline-fähig-75C46B?style=flat-square)](#technik)
+[![No Dependencies](https://img.shields.io/badge/dependencies-0-lightgrey?style=flat-square)](#technik)
+[![i18n](https://img.shields.io/badge/i18n-38%20Sprachen-purple?style=flat-square)](#internationalisierung)
+[![License: MIT](https://img.shields.io/badge/license-MIT-00ACD7?style=flat-square)](#lizenz)
 
-**[➜ Live Demo öffnen](https://juristikde.github.io/xml-prompt-baukasten)**
+**[➜ Live-Demo](https://juristikde.github.io/xml-prompt-baukasten)** · **[➜ Prompt-Bibliothek](https://juristikde.github.io/xml-prompt-bibliothek/)**
 
 ![Prompt Baukasten Screenshot](screenshots/editor-overview.webp)
 
@@ -17,126 +19,150 @@
 
 ---
 
-### Inhaltsverzeichnis
+## Inhaltsverzeichnis
 
-- [Einleitung](#einleitung)
+- [Warum?](#warum)
 - [Features](#features)
 - [Quickstart](#quickstart)
-- [Anwendung](#anwendung)
-  - [Tabs & Prompt-Verwaltung](#tabs--prompt-verwaltung)
+- [Bedienung](#bedienung)
+  - [Workspace & Tabs](#workspace--tabs)
   - [Struktur-Liste](#struktur-liste)
   - [Detail-Editor](#detail-editor)
   - [XML-Ansicht](#xml-ansicht)
-  - [Vorlagen](#vorlagen)
+  - [Protokoll & Validierung](#protokoll--validierung)
   - [WikiText](#wikitext)
-  - [Validierung](#validierung)
-  - [Mobile Ansicht](#mobile-ansicht)
-  - [URL-Parameter](#url-parameter)
+  - [Prompt-Bibliothek](#prompt-bibliothek)
+- [Mobile](#mobile)
+- [Internationalisierung](#internationalisierung)
+- [URL-Parameter](#url-parameter)
 - [Technik](#technik)
-- [Browser-Kompatibilität](#browser-kompatibilität)
+- [Browser](#browser)
+- [Projektstruktur](#projektstruktur)
 - [Mitwirken](#mitwirken)
 - [Lizenz](#lizenz)
 
 ---
 
-## Einleitung
+## Warum?
 
 > Ein guter Prompt ist kein Fließtext – er ist Architektur.
 
-**[Live testen: juristikde.github.io/xml-prompt-baukasten](https://juristikde.github.io/xml-prompt-baukasten)**
+Strukturierte XML-Prompts (`<rolle>`, `<regeln>`, `<beispiele>`, …) sind robuster, wiederverwendbarer und für LLMs oft klarer als langer Fließtext. Handgeschriebenes XML wird schnell unübersichtlich: Verschachtelung, Tippfehler in Tag-Namen, vergessene Entities.
 
-**Prompt Baukasten** ist ein rein clientseitiges Web-Tool zum Bauen, Pflegen und Wiederverwenden von strukturierten XML-Prompts für LLMs. Statt XML von Hand zu tippen, arbeitest du in zwei synchronisierten Ansichten: einer hierarchischen Struktur-Liste links und einem fokussierten Editor rechts. Das Ergebnis ist immer sauber serialisiertes, valides XML.
+**Prompt Baukasten** löst das mit zwei synchronen Ansichten:
 
-Die gesamte App ist **eine einzige `.html`-Datei**. Keine Installation, kein Build, kein Server, kein Tracking. Doppelklick und los.
+| Links | Rechts |
+| --- | --- |
+| Hierarchische Struktur-Liste (Outline) | Fokussierter Detail-Editor für Tag & Text |
+| Drag & Drop, Klappen, Vorschau | Ebene, Pfad, Werkzeuge, Textfeld |
 
-Ideal für: System-Prompts, Agenten-Rollen, Few-Shot-Beispiele und jede Art von Prompt, die aus wiederverwendbaren Bausteinen wie `<rolle>`, `<regeln>`, `<beispiele>` besteht.
+Das Ergebnis ist immer sauber serialisiertes XML – ohne Server, ohne Upload, ohne Tracking.
+
+**Typische Einsatzfelder:** System-Prompts, Agenten-Rollen, Few-Shot-Beispiele, Chat-Turn-Strukturen (`user` / `assistant`), mandantenspezifische Regelwerke.
+
+---
 
 ## Features
 
-- **Visuell statt manuell** – Tags, Texte und Kommentare als interaktive Liste statt rohem XML
-- **Beliebige Verschachtelung** – Ebenen-Anzeige mit Badge + Pfad-Navigation, unbegrenzt tief
-- **Drag & Drop + Long-Press** – Reihenfolge per Maus verschieben, auf Touch per langem Drücken mit leichtem Vibrieren
-- **Multi-Tab Workspace** – Mehrere Prompts parallel, Titel direkt im Kopf der Struktur editierbar, Zustand per URL-Hash teilbar
-- **Beidseitiger Sync** – Änderungen in der Liste → sofort im XML, Änderungen im XML-Feld → zurück in die Struktur
-- **5 kuratierte Vorlagen** – `Kundenservice (Beispiel)`, `Strukturierter System-Prompt`, `Kundensupport Agent`, `Recherche & Analyse`, `Kreatives Schreiben`
-- **Schnellzugriff `+ user` / `+ assistant`** – für Chat-Beispiele
-- **WikiText Fülltext** – Zufälliger Wikipedia-Auszug per API, Sprache (de, en, fr, es, it, pt, nl, pl, ru, ja, zh + zufällig) und Länge wählbar, wird direkt an der Cursor-Position eingefügt
-- **Prüfung** – Findet leere Tag-Namen und ungültige Schreibweisen, klickbare Fehlerliste springt zur betroffenen Stelle
-- **Ampersand-Fix** – Erkennt einzelne `&` und bietet `&amp;`, `und`, `u` oder eigenen Ersatz an
-- **Kommentare als eigenes Element** – `<!-- Hinweis -->` wird als 💬 Anmerkung geführt, nicht nur als Text
-- **Zeichenzähler** – Zeigt live die Zeichen des Gesamtergebnisses, die Zeichen aller Textfelder und die Auswahl im aktiven Feld
-- **Vollständig mobil nutzbar** – Bottom-Sheets, Long-Press, 44px Touch-Ziele, keine Hover-Fallen
+| Bereich | Was du bekommst |
+| --- | --- |
+| **Editor** | Visuelle Baumstruktur statt Roh-XML; unbegrenzte Verschachtelung; Kommentare als eigene Elemente (`💬`) |
+| **Sync** | Liste ↔ XML jederzeit synchron; XML einfügen und „Übernehmen“ baut die Struktur neu auf |
+| **Tabs** | Mehrere Prompts parallel; Titel editierbar; Duplizieren; Gesamt-Config aller Tabs |
+| **Validierung** | Protokoll-Fenster mit Fehlern, Warnungen und Hinweisen; Sprung zur Stelle; Badge am Protokoll-Button |
+| **WikiText** | Zufälliger Wikipedia-Auszug (11 Sprachen + zufällig) an der Cursor-Position |
+| **Bibliothek** | Externe kuratierte Vorlagen-Sammlung in neuem Tab |
+| **Mobile** | Bottom-Sheets, Long-Press-Drag, 44px Touch-Ziele, kein hängendes Hover |
+| **i18n** | UI in 38 Sprachen; Sprache per Menü oder URL |
+| **Teilen** | Layout- und Optionen-Zustand im URL-Hash (ohne Prompt-Inhalt) |
+
+Kein Account, kein Backend, keine Telemetrie.
+
+---
 
 ## Quickstart
 
-**Variante A – Direkt im Browser:**
+**A – Live im Browser**
 
-https://juristikde.github.io/xml-prompt-baukasten
+→ [juristikde.github.io/xml-prompt-baukasten](https://juristikde.github.io/xml-prompt-baukasten)
 
-**Variante B – Lokal öffnen:**
+**B – Lokal öffnen**
 
 ```bash
-open index.html
+# Datei doppelklicken oder:
+open index.html          # macOS
+xdg-open index.html      # Linux
+start index.html         # Windows
 ```
 
-**Variante C – Lokal hosten:**
+**C – Lokaler Server** (empfohlen, wenn `lang/*.json` relativ geladen werden)
 
 ```bash
 python3 -m http.server 8000
-# dann http://localhost:8000/index.html öffnen
+# → http://localhost:8000/
 ```
 
-Keine Abhängigkeiten, kein Build.
+Keine Dependencies, kein Build-Schritt.
 
-## Anwendung
+---
 
-### Tabs & Prompt-Verwaltung
+## Bedienung
 
-Jeder Tab hält seine eigene Struktur, Auswahl und Zähler. Der Titel wird über das Feld im Kopf der Struktur live geändert – gleiche Logik wie beim Bearbeiten eines Tag-Namens im Detail.
+### Workspace & Tabs
 
-- `+` am Ende der Leiste → neuer Prompt
-- `×` am Tab → Tab schließen (letzter Tab wird geleert, nicht gelöscht)
+Jeder Tab speichert eigene Struktur, Auswahl und internen Zähler.
+
+- **Titel** im Panel-Kopf (neben Duplizieren) – live editierbar
+- **`+`** in der Tab-Leiste → neuer leerer Prompt
+- **`×`** am Tab → schließen (der letzte Tab wird geleert, nicht entfernt)
+- **Duplizieren** → Kopie des aktuellen Tabs inkl. Struktur
+- **Zurücksetzen** → aktuellen Tab leeren (mit Bestätigung)
+
+Desktop: Duplizieren und Zurücksetzen sitzen im Prompt-Header.  
+Mobil: beides im **Optionen**-Menü desselben Headers.
 
 ### Struktur-Liste
 
-Links liegt die Übersicht. Sie zeigt Tag-Namen in Serif-Bold, eine kurze Text-Vorschau und die Anzahl der direkt enthaltenen Elemente.
+Linke Spalte – Übersicht über den Baum.
 
-- **Klick** wählt aus
-- **Pfeil ▾/▸** klappt den darunterliegenden Bereich auf oder zu
-- **Ziehen per Maus** verschiebt innerhalb derselben Ebene
-- **Aktionen im Fußbereich:**
-  - `+ Element` / `+ Kommentar` – neuen Eintrag auf gleicher Ebene nach dem ausgewählten anlegen
-  - `+ user` / `+ assistant` – vorgefertigte Rollen für Beispiele
-  - `+ Unterpunkt` / `Löschen` – Ebene tiefer anlegen oder ausgewählten Eintrag entfernen
-  - `Ergebnis kopieren` – fertiges `<prompt>...</prompt>` in die Zwischenablage
+| Aktion | Wirkung |
+| --- | --- |
+| Klick auf Zeile | Auswahl + Detail-Editor |
+| `▾` / `▸` | Unterbaum auf-/zuklappen |
+| Ziehen (Maus) | Reihenfolge **innerhalb derselben Ebene** |
+| Long-Press (Touch, ~420 ms) | Verschiebe-Modus, optional Vibration |
+| Fußbereich | `+ Element`, `+ Kommentar`, `+ user`, `+ assistant`, `+ Unterpunkt`, `Löschen`, **Ergebnis kopieren** |
+
+Tag-Namen in Serif-Bold, Textvorschau und Kind-Anzahl in der Zeile. Fehlerhafte Knoten bekommen eine rote Markierung.
 
 ### Detail-Editor
 
-Rechts erscheint nach Auswahl der eigentliche Editor:
+Nach Auswahl rechts (Desktop) bzw. als Sheet von rechts (Mobil):
 
-1.  **Ebenen-Leiste:** Anzeige `Ebene N` + Pfad (`rolle › regeln › regel`). Jeder Teil des Pfads ist klickbar.
-2.  **Tag-Kopf:** `< [eingabe] >` – Leerzeichen werden automatisch zu `-`
-3.  **Werkzeugleiste:** `↑/↓` verschiebt den Eintrag, `+ WikiText` als geteilter Button
-4.  **Textfeld:** Eigentlicher Inhalt, füllt den verfügbaren Platz
-5.  **Zeichenzähler (wenn aktiv):** Unter dem Textfeld – `Gesamt: X Zeichen | Alle Felder: Y | Auswahl: Z`
+1. **Ebenen-Badge** + klickbarer **Breadcrumb-Pfad**
+2. **Tag-Zeile** `< name >` – Leerzeichen werden zu `-`
+3. **Werkzeuge:** ↑/↓, Kopieren/Einfügen (Knoten-Clipboard), Suchen & Ersetzen, **+ WikiText**
+4. **Textfeld** für Inhalt (bei Container-Tags mit Kindern deaktiviert – Inhalt gehört in Kind-Knoten)
+5. Optionaler **Zeichenzähler** (per URL-Parameter)
 
-Bei Anmerkungen: Kopf `💬 Anmerkung` + kursives Feld.
+Kommentare erscheinen als `💬 Anmerkung` mit kursivem Feld.
 
 ### XML-Ansicht
 
-Über `XML anzeigen` bzw. `Optionen → XML anzeigen`:
+Toolbar: **XML anzeigen** (Desktop) bzw. Optionen → XML anzeigen (Mobil).
 
-- Desktop: zweispaltig (`1.5fr 1fr`)
-- Mobil: eigenes Panel, das von links hereinfährt
-- Das Feld zeigt immer die komplette Ausgabe – ein `<prompt>` Rahmen um deine Struktur
-- `Übernehmen` liest zurück: Erkennt `<prompt>` als Hülle und übernimmt nur den Inhalt
-- `Kopieren` + `„&“ ersetzen…` für den Ampersand-Fix
+- Desktop: zweite Spalte neben dem Editor  
+- Mobil: Sheet von links  
+- **Übernehmen** parst den Text zurück in den Baum (erkennt äußeres `<prompt>`)  
+- **Kopieren** in die Zwischenablage  
+- **Gesamt** / **Tab-XML**: alle Tabs als Gesamt-Config oder nur den aktiven Tab  
+- **Umbruch** an/aus, **Suchen** im Quelltext  
 
-Ausgabe-Beispiel:
+Beispiel-Ausgabe:
 
 ```xml
 <prompt>
-  <rolle>Du bist ein hilfsbereiter Assistent...</rolle>
+  <rolle>Du bist ein hilfsbereiter Assistent …</rolle>
   <regeln>
     <regel>Nenne niemals interne Artikelnummern.</regel>
     <!-- Interner Hinweis: pro Mandant anpassen. -->
@@ -144,95 +170,147 @@ Ausgabe-Beispiel:
 </prompt>
 ```
 
-### Vorlagen
+Einzelne `&` im Import werden beim Parsen zu `&amp;` normalisiert.
 
-Über `Beispiel ▼` (Desktop) oder `Optionen → Vorlagen` (Mobil):
+### Protokoll & Validierung
 
-| Vorlage | Enthält |
-| :--- | :--- |
-| **Kundenservice (Beispiel)** | rolle, aufgabe, regeln inkl. Anmerkung, beispiele |
-| **Strukturierter System-Prompt** | rolle, kernprinzipien, ton, antwortverhalten, grenzen, Ausgewogenheit, Positiv-/Negativ-Beispiele |
-| **Kundensupport Agent** | rolle, ziel, ton für ruhig vs. frustriert, Einstufung, Regeln, Beispiel |
-| **Recherche & Analyse** | rolle, Grundsätze, Aufbau der Antwort, ton |
-| **Kreatives Schreiben** | rolle, ton, Vorgehen in 3 Schritten, Grenzen |
+**Protokoll** öffnet ein modales Log (nicht nur ein Banner).
 
-Bestehende Struktur wird nur nach Rückfrage ersetzt.
+- **Prüfen** validiert die Struktur:
+  - harte Fehler: leere oder ungültige Tag-Namen (`/^[A-Za-z_][A-Za-z0-9_.\-]*$/`)
+  - weiche Hinweise: generische Namen (`data`, `item`, …), tiefe Verschachtelung (> 4), leere Tags, `<example>` außerhalb von `<examples>`
+- Einträge mit Zeitstempel; Fehler erhöhen einen **Badge** am Protokoll-Trigger
+- **Leeren** löscht das Log; beim Öffnen des Protokolls wird der Badge zurückgesetzt
+- Max. Einträge steuerbar über `protocolThreshold` (Standard: 20)
 
 ### WikiText
 
-Der geteilte Button `+ WikiText` besteht aus zwei Teilen:
+Geteilter Button **+ WikiText** im Detail-Editor (Desktop: gleiche Höhe wie die anderen Small-Buttons).
 
-- **Hauptfläche:** Fügt sofort Text ein
-- **Pfeil ▼:** Öffnet Einstellungen für Sprache und `ca. Zeichen` (80–2000)
+| Teil | Aktion |
+| --- | --- |
+| Hauptfläche | Sofort einfügen mit letzten Einstellungen |
+| Pfeil | Sprache + ca. Zeichen (80–2000) |
 
-Quelle ist die Wikipedia API (`generator=random`). `zufällig` wählt aus 11 Sprachen. Eingefügt wird an der aktuellen Cursor-Position im Textfeld.
+Quelle: Wikipedia-API (`generator=random`). Sprachen: de, en, fr, es, it, pt, nl, pl, ru, ja, zh sowie **zufällig**. Einfügeposition = Cursor im Textfeld. Braucht Internet; der Rest der App läuft offline.
 
-![WikiText Menü](screenshots/wikitext-menu.webp)
+### Prompt-Bibliothek
 
-### Validierung
+Der Button **Bibliothek** (Desktop-Toolbar bzw. Optionen mobil) öffnet in einem **neuen Tab**:
 
-`Prüfen` läuft über die gesamte Struktur:
+→ [juristikde.github.io/xml-prompt-bibliothek](https://juristikde.github.io/xml-prompt-bibliothek/)
 
-- Leerer Tag-Name → `Element ohne Tag-Namen.`
-- Entspricht nicht `/^[A-Za-z_][A-Za-z0-9_.\-]*$/` → `„<name>" ungültig.`
+Dort liegen kuratierte Vorlagen. In die App übernimmst du sie per Kopieren in die XML-Ansicht und **Übernehmen**.
 
-Betroffene Zeilen bekommen einen roten Rand links. Ein Banner zeigt `N zu prüfen` mit Liste – Klick springt zur Stelle und markiert sie. Bei 0 Problemen: grünes Banner `Keine Fehler.`
+---
 
-### Mobile Ansicht
+## Mobile
 
-Ab ≤900px wechselt die App in den mobilen Modus. Ab ≤480px wird nochmal verdichtet.
+Ab **≤ 900 px** (nochmals verdichtet ab ≤ 480 px):
 
-![Mobile Ansicht mit Bottom-Sheet](screenshots/mobile-sheet.webp)
+- Toolbar: nur **Optionen** (Sprache, Protokoll, XML, Bibliothek)
+- Prompt-Header: **Optionen** (Duplizieren, Zurücksetzen)
+- Detail und XML als **Sheets** über der Liste; Struktur bleibt bedienbar
+- **›** in der Listenzeile öffnet den Editor-Sheet
+- Alle `:hover`-Styles nur unter `@media (hover: hover) and (pointer: fine)`
+- Mindesthöhe interaktiver Elemente: 44 px
 
-**Besonderheiten mobil:**
+![Mobile Ansicht](screenshots/mobile-sheet.webp)
 
-- **Bottom-Sheets statt Spalten:** Detail-Editor und XML-Ansicht fahren als überlagerte Panels ein. Die Struktur-Liste bleibt im Hintergrund bedienbar und wird abgedunkelt.
-- **Long-Press statt Drag:** Langes Drücken (ca. 450ms) aktiviert den Verschiebe-Modus mit leichtem Vibrieren (`navigator.vibrate`).
-- **› Öffnen-Button:** In der Listen-Zeile erscheint mobil ein `›` Button, der den Eintrag direkt im Bottom-Sheet öffnet.
-- **Kein Hover:** Alle `:hover` Regeln liegen in `@media (hover: hover) and (pointer: fine)`.
-- **44px Touch-Ziele:** Buttons und Eingaben haben mindestens 44px Höhe, Pfad-Navigation ist horizontal scrollbar.
+---
 
-### URL-Parameter
+## Internationalisierung
 
-Das Layout lässt sich per Hash in der URL steuern und teilen:
+UI-Texte liegen in `lang/{code}.json` (ISO 639-1). Die App lädt die Datei dynamisch; Fallback ist Deutsch.
+
+- **38 Sprachen** im Languages-Objekt der JSON-Pakete
+- Anzeige im Sprachmenü: **native** (Endonym), Suche auch über **local** (Name in der aktuellen UI-Sprache) und Code
+- Parameter: `setLanguage=de` (auch im Hash; wird bei Wechsel aktualisiert)
+- **Nicht übersetzt:** Prompt-/Template-Inhalte und Tag-Namen – nur UI-Chrome
+
+Bei UI-Änderungen: Keys in **allen** `lang/*.json` nachziehen (siehe Hinweisblock im `<head>` der HTML-Datei).
+
+---
+
+## URL-Parameter
+
+Zustand im **Hash** (ohne Prompt-Inhalt), damit Layout und Optionen teilbar sind:
 
 ```
-#tabBarLocation=top&tabBarShown=true&showCharacterCount=false&skipNonErrorNotifications=false&xmlCodeLineWrap=true
+#setLanguage=de&tabBarLocation=top&tabBarShown=true&showCharacterCount=false&xmlCodeLineWrap=true&unpackMobileOptionsButton=false&protocolThreshold=20
 ```
 
 | Parameter | Werte | Standard | Wirkung |
-| :--- | :--- | :--- | :--- |
-| `tabBarLocation` | `top` / `left` | `top` | Position der Tab-Leiste |
-| `tabBarShown` | `true` / `false` | `true` | Tab-Leiste ein- oder ausblenden |
-| `showCharacterCount` | `true` / `false` | `false` | Zeichenzähler: Gesamtzeichen Ergebnis + Summe aller Textfelder + aktuelle Auswahl |
-| `skipNonErrorNotifications` | `true` / `false` | `false` | Blendet Hinweise oder positive Meldungen nach 5 Sekunden automatisch aus. Kann über "Nicht mehr dauerhaft anzeigen" einmalig über das UI auf true gesetzt werden. |
-| `xmlCodeLineWrap` | `true` / `false` | `true` | Bricht Text in der XML Code Ansicht automatisch um. |
+| --- | --- | --- | --- |
+| `setLanguage` | ISO-639-1 | System / `de` | UI-Sprache |
+| `tabBarLocation` | `top` / `left` | `top` | Tab-Leiste oben oder links |
+| `tabBarShown` | `true` / `false` | `true` | Tab-Leiste ein-/ausblenden |
+| `showCharacterCount` | `true` / `false` | `false` | Zeichenzähler an Feldern und Ergebnis |
+| `xmlCodeLineWrap` | `true` / `false` | `true` | Zeilenumbruch in der XML-Ansicht |
+| `unpackMobileOptionsButton` | `true` / `false` | `false` | Auf Mobil Werkzeuge „ausgepackt“ statt Options-Menü |
+| `protocolThreshold` | 1–1000 | `20` | Max. Einträge im Protokoll |
 
-Alle Parameter sind optional und kombinierbar.
+Alle optional und kombinierbar. `setLanguage` steht bewusst zuerst im Hash.
+
+---
 
 ## Technik
 
-- **Eine Datei:** HTML + CSS + JS in einem Dokument, Favicon als inline SVG Data-URI
-- **Zustand:** `tabs[]`, `tree[]`, `idCounter`, `selectedId`, `wikiSettings`, `dragId` – bewusst ohne LocalStorage
-- **XML:** `DOMParser` mit `__root__` Hülle + Vorab-Ersetzung einzelner `&`
+| Aspekt | Umsetzung |
+| --- | --- |
+| Auslieferung | Eine `index.html` (CSS + JS inline); Icons/Favicons von CDN bzw. Repo |
+| Laufzeit | Reiner Client; kein Build, kein Bundler |
+| Zustand | `tabs[]`, aktiver Baum, Auswahl, Protokoll – **kein** LocalStorage (bewusst frischer Start) |
+| XML | `DOMParser` mit temporärer `__root__`-Hülle; Serialisierung mit Escape; Mixed Content → automatische `_text`-Kinder |
+| i18n | `fetch('lang/xx.json')`, `data-i18n*` Attribute, `t(default, key, vars)` |
+| Drag | HTML5 Drag & Drop (Desktop); Touch Long-Press (Mobil) |
 
-## Browser-Kompatibilität
+---
 
-Getestet in aktuellen Chromium, Firefox, Safari (Desktop + iOS).
+## Browser
 
-- `fetch` für Wiki (braucht Internet, Rest funktioniert komplett offline)
-- `navigator.clipboard.writeText` mit `execCommand('copy')` als Rückfall
-- `navigator.vibrate` optional für das Long-Press Feedback
+Getestet in aktuellen Chromium-, Firefox- und Safari-Versionen (Desktop und iOS).
+
+| API | Nutzung |
+| --- | --- |
+| `fetch` | Sprachen + WikiText (Internet) |
+| `navigator.clipboard` | Kopieren; Fallback `document.execCommand('copy')` |
+| `navigator.vibrate` | Optional bei Long-Press |
+| `DOMParser` | XML-Import |
+
+Ohne Netz: Editor, Tabs, Validierung und XML-Sync funktionieren; WikiText und Sprachwechsel auf noch nicht geladene JSONs brauchen Verbindung.
+
+---
+
+## Projektstruktur
+
+```
+xml-prompt-baukasten/
+├── index.html          # App (HTML + CSS + JS)
+├── lang/               # i18n-Pakete (de.json, en.json, …)
+├── icons/              # Favicons & Logo
+├── screenshots/        # README-Bilder
+├── LICENSE
+└── README.md
+```
+
+Verwandtes Projekt: **[xml-prompt-bibliothek](https://juristikde.github.io/xml-prompt-bibliothek/)** – kuratierte Vorlagen zum Import.
+
+---
 
 ## Mitwirken
 
-Issues und PRs willkommen. Da alles in einer Datei steckt:
+Issues und Pull Requests sind willkommen.
 
-1. Fork
-2. In der einen HTML-Datei ändern
-3. Auf Desktop + Mobil (≤900px und ≤480px) testen
-4. PR mit kurzem Screenshot/GIF der Änderung
+1. Forken  
+2. Änderungen in `index.html` und bei UI-Texten in **allen** betroffenen `lang/*.json`  
+3. Desktop **und** Mobil testen (≤ 900 px und ≤ 480 px)  
+4. PR mit kurzer Beschreibung und idealerweise Screenshot/GIF  
+
+Bitte keine eingebetteten Tracking-Skripte und den Single-File-Charakter der App beibehalten.
+
+---
 
 ## Lizenz
 
-MIT – frei für private und kommerzielle Nutzung. Siehe `LICENSE`.
+MIT – freie Nutzung privat und kommerziell. Details in [`LICENSE`](LICENSE).

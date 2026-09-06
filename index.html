@@ -867,6 +867,35 @@
     flex: none;
   }
 
+  .panel-tools-desktop {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .panel-tools-mobile {
+    display: none;
+  }
+
+  .options-menu .opt-item.danger {
+    color: var(--color-destructive);
+  }
+
+  /* Wiki-Split in Detail-Toolbar: gleiche Höhe wie .btn.small */
+  .detail-tools .split-btn {
+    min-height: 36px;
+  }
+  .detail-tools .split-btn .split-main {
+    min-height: 36px;
+    padding: 0 var(--space-3);
+    font-size: var(--text-footnote);
+    font-weight: 600;
+  }
+  .detail-tools .split-btn .split-caret {
+    min-height: 36px;
+    min-width: 32px;
+  }
+
   .panel-body {
     padding: var(--space-4);
     overflow: hidden;
@@ -1922,6 +1951,9 @@
       align-items: center;
     }
 
+    .panel-tools-desktop { display: none; }
+    .panel-tools-mobile { display: inline-block; }
+
     .layout.with-source { grid-template-columns: 1fr; }
 
     .split-body {
@@ -2182,24 +2214,22 @@
     <div class="toolbar">
       <div class="toolbar-desktop">
         <button type="button" class="btn" id="btnLanguage" aria-haspopup="true" aria-expanded="false">Deutsch</button>
-        <a class="btn" id="btnLibrary" href="https://juristikde.github.io/xml-prompt-bibliothek/" target="_blank" rel="noopener" data-i18n="toolbar.library">Bibliothek</a>
         <button class="btn" id="btnValidate" data-i18n="toolbar.protocol">Protokoll</button>
         <button class="btn" id="btnToggleSource" data-i18n="toolbar.showXml">XML anzeigen</button>
-        <button class="btn danger" id="btnReset" data-i18n="toolbar.reset">Zurücksetzen</button>
+        <a class="btn" id="btnLibrary" href="https://juristikde.github.io/xml-prompt-bibliothek/" target="_blank" rel="noopener" data-i18n="toolbar.library">Bibliothek</a>
       </div>
 
       <div class="toolbar-mobile">
         <div class="options-wrap" id="optionsWrap">
           <button type="button" class="btn" id="btnOptions" aria-haspopup="true" aria-expanded="false" data-i18n="toolbar.options">Optionen</button>
           <div class="options-menu" id="optionsMenu" role="menu">
-            <a class="opt-item" id="optLibrary" role="menuitem" href="https://juristikde.github.io/xml-prompt-bibliothek/" target="_blank" rel="noopener" data-i18n="toolbar.library">Bibliothek</a>
-            <div class="opt-sep"></div>
             <button type="button" class="opt-item" id="optLanguage" role="menuitem" data-i18n="toolbar.language">Sprache</button>
             <button type="button" class="opt-item" id="optValidate" role="menuitem" data-i18n="toolbar.protocol">Protokoll</button>
             <button type="button" class="opt-item" id="optToggleSource" role="menuitem" data-i18n="toolbar.showXml">XML anzeigen</button>
+            <div class="opt-sep"></div>
+            <a class="opt-item" id="optLibrary" role="menuitem" href="https://juristikde.github.io/xml-prompt-bibliothek/" target="_blank" rel="noopener" data-i18n="toolbar.library">Bibliothek</a>
           </div>
         </div>
-        <button class="btn danger" id="btnResetMobile" data-i18n="toolbar.reset">Zurücksetzen</button>
       </div>
     </div>
   </header>
@@ -2241,7 +2271,17 @@
           <div class="panel-head">
             <input type="text" id="panelStructureTitle" class="panel-title-input" value="Prompt 1" data-i18n-placeholder="tabs.namePlaceholder" placeholder="Tab-Name" autocomplete="off" spellcheck="false" data-i18n-aria="tabs.nameAria" aria-label="Tab-Name" />
             <div class="panel-head-tools">
-              <button type="button" class="btn small" id="btnDuplicateTab" data-i18n="tabs.duplicate" data-i18n-title="tabs.duplicateTitle" title="Aktuellen Tab duplizieren">Duplizieren</button>
+              <div class="panel-tools-desktop">
+                <button type="button" class="btn small" id="btnDuplicateTab" data-i18n="tabs.duplicate" data-i18n-title="tabs.duplicateTitle" title="Aktuellen Tab duplizieren">Duplizieren</button>
+                <button type="button" class="btn small danger" id="btnReset" data-i18n="toolbar.reset">Zurücksetzen</button>
+              </div>
+              <div class="panel-tools-mobile options-wrap" id="panelOptionsWrap">
+                <button type="button" class="btn small" id="btnPanelOptions" aria-haspopup="true" aria-expanded="false" data-i18n="toolbar.options">Optionen</button>
+                <div class="options-menu" id="panelOptionsMenu" role="menu">
+                  <button type="button" class="opt-item" id="optDuplicateTab" role="menuitem" data-i18n="tabs.duplicate">Duplizieren</button>
+                  <button type="button" class="opt-item danger" id="optReset" role="menuitem" data-i18n="toolbar.reset">Zurücksetzen</button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="split-body" id="splitBody">
@@ -3142,6 +3182,8 @@
     });
     const btn = document.getElementById('btnOptions');
     if(btn) btn.setAttribute('aria-expanded', 'false');
+    const panelBtn = document.getElementById('btnPanelOptions');
+    if(panelBtn) panelBtn.setAttribute('aria-expanded', 'false');
     const srcBtn = document.getElementById('btnSourceOptions');
     if(srcBtn) srcBtn.setAttribute('aria-expanded', 'false');
     document.querySelectorAll('.detail-tools .options-wrap button[aria-expanded]').forEach(b => {
@@ -5017,10 +5059,34 @@
     closeOptionsMenu();
     toggleSourcePanel();
   };
-  document.getElementById('btnResetMobile').onclick = resetAll;
   document.getElementById('btnLanguage').onclick = e => {
     e.stopPropagation();
     openLanguagePanel();
+  };
+
+  document.getElementById('btnPanelOptions').onclick = e => {
+    e.stopPropagation();
+    const menu = document.getElementById('panelOptionsMenu');
+    const btn = document.getElementById('btnPanelOptions');
+    const isOpen = menu.classList.contains('open');
+    closeAllWikiMenus();
+    closeTemplateMenu();
+    closeOptionsMenu();
+    if(!isOpen){
+      positionMenu(btn, menu);
+      btn.setAttribute('aria-expanded', 'true');
+      openOptionsMenu = menu;
+    }
+  };
+  document.getElementById('optDuplicateTab').onclick = e => {
+    e.stopPropagation();
+    closeOptionsMenu();
+    duplicateActiveTab();
+  };
+  document.getElementById('optReset').onclick = e => {
+    e.stopPropagation();
+    closeOptionsMenu();
+    resetAll();
   };
 
   document.getElementById('btnAddRoot').onclick = addRootNode;

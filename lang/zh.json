@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ 子项",
     "delete": "删除",
-    "copyResult": "复制结果",
+    "copyResult": "结果",
     "copied": "✓ 已复制",
     "copiedShort": "✓",
     "confirmDelete": "确定要删除吗？",
@@ -232,7 +232,9 @@
     "noName": "（未命名）",
     "expand": "展开",
     "collapse": "折叠",
-    "openEditor": "在编辑器中打开"
+    "openEditor": "在编辑器中打开",
+    "charCountLabel": "字符数",
+    "charCountTitle": "显示/隐藏字符数"
   },
   "detail": {
     "empty": "请在左侧选择一个元素，或在下方创建新元素。",

@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Alt madde",
     "delete": "Sil",
-    "copyResult": "Sonucu kopyala",
+    "copyResult": "Sonuç",
     "copied": "✓ Kopyalandı",
     "copiedShort": "✓",
     "confirmDelete": "Gerçekten silinsin mi?",
@@ -232,7 +232,9 @@
     "noName": "(adsız)",
     "expand": "Genişlet",
     "collapse": "Daralt",
-    "openEditor": "Düzenleyicide aç"
+    "openEditor": "Düzenleyicide aç",
+    "charCountLabel": "Karakter sayısı",
+    "charCountTitle": "Karakter sayısını göster/gizle"
   },
   "detail": {
     "empty": "Soldan bir öğe seçin veya aşağıda yeni bir tane ekleyin.",

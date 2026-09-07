@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ サブ項目",
     "delete": "削除",
-    "copyResult": "結果をコピー",
+    "copyResult": "結果",
     "copied": "✓ コピーしました",
     "copiedShort": "✓",
     "confirmDelete": "本当に削除しますか？",
@@ -232,7 +232,9 @@
     "noName": "（名前なし）",
     "expand": "展開",
     "collapse": "折りたたむ",
-    "openEditor": "エディターで開く"
+    "openEditor": "エディターで開く",
+    "charCountLabel": "文字数",
+    "charCountTitle": "文字数の表示/非表示"
   },
   "detail": {
     "empty": "左側で要素を選択するか、下に新しい要素を作成してください。",

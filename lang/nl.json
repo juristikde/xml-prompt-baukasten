@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Subitem",
     "delete": "Verwijderen",
-    "copyResult": "Resultaat kopiëren",
+    "copyResult": "Resultaat",
     "copied": "✓ Gekopieerd",
     "copiedShort": "✓",
     "confirmDelete": "Echt verwijderen?",
@@ -232,7 +232,9 @@
     "noName": "(naamloos)",
     "expand": "Uitklappen",
     "collapse": "Inklappen",
-    "openEditor": "Openen in editor"
+    "openEditor": "Openen in editor",
+    "charCountLabel": "Tekens",
+    "charCountTitle": "Tekenantal tonen/verbergen"
   },
   "detail": {
     "empty": "Selecteer links een element of maak hieronder een nieuw element aan.",

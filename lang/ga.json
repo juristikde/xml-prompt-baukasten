@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Fo-mhír",
     "delete": "Scrios",
-    "copyResult": "Cóipeáil an toradh",
+    "copyResult": "Toradh",
     "copied": "✓ Cóipeáilte",
     "copiedShort": "✓",
     "confirmDelete": "An bhfuil tú cinnte gur mian leat scriosadh?",
@@ -232,7 +232,9 @@
     "noName": "(gan ainm)",
     "expand": "Leathnaigh",
     "collapse": "Laghdaigh",
-    "openEditor": "Oscail san eagarthóir"
+    "openEditor": "Oscail san eagarthóir",
+    "charCountLabel": "Carachtair",
+    "charCountTitle": "Taispeáin/folaigh líon carachtar"
   },
   "detail": {
     "empty": "Roghnaigh eilimint ar chlé nó cruthaigh ceann nua thíos.",

@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Alakohta",
     "delete": "Poista",
-    "copyResult": "Kopioi tulos",
+    "copyResult": "Tulos",
     "copied": "✓ Kopioitu",
     "copiedShort": "✓",
     "confirmDelete": "Poistetaanko varmasti?",
@@ -232,7 +232,9 @@
     "noName": "(nimetön)",
     "expand": "Laajenna",
     "collapse": "Supista",
-    "openEditor": "Avaa editorissa"
+    "openEditor": "Avaa editorissa",
+    "charCountLabel": "Merkkimäärä",
+    "charCountTitle": "Näytä/piilota merkkimäärä"
   },
   "detail": {
     "empty": "Valitse elementti vasemmalta tai luo uusi alle.",

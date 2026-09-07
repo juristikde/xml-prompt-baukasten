@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Apakšpunkts",
     "delete": "Dzēst",
-    "copyResult": "Kopēt rezultātu",
+    "copyResult": "Rezultāts",
     "copied": "✓ Nokopēts",
     "copiedShort": "✓",
     "confirmDelete": "Tiešām dzēst?",
@@ -232,7 +232,9 @@
     "noName": "(bez nosaukuma)",
     "expand": "Izvērst",
     "collapse": "Sakļaut",
-    "openEditor": "Atvērt redaktorā"
+    "openEditor": "Atvērt redaktorā",
+    "charCountLabel": "Rakstzīmju skaits",
+    "charCountTitle": "Rādīt/paslēpt rakstzīmju skaitu"
   },
   "detail": {
     "empty": "Izvēlies elementu kreisajā pusē vai izveido jaunu zemāk.",

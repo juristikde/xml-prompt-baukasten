@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Underpunkt",
     "delete": "Ta bort",
-    "copyResult": "Kopiera resultat",
+    "copyResult": "Resultat",
     "copied": "✓ Kopierat",
     "copiedShort": "✓",
     "confirmDelete": "Verkligen ta bort?",
@@ -232,7 +232,9 @@
     "noName": "(namnlös)",
     "expand": "Expandera",
     "collapse": "Fäll ihop",
-    "openEditor": "Öppna i editor"
+    "openEditor": "Öppna i editor",
+    "charCountLabel": "Teckenantal",
+    "charCountTitle": "Visa/dölj teckenantal"
   },
   "detail": {
     "empty": "Välj ett element till vänster eller skapa ett nytt nedan.",

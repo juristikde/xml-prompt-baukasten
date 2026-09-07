@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Sottopunto",
     "delete": "Elimina",
-    "copyResult": "Copia risultato",
+    "copyResult": "Risultato",
     "copied": "✓ Copiato",
     "copiedShort": "✓",
     "confirmDelete": "Eliminare davvero?",
@@ -232,7 +232,9 @@
     "noName": "(senza nome)",
     "expand": "Espandi",
     "collapse": "Comprimi",
-    "openEditor": "Apri nell'editor"
+    "openEditor": "Apri nell'editor",
+    "charCountLabel": "Caratteri",
+    "charCountTitle": "Mostra/nascondi conteggio caratteri"
   },
   "detail": {
     "empty": "Seleziona un elemento a sinistra o creane uno nuovo qui sotto.",

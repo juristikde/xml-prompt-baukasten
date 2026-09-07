@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ 하위 항목",
     "delete": "삭제",
-    "copyResult": "결과 복사",
+    "copyResult": "결과",
     "copied": "✓ 복사됨",
     "copiedShort": "✓",
     "confirmDelete": "정말 삭제할까요?",
@@ -232,7 +232,9 @@
     "noName": "(이름 없음)",
     "expand": "펼치기",
     "collapse": "접기",
-    "openEditor": "편집기에서 열기"
+    "openEditor": "편집기에서 열기",
+    "charCountLabel": "글자 수",
+    "charCountTitle": "글자 수 표시/숨기기"
   },
   "detail": {
     "empty": "왼쪽에서 요소를 선택하거나 아래에서 새 요소를 만드세요.",

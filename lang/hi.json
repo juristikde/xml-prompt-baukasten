@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ उप-आइटम",
     "delete": "हटाएँ",
-    "copyResult": "परिणाम कॉपी करें",
+    "copyResult": "परिणाम",
     "copied": "✓ कॉपी हुआ",
     "copiedShort": "✓",
     "confirmDelete": "वाकई हटाएँ?",
@@ -232,7 +232,9 @@
     "noName": "(बिना नाम)",
     "expand": "विस्तार",
     "collapse": "संक्षिप्त",
-    "openEditor": "संपादक में खोलें"
+    "openEditor": "संपादक में खोलें",
+    "charCountLabel": "अक्षर संख्या",
+    "charCountTitle": "अक्षर संख्या दिखाएँ/छिपाएँ"
   },
   "detail": {
     "empty": "बाएँ कोई तत्व चुनें या नीचे नया बनाएँ।",

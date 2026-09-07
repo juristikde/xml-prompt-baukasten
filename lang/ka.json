@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ ქვეპუნქტი",
     "delete": "წაშლა",
-    "copyResult": "შედეგის კოპირება",
+    "copyResult": "შედეგი",
     "copied": "✓ დაკოპირებულია",
     "copiedShort": "✓",
     "confirmDelete": "ნამდვილად წაიშალოს?",
@@ -232,7 +232,9 @@
     "noName": "(უსახელო)",
     "expand": "გაშლა",
     "collapse": "ჩაკეცვა",
-    "openEditor": "რედაქტორში გახსნა"
+    "openEditor": "რედაქტორში გახსნა",
+    "charCountLabel": "სიმბოლოები",
+    "charCountTitle": "სიმბოლოების რაოდენობის ჩვენება/დამალვა"
   },
   "detail": {
     "empty": "აირჩიეთ ელემენტი მარცხნივ ან შექმენით ახალი ქვემოთ.",

@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Unterpunkt",
     "delete": "Löschen",
-    "copyResult": "Ergebnis kopieren",
+    "copyResult": "Ergebnis",
     "copied": "✓ Kopiert",
     "copiedShort": "✓",
     "confirmDelete": "Wirklich löschen?",
@@ -232,7 +232,9 @@
     "noName": "(ohne Namen)",
     "expand": "Aufklappen",
     "collapse": "Zuklappen",
-    "openEditor": "Im Editor öffnen"
+    "openEditor": "Im Editor öffnen",
+    "charCountLabel": "Zeichenzahl",
+    "charCountTitle": "Zeichenanzahl ein-/ausblenden"
   },
   "detail": {
     "empty": "Wähle links ein Element aus oder lege unten ein neues an.",

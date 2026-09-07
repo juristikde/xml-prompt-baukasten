@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Subpunct",
     "delete": "Șterge",
-    "copyResult": "Copiază rezultatul",
+    "copyResult": "Rezultat",
     "copied": "✓ Copiat",
     "copiedShort": "✓",
     "confirmDelete": "Ștergi cu adevărat?",
@@ -232,7 +232,9 @@
     "noName": "(fără nume)",
     "expand": "Extinde",
     "collapse": "Restrânge",
-    "openEditor": "Deschide în editor"
+    "openEditor": "Deschide în editor",
+    "charCountLabel": "Număr de caractere",
+    "charCountTitle": "Afișează/ascunde numărul de caractere"
   },
   "detail": {
     "empty": "Selectează un element în stânga sau creează unul nou mai jos.",

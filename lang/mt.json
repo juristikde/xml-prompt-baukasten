@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Sottopunt",
     "delete": "Ħassar",
-    "copyResult": "Ikkopja r-riżultat",
+    "copyResult": "Riżultat",
     "copied": "✓ Ikkopjat",
     "copiedShort": "✓",
     "confirmDelete": "Tassew tħassar?",
@@ -232,7 +232,9 @@
     "noName": "(bla isem)",
     "expand": "Iftaħ",
     "collapse": "Agħlaq",
-    "openEditor": "Iftaħ fl-editur"
+    "openEditor": "Iftaħ fl-editur",
+    "charCountLabel": "Numru ta' karattri",
+    "charCountTitle": "Uri/aħbi n-numru ta' karattri"
   },
   "detail": {
     "empty": "Agħżel element fuq il-lemin jew oħloq wieħed ġdid hawn taħt.",

@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Подэлемент",
     "delete": "Избриши",
-    "copyResult": "Копирај резултат",
+    "copyResult": "Резултат",
     "copied": "✓ Копирано",
     "copiedShort": "✓",
     "confirmDelete": "Навистина да се избрише?",
@@ -232,7 +232,9 @@
     "noName": "(без име)",
     "expand": "Прошири",
     "collapse": "Собери",
-    "openEditor": "Отвори во уредник"
+    "openEditor": "Отвори во уредник",
+    "charCountLabel": "Број на знаци",
+    "charCountTitle": "Прикажи/скриј број на знаци"
   },
   "detail": {
     "empty": "Избери елемент лево или создај нов подолу.",

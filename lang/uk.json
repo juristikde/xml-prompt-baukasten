@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Підпункт",
     "delete": "Видалити",
-    "copyResult": "Копіювати результат",
+    "copyResult": "Результат",
     "copied": "✓ Скопійовано",
     "copiedShort": "✓",
     "confirmDelete": "Справді видалити?",
@@ -232,7 +232,9 @@
     "noName": "(без назви)",
     "expand": "Розгорнути",
     "collapse": "Згорнути",
-    "openEditor": "Відкрити в редакторі"
+    "openEditor": "Відкрити в редакторі",
+    "charCountLabel": "Кількість символів",
+    "charCountTitle": "Показати/сховати кількість символів"
   },
   "detail": {
     "empty": "Виберіть елемент ліворуч або створіть новий нижче.",

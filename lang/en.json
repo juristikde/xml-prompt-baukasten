@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Sub-item",
     "delete": "Delete",
-    "copyResult": "Copy result",
+    "copyResult": "Result",
     "copied": "✓ Copied",
     "copiedShort": "✓",
     "confirmDelete": "Really delete?",
@@ -232,7 +232,9 @@
     "noName": "(unnamed)",
     "expand": "Expand",
     "collapse": "Collapse",
-    "openEditor": "Open in editor"
+    "openEditor": "Open in editor",
+    "charCountLabel": "Characters",
+    "charCountTitle": "Show/hide character count"
   },
   "detail": {
     "empty": "Select an element on the left or add a new one below.",

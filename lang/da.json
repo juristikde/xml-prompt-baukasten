@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Underpunkt",
     "delete": "Slet",
-    "copyResult": "Kopiér resultat",
+    "copyResult": "Resultat",
     "copied": "✓ Kopieret",
     "copiedShort": "✓",
     "confirmDelete": "Slet virkelig?",
@@ -232,7 +232,9 @@
     "noName": "(uden navn)",
     "expand": "Fold ud",
     "collapse": "Fold sammen",
-    "openEditor": "Åbn i editor"
+    "openEditor": "Åbn i editor",
+    "charCountLabel": "Tegnantal",
+    "charCountTitle": "Vis/skjul tegnantal"
   },
   "detail": {
     "empty": "Vælg et element til venstre, eller opret et nyt nedenfor.",

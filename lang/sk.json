@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Podpoložka",
     "delete": "Odstrániť",
-    "copyResult": "Kopírovať výsledok",
+    "copyResult": "Výsledok",
     "copied": "✓ Skopírované",
     "copiedShort": "✓",
     "confirmDelete": "Naozaj odstrániť?",
@@ -232,7 +232,9 @@
     "noName": "(bez názvu)",
     "expand": "Rozbaliť",
     "collapse": "Zbaliť",
-    "openEditor": "Otvoriť v editore"
+    "openEditor": "Otvoriť v editore",
+    "charCountLabel": "Počet znakov",
+    "charCountTitle": "Zobraziť/skryť počet znakov"
   },
   "detail": {
     "empty": "Vyber prvok vľavo alebo vytvor nový nižšie.",

@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Alapunkt",
     "delete": "Kustuta",
-    "copyResult": "Kopeeri tulemus",
+    "copyResult": "Tulemus",
     "copied": "✓ Kopeeritud",
     "copiedShort": "✓",
     "confirmDelete": "Kas tõesti kustutada?",
@@ -232,7 +232,9 @@
     "noName": "(nimetu)",
     "expand": "Laienda",
     "collapse": "Ahenda",
-    "openEditor": "Ava redaktoris"
+    "openEditor": "Ava redaktoris",
+    "charCountLabel": "Tähemärgid",
+    "charCountTitle": "Näita/peida tähemärkide arv"
   },
   "detail": {
     "empty": "Vali element vasakult või loo allpool uus.",

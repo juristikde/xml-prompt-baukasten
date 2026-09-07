@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Podstavka",
     "delete": "Obriši",
-    "copyResult": "Kopiraj rezultat",
+    "copyResult": "Rezultat",
     "copied": "✓ Kopirano",
     "copiedShort": "✓",
     "confirmDelete": "Stvarno obrisati?",
@@ -232,7 +232,9 @@
     "noName": "(bez imena)",
     "expand": "Proširi",
     "collapse": "Sažmi",
-    "openEditor": "Otvori u uređivaču"
+    "openEditor": "Otvori u uređivaču",
+    "charCountLabel": "Broj znakova",
+    "charCountTitle": "Prikaži/sakrij broj znakova"
   },
   "detail": {
     "empty": "Odaberite element lijevo ili kreirajte novi ispod.",

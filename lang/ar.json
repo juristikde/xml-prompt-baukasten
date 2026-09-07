@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ عنصر فرعي",
     "delete": "حذف",
-    "copyResult": "نسخ النتيجة",
+    "copyResult": "النتيجة",
     "copied": "✓ تم النسخ",
     "copiedShort": "✓",
     "confirmDelete": "هل تريد الحذف حقًا؟",
@@ -232,7 +232,9 @@
     "noName": "(بدون اسم)",
     "expand": "توسيع",
     "collapse": "طي",
-    "openEditor": "فتح في المحرر"
+    "openEditor": "فتح في المحرر",
+    "charCountLabel": "عدد الأحرف",
+    "charCountTitle": "إظهار/إخفاء عدد الأحرف"
   },
   "detail": {
     "empty": "اختر عنصرًا على اليسار أو أنشئ عنصرًا جديدًا أدناه.",

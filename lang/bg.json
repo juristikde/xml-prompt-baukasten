@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Подточка",
     "delete": "Изтрий",
-    "copyResult": "Копирай резултата",
+    "copyResult": "Резултат",
     "copied": "✓ Копирано",
     "copiedShort": "✓",
     "confirmDelete": "Наистина ли да изтрия?",
@@ -232,7 +232,9 @@
     "noName": "(без име)",
     "expand": "Разгъни",
     "collapse": "Свий",
-    "openEditor": "Отвори в редактора"
+    "openEditor": "Отвори в редактора",
+    "charCountLabel": "Брой знаци",
+    "charCountTitle": "Показване/скриване на броя знаци"
   },
   "detail": {
     "empty": "Избери елемент вляво или създай нов отдолу.",

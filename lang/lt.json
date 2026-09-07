@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Papunktis",
     "delete": "Ištrinti",
-    "copyResult": "Kopijuoti rezultatą",
+    "copyResult": "Rezultatas",
     "copied": "✓ Nukopijuota",
     "copiedShort": "✓",
     "confirmDelete": "Tikrai ištrinti?",
@@ -232,7 +232,9 @@
     "noName": "(be pavadinimo)",
     "expand": "Išskleisti",
     "collapse": "Suskleisti",
-    "openEditor": "Atverti redaktoriuje"
+    "openEditor": "Atverti redaktoriuje",
+    "charCountLabel": "Simbolių skaičius",
+    "charCountTitle": "Rodyti/slėpti simbolių skaičių"
   },
   "detail": {
     "empty": "Pasirinkite elementą kairėje arba sukurkite naują žemiau.",

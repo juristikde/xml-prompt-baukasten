@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Alpont",
     "delete": "Törlés",
-    "copyResult": "Eredmény másolása",
+    "copyResult": "Eredmény",
     "copied": "✓ Másolva",
     "copiedShort": "✓",
     "confirmDelete": "Tényleg törlöd?",
@@ -232,7 +232,9 @@
     "noName": "(névtelen)",
     "expand": "Kibontás",
     "collapse": "Összecsukás",
-    "openEditor": "Megnyitás a szerkesztőben"
+    "openEditor": "Megnyitás a szerkesztőben",
+    "charCountLabel": "Karakterszám",
+    "charCountTitle": "Karakterszám mutatása/elrejtése"
   },
   "detail": {
     "empty": "Válassz egy elemet balra, vagy hozz létre egy újat alul.",

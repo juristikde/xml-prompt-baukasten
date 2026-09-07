@@ -223,7 +223,7 @@
     "addAssistant": "+ assistant",
     "addChild": "+ Nënçështje",
     "delete": "Fshi",
-    "copyResult": "Kopjo rezultatin",
+    "copyResult": "Rezultati",
     "copied": "✓ U kopjua",
     "copiedShort": "✓",
     "confirmDelete": "Të fshihet vërtet?",
@@ -232,7 +232,9 @@
     "noName": "(pa emër)",
     "expand": "Zgjero",
     "collapse": "Palos",
-    "openEditor": "Hap në redaktues"
+    "openEditor": "Hap në redaktues",
+    "charCountLabel": "Numri i karaktereve",
+    "charCountTitle": "Shfaq/fshih numrin e karaktereve"
   },
   "detail": {
     "empty": "Zgjidh një element majtas ose krijo një të ri më poshtë.",

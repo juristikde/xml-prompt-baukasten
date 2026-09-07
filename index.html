@@ -3423,10 +3423,12 @@
     for(const node of nodes){
       if(node.kind === 'comment'){ const s = (node.text||'').trim().replace(/--/g,'- -'); if(s) out += pad+'<!-- '+s+' -->\n'; continue; }
       const tag = (node.tag && node.tag.trim()) || 'element';
-      const hasCh = node.children && node.children.length; const text = (node.text||'').trim();
+      const hasCh = node.children && node.children.length;
+      /* Textinhalt exakt übernehmen (kein .trim) – sonst fehlen Zeichen gegenüber Eingabe und Kopie */
+      const text = (node.text == null) ? '' : String(node.text);
       if(hasCh){
         out += pad+'<'+tag+'>\n';
-        if(text) out += (text.includes('\n') ? text.split('\n').map(l => pad+'  '+escapeXML(l)).join('\n') : pad+'  '+escapeXML(text))+'\n';
+        if(text.length) out += (text.includes('\n') ? text.split('\n').map(l => pad+'  '+escapeXML(l)).join('\n') : pad+'  '+escapeXML(text))+'\n';
         out += serializeTree(node.children, depth+1)+pad+'</'+tag+'>\n';
       } else {
         if(text.includes('\n')) out += pad+'<'+tag+'>\n'+text.split('\n').map(l => pad+'  '+escapeXML(l)).join('\n')+'\n'+pad+'</'+tag+'>\n';
@@ -3436,6 +3438,7 @@
     return out;
   }
   function serializeFull(){ return '<prompt>\n'+serializeTree(tree,1)+'</prompt>'; }
+  function getCopyResultText(){ return serializeFull().trim(); }
 
   function serializeGesamtConfig(){
     saveActiveTab();
@@ -3463,11 +3466,11 @@
       }
       const tag = (node.tag && node.tag.trim()) || 'element';
       const hasCh = node.children && node.children.length;
-      const text = (node.text||'').trim();
+      const text = (node.text == null) ? '' : String(node.text);
       state.map[node.id] = state.lines.length;
       if(hasCh){
         state.lines.push(pad + '<' + tag + '>');
-        if(text){
+        if(text.length){
           if(text.includes('\n')) text.split('\n').forEach(l => state.lines.push(pad + '  ' + escapeXML(l)));
           else state.lines.push(pad + '  ' + escapeXML(text));
         }
@@ -3510,7 +3513,7 @@
     const el = document.getElementById('resultCharCount');
     if(!el) return;
     if(showCharacterCount){
-      el.textContent = formatResultCharCount(serializeFull().trim().length);
+      el.textContent = formatResultCharCount(getCopyResultText().length);
     } else {
       el.textContent = t('Zeichenzahl', 'outline.charCountLabel');
     }
@@ -4559,7 +4562,7 @@
   function updateSourceFromTree(){
     if(!sourceFocused) {
       if(sourceGesamtMode) sourceText.value = serializeGesamtConfig();
-      else sourceText.value = serializeFull().trim();
+      else sourceText.value = getCopyResultText();
     }
     updateResultCharCount();
   }
@@ -4937,7 +4940,7 @@
   }
   function copySource(){ sourceText.select(); navigator.clipboard.writeText(sourceText.value).then(() => flashButton('btnCopySource', t('✓', 'outline.copiedShort'))).catch(() => document.execCommand('copy')); }
   function copyResult(){
-    const xml = serializeFull().trim();
+    const xml = getCopyResultText();
     navigator.clipboard.writeText(xml).then(() => flashButton('btnCopyResult', t('✓ Kopiert', 'outline.copied')))
       .catch(() => { const ta = document.createElement('textarea'); ta.value = xml; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); flashButton('btnCopyResult', t('✓', 'outline.copiedShort')); });
   }

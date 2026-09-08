@@ -7,166 +7,167 @@
   "languages": {
     "ar": {
       "native": "العربية",
-      "local": "árabe"
+      "local": "Árabe"
     },
     "bg": {
       "native": "Български",
-      "local": "búlgaro"
+      "local": "Búlgaro"
     },
     "bs": {
       "native": "Bosanski",
-      "local": "bosnio"
+      "local": "Bosnio"
     },
     "cs": {
       "native": "Čeština",
-      "local": "checo"
+      "local": "Checo"
     },
     "da": {
       "native": "Dansk",
-      "local": "danés"
+      "local": "Danés"
     },
     "de": {
       "native": "Deutsch",
-      "local": "alemán"
+      "local": "Alemán"
     },
     "el": {
       "native": "Ελληνικά",
-      "local": "griego"
+      "local": "Griego"
     },
     "en": {
       "native": "English",
-      "local": "inglés"
+      "local": "Inglés"
     },
     "es": {
       "native": "Español",
-      "local": "español"
+      "local": "Español"
     },
     "et": {
       "native": "Eesti",
-      "local": "estonio"
+      "local": "Estonio"
     },
     "fi": {
       "native": "Suomi",
-      "local": "finés"
+      "local": "Finés"
     },
     "fr": {
       "native": "Français",
-      "local": "francés"
+      "local": "Francés"
     },
     "ga": {
       "native": "Gaeilge",
-      "local": "irlandés"
+      "local": "Irlandés"
     },
     "hi": {
       "native": "हिन्दी",
-      "local": "hindi"
+      "local": "Hindi"
     },
     "hr": {
       "native": "Hrvatski",
-      "local": "croata"
+      "local": "Croata"
     },
     "hu": {
       "native": "Magyar",
-      "local": "húngaro"
+      "local": "Húngaro"
     },
     "it": {
       "native": "Italiano",
-      "local": "italiano"
+      "local": "Italiano"
     },
     "ja": {
       "native": "日本語",
-      "local": "japonés"
+      "local": "Japonés"
     },
     "ka": {
       "native": "ქართული",
-      "local": "georgiano"
+      "local": "Georgiano"
     },
     "ko": {
       "native": "한국어",
-      "local": "coreano"
+      "local": "Coreano"
     },
     "lt": {
       "native": "Lietuvių",
-      "local": "lituano"
+      "local": "Lituano"
     },
     "lv": {
       "native": "Latviešu",
-      "local": "letón"
+      "local": "Letón"
     },
     "mk": {
       "native": "Македонски",
-      "local": "macedonio"
+      "local": "Macedonio"
     },
     "mo": {
       "native": "Moldovenească",
-      "local": "moldavo"
+      "local": "Moldavo"
     },
     "mt": {
       "native": "Malti",
-      "local": "maltés"
+      "local": "Maltés"
     },
     "nl": {
       "native": "Nederlands",
-      "local": "neerlandés"
+      "local": "Neerlandés"
     },
     "pl": {
       "native": "Polski",
-      "local": "polaco"
+      "local": "Polaco"
     },
     "pt": {
       "native": "Português",
-      "local": "portugués"
+      "local": "Portugués"
     },
     "ro": {
       "native": "Română",
-      "local": "rumano"
+      "local": "Rumano"
     },
     "ru": {
       "native": "Русский",
-      "local": "ruso"
+      "local": "Ruso"
     },
     "sk": {
       "native": "Slovenčina",
-      "local": "eslovaco"
+      "local": "Eslovaco"
     },
     "sl": {
       "native": "Slovenščina",
-      "local": "esloveno"
+      "local": "Esloveno"
     },
     "sq": {
       "native": "Shqip",
-      "local": "albanés"
+      "local": "Albanés"
     },
     "sr": {
       "native": "Српски",
-      "local": "serbio"
+      "local": "Serbio"
     },
     "sv": {
       "native": "Svenska",
-      "local": "sueco"
+      "local": "Sueco"
     },
     "tr": {
       "native": "Türkçe",
-      "local": "turco"
+      "local": "Turco"
     },
     "uk": {
       "native": "Українська",
-      "local": "ucraniano"
+      "local": "Ucraniano"
     },
     "zh": {
       "native": "中文",
-      "local": "chino"
+      "local": "Chino"
     }
   },
   "app": {
-    "documentTitle": "Constructor de Prompts – Editor XML estructurado",
-    "title": "Constructor de Prompts"
+    "documentTitle": "Constructor de prompts – Editor XML estructurado",
+    "title": "Constructor de prompts"
   },
   "toolbar": {
     "protocol": "Registro",
     "showXml": "Mostrar XML",
     "hideXml": "Ocultar XML",
     "reset": "Restablecer",
+    "resetTitle": "Restablecer estructura",
     "options": "Opciones",
     "language": "Idioma",
     "library": "Biblioteca"
@@ -176,19 +177,19 @@
     "clear": "Vaciar",
     "close": "Cerrar registro",
     "validate": "Comprobar",
-    "empty": "Aún no hay entradas. Toca «Comprobar» para validar la estructura ahora.",
+    "empty": "Aún no hay entradas. Pulsa Comprobar para validar la estructura.",
     "noErrors": "Sin errores.",
     "xmlApplied": "XML aplicado correctamente.",
-    "gesamtApplied": "Configuración global aplicada correctamente.",
-    "mixedContent": "Nota de importación: se detectó contenido mixto. {n} bloques de texto se envolvieron automáticamente en etiquetas <Parent_text>.",
-    "containerMoved": "Nota: el contenido de <{parent}> se movió a <{leaf}>, ya que las etiquetas contenedoras no deberían contener texto directo.",
+    "gesamtApplied": "Configuración completa aplicada.",
+    "mixedContent": "Aviso de importación: contenido mixto. {n} bloques de texto se movieron a etiquetas <Parent_text>.",
+    "containerMoved": "Nota: el contenido de <{parent}> se movió a <{leaf}> porque los contenedores no deben tener texto directo.",
     "invalidXml": "XML no válido.",
     "invalidXmlDetail": "XML no válido: {detail}",
     "invalidXmlLine": "XML no válido – línea {line}",
     "invalidXmlLineCol": "XML no válido – línea {line}, columna {col}",
     "invalidXmlLineColDetail": "XML no válido – línea {line}, columna {col}: {detail}",
     "invalidXmlLineDetail": "XML no válido – línea {line}: {detail}",
-    "noGesamt": "No se encontró ninguna configuración global válida.",
+    "noGesamt": "No se encontró una configuración completa válida.",
     "networkError": "Error de red",
     "noPage": "Sin página",
     "textTooShort": "Texto demasiado corto",
@@ -204,8 +205,8 @@
     "selected": "Seleccionado"
   },
   "tabs": {
-    "namePlaceholder": "Nombre de la pestaña",
-    "nameAria": "Nombre de la pestaña",
+    "namePlaceholder": "Nombre de pestaña",
+    "nameAria": "Nombre de pestaña",
     "duplicate": "Duplicar",
     "duplicateTitle": "Duplicar pestaña actual",
     "close": "Cerrar pestaña",
@@ -213,42 +214,65 @@
     "defaultTitle": "Prompt {n}",
     "copySuffix": " Copia",
     "confirmResetLast": "¿Restablecer la última pestaña?",
-    "confirmReplaceTemplate": "¿Reemplazar la estructura actual con la plantilla?"
+    "confirmReplaceTemplate": "¿Reemplazar la estructura actual por la plantilla?",
+    "movePrev": "A la izquierda",
+    "moveNext": "A la derecha",
+    "moveUp": "Arriba",
+    "moveDown": "Abajo",
+    "movePrevTitle": "Mover pestaña a la izquierda",
+    "moveNextTitle": "Mover pestaña a la derecha",
+    "moveUpTitle": "Mover pestaña arriba",
+    "moveDownTitle": "Mover pestaña abajo"
   },
   "outline": {
-    "empty": "Aún no hay elementos. Crea un elemento o comentario debajo.",
-    "addElement": "+ Elemento",
-    "addComment": "+ Comentario",
-    "addUser": "+ user",
-    "addAssistant": "+ assistant",
-    "addChild": "+ Subpunto",
+    "empty": "Aún no hay elementos. Añade un elemento o un comentario abajo.",
+    "addElement": "Elemento",
+    "addElementTitle": "Añadir elemento raíz",
+    "addComment": "Comentario",
+    "addCommentTitle": "Añadir comentario raíz",
+    "addUser": "user",
+    "addUserTitle": "Añadir elemento user",
+    "addAssistant": "assistant",
+    "addAssistantTitle": "Añadir elemento assistant",
+    "addChild": "Subpunto",
+    "addChildTitle": "Añadir subpunto bajo la selección",
+    "addParent": "Prepunto",
+    "addParentTitle": "Envolver la selección en un prepunto",
     "delete": "Eliminar",
+    "deleteTitle": "Eliminar selección",
     "copyResult": "Resultado",
+    "copyResultTitle": "Copiar resultado XML",
     "copied": "✓ Copiado",
     "copiedShort": "✓",
-    "confirmDelete": "¿Eliminar de verdad?",
-    "confirmReset": "¿Borrar todo?",
+    "confirmDelete": "¿Eliminar este elemento?",
+    "confirmReset": "¿Eliminar todo?",
     "commentLabel": "Nota",
     "noName": "(sin nombre)",
     "expand": "Expandir",
     "collapse": "Contraer",
     "openEditor": "Abrir en el editor",
     "charCountLabel": "Caracteres",
-    "charCountTitle": "Mostrar/ocultar número de caracteres"
+    "charCountTitle": "Mostrar u ocultar recuento de caracteres",
+    "customPick": "Elegir acción",
+    "customPickTitle": "Elegir acción del botón",
+    "addTool": "tool",
+    "addToolTitle": "Añadir elemento tool"
   },
   "detail": {
-    "empty": "Selecciona un elemento a la izquierda o crea uno nuevo debajo.",
+    "empty": "Selecciona un elemento a la izquierda o añade uno abajo.",
     "level": "Nivel {n}",
     "commentHeading": "💬 Nota",
-    "tagPlaceholder": "nombre-de-etiqueta",
-    "tagAria": "Nombre de la etiqueta",
-    "textPlaceholder": "Texto para este elemento…",
+    "tagPlaceholder": "tag-name",
+    "tagAria": "Nombre de etiqueta",
+    "textPlaceholder": "Texto de este elemento…",
     "commentPlaceholder": "Nota…",
     "containerPlaceholder": "Esta etiqueta es un contenedor.",
     "textAria": "Texto del elemento",
     "commentAria": "Texto del comentario",
-    "moveUp": "Mover arriba",
-    "moveDown": "Mover abajo",
+    "moveUp": "Subir",
+    "moveDown": "Bajar",
+    "moveUpTitle": "Mover elemento arriba",
+    "moveDownTitle": "Mover elemento abajo",
     "copy": "Copiar",
     "copyTitle": "Copiar elemento seleccionado",
     "paste": "Pegar",
@@ -256,32 +280,32 @@
     "find": "Buscar",
     "findTitle": "Buscar y reemplazar",
     "options": "Opciones",
-    "wikiText": "+ WikiText",
-    "wikiSettings": "Ajustes de Wiki ›",
+    "wikiText": "WikiText",
+    "wikiSettings": "Ajustes Wiki ›",
     "wikiLang": "Idioma",
-    "wikiChars": "aprox. caracteres",
+    "wikiChars": "Aprox. caracteres",
     "wikiInsert": "Insertar",
     "wikiClose": "Cerrar",
     "wikiLoading": "Cargando…",
-    "wikiAria": "Ajustes de Wiki",
+    "wikiAria": "Ajustes Wiki",
     "back": "Atrás",
     "closeEditor": "Cerrar editor"
   },
   "source": {
     "title": "Código XML",
-    "gesamtTitle": "Configuración global",
+    "gesamtTitle": "Config. completa",
     "options": "Opciones",
     "find": "Buscar",
-    "wrapOn": "Ajuste de línea activado",
-    "wrapOff": "Ajuste de línea desactivado",
+    "wrapOn": "Ajuste on",
+    "wrapOff": "Ajuste off",
     "wrapTitle": "Alternar ajuste de línea",
-    "gesamt": "Global",
-    "tabXml": "XML de la pestaña",
-    "gesamtConfig": "Configuración global",
-    "gesamtTitleBtn": "Mostrar la configuración global de todas las pestañas",
-    "tabXmlTitle": "Mostrar el XML de una sola pestaña",
+    "gesamt": "Todo",
+    "tabXml": "XML de pestaña",
+    "gesamtConfig": "Config. completa",
+    "gesamtTitleBtn": "Mostrar config. de todas las pestañas",
+    "tabXmlTitle": "Mostrar XML de una pestaña",
     "close": "Cerrar XML",
-    "placeholder": "Pega un prompt XML…",
+    "placeholder": "Pegar prompt XML…",
     "aria": "Código fuente XML",
     "apply": "Aplicar",
     "copy": "Copiar"
@@ -291,8 +315,8 @@
     "replacePlaceholder": "Reemplazar…",
     "ariaFind": "Término de búsqueda",
     "ariaReplace": "Texto de reemplazo",
-    "prev": "Coincidencia anterior",
-    "next": "Siguiente coincidencia",
+    "prev": "Anterior",
+    "next": "Siguiente",
     "prevTitle": "Anterior",
     "nextTitle": "Siguiente",
     "close": "Cerrar búsqueda",
@@ -300,10 +324,10 @@
     "replace": "Reemplazar",
     "replaceTitle": "Reemplazar coincidencia actual",
     "replaceAll": "Todas",
-    "replaceAllTitle": "Reemplazar todas las coincidencias",
-    "caseTitle": "Distinguir mayúsculas/minúsculas",
+    "replaceAllTitle": "Reemplazar todas",
+    "caseTitle": "Distinguir mayúsculas",
     "regexTitle": "Expresión regular",
-    "replaced": "{n} reemplazadas",
+    "replaced": "{n} reemplazados",
     "regexError": "¡RegEx!"
   },
   "chars": {
@@ -312,25 +336,25 @@
   },
   "validation": {
     "tagNoName": "Etiqueta sin nombre – línea {line}",
-    "tagInvalid": "La etiqueta <{tag}> contiene caracteres no válidos – línea {line}",
-    "genericTag": "Advertencia: <{tag}> es demasiado genérico. Usa nombres descriptivos como <solicitud_cliente> en lugar de <data> (XML: Use consistent, descriptive tag names){line}",
-    "depth": "Advertencia: profundidad de anidación {depth} en <{tag}>. Más de 4 niveles dificulta la comprensión.{line}",
-    "exampleHint": "Nota: <example> debería estar envuelto en <examples> (XML){line}",
+    "tagInvalid": "La etiqueta <{tag}> tiene caracteres no válidos – línea {line}",
+    "genericTag": "Aviso: <{tag}> es demasiado genérico. Prefiere nombres descriptivos como <solicitud_cliente>{line}",
+    "depth": "Aviso: profundidad {depth} en <{tag}>. Más de 4 niveles dificulta la lectura.{line}",
+    "exampleHint": "Nota: <example> debería ir dentro de <examples>{line}",
     "emptyTag": "Nota: <{tag}> está vacío{line}",
-    "lineSuffix": " · Línea ~{line}"
+    "lineSuffix": " · línea ~{line}"
   },
   "wiki": {
-    "de": "Alemán",
-    "en": "Inglés",
-    "fr": "Francés",
+    "de": "Deutsch",
+    "en": "English",
+    "fr": "Français",
     "es": "Español",
     "it": "Italiano",
-    "pt": "Portugués",
-    "nl": "Neerlandés",
-    "pl": "Polaco",
-    "ru": "Ruso",
-    "ja": "Japonés",
-    "zh": "Chino",
+    "pt": "Português",
+    "nl": "Nederlands",
+    "pl": "Polski",
+    "ru": "Русский",
+    "ja": "日本語",
+    "zh": "中文",
     "random": "Aleatorio"
   }
 }

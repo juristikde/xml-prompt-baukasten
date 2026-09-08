@@ -514,6 +514,12 @@
     cursor: not-allowed;
   }
 
+  .options-menu .opt-item.opt-move-arrow {
+    text-align: center;
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+
   .options-menu .opt-sep {
     height: 1px;
     background: var(--line);
@@ -651,13 +657,34 @@
     font-size: var(--text-subhead);
     font-weight: 500;
     color: var(--ink-soft);
-    cursor: pointer;
+    cursor: grab;
     border-right: 1px solid var(--line);
     white-space: nowrap;
     max-width: 200px;
     min-width: 0;
     position: relative;
     flex: none;
+    transition: background 0.1s ease, box-shadow 0.1s ease, opacity 0.1s ease;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .tab-item.dragging {
+    opacity: 0.45;
+    cursor: grabbing;
+  }
+
+  .tabs-shell.tabs-horizontal .tab-item.drag-over-before {
+    box-shadow: inset 2px 0 0 0 var(--color-action);
+  }
+  .tabs-shell.tabs-horizontal .tab-item.drag-over-after {
+    box-shadow: inset -2px 0 0 0 var(--color-action);
+  }
+  .tabs-shell.tabs-vertical .tab-item.drag-over-before {
+    box-shadow: inset 0 2px 0 0 var(--color-action);
+  }
+  .tabs-shell.tabs-vertical .tab-item.drag-over-after {
+    box-shadow: inset 0 -2px 0 0 var(--color-action);
   }
 
   .tabs-shell.tabs-vertical .tab-item {
@@ -927,6 +954,7 @@
 
   .outline-list {
     overflow-y: auto;
+    overflow-x: hidden;
     flex: 1;
     min-height: 0;
     padding: var(--space-2);
@@ -953,7 +981,8 @@
 
   .footer-static .add-row,
   .footer-static .template-row,
-  .footer-static .action-row {
+  .footer-static .action-row,
+  .footer-static .custom-row {
     display: flex;
     gap: var(--space-2);
     flex-wrap: wrap;
@@ -961,8 +990,58 @@
 
   .footer-static .add-row .btn,
   .footer-static .template-row .btn,
-  .footer-static .action-row .btn {
+  .footer-static .action-row .btn,
+  .footer-static .custom-row .btn,
+  .footer-static .custom-row .split-btn {
     flex: 1;
+    min-width: 0;
+  }
+
+  .footer-static .custom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+  }
+
+  .footer-static .custom-row .wiki-wrap {
+    display: block;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .footer-static .custom-row .split-btn {
+    width: 100%;
+    min-height: var(--touch-min);
+    overflow: hidden;
+  }
+
+  .footer-static .custom-row .split-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 var(--space-2);
+    font-size: var(--text-subhead);
+    font-weight: 600;
+  }
+
+  /* Einheitliche Textgröße im Footer-Panel (Custom + normale Buttons) */
+  .outline-footer .btn,
+  .outline-footer .split-main,
+  .outline-footer .result-char-count {
+    font-size: var(--text-subhead);
+    font-weight: 600;
+  }
+
+  .footer-static .action-row .btn {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .outline-empty {
@@ -984,6 +1063,8 @@
     font-size: var(--text-subhead);
     margin-bottom: 1px;
     min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
     transition: background 0.1s ease, box-shadow 0.1s ease, opacity 0.1s ease;
     user-select: none;
     -webkit-user-select: none;
@@ -1076,12 +1157,16 @@
     outline-offset: 1px;
   }
 
+  /* Tag-Name hat Vorrang vor Vorschau; nie horizontales Scrollen */
   .outline-tag {
     font-family: var(--font-serif);
     font-weight: 700;
     color: var(--color-action);
     white-space: nowrap;
-    flex: 0 0 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1 1 auto;
+    min-width: 0;
   }
 
   .outline-tag.empty {
@@ -1096,8 +1181,9 @@
   .outline-row.depth-4 .outline-tag { color: var(--color-muted); }
 
   .outline-preview {
-    flex: 1 1 auto;
+    flex: 0 2 8rem;
     min-width: 0;
+    max-width: 40%;
     font-size: var(--text-caption);
     color: var(--ink-faint);
     opacity: 0.7;
@@ -1115,7 +1201,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    flex: 1;
+    flex: 1 1 auto;
     min-width: 0;
   }
 
@@ -2152,6 +2238,14 @@
       padding: 0 var(--space-3);
     }
 
+    /* Footer-Panel: gleiche Schriftgröße wie Custom-Buttons, nicht verkleinern */
+    .outline-footer .btn,
+    .outline-footer .split-main,
+    .outline-footer .result-char-count {
+      font-size: var(--text-subhead);
+      font-weight: 600;
+    }
+
     .layout,
     .split-body {
       --mobile-editor-top: 32%;
@@ -2252,12 +2346,17 @@
             <input type="text" id="panelStructureTitle" class="panel-title-input" value="Prompt 1" data-i18n-placeholder="tabs.namePlaceholder" placeholder="Tab-Name" autocomplete="off" spellcheck="false" data-i18n-aria="tabs.nameAria" aria-label="Tab-Name" />
             <div class="panel-head-tools">
               <div class="panel-tools-desktop">
+                <button type="button" class="btn small icon-only" id="btnMoveTabPrev" data-i18n-aria="tabs.movePrev" data-i18n-title="tabs.movePrevTitle" aria-label="Tab nach links" title="Tab nach links verschieben">←</button>
+                <button type="button" class="btn small icon-only" id="btnMoveTabNext" data-i18n-aria="tabs.moveNext" data-i18n-title="tabs.moveNextTitle" aria-label="Tab nach rechts" title="Tab nach rechts verschieben">→</button>
                 <button type="button" class="btn small" id="btnDuplicateTab" data-i18n="tabs.duplicate" data-i18n-title="tabs.duplicateTitle" title="Aktuellen Tab duplizieren">Duplizieren</button>
-                <button type="button" class="btn small danger" id="btnReset" data-i18n="toolbar.reset">Zurücksetzen</button>
+                <button type="button" class="btn small danger" id="btnReset" data-i18n="toolbar.reset" data-i18n-title="toolbar.resetTitle" title="Struktur zurücksetzen">Zurücksetzen</button>
               </div>
               <div class="panel-tools-mobile options-wrap" id="panelOptionsWrap">
                 <button type="button" class="btn small" id="btnPanelOptions" aria-haspopup="true" aria-expanded="false" data-i18n="toolbar.options">Optionen</button>
                 <div class="options-menu" id="panelOptionsMenu" role="menu">
+                  <button type="button" class="opt-item" id="optMoveTabPrev" role="menuitem" data-i18n="tabs.movePrev">Nach links</button>
+                  <button type="button" class="opt-item" id="optMoveTabNext" role="menuitem" data-i18n="tabs.moveNext">Nach rechts</button>
+                  <div class="opt-sep"></div>
                   <button type="button" class="opt-item" id="optDuplicateTab" role="menuitem" data-i18n="tabs.duplicate">Duplizieren</button>
                   <button type="button" class="opt-item danger" id="optReset" role="menuitem" data-i18n="toolbar.reset">Zurücksetzen</button>
                 </div>
@@ -2269,21 +2368,14 @@
               <div class="outline-list" id="outlineList" role="tree"></div>
               <div class="outline-footer">
                 <div class="footer-static">
-                  <div class="add-row">
-                    <button class="btn" id="btnAddRoot" data-i18n="outline.addElement">+ Element</button>
-                    <button class="btn" id="btnAddRootComment" data-i18n="outline.addComment">+ Kommentar</button>
-                  </div>
-                  <div class="template-row">
-                    <button class="btn" id="btnAddUser" data-i18n="outline.addUser">+ user</button>
-                    <button class="btn" id="btnAddAssistant" data-i18n="outline.addAssistant">+ assistant</button>
+                  <div class="custom-row" id="customButtonsRow"></div>
+                  <div class="action-row">
+                    <button class="btn" id="btnAddRoot" data-i18n="outline.addElement" data-i18n-title="outline.addElementTitle" title="Element auf oberster Ebene hinzufügen">Element</button>
+                    <button class="btn danger" id="btnDelete" data-i18n="outline.delete" data-i18n-title="outline.deleteTitle" title="Auswahl löschen">Löschen</button>
                   </div>
                   <div class="action-row">
-                    <button class="btn" id="btnAddChild" data-i18n="outline.addChild">+ Unterpunkt</button>
-                    <button class="btn danger" id="btnDelete" data-i18n="outline.delete">Löschen</button>
-                  </div>
-                  <div class="action-row">
-                    <button class="btn primary" id="btnCopyResult" data-i18n="outline.copyResult">Ergebnis</button>
-                    <button type="button" class="btn result-char-count" id="resultCharCount" aria-live="polite" data-i18n-title="outline.charCountTitle" title="Zeichenanzahl ein-/ausblenden"></button>
+                    <button class="btn primary" id="btnCopyResult" data-i18n="outline.copyResult" data-i18n-title="outline.copyResultTitle" title="XML-Ergebnis kopieren">Ergebnis</button>
+                    <button type="button" class="btn result-char-count" id="resultCharCount" aria-live="polite" data-i18n-title="outline.charCountTitle" title="Zeichenanzahl ein- oder ausblenden"></button>
                     <script>
                     /* Früher Hash-Check: Label sofort zeigen, Zahl erst wenn Main-JS fertig (kein Flackern) */
                     (function(){
@@ -2446,6 +2538,7 @@
     if(typeof updateSourcePanelTitle === 'function') updateSourcePanelTitle();
     if(typeof updateSourceHeadTools === 'function') updateSourceHeadTools();
     if(typeof renderTemplateMenus === 'function') renderTemplateMenus();
+    if(typeof renderCustomButtons === 'function') renderCustomButtons();
     if(typeof render === 'function') render();
     if(typeof updateResultCharCount === 'function') updateResultCharCount();
     if(typeof renderProtocolList === 'function' && isProtocolOpen && isProtocolOpen()) renderProtocolList();
@@ -2865,6 +2958,26 @@
       const code = String(params.setLanguage || '').toLowerCase().slice(0, 2);
       if(code) currentLang = code;
     }
+    customButtonActions = CUSTOM_ACTION_DEFAULTS.slice();
+    for(let i = 0; i < 4; i++){
+      const key = 'buttonC' + (i + 1);
+      if(Object.prototype.hasOwnProperty.call(params, key)){
+        const v = String(params[key] || '').toLowerCase();
+        if(CUSTOM_ACTION_IDS.indexOf(v) !== -1) customButtonActions[i] = v;
+      }
+    }
+    /* Duplikate auflösen: erste Belegung behalten, weitere auf freie Aktionen setzen */
+    (function resolveCustomDupes(){
+      const used = new Set();
+      for(let i = 0; i < 4; i++){
+        if(used.has(customButtonActions[i])){
+          const free = CUSTOM_ACTION_IDS.find(a => !used.has(a) && customButtonActions.indexOf(a) === -1) ||
+            CUSTOM_ACTION_IDS.find(a => !used.has(a));
+          if(free) customButtonActions[i] = free;
+        }
+        used.add(customButtonActions[i]);
+      }
+    })();
   }
 
   function writeHashState(){
@@ -2877,6 +2990,9 @@
     parts.push('xmlCodeLineWrap=' + (xmlCodeLineWrap ? 'true' : 'false'));
     parts.push('unpackMobileOptionsButton=' + (unpackMobileOptionsButton ? 'true' : 'false'));
     parts.push('protocolThreshold=' + protocolThreshold);
+    for(let i = 0; i < 4; i++){
+      parts.push('buttonC' + (i + 1) + '=' + (customButtonActions[i] || CUSTOM_ACTION_DEFAULTS[i]));
+    }
     const next = '#' + parts.join('&');
     if(location.hash !== next){
       history.replaceState(null, '', next);
@@ -2886,6 +3002,10 @@
   /* ===== Baum- und Editor-Zustand ===== */
   let tree = [], idCounter = 1, sourceFocused = false, selectedId = null, focusDetailField = false;
   let showCharacterCount = false;
+  /* Custom-Footer-Buttons (C1–C4); Menü: user, assistant, tool, comment, child (Sub), parent (Pre) */
+  const CUSTOM_ACTION_IDS = ['user', 'assistant', 'tool', 'comment', 'child', 'parent'];
+  const CUSTOM_ACTION_DEFAULTS = ['user', 'assistant', 'comment', 'child'];
+  let customButtonActions = CUSTOM_ACTION_DEFAULTS.slice();
   let protocolLog = [];
   let hasProtocolErrors = false;
   let protocolErrorCount = 0;
@@ -3052,6 +3172,74 @@
     if(label) label.textContent = name;
   }
 
+  let tabDragId = null;
+  let tabDragOverId = null;
+  let tabDragOverPos = null;
+
+  function clearTabDragStyles(){
+    tabList.querySelectorAll('.tab-item').forEach(r => {
+      r.classList.remove('dragging', 'drag-over-before', 'drag-over-after');
+    });
+  }
+
+  function moveTabById(sourceId, targetId, pos){
+    if(!sourceId || !targetId || sourceId === targetId) return;
+    const from = tabs.findIndex(x => x.id === sourceId);
+    const toIdx = tabs.findIndex(x => x.id === targetId);
+    if(from < 0 || toIdx < 0) return;
+    let to = pos === 'after' ? toIdx + 1 : toIdx;
+    const item = tabs.splice(from, 1)[0];
+    if(from < to) to -= 1;
+    tabs.splice(to, 0, item);
+    renderTabs();
+  }
+
+  function moveActiveTab(dir){
+    if(!activeTabId) return;
+    const idx = tabs.findIndex(x => x.id === activeTabId);
+    if(idx < 0) return;
+    const ni = idx + dir;
+    if(ni < 0 || ni >= tabs.length) return;
+    const tmp = tabs[idx];
+    tabs[idx] = tabs[ni];
+    tabs[ni] = tmp;
+    renderTabs();
+  }
+
+  function updateTabMoveButtonLabels(){
+    const vertical = !isMobileLayout() && tabsOrientation === 'vertical';
+    const prevLabel = vertical ? t('Tab nach oben verschieben', 'tabs.moveUpTitle') : t('Tab nach links verschieben', 'tabs.movePrevTitle');
+    const nextLabel = vertical ? t('Tab nach unten verschieben', 'tabs.moveDownTitle') : t('Tab nach rechts verschieben', 'tabs.moveNextTitle');
+    const prevAria = vertical ? t('Nach oben', 'tabs.moveUp') : t('Nach links', 'tabs.movePrev');
+    const nextAria = vertical ? t('Nach unten', 'tabs.moveDown') : t('Nach rechts', 'tabs.moveNext');
+    /* Pfeil mit Strich wie in der Struktur (↑↓), horizontal ←→ – keine spitzen Klammern */
+    const prevChar = vertical ? '↑' : '←';
+    const nextChar = vertical ? '↓' : '→';
+    const btnPrev = document.getElementById('btnMoveTabPrev');
+    const btnNext = document.getElementById('btnMoveTabNext');
+    if(btnPrev){
+      btnPrev.textContent = prevChar;
+      btnPrev.setAttribute('aria-label', prevAria);
+      btnPrev.title = prevLabel;
+    }
+    if(btnNext){
+      btnNext.textContent = nextChar;
+      btnNext.setAttribute('aria-label', nextAria);
+      btnNext.title = nextLabel;
+    }
+    /* Mobile-Menü: ausgeschriebener Text wie zuvor */
+    const optPrev = document.getElementById('optMoveTabPrev');
+    const optNext = document.getElementById('optMoveTabNext');
+    if(optPrev){
+      optPrev.textContent = prevAria;
+      optPrev.setAttribute('aria-label', prevAria);
+    }
+    if(optNext){
+      optNext.textContent = nextAria;
+      optNext.setAttribute('aria-label', nextAria);
+    }
+  }
+
   function renderTabs(){
     tabList.innerHTML = '';
     tabs.forEach(tab => {
@@ -3060,6 +3248,8 @@
       btn.className = 'tab-item' + (tab.id === activeTabId ? ' active' : '');
       btn.setAttribute('role', 'tab');
       btn.setAttribute('aria-selected', tab.id === activeTabId ? 'true' : 'false');
+      btn.dataset.tabId = tab.id;
+      btn.draggable = true;
       btn.onclick = () => { if(tab.id !== activeTabId) loadTab(tab.id); };
 
       const title = document.createElement('span');
@@ -3073,8 +3263,119 @@
       close.title = t('Tab schließen', 'tabs.close');
       close.setAttribute('aria-label', t('Tab schließen', 'tabs.close'));
       close.textContent = '×';
+      close.draggable = false;
       close.onclick = e => closeTab(tab.id, e);
       btn.appendChild(close);
+
+      btn.addEventListener('dragstart', e => {
+        if(e.target.closest('.tab-close')){ e.preventDefault(); return; }
+        tabDragId = tab.id;
+        btn.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', tab.id);
+        requestAnimationFrame(() => btn.classList.add('dragging'));
+      });
+      btn.addEventListener('dragend', () => {
+        tabDragId = null; tabDragOverId = null; tabDragOverPos = null; clearTabDragStyles();
+      });
+      btn.addEventListener('dragover', e => {
+        if(!tabDragId || tabDragId === tab.id) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const rect = btn.getBoundingClientRect();
+        const effectiveVertical = !isMobileLayout() && tabsOrientation === 'vertical';
+        let pos;
+        if(effectiveVertical){
+          const mid = rect.top + rect.height / 2;
+          pos = e.clientY < mid ? 'before' : 'after';
+        } else {
+          const mid = rect.left + rect.width / 2;
+          pos = e.clientX < mid ? 'before' : 'after';
+        }
+        if(tabDragOverId !== tab.id || tabDragOverPos !== pos){
+          clearTabDragStyles();
+          const src = tabList.querySelector('.tab-item[data-tab-id="'+tabDragId+'"]');
+          if(src) src.classList.add('dragging');
+          btn.classList.add(pos === 'before' ? 'drag-over-before' : 'drag-over-after');
+          tabDragOverId = tab.id;
+          tabDragOverPos = pos;
+        }
+      });
+      btn.addEventListener('dragleave', e => {
+        if(!btn.contains(e.relatedTarget)) btn.classList.remove('drag-over-before', 'drag-over-after');
+      });
+      btn.addEventListener('drop', e => {
+        e.preventDefault();
+        const srcId = tabDragId || e.dataTransfer.getData('text/plain');
+        const pos = tabDragOverPos || 'after';
+        clearTabDragStyles();
+        if(srcId) moveTabById(srcId, tab.id, pos);
+        tabDragId = null; tabDragOverId = null; tabDragOverPos = null;
+      });
+
+      /* Touch long-press drag (wie Outline) */
+      let tabLongPress = null;
+      let tabTouchDragging = false;
+      let tabTouchStartY = 0;
+      let tabTouchStartX = 0;
+      btn.addEventListener('touchstart', e => {
+        if(e.touches.length !== 1 || e.target.closest('.tab-close')) return;
+        tabTouchStartY = e.touches[0].clientY;
+        tabTouchStartX = e.touches[0].clientX;
+        tabTouchDragging = false;
+        tabLongPress = setTimeout(() => {
+          tabTouchDragging = true;
+          tabDragId = tab.id;
+          btn.classList.add('dragging');
+          if(navigator.vibrate) try { navigator.vibrate(30); } catch(_){}
+        }, 420);
+      }, {passive: true});
+      btn.addEventListener('touchmove', e => {
+        if(!tabLongPress && !tabTouchDragging) return;
+        const touch = e.touches[0];
+        if(!tabTouchDragging){
+          if(Math.abs(touch.clientY - tabTouchStartY) > 10 || Math.abs(touch.clientX - tabTouchStartX) > 10){
+            clearTimeout(tabLongPress);
+            tabLongPress = null;
+          }
+          return;
+        }
+        e.preventDefault();
+        const el = document.elementFromPoint(touch.clientX, touch.clientY);
+        const targetBtn = el && el.closest ? el.closest('.tab-item') : null;
+        if(targetBtn && targetBtn.dataset.tabId && targetBtn.dataset.tabId !== tabDragId){
+          const rect = targetBtn.getBoundingClientRect();
+          const effectiveVertical = !isMobileLayout() && tabsOrientation === 'vertical';
+          let pos;
+          if(effectiveVertical){
+            pos = touch.clientY < rect.top + rect.height / 2 ? 'before' : 'after';
+          } else {
+            pos = touch.clientX < rect.left + rect.width / 2 ? 'before' : 'after';
+          }
+          if(tabDragOverId !== targetBtn.dataset.tabId || tabDragOverPos !== pos){
+            clearTabDragStyles();
+            btn.classList.add('dragging');
+            targetBtn.classList.add(pos === 'before' ? 'drag-over-before' : 'drag-over-after');
+            tabDragOverId = targetBtn.dataset.tabId;
+            tabDragOverPos = pos;
+          }
+        }
+      }, {passive: false});
+      btn.addEventListener('touchend', () => {
+        clearTimeout(tabLongPress);
+        tabLongPress = null;
+        if(tabTouchDragging && tabDragId && tabDragOverId) moveTabById(tabDragId, tabDragOverId, tabDragOverPos || 'after');
+        tabTouchDragging = false;
+        tabDragId = null; tabDragOverId = null; tabDragOverPos = null;
+        clearTabDragStyles();
+      });
+      btn.addEventListener('touchcancel', () => {
+        clearTimeout(tabLongPress);
+        tabLongPress = null;
+        tabTouchDragging = false;
+        tabDragId = null; tabDragOverId = null; tabDragOverPos = null;
+        clearTabDragStyles();
+      });
 
       tabList.appendChild(btn);
     });
@@ -3100,6 +3401,7 @@
     } else {
       tabsShell.classList.add(effectiveOrientation === 'vertical' ? 'tabs-vertical' : 'tabs-horizontal');
     }
+    updateTabMoveButtonLabels();
     writeHashState();
     updatePanelStructureTitle();
   }
@@ -3395,9 +3697,9 @@
       const leafTag = parentTag ? (parentTag + '_text') : 'content';
       for(const item of ordered){
         if(item.type === 'text'){
-          const trimmed = item.text.trim();
-          if(trimmed){
-            kids.push(newNode(leafTag, trimmed));
+          const cleaned = dedentText(item.text);
+          if(cleaned){
+            kids.push(newNode(leafTag, cleaned));
             if(typeof onMigrate === 'function') onMigrate(1);
           }
         } else if(item.type === 'el') kids.push(domElementToNode(item.el, onMigrate));
@@ -3411,21 +3713,41 @@
         .filter(i => i.type === 'el' || i.type === 'comment')
         .map(i => i.type === 'el' ? domElementToNode(i.el, onMigrate) : newCommentNode(i.text));
     } else {
-      node.text = textChunks.join('').trim();
+      node.text = dedentText(textChunks.join(''));
       node.children = [];
     }
     return node;
   }
 
   function escapeXML(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  /* Entfernt Pretty-Print-Einrückung aus mehrzeiligem Text (Round-Trip ohne Zeichenaufblähung) */
+  function dedentText(s){
+    s = String(s || '');
+    if(!s.includes('\n')) return s.trim();
+    const lines = s.split('\n');
+    /* führende/trailing Leerzeilen entfernen */
+    while(lines.length && lines[0].trim() === '') lines.shift();
+    while(lines.length && lines[lines.length - 1].trim() === '') lines.pop();
+    if(!lines.length) return '';
+    let minIndent = Infinity;
+    lines.forEach(l => {
+      if(l.trim() === '') return;
+      const m = /^[ \t]*/.exec(l);
+      if(m) minIndent = Math.min(minIndent, m[0].length);
+    });
+    if(!isFinite(minIndent) || minIndent === 0) return lines.join('\n').trim();
+    return lines.map(l => l.trim() === '' ? '' : l.slice(minIndent)).join('\n').trim();
+  }
+
   function serializeTree(nodes, depth){
     depth = depth||0; const pad = '  '.repeat(depth); let out = '';
     for(const node of nodes){
       if(node.kind === 'comment'){ const s = (node.text||'').trim().replace(/--/g,'- -'); if(s) out += pad+'<!-- '+s+' -->\n'; continue; }
       const tag = (node.tag && node.tag.trim()) || 'element';
       const hasCh = node.children && node.children.length;
-      /* Textinhalt exakt übernehmen (kein .trim) – sonst fehlen Zeichen gegenüber Eingabe und Kopie */
-      const text = (node.text == null) ? '' : String(node.text);
+      /* getrimmt: keine überflüssigen Abstände; Tag-Einrückung bleibt über pad */
+      const text = dedentText(node.text == null ? '' : String(node.text));
       if(hasCh){
         out += pad+'<'+tag+'>\n';
         if(text.length) out += (text.includes('\n') ? text.split('\n').map(l => pad+'  '+escapeXML(l)).join('\n') : pad+'  '+escapeXML(text))+'\n';
@@ -3466,7 +3788,7 @@
       }
       const tag = (node.tag && node.tag.trim()) || 'element';
       const hasCh = node.children && node.children.length;
-      const text = (node.text == null) ? '' : String(node.text);
+      const text = dedentText(node.text == null ? '' : String(node.text));
       state.map[node.id] = state.lines.length;
       if(hasCh){
         state.lines.push(pad + '<' + tag + '>');
@@ -3586,6 +3908,151 @@
     selectedId = n.id;
     focusDetailField = shouldFocusDetail();
     render();
+  }
+  /* Oberpunkt: neuen leeren Parent um den ausgewählten Knoten legen */
+  function addParent(){
+    if(!selectedId) return;
+    const f = findNode(tree, selectedId);
+    if(!f) return;
+    const parent = newNode('','');
+    const node = f.arr.splice(f.index, 1)[0];
+    parent.children = [node];
+    parent.collapsed = false;
+    f.arr.splice(f.index, 0, parent);
+    selectedId = parent.id;
+    focusDetailField = shouldFocusDetail();
+    render();
+  }
+
+  function customActionLabel(actionId){
+    const map = {
+      user: t('user', 'outline.addUser'),
+      assistant: t('assistant', 'outline.addAssistant'),
+      tool: t('tool', 'outline.addTool'),
+      comment: t('Kommentar', 'outline.addComment'),
+      child: t('Unterpunkt', 'outline.addChild'),
+      parent: t('Oberpunkt', 'outline.addParent')
+    };
+    return map[actionId] || actionId;
+  }
+
+  /* Apple HIG help tags: Verb, no control name, sentence case, no period */
+  function customActionTitle(actionId){
+    const map = {
+      user: t('User-Element hinzufügen', 'outline.addUserTitle'),
+      assistant: t('Assistant-Element hinzufügen', 'outline.addAssistantTitle'),
+      tool: t('Tool-Element hinzufügen', 'outline.addToolTitle'),
+      comment: t('Kommentar auf oberster Ebene hinzufügen', 'outline.addCommentTitle'),
+      child: t('Unterpunkt unter Auswahl hinzufügen', 'outline.addChildTitle'),
+      parent: t('Auswahl in neuen Oberpunkt legen', 'outline.addParentTitle')
+    };
+    return map[actionId] || '';
+  }
+
+  function runCustomAction(actionId){
+    if(actionId === 'user') addTemplate('user');
+    else if(actionId === 'assistant') addTemplate('assistant');
+    else if(actionId === 'tool') addTemplate('tool');
+    else if(actionId === 'comment') addRootComment();
+    else if(actionId === 'child'){
+      if(selectedId){
+        const f = findNode(tree, selectedId);
+        if(f && f.node.kind === 'element') addChild(selectedId, false);
+      }
+    } else if(actionId === 'parent') addParent();
+  }
+
+  function setCustomButtonAction(index, actionId){
+    if(index < 0 || index > 3) return;
+    if(CUSTOM_ACTION_IDS.indexOf(actionId) === -1) return;
+    const other = customButtonActions.indexOf(actionId);
+    if(other !== -1 && other !== index){
+      /* Tausch: andere Belegung erhält die bisherige Aktion dieses Buttons */
+      customButtonActions[other] = customButtonActions[index];
+    }
+    customButtonActions[index] = actionId;
+    writeHashState();
+    renderCustomButtons();
+  }
+
+  function renderCustomButtons(){
+    const row = document.getElementById('customButtonsRow');
+    if(!row) return;
+    row.innerHTML = '';
+    for(let i = 0; i < 4; i++){
+      const actionId = customButtonActions[i] || CUSTOM_ACTION_DEFAULTS[i];
+      const wrap = document.createElement('div');
+      wrap.className = 'wiki-wrap';
+      const split = document.createElement('div');
+      split.className = 'split-btn';
+      split.id = 'buttonC' + (i + 1);
+
+      const mainBtn = document.createElement('button');
+      mainBtn.type = 'button';
+      mainBtn.className = 'split-main';
+      const label = customActionLabel(actionId);
+      mainBtn.textContent = label;
+      mainBtn.title = customActionTitle(actionId);
+      mainBtn.onclick = e => {
+        e.stopPropagation();
+        runCustomAction(actionId);
+      };
+
+      const sep = document.createElement('div');
+      sep.className = 'split-sep';
+
+      const caretBtn = document.createElement('button');
+      caretBtn.type = 'button';
+      caretBtn.className = 'split-caret';
+      caretBtn.setAttribute('aria-label', t('Funktion wählen', 'outline.customPick'));
+      caretBtn.title = t('Button-Funktion wählen', 'outline.customPickTitle');
+      caretBtn.innerHTML = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4.5L6 7.5L9 4.5"/></svg>';
+
+      const menu = document.createElement('div');
+      menu.className = 'options-menu';
+      menu.setAttribute('role', 'menu');
+      CUSTOM_ACTION_IDS.forEach(aid => {
+        const item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'opt-item';
+        item.setAttribute('role', 'menuitem');
+        item.textContent = customActionLabel(aid);
+        if(aid === actionId) item.style.fontWeight = '700';
+        item.onclick = e => {
+          e.stopPropagation();
+          closeOptionsMenu();
+          setCustomButtonAction(i, aid);
+        };
+        menu.appendChild(item);
+      });
+
+      caretBtn.onclick = e => {
+        e.stopPropagation();
+        const isOpen = menu.classList.contains('open');
+        closeAllWikiMenus();
+        closeTemplateMenu();
+        closeOptionsMenu();
+        if(!isOpen){
+          positionMenu(caretBtn, menu);
+          caretBtn.setAttribute('aria-expanded', 'true');
+          openOptionsMenu = menu;
+        }
+      };
+
+      split.appendChild(mainBtn);
+      split.appendChild(sep);
+      split.appendChild(caretBtn);
+      wrap.appendChild(split);
+      wrap.appendChild(menu);
+      row.appendChild(wrap);
+
+      /* Expansion tooltip (HIG): voller Label-Text wenn abgeschnitten */
+      requestAnimationFrame(() => {
+        if(mainBtn.scrollWidth > mainBtn.clientWidth + 1){
+          mainBtn.title = label;
+        }
+      });
+    }
   }
   function deleteNode(id){
     const f = findNode(tree, id); if(!f) return;
@@ -4040,7 +4507,6 @@
   function getPreviewText(node){
     if(node.kind === 'comment') return (node.text||'').trim().slice(0,36);
     const t = (node.text||'').trim(); if(t) return t.slice(0,36);
-    if(node.children && node.children.length) return node.children.length;
     return '';
   }
 
@@ -4190,7 +4656,12 @@
       const lab = document.createElement('span'); lab.className = 'outline-tag'+(node.tag.trim()?'':' empty');
       lab.textContent = node.tag.trim()||t('(ohne Namen)', 'outline.noName'); row.appendChild(lab);
       const prev = document.createElement('span'); prev.className = 'outline-preview'; prev.textContent = getPreviewText(node); row.appendChild(prev);
-      if(hasCh){ const c = document.createElement('span'); c.className = 'outline-count'; c.textContent = node.children.length; row.appendChild(c); }
+      if(hasCh && node.children.length >= 2){
+        const c = document.createElement('span');
+        c.className = 'outline-count';
+        c.textContent = node.children.length;
+        row.appendChild(c);
+      }
     }
 
     const openBtn = document.createElement('button');
@@ -4254,12 +4725,14 @@
     btnUp.type = 'button';
     btnUp.className = 'btn small icon-only';
     btnUp.setAttribute('aria-label', t('Nach oben', 'detail.moveUp'));
+    btnUp.title = t('Eintrag nach oben', 'detail.moveUpTitle');
     btnUp.textContent = '↑';
     btnUp.onclick = () => { if(selectedId) moveNode(selectedId, -1); };
     const btnDown = document.createElement('button');
     btnDown.type = 'button';
     btnDown.className = 'btn small icon-only';
     btnDown.setAttribute('aria-label', t('Nach unten', 'detail.moveDown'));
+    btnDown.title = t('Eintrag nach unten', 'detail.moveDownTitle');
     btnDown.textContent = '↓';
     btnDown.onclick = () => { if(selectedId) moveNode(selectedId, 1); };
     moveGroup.appendChild(btnUp);
@@ -5057,15 +5530,6 @@
   };
 
   document.getElementById('btnAddRoot').onclick = addRootNode;
-  document.getElementById('btnAddRootComment').onclick = addRootComment;
-  document.getElementById('btnAddUser').onclick = () => addTemplate('user');
-  document.getElementById('btnAddAssistant').onclick = () => addTemplate('assistant');
-  document.getElementById('btnAddChild').onclick = () => {
-    if(selectedId){
-      const f = findNode(tree, selectedId);
-      if(f && f.node.kind === 'element') addChild(selectedId, false);
-    }
-  };
   document.getElementById('btnDelete').onclick = () => {
     if(selectedId && confirm(t('Wirklich löschen?', 'outline.confirmDelete'))) deleteNode(selectedId);
   };
@@ -5110,6 +5574,18 @@
   document.getElementById('btnCopyResult').onclick = copyResult;
   document.getElementById('resultCharCount').onclick = toggleShowCharacterCount;
   document.getElementById('btnDuplicateTab').onclick = duplicateActiveTab;
+  document.getElementById('btnMoveTabPrev').onclick = () => moveActiveTab(-1);
+  document.getElementById('btnMoveTabNext').onclick = () => moveActiveTab(1);
+  document.getElementById('optMoveTabPrev').onclick = e => {
+    e.stopPropagation();
+    closeOptionsMenu();
+    moveActiveTab(-1);
+  };
+  document.getElementById('optMoveTabNext').onclick = e => {
+    e.stopPropagation();
+    closeOptionsMenu();
+    moveActiveTab(1);
+  };
   document.getElementById('btnSourceClose').onclick = () => {
     if(isMobileLayout()) closeSheet(false);
     else {
@@ -5132,6 +5608,7 @@
     readHashState();
     applySourceWrap();
     updateSourceHeadTools();
+    renderCustomButtons();
     renderTabs();
     render();
     updateResultCharCount();
@@ -5191,6 +5668,7 @@
   applySourceWrap();
   updateSourceHeadTools();
   renderTemplateMenus();
+  renderCustomButtons();
   renderTabs();
   render();
   updateResultCharCount();

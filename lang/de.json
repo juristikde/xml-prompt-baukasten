@@ -194,7 +194,8 @@
     "noPage": "Keine Seite",
     "textTooShort": "Text zu kurz",
     "errorPrefix": "Fehler: ",
-    "linePrefix": "Zeile {line}: "
+    "linePrefix": "Zeile {line}: ",
+    "tagRenamed": "Hinweis: Tag <{from}> wurde zu <{to}> korrigiert (XML-Namen dürfen nicht mit einer Ziffer beginnen)."
   },
   "language": {
     "title": "Sprache",

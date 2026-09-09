@@ -194,7 +194,8 @@
     "noPage": "Нет страницы",
     "textTooShort": "Текст слишком короткий",
     "errorPrefix": "Ошибка: ",
-    "linePrefix": "Строка {line}: "
+    "linePrefix": "Строка {line}: ",
+    "tagRenamed": "Примечание: тег <{from}> исправлен на <{to}> (имя XML не может начинаться с цифры)."
   },
   "language": {
     "title": "Язык",

@@ -194,7 +194,8 @@
     "noPage": "No page",
     "textTooShort": "Text too short",
     "errorPrefix": "Error: ",
-    "linePrefix": "Line {line}: "
+    "linePrefix": "Line {line}: ",
+    "tagRenamed": "Note: Tag <{from}> was corrected to <{to}> (XML names must not start with a digit)."
   },
   "language": {
     "title": "Language",

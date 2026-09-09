@@ -194,7 +194,8 @@
     "noPage": "Sin página",
     "textTooShort": "Texto demasiado corto",
     "errorPrefix": "Error: ",
-    "linePrefix": "Línea {line}: "
+    "linePrefix": "Línea {line}: ",
+    "tagRenamed": "Aviso: la etiqueta <{from}> se corrigió a <{to}> (los nombres XML no pueden empezar por un dígito)."
   },
   "language": {
     "title": "Idioma",

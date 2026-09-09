@@ -194,7 +194,8 @@
     "noPage": "无页面",
     "textTooShort": "文本过短",
     "errorPrefix": "错误：",
-    "linePrefix": "第 {line} 行："
+    "linePrefix": "第 {line} 行：",
+    "tagRenamed": "提示：标签 <{from}> 已更正为 <{to}>（XML 名称不能以数字开头）。"
   },
   "language": {
     "title": "语言",

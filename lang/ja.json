@@ -194,7 +194,8 @@
     "noPage": "ページなし",
     "textTooShort": "テキストが短すぎます",
     "errorPrefix": "エラー：",
-    "linePrefix": "{line} 行："
+    "linePrefix": "{line} 行：",
+    "tagRenamed": "注意: タグ <{from}> を <{to}> に修正しました（XML名は数字で始められません）。"
   },
   "language": {
     "title": "言語",

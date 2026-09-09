@@ -3615,15 +3615,47 @@
     return { line, col, detail: message };
   }
 
+  /* Vor dem DOMParser: ungültige Tag-Namen (z.B. Ziffer am Anfang) → _prefix; Kommentare unangetastet */
+  function rewriteInvalidXmlTagNames(xml){
+    const renames = [];
+    const map = new Map();
+    function mapName(name){
+      if(map.has(name)) return map.get(name);
+      const fixed = sanitizeTagName(name);
+      map.set(name, fixed);
+      if(fixed !== name) renames.push({ from: name, to: fixed });
+      return fixed;
+    }
+    const comments = [];
+    let s = String(xml || '').replace(/<!--[\s\S]*?-->/g, m => {
+      comments.push(m);
+      return '\0C' + (comments.length - 1) + '\0';
+    });
+    s = s.replace(/<\/([^\s>]+)\s*>/g, (m, name) => {
+      const fixed = mapName(name);
+      return fixed === name ? m : ('</' + fixed + '>');
+    });
+    s = s.replace(/<([^\s>\/!?]+)(\s[^>]*)?(\/?)>/g, (m, name, attrs, slash) => {
+      const fixed = mapName(name);
+      if(fixed === name) return m;
+      return '<' + fixed + (attrs || '') + (slash || '') + '>';
+    });
+    s = s.replace(/\0C(\d+)\0/g, (_, i) => comments[Number(i)] || '');
+    return { xml: s, renames };
+  }
+
   function parseXMLString(str){
     const raw = str || '';
     const leading = raw.match(/^\s*/)?.[0] || '';
     const leadingNL = (leading.match(/\n/g) || []).length;
     const rawTrim = raw.trim();
-    if(!rawTrim) return { tree: [], errors: [], migrated: 0 };
+    if(!rawTrim) return { tree: [], errors: [], migrated: 0, renames: [] };
+
+    const rewritten = rewriteInvalidXmlTagNames(rawTrim);
+    const renames = rewritten.renames || [];
 
     const prefix = '<__root__>';
-    const wrapped = prefix + replaceStrayAmpersands(rawTrim, '&amp;') + '</__root__>';
+    const wrapped = prefix + replaceStrayAmpersands(rewritten.xml, '&amp;') + '</__root__>';
     const doc = new DOMParser().parseFromString(wrapped, 'text/xml');
     const pe = doc.querySelector('parsererror');
 
@@ -3644,7 +3676,7 @@
         else message = t('XML ungültig – Zeile {line}', 'protocol.invalidXmlLine', {line});
       } else if(detail) message = t('XML ungültig: {detail}', 'protocol.invalidXmlDetail', {detail});
       else message = t('XML ungültig.', 'protocol.invalidXml');
-      return { tree: null, errors: [message], migrated: 0 };
+      return { tree: null, errors: [message], migrated: 0, renames: [] };
     }
 
     let migrated = 0;
@@ -3652,7 +3684,7 @@
     if(!result.length && doc.documentElement.textContent.trim()){
       result.push(newNode('text', doc.documentElement.textContent.trim()));
     }
-    return { tree: result, errors: [], migrated };
+    return { tree: result, errors: [], migrated, renames };
   }
 
   function domChildNodesToNodes(el, onMigrate){
@@ -3668,7 +3700,7 @@
   }
 
   function domElementToNode(el, onMigrate){
-    const node = newNode(el.tagName, '');
+    const node = newNode(sanitizeTagName(el.tagName || '') || 'element', '');
     const ordered = [];
     let textChunks = [];
     let hasElements = false;
@@ -3721,6 +3753,20 @@
 
   function escapeXML(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+  /* XML-Name: erstes Zeichen muss Buchstabe oder _ sein – sonst sichtbar "_" voranstellen */
+  function sanitizeTagName(raw){
+    let s = String(raw == null ? '' : raw).replace(/\s+/g, '-');
+    if(!s) return s;
+    let startOk = false;
+    try {
+      startOk = /^[\p{L}_]/u.test(s.charAt(0));
+    } catch(_) {
+      startOk = /^[A-Za-z_]/.test(s.charAt(0));
+    }
+    if(!startOk) s = '_' + s;
+    return s;
+  }
+
   /* Entfernt Pretty-Print-Einrückung aus mehrzeiligem Text (Round-Trip ohne Zeichenaufblähung) */
   function dedentText(s){
     s = String(s || '');
@@ -3744,7 +3790,7 @@
     depth = depth||0; const pad = '  '.repeat(depth); let out = '';
     for(const node of nodes){
       if(node.kind === 'comment'){ const s = (node.text||'').trim().replace(/--/g,'- -'); if(s) out += pad+'<!-- '+s+' -->\n'; continue; }
-      const tag = (node.tag && node.tag.trim()) || 'element';
+      const tag = sanitizeTagName((node.tag && node.tag.trim()) || '') || 'element';
       const hasCh = node.children && node.children.length;
       /* getrimmt: keine überflüssigen Abstände; Tag-Einrückung bleibt über pad */
       const text = dedentText(node.text == null ? '' : String(node.text));
@@ -3786,7 +3832,7 @@
         }
         continue;
       }
-      const tag = (node.tag && node.tag.trim()) || 'element';
+      const tag = sanitizeTagName((node.tag && node.tag.trim()) || '') || 'element';
       const hasCh = node.children && node.children.length;
       const text = dedentText(node.text == null ? '' : String(node.text));
       state.map[node.id] = state.lines.length;
@@ -4707,10 +4753,20 @@
       const oa = document.createElement('span'); oa.className = 'detail-angle'; oa.textContent = '<';
       head.appendChild(oa);
       const tagInput = document.createElement('input');
-      tagInput.className = 'detail-tag-input'; tagInput.type = 'text'; tagInput.value = node.tag;
+      tagInput.className = 'detail-tag-input'; tagInput.type = 'text';
+      /* Bestehende ungültige Namen (z.B. mit Ziffer am Anfang) einmalig korrigieren */
+      if(node.tag && node.tag !== sanitizeTagName(node.tag)){
+        node.tag = sanitizeTagName(node.tag);
+      }
+      tagInput.value = node.tag;
       tagInput.placeholder = t('tag-name', 'detail.tagPlaceholder'); tagInput.autocomplete = 'off'; tagInput.spellcheck = false;
       tagInput.setAttribute('aria-label', t('Tag-Name', 'detail.tagAria'));
-      tagInput.oninput = e => { node.tag = e.target.value.replace(/\s+/g,'-'); e.target.value = node.tag; updateOutlineLabelFor(node.id, node.tag); updateSourceFromTree(); };
+      tagInput.oninput = e => {
+        node.tag = sanitizeTagName(e.target.value);
+        e.target.value = node.tag;
+        updateOutlineLabelFor(node.id, node.tag);
+        updateSourceFromTree();
+      };
       head.appendChild(tagInput);
       const ca = document.createElement('span'); ca.className = 'detail-angle'; ca.textContent = '>';
       head.appendChild(ca);
@@ -5040,8 +5096,17 @@
     updateResultCharCount();
   }
 
+  function tagRenameMessages(renames){
+    if(!renames || !renames.length) return [];
+    return renames.map(r => t(
+      'Hinweis: Tag <{from}> wurde zu <{to}> korrigiert (XML-Namen dürfen nicht mit einer Ziffer beginnen).',
+      'protocol.tagRenamed',
+      { from: r.from, to: r.to }
+    ));
+  }
+
   function applyGesamtFromSource(){
-    const { tree: parsed, errors, migrated } = parseXMLString(sourceText.value);
+    const { tree: parsed, errors, migrated, renames } = parseXMLString(sourceText.value);
     if(errors.length){ showBanner('error', errors); return; }
     if(!parsed || !parsed.length){
       showBanner('error', [t('Keine gültige Gesamt-Config gefunden.', 'protocol.noGesamt')]);
@@ -5087,11 +5152,14 @@
     focusDetailField = false;
     sourceGesamtMode = false;
     updateSourcePanelTitle();
+    const msgs = [];
     if(migrated > 0){
-      showBanner('ok', [t('Import-Hinweis: Mixed Content erkannt. {n} Text-Blöcke wurden automatisch in <Parent_text>-Tags umgewandelt.', 'protocol.mixedContent', { n: migrated })]);
+      msgs.push(t('Import-Hinweis: Mixed Content erkannt. {n} Text-Blöcke wurden automatisch in <Parent_text>-Tags umgewandelt.', 'protocol.mixedContent', { n: migrated }));
     } else {
-      showBanner('ok', [t('Gesamt-Config erfolgreich übernommen.', 'protocol.gesamtApplied')]);
+      msgs.push(t('Gesamt-Config erfolgreich übernommen.', 'protocol.gesamtApplied'));
     }
+    msgs.push(...tagRenameMessages(renames));
+    showBanner('ok', msgs);
     renderTabs();
     render();
     updateSourceHeadTools();
@@ -5102,7 +5170,7 @@
       applyGesamtFromSource();
       return;
     }
-    const { tree: parsed, errors, migrated } = parseXMLString(sourceText.value);
+    const { tree: parsed, errors, migrated, renames } = parseXMLString(sourceText.value);
     if(errors.length){ showBanner('error', errors); return; }
     if(parsed.length === 1 && parsed[0].kind === 'element' && (parsed[0].tag || '').toLowerCase() === 'prompt'){
       tree = parsed[0].children;
@@ -5110,11 +5178,14 @@
       tree = parsed;
     }
     selectedId = firstNavigableId(tree);
+    const msgs = [];
     if(migrated > 0){
-      showBanner('ok', [t('Import-Hinweis: Mixed Content erkannt. {n} Text-Blöcke wurden automatisch in <Parent_text>-Tags umgewandelt.', 'protocol.mixedContent', { n: migrated })]);
+      msgs.push(t('Import-Hinweis: Mixed Content erkannt. {n} Text-Blöcke wurden automatisch in <Parent_text>-Tags umgewandelt.', 'protocol.mixedContent', { n: migrated }));
     } else {
-      showBanner('ok', [t('XML erfolgreich übernommen.', 'protocol.xmlApplied')]);
+      msgs.push(t('XML erfolgreich übernommen.', 'protocol.xmlApplied'));
     }
+    msgs.push(...tagRenameMessages(renames));
+    showBanner('ok', msgs);
     render();
   }
 

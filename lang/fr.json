@@ -194,7 +194,8 @@
     "noPage": "Aucune page",
     "textTooShort": "Texte trop court",
     "errorPrefix": "Erreur : ",
-    "linePrefix": "Ligne {line} : "
+    "linePrefix": "Ligne {line} : ",
+    "tagRenamed": "Note : la balise <{from}> a été corrigée en <{to}> (un nom XML ne peut pas commencer par un chiffre)."
   },
   "language": {
     "title": "Langue",

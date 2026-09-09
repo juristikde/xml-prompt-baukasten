@@ -194,7 +194,8 @@
     "noPage": "لا صفحة",
     "textTooShort": "النص قصير جدًا",
     "errorPrefix": "خطأ: ",
-    "linePrefix": "السطر {line}: "
+    "linePrefix": "السطر {line}: ",
+    "tagRenamed": "ملاحظة: تم تصحيح الوسم <{from}> إلى <{to}> (أسماء XML لا تبدأ برقم)."
   },
   "language": {
     "title": "اللغة",

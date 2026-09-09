@@ -223,7 +223,8 @@
     "movePrevTitle": "将标签向左移动",
     "moveNextTitle": "将标签向右移动",
     "moveUpTitle": "将标签向上移动",
-    "moveDownTitle": "将标签向下移动"
+    "moveDownTitle": "将标签向下移动",
+    "confirmClose": "关闭此提示词标签？"
   },
   "outline": {
     "empty": "尚无元素。请在下方添加元素或注释。",
@@ -357,5 +358,23 @@
     "ja": "日本語",
     "zh": "中文",
     "random": "随机"
+  },
+  "warnings": {
+    "title": "警告",
+    "entryDelete": "删除结构项时",
+    "tabReset": "重置提示词时",
+    "tabClose": "关闭提示词标签时",
+    "browserClose": "关闭网站时",
+    "pasteLarge": "粘贴超大文本时"
+  },
+  "pasteWarn": {
+    "title": "大量粘贴",
+    "close": "关闭",
+    "lead": "确定要插入 {n} 个字符吗？",
+    "body": "此操作可能导致浏览器窗口崩溃。未保存的文本可能丢失。",
+    "hint": "请改为分批粘贴较小的内容。",
+    "dontShow": "不再显示此警告",
+    "cancel": "取消",
+    "insert": "粘贴"
   }
 }

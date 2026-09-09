@@ -223,7 +223,8 @@
     "movePrevTitle": "Mover pestaña a la izquierda",
     "moveNextTitle": "Mover pestaña a la derecha",
     "moveUpTitle": "Mover pestaña arriba",
-    "moveDownTitle": "Mover pestaña abajo"
+    "moveDownTitle": "Mover pestaña abajo",
+    "confirmClose": "¿Cerrar esta pestaña de prompt?"
   },
   "outline": {
     "empty": "Aún no hay elementos. Añade un elemento o un comentario abajo.",
@@ -357,5 +358,23 @@
     "ja": "日本語",
     "zh": "中文",
     "random": "Aleatorio"
+  },
+  "warnings": {
+    "title": "Avisos",
+    "entryDelete": "Al eliminar elementos de la estructura",
+    "tabReset": "Al restablecer el prompt",
+    "tabClose": "Al cerrar una pestaña de prompt",
+    "browserClose": "Al cerrar el sitio",
+    "pasteLarge": "Al pegar texto muy grande"
+  },
+  "pasteWarn": {
+    "title": "Pegado grande",
+    "close": "Cerrar",
+    "lead": "¿Insertar realmente {n} caracteres?",
+    "body": "Esto podría bloquear esta ventana del navegador. El texto no guardado podría perderse.",
+    "hint": "Pegue el texto en trozos más pequeños.",
+    "dontShow": "No volver a mostrar este aviso",
+    "cancel": "Cancelar",
+    "insert": "Pegar"
   }
 }

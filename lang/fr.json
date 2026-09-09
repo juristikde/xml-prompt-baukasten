@@ -223,7 +223,8 @@
     "movePrevTitle": "Déplacer l’onglet vers la gauche",
     "moveNextTitle": "Déplacer l’onglet vers la droite",
     "moveUpTitle": "Déplacer l’onglet vers le haut",
-    "moveDownTitle": "Déplacer l’onglet vers le bas"
+    "moveDownTitle": "Déplacer l’onglet vers le bas",
+    "confirmClose": "Fermer cet onglet de prompt ?"
   },
   "outline": {
     "empty": "Aucun élément. Ajoutez un élément ou un commentaire ci-dessous.",
@@ -357,5 +358,23 @@
     "ja": "日本語",
     "zh": "中文",
     "random": "Aléatoire"
+  },
+  "warnings": {
+    "title": "Avertissements",
+    "entryDelete": "Lors de la suppression d’éléments de structure",
+    "tabReset": "Lors de la réinitialisation du prompt",
+    "tabClose": "Lors de la fermeture d’un onglet de prompt",
+    "browserClose": "Lors de la fermeture du site",
+    "pasteLarge": "Lors d’un collage de texte très volumineux"
+  },
+  "pasteWarn": {
+    "title": "Collage volumineux",
+    "close": "Fermer",
+    "lead": "Voulez-vous vraiment coller {n} caractères ?",
+    "body": "Cette opération pourrait faire planter cette fenêtre du navigateur. Les textes non enregistrés pourraient être perdus.",
+    "hint": "Collez plutôt le texte par petits morceaux.",
+    "dontShow": "Ne plus afficher cet avertissement",
+    "cancel": "Annuler",
+    "insert": "Coller"
   }
 }

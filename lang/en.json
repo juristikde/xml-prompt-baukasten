@@ -223,7 +223,8 @@
     "movePrevTitle": "Move tab left",
     "moveNextTitle": "Move tab right",
     "moveUpTitle": "Move tab up",
-    "moveDownTitle": "Move tab down"
+    "moveDownTitle": "Move tab down",
+    "confirmClose": "Close this prompt tab?"
   },
   "outline": {
     "empty": "No elements yet. Add an element or comment below.",
@@ -357,5 +358,23 @@
     "ja": "日本語",
     "zh": "中文",
     "random": "Random"
+  },
+  "warnings": {
+    "title": "Warnings",
+    "entryDelete": "When deleting structure items",
+    "tabReset": "When resetting the prompt",
+    "tabClose": "When closing a prompt tab",
+    "browserClose": "When closing the website",
+    "pasteLarge": "When pasting very large text"
+  },
+  "pasteWarn": {
+    "title": "Large paste",
+    "close": "Close",
+    "lead": "Really insert {n} characters?",
+    "body": "This may crash this browser window. Any unsaved text could be lost.",
+    "hint": "Paste the text in smaller chunks instead.",
+    "dontShow": "Don’t show this warning again",
+    "cancel": "Cancel",
+    "insert": "Paste"
   }
 }

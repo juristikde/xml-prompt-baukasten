@@ -223,7 +223,8 @@
     "movePrevTitle": "タブを左へ移動",
     "moveNextTitle": "タブを右へ移動",
     "moveUpTitle": "タブを上へ移動",
-    "moveDownTitle": "タブを下へ移動"
+    "moveDownTitle": "タブを下へ移動",
+    "confirmClose": "このプロンプトタブを閉じますか？"
   },
   "outline": {
     "empty": "要素がありません。下で要素またはコメントを追加してください。",
@@ -357,5 +358,23 @@
     "ja": "日本語",
     "zh": "中文",
     "random": "ランダム"
+  },
+  "warnings": {
+    "title": "警告",
+    "entryDelete": "構造項目の削除時",
+    "tabReset": "プロンプトのリセット時",
+    "tabClose": "プロンプトタブを閉じるとき",
+    "browserClose": "サイトを閉じるとき",
+    "pasteLarge": "非常に大きなテキストの貼り付け時"
+  },
+  "pasteWarn": {
+    "title": "大きな貼り付け",
+    "close": "閉じる",
+    "lead": "本当に {n} 文字を挿入しますか？",
+    "body": "この操作でブラウザウィンドウがクラッシュする可能性があります。未保存のテキストが失われることがあります。",
+    "hint": "代わりに小さなチャンクに分けて貼り付けてください。",
+    "dontShow": "今後この警告を表示しない",
+    "cancel": "キャンセル",
+    "insert": "貼り付け"
   }
 }

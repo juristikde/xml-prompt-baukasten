@@ -223,7 +223,8 @@
     "movePrevTitle": "Tab nach links verschieben",
     "moveNextTitle": "Tab nach rechts verschieben",
     "moveUpTitle": "Tab nach oben verschieben",
-    "moveDownTitle": "Tab nach unten verschieben"
+    "moveDownTitle": "Tab nach unten verschieben",
+    "confirmClose": "Diesen Prompt-Tab schließen?"
   },
   "outline": {
     "empty": "Noch keine Elemente. Lege unten ein Element oder einen Kommentar an.",
@@ -357,5 +358,23 @@
     "ja": "日本語",
     "zh": "中文",
     "random": "Zufällig"
+  },
+  "warnings": {
+    "title": "Warnungen",
+    "entryDelete": "Beim Löschen von Struktur-Einträgen",
+    "tabReset": "Beim Zurücksetzen des Prompts",
+    "tabClose": "Beim Schließen eines Prompt-Tabs",
+    "browserClose": "Beim Schließen der Website",
+    "pasteLarge": "Bei sehr großen Einfügeaktionen"
+  },
+  "pasteWarn": {
+    "title": "Große Einfügeaktion",
+    "close": "Schließen",
+    "lead": "Sollen wirklich {n} Zeichen eingefügt werden?",
+    "body": "Dieser Vorgang könnte dieses Browserfenster zum Absturz bringen. Alle nicht gespeicherten Texte könnten verloren gehen.",
+    "hint": "Fügen Sie die Zeichen stattdessen in kleineren Chunks ein.",
+    "dontShow": "Diese Warnung in Zukunft nicht mehr anzeigen",
+    "cancel": "Abbrechen",
+    "insert": "Einfügen"
   }
 }

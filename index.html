@@ -1611,6 +1611,84 @@
     display: flex;
   }
 
+  .paste-warn-panel {
+    height: auto;
+    max-height: min(80vh, 480px);
+  }
+
+  .paste-warn-panel .protocol-body {
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .paste-warn-lead {
+    font-size: var(--text-subhead);
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .paste-warn-text,
+  .paste-warn-hint {
+    margin: 0;
+    font-size: var(--text-subhead);
+    color: var(--ink-soft);
+    line-height: 1.45;
+  }
+
+  .paste-warn-check {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    font-size: var(--text-subhead);
+    color: var(--ink);
+    cursor: pointer;
+    user-select: none;
+    margin-top: var(--space-2);
+  }
+
+  .paste-warn-check input {
+    margin-top: 3px;
+    flex: none;
+  }
+
+  .paste-warn-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .paste-warn-actions .btn {
+    flex: 1 1 auto;
+    min-width: 7rem;
+  }
+
+  .warnings-menu .warn-check {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-subhead);
+    font-weight: 500;
+    color: var(--ink);
+    cursor: pointer;
+    user-select: none;
+    min-height: 40px;
+    border-radius: var(--radius-sm);
+  }
+
+  .warnings-menu .warn-check input {
+    margin-top: 3px;
+    flex: none;
+  }
+
+  .btn .icon-lock {
+    display: block;
+  }
+
   .protocol-head {
     display: flex;
     align-items: center;
@@ -2287,6 +2365,12 @@
     </div>
     <div class="toolbar">
       <div class="toolbar-desktop">
+        <div class="options-wrap" id="warningsWrapDesktop">
+          <button type="button" class="btn icon-only" id="btnWarnings" aria-haspopup="true" aria-expanded="false" data-i18n-aria="warnings.title" data-i18n-title="warnings.title" aria-label="Warnungen" title="Warnungen">
+            <svg class="icon-lock" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          </button>
+          <div class="options-menu warnings-menu" id="warningsMenuDesktop" role="menu" hidden></div>
+        </div>
         <button type="button" class="btn" id="btnLanguage" aria-haspopup="true" aria-expanded="false">Deutsch</button>
         <button class="btn" id="btnValidate" data-i18n="toolbar.protocol">Protokoll</button>
         <button class="btn" id="btnToggleSource" data-i18n="toolbar.showXml">XML anzeigen</button>
@@ -2297,11 +2381,18 @@
         <div class="options-wrap" id="optionsWrap">
           <button type="button" class="btn" id="btnOptions" aria-haspopup="true" aria-expanded="false" data-i18n="toolbar.options">Optionen</button>
           <div class="options-menu" id="optionsMenu" role="menu">
-            <button type="button" class="opt-item" id="optLanguage" role="menuitem" data-i18n="toolbar.language">Sprache</button>
-            <button type="button" class="opt-item" id="optValidate" role="menuitem" data-i18n="toolbar.protocol">Protokoll</button>
-            <button type="button" class="opt-item" id="optToggleSource" role="menuitem" data-i18n="toolbar.showXml">XML anzeigen</button>
-            <div class="opt-sep"></div>
-            <a class="opt-item" id="optLibrary" role="menuitem" href="https://juristikde.github.io/xml-prompt-bibliothek/" target="_blank" rel="noopener" data-i18n="toolbar.library">Bibliothek</a>
+            <div class="menu-level active" id="optionsMenuLevel0">
+              <button type="button" class="opt-item" id="optWarnings" role="menuitem" data-i18n="warnings.title">Warnungen</button>
+              <button type="button" class="opt-item" id="optLanguage" role="menuitem" data-i18n="toolbar.language">Sprache</button>
+              <button type="button" class="opt-item" id="optValidate" role="menuitem" data-i18n="toolbar.protocol">Protokoll</button>
+              <button type="button" class="opt-item" id="optToggleSource" role="menuitem" data-i18n="toolbar.showXml">XML anzeigen</button>
+              <div class="opt-sep"></div>
+              <a class="opt-item" id="optLibrary" role="menuitem" href="https://juristikde.github.io/xml-prompt-bibliothek/" target="_blank" rel="noopener" data-i18n="toolbar.library">Bibliothek</a>
+            </div>
+            <div class="menu-level" id="optionsMenuLevelWarnings">
+              <button type="button" class="menu-back" id="optWarningsBack" data-i18n="detail.back">Zurück</button>
+              <div id="warningsMenuMobileBody"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -2332,6 +2423,27 @@
     <div class="language-body" id="languageList"></div>
     <div class="language-actions">
       <input type="search" id="languageSearch" data-i18n-placeholder="language.searchPlaceholder" placeholder="Sprache suchen…" autocomplete="off" spellcheck="false" aria-label="Sprache suchen">
+    </div>
+  </div>
+
+  <div id="pasteWarnOverlay" class="protocol-overlay" hidden></div>
+  <div id="pasteWarnPanel" class="protocol-panel paste-warn-panel" role="dialog" aria-labelledby="pasteWarnTitle" aria-modal="true" hidden>
+    <div class="protocol-head">
+      <h2 id="pasteWarnTitle" data-i18n="pasteWarn.title">Große Einfügeaktion</h2>
+      <button type="button" class="protocol-close" id="btnPasteWarnClose" data-i18n-aria="pasteWarn.close" aria-label="Schließen">×</button>
+    </div>
+    <div class="protocol-body" id="pasteWarnBody">
+      <p id="pasteWarnLead" class="paste-warn-lead"></p>
+      <p class="paste-warn-text" data-i18n="pasteWarn.body">Dieser Vorgang könnte dieses Browserfenster zum Absturz bringen. Alle nicht gespeicherten Texte könnten verloren gehen.</p>
+      <p class="paste-warn-hint" data-i18n="pasteWarn.hint">Fügen Sie die Zeichen stattdessen in kleineren Chunks ein.</p>
+      <label class="paste-warn-check">
+        <input type="checkbox" id="pasteWarnDontShow" />
+        <span data-i18n="pasteWarn.dontShow">Diese Warnung in Zukunft nicht mehr anzeigen</span>
+      </label>
+    </div>
+    <div class="protocol-actions paste-warn-actions">
+      <button type="button" class="btn primary" id="btnPasteWarnCancel" data-i18n="pasteWarn.cancel">Abbrechen</button>
+      <button type="button" class="btn" id="btnPasteWarnInsert" data-i18n="pasteWarn.insert" disabled>Einfügen</button>
     </div>
   </div>
 
@@ -2539,6 +2651,7 @@
     if(typeof updateSourceHeadTools === 'function') updateSourceHeadTools();
     if(typeof renderTemplateMenus === 'function') renderTemplateMenus();
     if(typeof renderCustomButtons === 'function') renderCustomButtons();
+    if(typeof renderWarningsMenus === 'function') renderWarningsMenus();
     if(typeof render === 'function') render();
     if(typeof updateResultCharCount === 'function') updateResultCharCount();
     if(typeof renderProtocolList === 'function' && isProtocolOpen && isProtocolOpen()) renderProtocolList();
@@ -2920,6 +3033,14 @@
     return params;
   }
 
+  function readBoolParam(params, key, defaultVal){
+    if(Object.prototype.hasOwnProperty.call(params, key)){
+      const v = params[key];
+      return (v === 'true' || v === '1');
+    }
+    return defaultVal;
+  }
+
   function readHashState(){
     const params = parseHashParams();
     /* Defaults werden immer gesetzt; URL-Werte überschreiben, wenn vorhanden */
@@ -2958,18 +3079,25 @@
       const code = String(params.setLanguage || '').toLowerCase().slice(0, 2);
       if(code) currentLang = code;
     }
+    /* displayedAmountbuttonC: 2–6; Default Mobile 2, Desktop 4 */
+    if(Object.prototype.hasOwnProperty.call(params, 'displayedAmountbuttonC')){
+      const n = parseInt(params.displayedAmountbuttonC, 10);
+      if(Number.isInteger(n) && n >= 2 && n <= CUSTOM_SLOT_MAX) displayedAmountbuttonC = n;
+      else displayedAmountbuttonC = (typeof isMobileLayout === 'function' && isMobileLayout()) ? 2 : 4;
+    } else {
+      displayedAmountbuttonC = (typeof isMobileLayout === 'function' && isMobileLayout()) ? 2 : 4;
+    }
     customButtonActions = CUSTOM_ACTION_DEFAULTS.slice();
-    for(let i = 0; i < 4; i++){
+    for(let i = 0; i < CUSTOM_SLOT_MAX; i++){
       const key = 'buttonC' + (i + 1);
       if(Object.prototype.hasOwnProperty.call(params, key)){
         const v = String(params[key] || '').toLowerCase();
         if(CUSTOM_ACTION_IDS.indexOf(v) !== -1) customButtonActions[i] = v;
       }
     }
-    /* Duplikate auflösen: erste Belegung behalten, weitere auf freie Aktionen setzen */
     (function resolveCustomDupes(){
       const used = new Set();
-      for(let i = 0; i < 4; i++){
+      for(let i = 0; i < CUSTOM_SLOT_MAX; i++){
         if(used.has(customButtonActions[i])){
           const free = CUSTOM_ACTION_IDS.find(a => !used.has(a) && customButtonActions.indexOf(a) === -1) ||
             CUSTOM_ACTION_IDS.find(a => !used.has(a));
@@ -2978,6 +3106,18 @@
         used.add(customButtonActions[i]);
       }
     })();
+    warnBrowserTabClose = readBoolParam(params, 'warnBrowserTabClose', true);
+    warnPromptTabClose = readBoolParam(params, 'warnPromptTabClose', true);
+    warnPromptTabReset = readBoolParam(params, 'warnPromptTabReset', true);
+    warnPromptEntryDelete = readBoolParam(params, 'warnPromptEntryDelete', true);
+    warnBeforePastingText = readBoolParam(params, 'warnBeforePastingText', true);
+    if(Object.prototype.hasOwnProperty.call(params, 'warnPastingTextThreshold')){
+      const n = parseInt(params.warnPastingTextThreshold, 10);
+      if(Number.isInteger(n) && n >= 1) warnPastingTextThreshold = n;
+      else warnPastingTextThreshold = 500000;
+    } else {
+      warnPastingTextThreshold = 500000;
+    }
   }
 
   function writeHashState(){
@@ -2990,9 +3130,16 @@
     parts.push('xmlCodeLineWrap=' + (xmlCodeLineWrap ? 'true' : 'false'));
     parts.push('unpackMobileOptionsButton=' + (unpackMobileOptionsButton ? 'true' : 'false'));
     parts.push('protocolThreshold=' + protocolThreshold);
-    for(let i = 0; i < 4; i++){
+    parts.push('displayedAmountbuttonC=' + displayedAmountbuttonC);
+    for(let i = 0; i < CUSTOM_SLOT_MAX; i++){
       parts.push('buttonC' + (i + 1) + '=' + (customButtonActions[i] || CUSTOM_ACTION_DEFAULTS[i]));
     }
+    parts.push('warnBrowserTabClose=' + (warnBrowserTabClose ? 'true' : 'false'));
+    parts.push('warnPromptTabClose=' + (warnPromptTabClose ? 'true' : 'false'));
+    parts.push('warnPromptTabReset=' + (warnPromptTabReset ? 'true' : 'false'));
+    parts.push('warnPromptEntryDelete=' + (warnPromptEntryDelete ? 'true' : 'false'));
+    parts.push('warnBeforePastingText=' + (warnBeforePastingText ? 'true' : 'false'));
+    parts.push('warnPastingTextThreshold=' + warnPastingTextThreshold);
     const next = '#' + parts.join('&');
     if(location.hash !== next){
       history.replaceState(null, '', next);
@@ -3002,10 +3149,13 @@
   /* ===== Baum- und Editor-Zustand ===== */
   let tree = [], idCounter = 1, sourceFocused = false, selectedId = null, focusDetailField = false;
   let showCharacterCount = false;
-  /* Custom-Footer-Buttons (C1–C4); Menü: user, assistant, tool, comment, child (Sub), parent (Pre) */
-  const CUSTOM_ACTION_IDS = ['user', 'assistant', 'tool', 'comment', 'child', 'parent'];
-  const CUSTOM_ACTION_DEFAULTS = ['user', 'assistant', 'comment', 'child'];
+  /* Custom-Footer-Buttons C1–C6; Menü: user, assistant, tool, comment, parent (Pre/Oberpunkt), child (Sub/Unterpunkt) */
+  const CUSTOM_SLOT_MAX = 6;
+  const CUSTOM_ACTION_IDS = ['user', 'assistant', 'tool', 'comment', 'parent', 'child'];
+  const CUSTOM_ACTION_DEFAULTS = ['user', 'assistant', 'comment', 'child', 'tool', 'parent'];
   let customButtonActions = CUSTOM_ACTION_DEFAULTS.slice();
+  /* Anzeigeanzahl Custom-Buttons: 2–6; Default Desktop 4, Mobile 2 */
+  let displayedAmountbuttonC = 4;
   let protocolLog = [];
   let hasProtocolErrors = false;
   let protocolErrorCount = 0;
@@ -3015,7 +3165,16 @@
   let sourceGesamtMode = false;
   let wikiSettings = {lang:'de', chars:1200}, openWikiMenu = null, openTemplateMenu = null, openOptionsMenu = null;
 
+  /* Schließ-/Lösch-/Paste-Warnungen (URL-Parameter, Default true) */
+  let warnBrowserTabClose = true;
+  let warnPromptTabClose = true;
+  let warnPromptTabReset = true;
+  let warnPromptEntryDelete = true;
+  let warnBeforePastingText = true;
+  let warnPastingTextThreshold = 500000;
+
   let nodeClipboard = null;
+  let pendingPaste = null; /* { text, target } für Paste-Warn-Dialog */
 
   let dragId = null;
   let dragOverId = null;
@@ -3130,16 +3289,16 @@
   function closeTab(tabId, evt){
     if(evt) evt.stopPropagation();
     if(tabs.length <= 1){
-      if(confirm(t('Letzten Tab zurücksetzen?', 'tabs.confirmResetLast'))){
-        const lastTab = tabs[0];
-        lastTab.tree = [];
-        lastTab.selectedId = null;
-        lastTab.idCounter = 1;
-        lastTab.title = t('Prompt {n}', 'tabs.defaultTitle', {n: 1});
-        loadTab(lastTab.id);
-      }
+      if(warnPromptTabReset && !confirm(t('Letzten Tab zurücksetzen?', 'tabs.confirmResetLast'))) return;
+      const lastTab = tabs[0];
+      lastTab.tree = [];
+      lastTab.selectedId = null;
+      lastTab.idCounter = 1;
+      lastTab.title = t('Prompt {n}', 'tabs.defaultTitle', {n: 1});
+      loadTab(lastTab.id);
       return;
     }
+    if(warnPromptTabClose && !confirm(t('Diesen Prompt-Tab schließen?', 'tabs.confirmClose'))) return;
     const idx = tabs.findIndex(x => x.id === tabId);
     if(idx < 0) return;
     const wasActive = activeTabId === tabId;
@@ -3495,6 +3654,8 @@
     if(panelBtn) panelBtn.setAttribute('aria-expanded', 'false');
     const srcBtn = document.getElementById('btnSourceOptions');
     if(srcBtn) srcBtn.setAttribute('aria-expanded', 'false');
+    const warnBtn = document.getElementById('btnWarnings');
+    if(warnBtn) warnBtn.setAttribute('aria-expanded', 'false');
     document.querySelectorAll('.detail-tools .options-wrap button[aria-expanded]').forEach(b => {
       b.setAttribute('aria-expanded', 'false');
     });
@@ -4009,7 +4170,7 @@
   }
 
   function setCustomButtonAction(index, actionId){
-    if(index < 0 || index > 3) return;
+    if(index < 0 || index >= CUSTOM_SLOT_MAX) return;
     if(CUSTOM_ACTION_IDS.indexOf(actionId) === -1) return;
     const other = customButtonActions.indexOf(actionId);
     if(other !== -1 && other !== index){
@@ -4021,11 +4182,19 @@
     renderCustomButtons();
   }
 
+  function getDisplayedCustomButtonCount(){
+    let n = displayedAmountbuttonC;
+    if(!Number.isInteger(n) || n < 2) n = isMobileLayout() ? 2 : 4;
+    if(n > CUSTOM_SLOT_MAX) n = CUSTOM_SLOT_MAX;
+    return n;
+  }
+
   function renderCustomButtons(){
     const row = document.getElementById('customButtonsRow');
     if(!row) return;
     row.innerHTML = '';
-    for(let i = 0; i < 4; i++){
+    const count = getDisplayedCustomButtonCount();
+    for(let i = 0; i < count; i++){
       const actionId = customButtonActions[i] || CUSTOM_ACTION_DEFAULTS[i];
       const wrap = document.createElement('div');
       wrap.className = 'wiki-wrap';
@@ -5479,7 +5648,7 @@
   }
 
   function resetAll(){
-    if(tree.length && !confirm(t('Alles löschen?', 'outline.confirmReset'))) return;
+    if(tree.length && warnPromptTabReset && !confirm(t('Alles löschen?', 'outline.confirmReset'))) return;
     tree = []; selectedId = null; hideBanner(); closeSheet(true); render();
   }
   function copySource(){ sourceText.select(); navigator.clipboard.writeText(sourceText.value).then(() => flashButton('btnCopySource', t('✓', 'outline.copiedShort'))).catch(() => document.execCommand('copy')); }
@@ -5535,6 +5704,138 @@
     }
   }
 
+  /* ===== Warnungs-Einstellungen & Paste-Warn-Dialog ===== */
+  const WARN_TOGGLE_DEFS = [
+    { key: 'warnPromptEntryDelete', get: () => warnPromptEntryDelete, set: v => { warnPromptEntryDelete = v; }, labelKey: 'warnings.entryDelete', labelDe: 'Beim Löschen von Struktur-Einträgen' },
+    { key: 'warnPromptTabReset', get: () => warnPromptTabReset, set: v => { warnPromptTabReset = v; }, labelKey: 'warnings.tabReset', labelDe: 'Beim Zurücksetzen des Prompts' },
+    { key: 'warnPromptTabClose', get: () => warnPromptTabClose, set: v => { warnPromptTabClose = v; }, labelKey: 'warnings.tabClose', labelDe: 'Beim Schließen eines Prompt-Tabs' },
+    { key: 'warnBrowserTabClose', get: () => warnBrowserTabClose, set: v => { warnBrowserTabClose = v; }, labelKey: 'warnings.browserClose', labelDe: 'Beim Schließen der Website' },
+    { key: 'warnBeforePastingText', get: () => warnBeforePastingText, set: v => { warnBeforePastingText = v; }, labelKey: 'warnings.pasteLarge', labelDe: 'Bei sehr großen Einfügeaktionen' }
+  ];
+
+  function buildWarningsChecklist(container){
+    if(!container) return;
+    container.innerHTML = '';
+    container.classList.add('warnings-menu');
+    WARN_TOGGLE_DEFS.forEach(def => {
+      const lab = document.createElement('label');
+      lab.className = 'warn-check';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = !!def.get();
+      cb.addEventListener('change', () => {
+        def.set(!!cb.checked);
+        writeHashState();
+        syncWarningsChecklists();
+      });
+      const span = document.createElement('span');
+      span.textContent = t(def.labelDe, def.labelKey);
+      lab.appendChild(cb);
+      lab.appendChild(span);
+      container.appendChild(lab);
+    });
+  }
+
+  function syncWarningsChecklists(){
+    document.querySelectorAll('.warnings-menu input[type="checkbox"]').forEach((cb, i) => {
+      const def = WARN_TOGGLE_DEFS[i];
+      if(def) cb.checked = !!def.get();
+    });
+  }
+
+  function renderWarningsMenus(){
+    const desk = document.getElementById('warningsMenuDesktop');
+    if(desk){
+      desk.hidden = false;
+      buildWarningsChecklist(desk);
+    }
+    const mob = document.getElementById('warningsMenuMobileBody');
+    if(mob) buildWarningsChecklist(mob);
+  }
+
+  function closePasteWarn(commit){
+    const panel = document.getElementById('pasteWarnPanel');
+    const overlay = document.getElementById('pasteWarnOverlay');
+    if(panel){ panel.classList.remove('open'); panel.hidden = true; }
+    if(overlay){ overlay.classList.remove('open'); overlay.hidden = true; }
+    if(commit && pendingPaste && pendingPaste.target){
+      const ta = pendingPaste.target;
+      const text = pendingPaste.text || '';
+      const start = ta.selectionStart || 0;
+      const end = ta.selectionEnd || 0;
+      const val = ta.value || '';
+      ta.value = val.slice(0, start) + text + val.slice(end);
+      const pos = start + text.length;
+      try { ta.setSelectionRange(pos, pos); } catch(_){}
+      ta.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    pendingPaste = null;
+    const dont = document.getElementById('pasteWarnDontShow');
+    if(dont) dont.checked = false;
+    const ins = document.getElementById('btnPasteWarnInsert');
+    if(ins) ins.disabled = true;
+  }
+
+  function openPasteWarn(text, target){
+    pendingPaste = { text, target };
+    const panel = document.getElementById('pasteWarnPanel');
+    const overlay = document.getElementById('pasteWarnOverlay');
+    const lead = document.getElementById('pasteWarnLead');
+    const n = (text || '').length;
+    if(lead){
+      lead.textContent = t(
+        'Sollen wirklich {n} Zeichen eingefügt werden?',
+        'pasteWarn.lead',
+        { n: formatResultCharCount(n) }
+      );
+    }
+    const dont = document.getElementById('pasteWarnDontShow');
+    if(dont){
+      dont.checked = false;
+    }
+    const ins = document.getElementById('btnPasteWarnInsert');
+    if(ins) ins.disabled = true;
+    if(overlay){ overlay.hidden = false; overlay.classList.add('open'); }
+    if(panel){ panel.hidden = false; panel.classList.add('open'); }
+  }
+
+  function attachPasteGuard(el){
+    if(!el || el._pasteGuardAttached) return;
+    el._pasteGuardAttached = true;
+    el.addEventListener('paste', e => {
+      if(!warnBeforePastingText) return;
+      const text = (e.clipboardData || window.clipboardData)
+        ? (e.clipboardData || window.clipboardData).getData('text')
+        : '';
+      if(!text || text.length <= warnPastingTextThreshold) return;
+      e.preventDefault();
+      e.stopPropagation();
+      openPasteWarn(text, el);
+    });
+  }
+
+  function attachPasteGuardsToTree(root){
+    (root || document).querySelectorAll('textarea, input[type="text"]').forEach(attachPasteGuard);
+  }
+
+  /* MutationObserver: neue Textfelder (Detail-Editor) absichern */
+  const pasteGuardObserver = new MutationObserver(muts => {
+    muts.forEach(m => {
+      m.addedNodes.forEach(n => {
+        if(n.nodeType !== 1) return;
+        if(n.matches && (n.matches('textarea') || n.matches('input[type="text"]'))) attachPasteGuard(n);
+        if(n.querySelectorAll) attachPasteGuardsToTree(n);
+      });
+    });
+  });
+  pasteGuardObserver.observe(document.body, { childList: true, subtree: true });
+
+  window.addEventListener('beforeunload', e => {
+    if(!warnBrowserTabClose) return;
+    e.preventDefault();
+    e.returnValue = '';
+  });
+
   /* ===== Event-Bindings ===== */
   /* btnLibrary ist ein <a target="_blank"> – kein JS-Handler nötig */
 
@@ -5552,6 +5853,46 @@
       openOptionsMenu = menu;
       /* Badge auch am Menüpunkt „Protokoll“ anzeigen */
       updateProtocolMarks();
+    }
+  };
+
+  const optWarnings = document.getElementById('optWarnings');
+  if(optWarnings){
+    optWarnings.onclick = e => {
+      e.stopPropagation();
+      const menu = document.getElementById('optionsMenu');
+      if(!menu) return;
+      const l0 = document.getElementById('optionsMenuLevel0');
+      const lw = document.getElementById('optionsMenuLevelWarnings');
+      if(l0) l0.classList.remove('active');
+      if(lw) lw.classList.add('active');
+      renderWarningsMenus();
+    };
+  }
+  const optWarningsBack = document.getElementById('optWarningsBack');
+  if(optWarningsBack){
+    optWarningsBack.onclick = e => {
+      e.stopPropagation();
+      const l0 = document.getElementById('optionsMenuLevel0');
+      const lw = document.getElementById('optionsMenuLevelWarnings');
+      if(lw) lw.classList.remove('active');
+      if(l0) l0.classList.add('active');
+    };
+  }
+
+  document.getElementById('btnWarnings').onclick = e => {
+    e.stopPropagation();
+    const menu = document.getElementById('warningsMenuDesktop');
+    const btn = document.getElementById('btnWarnings');
+    const isOpen = menu.classList.contains('open');
+    closeAllWikiMenus();
+    closeTemplateMenu();
+    closeOptionsMenu();
+    if(!isOpen){
+      renderWarningsMenus();
+      positionMenu(btn, menu);
+      btn.setAttribute('aria-expanded', 'true');
+      openOptionsMenu = menu;
     }
   };
 
@@ -5574,6 +5915,26 @@
     e.stopPropagation();
     openLanguagePanel();
   };
+
+  (function wirePasteWarnUi(){
+    const cancel = document.getElementById('btnPasteWarnCancel');
+    const insert = document.getElementById('btnPasteWarnInsert');
+    const close = document.getElementById('btnPasteWarnClose');
+    const overlay = document.getElementById('pasteWarnOverlay');
+    const dont = document.getElementById('pasteWarnDontShow');
+    if(cancel) cancel.onclick = () => closePasteWarn(false);
+    if(close) close.onclick = () => closePasteWarn(false);
+    if(overlay) overlay.onclick = () => closePasteWarn(false);
+    if(insert) insert.onclick = () => closePasteWarn(true);
+    if(dont){
+      dont.addEventListener('change', () => {
+        warnBeforePastingText = !dont.checked;
+        writeHashState();
+        syncWarningsChecklists();
+        if(insert) insert.disabled = !dont.checked;
+      });
+    }
+  })();
 
   document.getElementById('btnPanelOptions').onclick = e => {
     e.stopPropagation();
@@ -5602,7 +5963,9 @@
 
   document.getElementById('btnAddRoot').onclick = addRootNode;
   document.getElementById('btnDelete').onclick = () => {
-    if(selectedId && confirm(t('Wirklich löschen?', 'outline.confirmDelete'))) deleteNode(selectedId);
+    if(!selectedId) return;
+    if(warnPromptEntryDelete && !confirm(t('Wirklich löschen?', 'outline.confirmDelete'))) return;
+    deleteNode(selectedId);
   };
   document.getElementById('btnValidate').onclick = openProtocol;
   document.getElementById('btnProtocolClose').onclick = closeProtocol;
@@ -5740,6 +6103,8 @@
   updateSourceHeadTools();
   renderTemplateMenus();
   renderCustomButtons();
+  renderWarningsMenus();
+  attachPasteGuardsToTree(document);
   renderTabs();
   render();
   updateResultCharCount();

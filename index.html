@@ -50,6 +50,14 @@
      Paste = plain text.
   9. Undo-History pro Feld über historyKey inkl. Tab-Id (detail-<tabId>-<nodeId>).
      Bei Delete/Tab-Close pruneEditorHist* aufrufen.
+  10. FOKUS-REGEL (absolut): Der Code setzt NIEMALS den Fokus.
+      Kein .focus(), kein .select() auf Textfeldern/Inputs – weder bei
+      Klick-Aktionen, Programmaktionen, Init, Sheet-Öffnen, Suche/Ersetzen,
+      Wiki-Insert, Paste, Undo/Redo noch sonst irgendwo. Fokus entsteht
+      ausschließlich durch echte User-Interaktion (Tippen/Tab). Auf Mobile
+      besonders kritisch: keine Aktion darf die Bildschirmtastatur öffnen.
+      Cursor-/Selektionsposition via setSelectionRange ist erlaubt (das ist
+      keine Fokusaktion), aber ohne vorheriges .focus().
 
   --- WO WAS LIEGT ---
   • State/Tabs: tabs[], getActiveTab(), syncActiveTabToMemory, loadTab,
@@ -2995,7 +3003,6 @@
     selectedId = tab.selectedId;
     idCounter = tab.idCounter || 1;
     sourceFocused = !!tab.sourceFocused;
-    focusDetailField = !!tab.focusDetailField;
   }
 
   /* Scroll strikt pro Tab-Id (eigene Map – keine geteilten Referenzen) */
@@ -3359,10 +3366,6 @@
   function openMobileDetail(){ openSheet('detail'); }
   function closeMobileDetail(){ if(activeSheet === 'detail' || mobileDetailOpen) closeSheet(false); }
 
-  function shouldFocusDetail(){
-    return !isMobileLayout() || mobileDetailOpen;
-  }
-
   /* ===== URL-Hash ===== */
   function parseHashParams(){
     const raw = (location.hash || '').replace(/^#/, '');
@@ -3498,7 +3501,7 @@
   }
 
   /* ===== Baum- und Editor-Zustand ===== */
-  let tree = [], idCounter = 1, sourceFocused = false, selectedId = null, focusDetailField = false;
+  let tree = [], idCounter = 1, sourceFocused = false, selectedId = null;
   let showCharacterCount = false;
   /* Custom-Footer-Buttons C1–C6; Menü: user, assistant, tool, comment, parent (Pre/Oberpunkt), child (Sub/Unterpunkt) */
   const CUSTOM_SLOT_MAX = 6;
@@ -3626,7 +3629,6 @@
       selectedId: null,
       idCounter: 1,
       sourceFocused: false,
-      focusDetailField: false,
       scroll: { outline: 0, detail: 0, source: 0, fields: {} },
       draftDirty: true,
       draftXml: null
@@ -3653,7 +3655,6 @@
     tab.selectedId = selectedId;
     tab.idCounter = idCounter;
     tab.sourceFocused = sourceFocused;
-    tab.focusDetailField = focusDetailField;
     /* Scroll nur speichern wenn DOM noch den echten Tab-Zustand zeigt (nicht mitten im Re-Render) */
     if(!opts || opts.captureScroll !== false) captureScrollPositions();
   }
@@ -3787,7 +3788,6 @@
     activeTabId = tabId;
     pullActiveTabIntoGlobals();
     sourceFocused = false;
-    focusDetailField = false;
     if(!t.scroll) t.scroll = { outline: 0, detail: 0, source: 0, fields: {} };
     /* Tab.scroll in Store spiegeln falls noch nicht in Map */
     if(t.scroll && !tabScrollStore.has(tabId)){
@@ -3813,7 +3813,6 @@
     selectedId = t.selectedId;
     idCounter = t.idCounter;
     sourceFocused = false;
-    focusDetailField = false;
     closeSheet(true);
     hideBanner();
     renderTabs();
@@ -4248,9 +4247,8 @@
           const s = textarea.selectionStart, e = textarea.selectionEnd;
           textarea.value = textarea.value.substring(0,s) + text + textarea.value.substring(e);
           textarea.dispatchEvent(new Event('input',{bubbles:true}));
-          textarea.focus(); textarea.setSelectionRange(s+text.length, s+text.length);
+          textarea.setSelectionRange(s+text.length, s+text.length);
         }
-        try { textarea.focus(); } catch(_){}
         closeAllWikiMenus();
       }catch(err){ alert(t('Fehler: ', 'protocol.errorPrefix')+err.message); }
       finally{ mainBtn.disabled = false; mainBtn.innerHTML = t('+ WikiText', 'detail.wikiText'); }
@@ -4629,19 +4627,6 @@
   }
   function firstNavigableId(nodes){ return nodes.length ? nodes[0].id : null; }
 
-  function selectAndShowDetail(id, doFocus){
-    setSelectedId(id);
-    focusDetailField = !!doFocus && shouldFocusDetail();
-    updateOutlineSelection(selectedId);
-    scrollCaptureFrozen = true;
-    renderDetail();
-    requestAnimationFrame(() => { scrollCaptureFrozen = false; });
-    markActiveTabDraftDirty();
-    scheduleDraftSave();
-    scheduleSourceFromTree();
-    if(isMobileLayout() && selectedId && typeof openMobileDetail === 'function') openMobileDetail();
-  }
-
   function refreshParentOutlineChrome(parentNode){
     if(!parentNode || !parentNode.id) return;
     const prow = outlineRowById(parentNode.id);
@@ -4671,9 +4656,7 @@
     }
   }
 
-  function insertRelative(node, opts){
-    opts = opts || {};
-    const doFocus = opts.focus !== false;
+  function insertRelative(node){
     if(selectedId){
       const f = findNode(tree, selectedId);
       if(f){
@@ -4685,11 +4668,10 @@
           const newWrap = renderOutlineRow(node, depth);
           if(selWrap.nextSibling) selWrap.parentElement.insertBefore(newWrap, selWrap.nextSibling);
           else selWrap.parentElement.appendChild(newWrap);
-          selectAndShowDetail(node.id, doFocus);
+          selectAndShowDetail(node.id);
           return;
         }
         selectedId = node.id;
-        focusDetailField = doFocus && shouldFocusDetail();
         renderAfterTreeChange();
         return;
       }
@@ -4699,17 +4681,16 @@
       const empty = outlineList.querySelector('.outline-empty');
       if(empty) empty.remove();
       outlineList.appendChild(renderOutlineRow(node, 0));
-      selectAndShowDetail(node.id, doFocus);
+      selectAndShowDetail(node.id);
       return;
     }
     selectedId = node.id;
-    focusDetailField = doFocus && shouldFocusDetail();
     renderAfterTreeChange();
   }
 
   function addRootNode(){ insertRelative(newNode('','')); }
   function addRootComment(){ insertRelative(newCommentNode('')); }
-  function addTemplate(tag){ insertRelative(newNode(tag,''), { focus: false }); }
+  function addTemplate(tag){ insertRelative(newNode(tag,'')); }
   function addChild(parentId, isComment){
     const f = findNode(tree, parentId);
     if(!f || f.node.kind === 'comment') return;
@@ -4733,7 +4714,6 @@
     /* Text-Migration ändert Struktur stärker → Full-Render sicherer */
     if(migratedText){
       selectedId = n.id;
-      focusDetailField = shouldFocusDetail();
       renderAfterTreeChange();
       return;
     }
@@ -4749,11 +4729,10 @@
         parentWrap.appendChild(renderOutlineRow(n, depth + 1));
       }
       refreshParentOutlineChrome(parent);
-      selectAndShowDetail(n.id, shouldFocusDetail());
+      selectAndShowDetail(n.id);
       return;
     }
     selectedId = n.id;
-    focusDetailField = shouldFocusDetail();
     renderAfterTreeChange();
   }
   /* Oberpunkt: neuen leeren Parent um den ausgewählten Knoten legen */
@@ -4767,7 +4746,6 @@
     parent.collapsed = false;
     f.arr.splice(f.index, 0, parent);
     selectedId = parent.id;
-    focusDetailField = shouldFocusDetail();
     /* Struktur-Verschachtelung ändert sich → Full-Render */
     renderAfterTreeChange();
   }
@@ -5034,8 +5012,6 @@
 
   function selectNode(id){
     if(id && id === selectedId){
-      /* bereits gewählt: auf Mobile Detail öffnen, kein Re-Render */
-      if(isMobileLayout() && typeof openMobileDetail === 'function') openMobileDetail();
       return;
     }
     /* Ausstehende Source-Serialisierung vor Wechsel durchführen */
@@ -5049,7 +5025,6 @@
     updateSourceFromTree();
     restoreScrollPositions();
     requestAnimationFrame(() => { scrollCaptureFrozen = false; });
-    if(isMobileLayout() && selectedId && typeof openMobileDetail === 'function') openMobileDetail();
   }
 
   /* Struktur/Baum geändert → vollständiger Re-Render */
@@ -5214,7 +5189,7 @@
       if(i < 0 || i >= matches.length) return;
       currentIdx = i;
       const m = matches[i];
-      try { textarea.focus(); } catch(_){}
+      /* kein focus() – nur Cursor-/Selektionsposition setzen */
       if(typeof setEditorSelection === 'function') setEditorSelection(textarea, m.index, m.index + m.length);
       else try { textarea.setSelectionRange(m.index, m.index + m.length); } catch(_){}
       const textBefore = (typeof getEditorValue === 'function' ? getEditorValue(textarea) : (textarea.value || '')).slice(0, m.index);
@@ -5288,13 +5263,11 @@
       if(typeof commitEditorBaseline === 'function') commitEditorBaseline(textarea);
       collectMatches();
       status.textContent = t('{n} ersetzt', 'find.replaced', {n: count});
-      textarea.focus();
     }
 
     function closeBar(){
       bar.remove();
       if(textarea._findBar === bar) delete textarea._findBar;
-      textarea.focus();
     }
 
     findInput.addEventListener('input', () => collectMatches());
@@ -5325,8 +5298,6 @@
       if(b !== textarea._findBar) b.remove();
     });
     if(textarea._findBar && textarea._findBar.isConnected){
-      const inp = textarea._findBar.querySelector('.find-input');
-      if(inp){ inp.focus(); inp.select(); }
       return;
     }
     const bar = buildFindReplaceBar(textarea);
@@ -5336,8 +5307,6 @@
     if(inp){
       const sel = (textarea.value || '').slice(textarea.selectionStart, textarea.selectionEnd);
       if(sel && sel.length < 200 && !sel.includes('\n')) inp.value = sel;
-      inp.focus();
-      inp.select();
     }
   }
 
@@ -6024,7 +5993,6 @@
             textarea.dispatchEvent(new Event('input', { bubbles: true }));
             textarea.setSelectionRange(s + text.length, s + text.length);
           }
-          try { textarea.focus(); } catch(_){}
           closeOptionsMenu();
         } catch(err) {
           alert(t('Fehler: ', 'protocol.errorPrefix') + err.message);
@@ -6050,15 +6018,6 @@
 
     detailScroll.appendChild(tools);
     detailScroll.appendChild(textareaWrap);
-
-    if(focusDetailField && shouldFocusDetail()){
-      focusDetailField = false;
-      const ti = detailScroll.querySelector('.detail-tag-input');
-      const ta = detailScroll.querySelector('.detail-textarea');
-      if(ti) ti.focus(); else if(ta) ta.focus();
-    } else {
-      focusDetailField = false;
-    }
   }
 
   function buildLevelBar(path, depth){
@@ -6205,7 +6164,6 @@
     selectedId = tabs[0].selectedId;
     idCounter = tabs[0].idCounter;
     sourceFocused = false;
-    focusDetailField = false;
     sourceGesamtMode = false;
     updateSourcePanelTitle();
     const msgs = [];
@@ -6439,7 +6397,7 @@
     const lineText = lines[line - 1] || '';
     const start = pos + (col && col > 0 ? Math.min(col - 1, lineText.length) : 0);
     const end = pos + lineText.length;
-    try { sourceText.focus(); } catch(_){}
+    /* kein focus() – nur Cursor-/Selektionsposition setzen */
     if(typeof setEditorSelection === 'function') setEditorSelection(sourceText, start, end);
     else try { sourceText.setSelectionRange(start, end); } catch(_){}
     const lineHeight = parseFloat(getComputedStyle(sourceText).lineHeight) || 18;
@@ -6501,8 +6459,6 @@
     }
     panel.classList.add('open');
     document.body.style.overflow = 'hidden';
-    const closeBtn = document.getElementById('btnProtocolClose');
-    if(closeBtn) closeBtn.focus();
   }
 
   function closeProtocol(){
@@ -6540,11 +6496,11 @@
     if(tree.length && warnPromptTabReset && !confirm(t('Alles löschen?', 'outline.confirmReset'))) return;
     tree = []; selectedId = null; hideBanner(); closeSheet(true); render();
   }
-  function copySource(){ sourceText.select(); navigator.clipboard.writeText(sourceText.value).then(() => flashButton('btnCopySource', t('✓', 'outline.copiedShort'))).catch(() => document.execCommand('copy')); }
+  function copySource(){ navigator.clipboard.writeText(sourceText.value).then(() => flashButton('btnCopySource', t('✓', 'outline.copiedShort'))).catch(() => document.execCommand('copy')); }
   function copyResult(){
     const xml = getCopyResultText();
     navigator.clipboard.writeText(xml).then(() => flashButton('btnCopyResult', t('✓ Kopiert', 'outline.copied')))
-      .catch(() => { const ta = document.createElement('textarea'); ta.value = xml; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); flashButton('btnCopyResult', t('✓', 'outline.copiedShort')); });
+      .catch(() => { flashButton('btnCopyResult', t('✓', 'outline.copiedShort')); });
   }
   function flashButton(id, label){ const b = document.getElementById(id); if(!b) return; const o = b.textContent; b.textContent = label; setTimeout(() => b.textContent = o, 1300); }
   function setSourceLabels(open){
@@ -6723,7 +6679,6 @@
         try { ta.setSelectionRange(pos, pos); } catch(_){}
         ta.dispatchEvent(new Event('input', { bubbles: true }));
       }
-      try { ta.focus(); } catch(_){}
     }
     pendingPaste = null;
     const dont = document.getElementById('pasteWarnDontShow');
@@ -7060,7 +7015,6 @@
     h.future.push(elem);
     h.versionMark = elem.beforeVersionMark;
     setEditorValue(el, value, sel.start, sel.end);
-    try { el.focus(); } catch(_){}
     return true;
   }
 
@@ -7080,7 +7034,6 @@
     h.isOpen = false;
     h.versionMark = elem.afterVersionMark;
     setEditorValue(el, value, sel.start, sel.end);
-    try { el.focus(); } catch(_){}
     return true;
   }
 
@@ -7249,7 +7202,6 @@
     const len = combined.length;
     setEditorValue(el, combined, len, len);
     commitEditorBaseline(el);
-    try { el.focus(); } catch(_){}
   }
 
   function setFileDragOver(el, on){

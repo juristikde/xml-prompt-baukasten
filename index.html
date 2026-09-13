@@ -1056,6 +1056,38 @@
     min-height: 0;
   }
 
+  .outline-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-2);
+    border-bottom: 1px solid var(--line);
+    flex: none;
+    background: var(--paper-raised);
+  }
+
+  .outline-filter-input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--text-footnote);
+    font-family: inherit;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 32px;
+  }
+  .outline-filter-input:focus {
+    outline: none;
+    border-color: var(--color-action);
+    box-shadow: 0 0 0 2px var(--color-action-soft);
+  }
+
+  /* Filter: ausgeblendete Rows */
+  .outline-list.filtering .outline-row.filtered-out { display: none; }
+  .outline-list.filtering .outline-row.filter-match .outline-tag { font-weight: 700; }
+
   .outline-list {
     overflow-y: auto;
     overflow-x: hidden;
@@ -3041,6 +3073,17 @@
           </div>
           <div class="split-body" id="splitBody">
             <div class="outline-col">
+              <div class="outline-filter-bar" id="outlineFilterBar">
+                <input type="text" class="outline-filter-input" id="outlineFilterInput" data-i18n-placeholder="outline.filterPlaceholder" placeholder="Filtern…" autocomplete="off" spellcheck="false" aria-label="Struktur filtern" data-i18n-aria="outline.filterAria" />
+                <button type="button" class="btn small icon-only" id="btnOutlineFilterClear" aria-label="Filter löschen" data-i18n-aria="outline.filterClear" hidden>×</button>
+                <button type="button" class="btn small icon-only" id="btnCollapseLevel" aria-label="Ebenen einklappen" data-i18n-aria="outline.collapseLevel" data-i18n-title="outline.collapseLevelTitle" title="Ebenen einklappen">⤢</button>
+                <div class="options-wrap" id="collapseLevelWrap">
+                  <div class="options-menu" id="collapseLevelMenu" role="menu">
+                    <button type="button" class="opt-item" id="optCollapseAll" role="menuitem" data-i18n="outline.collapseAll">Alle einklappen</button>
+                    <button type="button" class="opt-item" id="optExpandAll" role="menuitem" data-i18n="outline.expandAll">Alle ausklappen</button>
+                  </div>
+                </div>
+              </div>
               <div class="outline-list" id="outlineList" role="tree"></div>
               <div class="outline-footer">
                 <div class="footer-static">
@@ -3197,7 +3240,24 @@
     'detail.wrapOff': { de: 'Umbruch aus', en: 'Wrap off' },
     'detail.wrapTitle': { de: 'Zeilenumbruch umschalten', en: 'Toggle line wrap' },
     'settings.detailLineWrap': { de: 'Text-Zeilenumbruch', en: 'Text line wrap' },
-    'detail.wikiSettingsShort': { de: 'Wiki-Einstellungen', en: 'Wiki settings' }
+    'detail.wikiSettingsShort': { de: 'Wiki-Einstellungen', en: 'Wiki settings' },
+    'outline.filterPlaceholder': { de: 'Filtern…', en: 'Filter…' },
+    'outline.filterAria': { de: 'Struktur filtern', en: 'Filter structure' },
+    'outline.filterClear': { de: 'Filter löschen', en: 'Clear filter' },
+    'outline.collapseLevel': { de: 'Ebenen einklappen', en: 'Collapse levels' },
+    'outline.collapseLevelTitle': { de: 'Ebenen einklappen', en: 'Collapse levels' },
+    'outline.collapseAll': { de: 'Alle einklappen', en: 'Collapse all' },
+    'outline.expandAll': { de: 'Alle ausklappen', en: 'Expand all' },
+    'protocol.jumpTitle': { de: 'Zum Eintrag springen', en: 'Jump to entry' },
+    'settings.performanceMode': { de: 'Performance-Modus', en: 'Performance mode' },
+    'settings.performanceAuto': { de: 'Automatisch', en: 'Automatic' },
+    'settings.performanceOn': { de: 'Immer aktiv', en: 'Always on' },
+    'settings.performanceOff': { de: 'Deaktiviert', en: 'Disabled' },
+    'diff.added': { de: 'Hinzugefügt: {items}', en: 'Added: {items}' },
+    'diff.removed': { de: 'Entfernt: {items}', en: 'Removed: {items}' },
+    'diff.renamed': { de: 'Umbenannt: {items}', en: 'Renamed: {items}' },
+    'diff.textChanged': { de: 'Text geändert: {items}', en: 'Text changed: {items}' },
+    'diff.noChange': { de: 'Keine Strukturänderung', en: 'No structural change' }
   };
 
   function t(de, key, vars){
@@ -3963,6 +4023,13 @@
       warnPastingTextThreshold = 500000;
     }
     persistDrafts = readBoolParam(params, 'persistDrafts', false);
+    if(Object.prototype.hasOwnProperty.call(params, 'performanceMode')){
+      const v = String(params.performanceMode || 'auto');
+      if(v === 'on' || v === 'off' || v === 'auto') performanceMode = v;
+      else performanceMode = 'auto';
+    } else {
+      performanceMode = 'auto';
+    }
   }
 
   function writeHashState(){
@@ -3986,6 +4053,7 @@
     parts.push('warnBeforePastingText=' + (warnBeforePastingText ? 'true' : 'false'));
     parts.push('warnPastingTextThreshold=' + warnPastingTextThreshold);
     parts.push('persistDrafts=' + (persistDrafts ? 'true' : 'false'));
+    parts.push('performanceMode=' + performanceMode);
     const next = '#' + parts.join('&');
     if(location.hash !== next){
       history.replaceState(null, '', next);
@@ -4062,12 +4130,15 @@
     structRedoStack.push(structSnapshot());
     const snap = structUndoStack.pop();
     structUndoSuspended = true;
+    const oldTree = cloneTree(S.tree);
     S.tree = snap.tree;
     S.selectedId = snap.selectedId;
     S.idCounter = snap.idCounter;
     render();
     structUndoSuspended = false;
     updateStructUndoButtons();
+    const diff = diffTrees(oldTree, S.tree);
+    showBanner('ok', [formatTreeDiff(diff)]);
   }
 
   function structRedo(){
@@ -4075,12 +4146,15 @@
     structUndoStack.push(structSnapshot());
     const snap = structRedoStack.pop();
     structUndoSuspended = true;
+    const oldTree = cloneTree(S.tree);
     S.tree = snap.tree;
     S.selectedId = snap.selectedId;
     S.idCounter = snap.idCounter;
     render();
     structUndoSuspended = false;
     updateStructUndoButtons();
+    const diff = diffTrees(oldTree, S.tree);
+    showBanner('ok', [formatTreeDiff(diff)]);
   }
 
   function updateStructUndoButtons(){
@@ -4808,6 +4882,8 @@
     if(warnBtn) warnBtn.setAttribute('aria-expanded', 'false');
     const feOptBtn = document.getElementById('btnFocusEditorOptions');
     if(feOptBtn) feOptBtn.setAttribute('aria-expanded', 'false');
+    const collapseLvlBtn = document.getElementById('btnCollapseLevel');
+    if(collapseLvlBtn) collapseLvlBtn.setAttribute('aria-expanded', 'false');
     document.querySelectorAll('.detail-tools .options-wrap button[aria-expanded]').forEach(b => {
       b.setAttribute('aria-expanded', 'false');
     });
@@ -5676,6 +5752,8 @@
     scrollCaptureFrozen = true;
     renderDetail();
     updateSourceFromTree();
+    /* Tree → Source: Entsprechende Zeile im Source-View markieren */
+    if(id) jumpToSourceForNode(id);
     restoreScrollPositions();
     requestAnimationFrame(() => { scrollCaptureFrozen = false; });
   }
@@ -6108,6 +6186,252 @@
     return '';
   }
 
+  /* ===== Outline-Filter & Collapse-to-Level ===== */
+  let outlineFilterTimer = null;
+  let outlineFilterQuery = '';
+
+  function applyOutlineFilter(){
+    if(!outlineList) return;
+    const q = outlineFilterQuery.trim().toLowerCase();
+    if(!q){
+      outlineList.classList.remove('filtering');
+      outlineList.querySelectorAll('.outline-row').forEach(r => {
+        r.classList.remove('filtered-out', 'filter-match');
+      });
+      return;
+    }
+    outlineList.classList.add('filtering');
+    /* Alle Rows durchlaufen, Match + Vorfahren sichtbar lassen */
+    const matchIds = new Set();
+    const ancestorIds = new Set();
+    (function walk(nodes, parents){
+      for(const n of nodes){
+        const tag = (n.tag||'').toLowerCase();
+        const text = (n.text||'').toLowerCase();
+        if(tag.includes(q) || text.includes(q)){
+          matchIds.add(n.id);
+          parents.forEach(p => ancestorIds.add(p));
+        }
+        if(n.children && n.children.length){
+          walk(n.children, parents.concat([n.id]));
+        }
+      }
+    })(S.tree, []);
+    outlineList.querySelectorAll('.outline-row').forEach(row => {
+      const id = row.dataset.id;
+      if(matchIds.has(id)){
+        row.classList.remove('filtered-out');
+        row.classList.add('filter-match');
+      } else if(ancestorIds.has(id)){
+        row.classList.remove('filtered-out', 'filter-match');
+      } else {
+        row.classList.add('filtered-out');
+        row.classList.remove('filter-match');
+      }
+    });
+  }
+
+  function collapseToLevel(maxDepth){
+    (function walk(nodes, depth){
+      nodes.forEach(n => {
+        if(n.kind === 'element' && n.children && n.children.length){
+          n.collapsed = depth >= maxDepth;
+          walk(n.children, depth + 1);
+        }
+      });
+    })(S.tree, 1);
+    renderOutline();
+    markActiveTabDraftDirty();
+    scheduleDraftSave();
+    scheduleSourceFromTree();
+  }
+
+  function collapseAll(){
+    (function walk(nodes){
+      nodes.forEach(n => {
+        if(n.kind === 'element' && n.children && n.children.length) n.collapsed = true;
+        if(n.children) walk(n.children);
+      });
+    })(S.tree);
+    renderOutline();
+    markActiveTabDraftDirty();
+    scheduleDraftSave();
+    scheduleSourceFromTree();
+  }
+
+  function expandAll(){
+    (function walk(nodes){
+      nodes.forEach(n => {
+        n.collapsed = false;
+        if(n.children) walk(n.children);
+      });
+    })(S.tree);
+    renderOutline();
+    markActiveTabDraftDirty();
+    scheduleDraftSave();
+    scheduleSourceFromTree();
+  }
+
+  /* ===== Schema-Learning (Autocomplete für Tag-Input) ===== */
+  /* Lernt aus dem aktuellen Tree, welche Tags als Kinder eines Parent-Tags
+     vorkommen. Liefert Vorschläge für das Tag-Input-Feld. */
+  function buildSchemaMap(){
+    const map = new Map(); /* parentTag → Map<childTag, count> */
+    (function walk(nodes, parentTag){
+      for(const n of nodes){
+        if(n.kind === 'element' && n.tag){
+          const tag = n.tag.toLowerCase();
+          if(parentTag){
+            if(!map.has(parentTag)) map.set(parentTag, new Map());
+            const children = map.get(parentTag);
+            children.set(tag, (children.get(tag) || 0) + 1);
+          }
+          if(n.children && n.children.length) walk(n.children, tag);
+        }
+      }
+    })(S.tree, null);
+    return map;
+  }
+
+  function getTagSuggestions(parentTag){
+    const schema = buildSchemaMap();
+    const key = (parentTag || '').toLowerCase();
+    if(!schema.has(key)) return [];
+    const children = schema.get(key);
+    return Array.from(children.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([tag, count]) => tag);
+  }
+
+  /* ===== Offset-Map (Tree → Source Jump) ===== */
+  /* Erweitert serializeTreeWithLines um Zeichen-Offsets für jeden Node.
+     Damit kann beim Selektieren im Tree die entsprechende Source-Zeile
+     markiert werden. */
+  function buildOffsetMap(nodes, depth, state){
+    depth = depth || 0;
+    state = state || {text: '', offsets: {}};
+    const pad = '  '.repeat(depth);
+    for(const node of nodes){
+      if(node.kind === 'comment'){
+        const s = (node.text||'').trim().replace(/--/g,'- -');
+        if(s){
+          state.offsets[node.id] = state.text.length;
+          state.text += pad + '<!-- ' + s + ' -->\n';
+        }
+        continue;
+      }
+      const tag = sanitizeTagName((node.tag && node.tag.trim()) || '') || 'element';
+      const hasCh = node.children && node.children.length;
+      const text = dedentText(node.text == null ? '' : String(node.text));
+      state.offsets[node.id] = state.text.length;
+      if(hasCh){
+        state.text += pad + '<' + tag + '>\n';
+        if(text.length){
+          if(text.includes('\n')) text.split('\n').forEach(l => state.text += pad + '  ' + escapeXML(l) + '\n');
+          else state.text += pad + '  ' + escapeXML(text) + '\n';
+        }
+        buildOffsetMap(node.children, depth + 1, state);
+        state.text += pad + '</' + tag + '>\n';
+      } else {
+        if(text.includes('\n')){
+          state.text += pad + '<' + tag + '>\n';
+          text.split('\n').forEach(l => state.text += pad + '  ' + escapeXML(l) + '\n');
+          state.text += pad + '</' + tag + '>\n';
+        } else {
+          state.text += pad + '<' + tag + '>' + escapeXML(text) + '</' + tag + '>\n';
+        }
+      }
+    }
+    return state;
+  }
+
+  function getFullOffsetMap(){
+    const state = {text: '<prompt>\n', offsets: {}};
+    buildOffsetMap(S.tree, 1, state);
+    state.text += '</prompt>';
+    return state;
+  }
+
+  /* Tree → Source: Selektierte Node im Source-View markieren */
+  function jumpToSourceForNode(nodeId){
+    if(!sourceText || !nodeId) return;
+    if(sourcePanel.style.display === 'none' || sourcePanel.style.display === '') return;
+    const map = getFullOffsetMap();
+    const offset = map.offsets[nodeId];
+    if(offset == null) return;
+    /* Offset ist relativ zum <prompt>-Body → +Länge von '<prompt>\n' */
+    const fullOffset = '<prompt>\n'.length + offset;
+    const text = getEditorValue(sourceText);
+    /* Zeile finden für Scroll */
+    const prefix = text.slice(0, fullOffset);
+    const line = (prefix.match(/\n/g) || []).length;
+    /* Ende des Tags finden (bis zur nächsten Zeile) */
+    const lineEnd = text.indexOf('\n', fullOffset);
+    const endPos = lineEnd === -1 ? text.length : lineEnd;
+    if(typeof setEditorSelection === 'function') setEditorSelection(sourceText, fullOffset, endPos);
+    else try { sourceText.setSelectionRange(fullOffset, endPos); } catch(_){}
+    const lineHeight = parseFloat(getComputedStyle(sourceText).lineHeight) || 18;
+    sourceText.scrollTop = Math.max(0, (line - 2) * lineHeight);
+  }
+
+  /* ===== Protokoll-Einträge klickbar (Jump-to-Node + Source) ===== */
+  function makeProtocolEntryClickable(entry, issue){
+    if(!entry || !issue) return;
+    entry.style.cursor = 'pointer';
+    entry.title = t('Zum Eintrag springen', 'protocol.jumpTitle');
+    entry.onclick = () => jumpToIssue(issue);
+  }
+
+  /* ===== Structural Diff (zwischen zwei Tree-Snapshots) ===== */
+  /* Vergleicht zwei Bäume und liefert eine lesbare Zusammenfassung der
+     Änderungen (hinzugefügt, entfernt, umbenannt, Text geändert). */
+  function treeToMap(nodes, parentTag, out){
+    out = out || {};
+    for(const n of (nodes || [])){
+      out[n.id] = {
+        tag: n.tag || '',
+        text: (n.text || '').trim().slice(0, 60),
+        kind: n.kind,
+        parentTag: parentTag || ''
+      };
+      if(n.children) treeToMap(n.children, n.tag, out);
+    }
+    return out;
+  }
+
+  function diffTrees(oldTree, newTree){
+    const oldMap = treeToMap(oldTree);
+    const newMap = treeToMap(newTree);
+    const added = [], removed = [], renamed = [], textChanged = [];
+    for(const [id, info] of Object.entries(newMap)){
+      if(!oldMap[id]){
+        added.push(info.kind === 'comment' ? '💬 Kommentar' : '<' + info.tag + '>');
+      } else {
+        if(info.kind === 'element' && oldMap[id].tag !== info.tag){
+          renamed.push('<' + oldMap[id].tag + '> → <' + info.tag + '>');
+        }
+        if(oldMap[id].text !== info.text){
+          textChanged.push(info.kind === 'comment' ? '💬' : '<' + info.tag + '>');
+        }
+      }
+    }
+    for(const [id, info] of Object.entries(oldMap)){
+      if(!newMap[id]){
+        removed.push(info.kind === 'comment' ? '💬 Kommentar' : '<' + info.tag + '>');
+      }
+    }
+    return {added, removed, renamed, textChanged};
+  }
+
+  function formatTreeDiff(diff){
+    const parts = [];
+    if(diff.added.length) parts.push(t('Hinzugefügt: {items}', 'diff.added', {items: diff.added.join(', ')}));
+    if(diff.removed.length) parts.push(t('Entfernt: {items}', 'diff.removed', {items: diff.removed.join(', ')}));
+    if(diff.renamed.length) parts.push(t('Umbenannt: {items}', 'diff.renamed', {items: diff.renamed.join(', ')}));
+    if(diff.textChanged.length) parts.push(t('Text geändert: {items}', 'diff.textChanged', {items: diff.textChanged.join(', ')}));
+    return parts.length ? parts.join(' · ') : t('Keine Strukturänderung', 'diff.noChange');
+  }
+
   /* ===== Outline ===== */
   function renderOutline(){
     bindOutlineScroll();
@@ -6289,6 +6613,7 @@
   }
   
   function render(){
+    applyPerformanceMode();
     scrollCaptureFrozen = true;
     renderOutline();
     renderDetail();
@@ -6399,12 +6724,17 @@
       tagInput.value = node.tag;
       tagInput.placeholder = t('tag-name', 'detail.tagPlaceholder'); tagInput.autocomplete = 'off'; tagInput.spellcheck = false;
       tagInput.setAttribute('aria-label', t('Tag-Name', 'detail.tagAria'));
+      tagInput.setAttribute('list', 'tagSuggestions');
       tagInput.oninput = e => {
         node.tag = sanitizeTagName(e.target.value);
         e.target.value = node.tag;
         updateOutlineLabelFor(node.id, node.tag);
         scheduleSourceFromTree();
       };
+      /* Schema-Learning: Vorschläge basierend auf Parent-Tag aktualisieren */
+      const parentForSchema = path.length > 1 ? path[path.length - 2] : null;
+      const parentTag = parentForSchema ? (parentForSchema.tag || '') : '';
+      tagInput.onfocus = () => refreshTagSuggestions(parentTag);
       head.appendChild(tagInput);
       const ca = document.createElement('span'); ca.className = 'detail-angle'; ca.textContent = '>';
       head.appendChild(ca);
@@ -7488,6 +7818,17 @@
       2, CUSTOM_SLOT_MAX, 1,
       (n) => { displayedAmountbuttonC = n; writeHashState(); renderCustomButtons(); }
     ));
+    advSection.appendChild(createSettingsSelectRow(
+      t('Performance-Modus', 'settings.performanceMode'),
+      'performanceMode',
+      performanceMode,
+      [
+        { value: 'auto', label: t('Automatisch', 'settings.performanceAuto') },
+        { value: 'on', label: t('Immer aktiv', 'settings.performanceOn') },
+        { value: 'off', label: t('Deaktiviert', 'settings.performanceOff') }
+      ],
+      (v) => { performanceMode = v; writeHashState(); applyPerformanceMode(); renderOutline(); }
+    ));
     body.appendChild(advSection);
 
     /* --- Sektion: Entwürfe --- */
@@ -8191,6 +8532,9 @@
     document.addEventListener('focusin', e => {
       const el = e.target;
       if(!isEditorTarget(el)) return;
+      /* Fokus-Editor ist offen → kein scrollIntoView, kein Page-Scroll */
+      const feOverlay = document.getElementById('focusEditorOverlay');
+      if(feOverlay && feOverlay.classList.contains('open')) return;
       if(focusTimer) clearTimeout(focusTimer);
       focusTimer = setTimeout(() => {
         updateKeyboardPadding();
@@ -8712,6 +9056,23 @@
   let focusEditorTarget = null;
   let focusEditorIsTag = false;
   let focusEditorOrigValue = '';
+  let _feScrollLockActive = false;
+
+  /* Scroll-Lock: blockiert Page-Scroll, während der Fokus-Editor offen ist.
+     Verhindert, dass die Tastatur die Seite nach oben schiebt. */
+  (function initFeScrollLock(){
+    if(!window.visualViewport) return;
+    let savedScrollX = 0, savedScrollY = 0;
+    window.visualViewport.addEventListener('scroll', () => {
+      const overlay = document.getElementById('focusEditorOverlay');
+      if(overlay && overlay.classList.contains('open')){
+        /* Visual-Viewport-Offset zurücksetzen */
+        if(window.visualViewport.offsetTop !== 0){
+          window.visualViewport.scrollTo(0, 0);
+        }
+      }
+    });
+  })();
 
   function openFocusEditor(targetEl, isTag){
     if(!isMobileLayout()) return;
@@ -8752,12 +9113,20 @@
     document.body.style.overflow = 'hidden';
 
     /* Fokus aufs Textfeld (User hat explizit getippt → Tastatur ist gewollt) */
+    /* Scroll-Lock: verhindert, dass der Browser die Seite nach oben schiebt,
+       wenn die Tastatur geöffnet wird und die Textarea fokussiert wird. */
+    const scrollY = window.scrollY;
+    const scrollX = window.scrollX;
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         if(textarea){
           textarea.focus();
           const len = (textarea.value || '').length;
           try { textarea.setSelectionRange(len, len); } catch(_){}
+        }
+        /* Page-Scroll durch Browser-Focus zurücksetzen */
+        if(window.scrollX !== scrollX || window.scrollY !== scrollY){
+          window.scrollTo(scrollX, scrollY);
         }
         updateFocusEditorUndoButtons();
         if(textarea) updateDetailFieldCharCount(textarea);
@@ -8972,6 +9341,202 @@
     });
   })();
 
+  /* ===== Outline-Filter & Collapse-to-Level: Event-Wiring ===== */
+  (function wireOutlineFilter(){
+    const filterInput = document.getElementById('outlineFilterInput');
+    const filterClear = document.getElementById('btnOutlineFilterClear');
+    const collapseBtn = document.getElementById('btnCollapseLevel');
+    const collapseWrap = document.getElementById('collapseLevelWrap');
+    const collapseMenu = document.getElementById('collapseLevelMenu');
+
+    if(filterInput){
+      filterInput.addEventListener('input', () => {
+        outlineFilterQuery = filterInput.value || '';
+        if(filterClear) filterClear.hidden = !outlineFilterQuery;
+        if(outlineFilterTimer) clearTimeout(outlineFilterTimer);
+        outlineFilterTimer = setTimeout(applyOutlineFilter, 120);
+      });
+      filterInput.addEventListener('keydown', e => {
+        if(e.key === 'Escape'){
+          filterInput.value = '';
+          outlineFilterQuery = '';
+          if(filterClear) filterClear.hidden = true;
+          applyOutlineFilter();
+          filterInput.blur();
+        }
+      });
+    }
+    if(filterClear){
+      filterClear.onclick = () => {
+        filterInput.value = '';
+        outlineFilterQuery = '';
+        filterClear.hidden = true;
+        applyOutlineFilter();
+        filterInput.focus();
+      };
+    }
+    if(collapseBtn && collapseWrap && collapseMenu){
+      collapseBtn.onclick = e => {
+        e.stopPropagation();
+        const isOpen = collapseMenu.classList.contains('open');
+        closeOptionsMenu();
+        if(!isOpen){
+          positionMenu(collapseBtn, collapseMenu);
+          collapseBtn.setAttribute('aria-expanded', 'true');
+          openOptionsMenu = collapseMenu;
+        }
+      };
+      /* Collapse-Level Optionen */
+      const optAll = document.getElementById('optCollapseAll');
+      const optExp = document.getElementById('optExpandAll');
+      if(optAll) optAll.onclick = () => { closeOptionsMenu(); collapseAll(); };
+      if(optExp) optExp.onclick = () => { closeOptionsMenu(); expandAll(); };
+    }
+  })();
+
+  /* ===== Schema-Learning: Autocomplete-Datalist für Tag-Input ===== */
+  /* Globale Datalist, die beim Tippen im Tag-Input aktualisiert wird */
+  let _schemaDatalist = null;
+  function ensureSchemaDatalist(){
+    if(_schemaDatalist) return _schemaDatalist;
+    _schemaDatalist = document.createElement('datalist');
+    _schemaDatalist.id = 'tagSuggestions';
+    document.body.appendChild(_schemaDatalist);
+    return _schemaDatalist;
+  }
+  function refreshTagSuggestions(parentTag){
+    const dl = ensureSchemaDatalist();
+    dl.innerHTML = '';
+    const suggestions = getTagSuggestions(parentTag);
+    suggestions.slice(0, 12).forEach(tag => {
+      const o = document.createElement('option');
+      o.value = tag;
+      dl.appendChild(o);
+    });
+  }
+
+  /* ===== Performance-Mode Setting ===== */
+  let performanceMode = 'auto'; /* 'auto' | 'on' | 'off' */
+  let autoCollapseThreshold = 200; /* ab dieser Node-Anzahl auto-collapse */
+
+  function countNodes(nodes){
+    let c = 0;
+    (function walk(ns){ for(const n of ns){ c++; if(n.children) walk(n.children); } })(nodes || []);
+    return c;
+  }
+
+  function applyPerformanceMode(){
+    if(performanceMode === 'off') return;
+    const count = countNodes(S.tree);
+    const shouldOptimize = performanceMode === 'on' || (performanceMode === 'auto' && count > autoCollapseThreshold);
+    if(shouldOptimize){
+      /* Level 3+ automatisch einklappen */
+      (function walk(nodes, depth){
+        nodes.forEach(n => {
+          if(n.kind === 'element' && n.children && n.children.length && depth >= 3) n.collapsed = true;
+          if(n.children) walk(n.children, depth + 1);
+        });
+      })(S.tree, 1);
+    }
+  }
+
+  /* ===== Protokoll-Einträge klickbar machen ===== */
+  /* Überschreibt renderProtocolList um Jump-Funktionalität zu ergänzen */
+  renderProtocolList = function(){
+    const list = document.getElementById('protocolList');
+    if(!list) return;
+    list.innerHTML = '';
+    if(!protocolLog.length){
+      const empty = document.createElement('div');
+      empty.className = 'protocol-empty';
+      empty.textContent = t('Noch keine Einträge. Tippe auf „Prüfen“, um die Struktur jetzt zu prüfen.', 'protocol.empty');
+      list.appendChild(empty);
+      return;
+    }
+    /* Letzte Validierung: _line-Properties sind nach runValidation gesetzt.
+       Bei Bedarf nachträglich aktualisieren, falls noch nicht geschehen. */
+    const hasLines = (function checkLines(nodes){
+      for(const n of nodes){ if(n._line != null) return true; if(n.children && checkLines(n.children)) return true; }
+      return false;
+    })(S.tree);
+    if(!hasLines){
+      /* _line setzen ohne Protokoll-Einträge zu erzeugen */
+      const lineState = getLineMap();
+      (function setLines(nodes){
+        for(const n of nodes){
+          if(n.kind !== 'comment') n._line = lineState.map[n.id] || null;
+          if(n.children) setLines(n.children);
+        }
+      })(S.tree);
+    }
+    protocolLog.forEach(entry => {
+      const row = document.createElement('div');
+      row.className = 'protocol-entry type-' + (entry.type || 'ok');
+      const ts = document.createElement('span');
+      ts.className = 'protocol-ts';
+      ts.textContent = entry.ts;
+      const msg = document.createElement('span');
+      msg.className = 'protocol-msg';
+      msg.textContent = entry.message;
+      row.appendChild(ts);
+      row.appendChild(msg);
+      /* Jump: wenn die Message eine Node-ID referenziert (über Zeilen-Map) */
+      if(entry.type === 'error' || entry.type === 'warning'){
+        /* Versuche zugehörige Issue über Zeilennummer in der Message zu finden */
+        const lineMatch = entry.message.match(/Zeile (\d+)/);
+        if(lineMatch){
+          const line = parseInt(lineMatch[1], 10);
+          /* Node mit dieser Zeile finden */
+          const found = (function findNodeByLine(nodes){
+            for(const n of nodes){
+              if(n._line === line) return n;
+              if(n.children){ const f = findNodeByLine(n.children); if(f) return f; }
+            }
+            return null;
+          })(S.tree);
+          if(found){
+            row.style.cursor = 'pointer';
+            row.title = t('Zum Eintrag springen', 'protocol.jumpTitle');
+            row.onclick = () => {
+              selectNode(found.id);
+              const row = outlineRowById(found.id);
+              if(row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              if(sourcePanel.style.display !== 'none' && sourcePanel.style.display !== ''){
+                jumpToSourceForNode(found.id);
+              }
+            };
+          }
+        }
+      }
+      list.appendChild(row);
+    });
+    list.scrollTop = list.scrollHeight;
+  };
+
+  /* ===== Source → Tree: Bei Selektion im Source-View Tree markieren ===== */
+  let sourceToTreeTimer = null;
+  if(sourceText){
+    sourceText.addEventListener('click', () => {
+      if(sourceToTreeTimer) clearTimeout(sourceToTreeTimer);
+      sourceToTreeTimer = setTimeout(() => {
+        if(sourcePanel.style.display === 'none' || sourcePanel.style.display === '') return;
+        if(sourceDirty) return; /* Nur bei synchronem Source */
+        const pos = sourceText.selectionStart;
+        const map = getFullOffsetMap();
+        /* Node finden, dessen Offset <= pos ist */
+        let bestId = null, bestOffset = -1;
+        for(const [id, off] of Object.entries(map.offsets)){
+          const fullOff = '<prompt>\n'.length + off;
+          if(fullOff <= pos && fullOff > bestOffset){
+            bestOffset = fullOff;
+            bestId = id;
+          }
+        }
+        if(bestId) selectNode(bestId);
+      }, 80);
+    });
+  }
+
   /* ===== Start ===== */
   readHashState();
   /* Sprache: URL setLanguage, sonst System, Fallback de */
@@ -9012,6 +9577,7 @@
   setupMobileKeyboardFix();
   renderTabs();
   render();
+  ensureSchemaDatalist();
   updateResultCharCount();
   updateStructUndoButtons();
   loadLanguage(currentLang).catch(() => {});

@@ -91,6 +91,16 @@
   • JSON-Dateien nur ändern, wenn der User das ausdrücklich will (Keys vorbereiten).
   • Keine globalen Arbeits-Spiegel für tree/selectedId/idCounter/sourceFocused/
     focusDetailField einführen – immer S.* verwenden.
+  • §MOBILE-FOCUS-REGEL: Auf Mobile darf .focus() NIE programmatisch auf
+    Textfelder (textarea, input[type=text], contentEditable) gelenkt werden,
+    wenn der User das Feld nicht selbst explizit angetippt hat. Grund: Jedes
+    programmatic focus() öffnet die virtuelle Tastatur, was unerwünscht ist.
+    Stattdessen: if(!isMobileLayout()) el.focus(); oder den Fokus-Editor
+    nutzen. Ausnahme: Der Fokus-Editor selbst (focusEditorTextarea), weil
+    der User dort durch Tippen selbst die Tastatur gewollt hat.
+    Betrifft: Filter-Clear, Find/Replace, scrollSourceToLine, Undo/Redo,
+    Insert-Operationen, jeden anderen Hilfs-Focus. Immer isMobileLayout()
+    prüfen BEFORE focus() auf ein Texteingabefeld.
 
   URL-Beispiel-Reihenfolge (Orientierung): setLanguage, tabBarShown,
   tabBarLocation, … siehe writeHashState().
@@ -182,6 +192,7 @@
     height: 100dvh;
     max-height: 100dvh;
     overflow: hidden;
+    overscroll-behavior: none;
   }
 
   body {
@@ -2389,9 +2400,9 @@
   button.settings-draft-clear,
   .settings-section .settings-draft-clear {
     display: block;
-    width: 100%;
+    width: calc(100% - 2 * var(--space-2));
     max-width: none;
-    margin-top: var(--space-2);
+    margin: var(--space-2) var(--space-2) 0;
     flex: none;
   }
 
@@ -2699,6 +2710,7 @@
     display: none;
     flex-direction: column;
     overflow: hidden;
+    overscroll-behavior: none;
     transform: translateY(100%);
     transition: transform 0.28s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
@@ -2734,8 +2746,9 @@
     flex-direction: column;
     overflow: hidden;
     padding: var(--space-3) var(--space-4);
-    padding-bottom: calc(var(--space-3) + 2.5rem + var(--keyboard-padding, 0px));
+    padding-bottom: var(--space-3);
     gap: var(--space-2);
+    overscroll-behavior: contain;
   }
 
   .focus-editor-textarea-wrap {
@@ -2771,11 +2784,12 @@
     line-height: 1.5;
     color: var(--ink);
     padding: var(--space-4);
-    padding-bottom: calc(var(--space-4) + var(--keyboard-padding, 0px));
+    padding-bottom: var(--space-4);
     resize: none;
     flex: 1;
     min-height: 0;
     overflow-y: auto;
+    overscroll-behavior: contain;
     background: transparent;
     letter-spacing: -0.01em;
     white-space: pre-wrap;
@@ -7322,7 +7336,8 @@
     const lineText = lines[line - 1] || '';
     const start = pos + (col && col > 0 ? Math.min(col - 1, lineText.length) : 0);
     const end = pos + lineText.length;
-    try { sourceText.focus(); } catch(_){}
+    /* Auf Mobile: nicht fokussieren – sonst öffnet sich der Fokus-Editor (§MOBILE-FOCUS-REGEL) */
+    if(!isMobileLayout()) try { sourceText.focus(); } catch(_){}
     if(typeof setEditorSelection === 'function') setEditorSelection(sourceText, start, end);
     else try { sourceText.setSelectionRange(start, end); } catch(_){}
     const lineHeight = parseFloat(getComputedStyle(sourceText).lineHeight) || 18;
@@ -9056,23 +9071,22 @@
   let focusEditorTarget = null;
   let focusEditorIsTag = false;
   let focusEditorOrigValue = '';
-  let _feScrollLockActive = false;
+  let _feBodyLockStyle = null;
 
-  /* Scroll-Lock: blockiert Page-Scroll, während der Fokus-Editor offen ist.
-     Verhindert, dass die Tastatur die Seite nach oben schiebt. */
-  (function initFeScrollLock(){
-    if(!window.visualViewport) return;
-    let savedScrollX = 0, savedScrollY = 0;
-    window.visualViewport.addEventListener('scroll', () => {
-      const overlay = document.getElementById('focusEditorOverlay');
-      if(overlay && overlay.classList.contains('open')){
-        /* Visual-Viewport-Offset zurücksetzen */
-        if(window.visualViewport.offsetTop !== 0){
-          window.visualViewport.scrollTo(0, 0);
-        }
-      }
-    });
-  })();
+  /* Body-Lock: fixiert den gesamten Dokumentkörper, sodass das Öffnen der
+     Tastatur die Seite nicht scrollen kann. */
+  function feLockBody(){
+    if(_feBodyLockStyle) return;
+    _feBodyLockStyle = document.createElement('style');
+    _feBodyLockStyle.id = 'fe-body-lock';
+    _feBodyLockStyle.textContent = 'html, body { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; overflow: hidden !important; }';
+    document.head.appendChild(_feBodyLockStyle);
+  }
+  function feUnlockBody(){
+    if(!_feBodyLockStyle) return;
+    _feBodyLockStyle.remove();
+    _feBodyLockStyle = null;
+  }
 
   function openFocusEditor(targetEl, isTag){
     if(!isMobileLayout()) return;
@@ -9111,22 +9125,17 @@
     overlay.setAttribute('aria-hidden', 'false');
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
+    feLockBody();
 
-    /* Fokus aufs Textfeld (User hat explizit getippt → Tastatur ist gewollt) */
-    /* Scroll-Lock: verhindert, dass der Browser die Seite nach oben schiebt,
-       wenn die Tastatur geöffnet wird und die Textarea fokussiert wird. */
-    const scrollY = window.scrollY;
-    const scrollX = window.scrollX;
+    /* Fokus aufs Textfeld (User hat explizit getippt → Tastatur ist gewollt).
+       preventScroll: true verhindert, dass der Browser die Seite scrollt,
+       um das fokussierte Element ins Sichtbare zu bringen. */
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         if(textarea){
-          textarea.focus();
+          try { textarea.focus({ preventScroll: true }); } catch(_){ textarea.focus(); }
           const len = (textarea.value || '').length;
           try { textarea.setSelectionRange(len, len); } catch(_){}
-        }
-        /* Page-Scroll durch Browser-Focus zurücksetzen */
-        if(window.scrollX !== scrollX || window.scrollY !== scrollY){
-          window.scrollTo(scrollX, scrollY);
         }
         updateFocusEditorUndoButtons();
         if(textarea) updateDetailFieldCharCount(textarea);
@@ -9141,6 +9150,8 @@
     /* Options- und Wiki-Menü schließen */
     if(typeof closeOptionsMenu === 'function') closeOptionsMenu();
     if(typeof closeAllWikiMenus === 'function') closeAllWikiMenus();
+    /* Body-Lock aufheben */
+    feUnlockBody();
     if(!focusEditorTarget) { overlay.classList.remove('open'); overlay.setAttribute('aria-hidden', 'true'); return; }
 
     /* Wert zurückkopieren */
@@ -9372,7 +9383,8 @@
         outlineFilterQuery = '';
         filterClear.hidden = true;
         applyOutlineFilter();
-        filterInput.focus();
+        /* Auf Mobile: nicht fokussieren – sonst öffnet sich die Tastatur (§MOBILE-FOCUS-REGEL) */
+        if(!isMobileLayout()) filterInput.focus();
       };
     }
     if(collapseBtn && collapseWrap && collapseMenu){

@@ -1149,7 +1149,10 @@
     width: 36px;
   }
 
-  /* Filter: ausgeblendete Rows */
+  /* Mobile: Filter-Leiste ausblendbar (Platzsparmaßnahme) */
+  .layout.filter-hidden .outline-filter-bar {
+    display: none;
+  }
   .outline-list.filtering .outline-row.filtered-out { display: none; }
   .outline-list.filtering .outline-row.filter-match .outline-tag { font-weight: 700; }
 
@@ -1577,8 +1580,28 @@
     display: flex;
     align-items: center;
     gap: var(--space-2);
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     flex: none;
+    overflow: hidden;
+  }
+
+  /* HIG: Buttons in der Tag-Name-Zeile gleich hoch wie Tag-Input */
+  .detail-heading-row .btn,
+  .detail-heading-row .btn.small,
+  .detail-heading-row .btn.small.icon-only {
+    min-height: 36px;
+    height: 36px;
+    flex: none;
+  }
+  .detail-heading-row .btn.small.icon-only {
+    width: 36px;
+  }
+  .detail-heading-row .detail-tag-input {
+    min-width: 60px;
+    flex: 1 1 auto;
+  }
+  .detail-heading-row .detail-tools {
+    margin-left: auto;
   }
 
   .detail-angle {
@@ -2600,6 +2623,17 @@
       height: auto;
     }
 
+    /* HIG Mobile: Buttons in der Tag-Name-Zeile auch 44pt */
+    .detail-heading-row .btn,
+    .detail-heading-row .btn.small,
+    .detail-heading-row .btn.small.icon-only {
+      min-height: var(--touch-min);
+      height: auto;
+    }
+    .detail-heading-row .btn.small.icon-only {
+      width: var(--touch-min);
+    }
+
     /* HIG Mobile: Panel-Header-Buttons auch 44pt, gleiche Höhe */
     .panel-head .btn,
     .panel-head .btn.small,
@@ -3270,6 +3304,9 @@
                   <button type="button" class="opt-item" id="optMoveTabNext" role="menuitem" data-i18n="tabs.moveNext">Nach rechts</button>
                   <div class="opt-sep"></div>
                   <button type="button" class="opt-item" id="optDuplicateTab" role="menuitem" data-i18n="tabs.duplicate">Duplizieren</button>
+                  <div class="opt-sep"></div>
+                  <button type="button" class="opt-item" id="optFilterToggle" role="menuitem" data-i18n="toolbar.filterShow">Filter zeigen</button>
+                  <div class="opt-sep"></div>
                   <button type="button" class="opt-item danger" id="optReset" role="menuitem" data-i18n="toolbar.reset">Zurücksetzen</button>
                 </div>
               </div>
@@ -3444,6 +3481,9 @@
     'detail.wrapOff': { de: 'Umbruch aus', en: 'Wrap off' },
     'detail.wrapTitle': { de: 'Zeilenumbruch umschalten', en: 'Toggle line wrap' },
     'settings.detailLineWrap': { de: 'Text-Zeilenumbruch', en: 'Text line wrap' },
+    'settings.hideFilterOnMobile': { de: 'Filter auf Mobile ausblenden', en: 'Hide filter on mobile' },
+    'toolbar.filterShow': { de: 'Filter zeigen', en: 'Show filter' },
+    'toolbar.filterHide': { de: 'Filter verstecken', en: 'Hide filter' },
     'detail.wikiSettingsShort': { de: 'Wiki-Einstellungen', en: 'Wiki settings' },
     'outline.filterPlaceholder': { de: 'Filtern…', en: 'Filter…' },
     'outline.filterAria': { de: 'Struktur filtern', en: 'Filter structure' },
@@ -3698,7 +3738,7 @@
 
   const _mqMobile = window.matchMedia('(max-width: 900px)');
   let _isMobile = _mqMobile.matches;
-  _mqMobile.addEventListener('change', e => { _isMobile = e.matches; });
+  _mqMobile.addEventListener('change', e => { _isMobile = e.matches; applyFilterVisibility(); });
   function isMobileLayout(){
     return _isMobile;
   }
@@ -4227,6 +4267,7 @@
       warnPastingTextThreshold = 500000;
     }
     persistDrafts = readBoolParam(params, 'persistDrafts', false);
+    hideFilterOnMobile = readBoolParam(params, 'hideFilterOnMobile', false);
     if(Object.prototype.hasOwnProperty.call(params, 'performanceMode')){
       const v = String(params.performanceMode || 'auto');
       if(v === 'on' || v === 'off' || v === 'auto') performanceMode = v;
@@ -4257,10 +4298,30 @@
     parts.push('warnBeforePastingText=' + (warnBeforePastingText ? 'true' : 'false'));
     parts.push('warnPastingTextThreshold=' + warnPastingTextThreshold);
     parts.push('persistDrafts=' + (persistDrafts ? 'true' : 'false'));
+    parts.push('hideFilterOnMobile=' + (hideFilterOnMobile ? 'true' : 'false'));
     parts.push('performanceMode=' + performanceMode);
     const next = '#' + parts.join('&');
     if(location.hash !== next){
       history.replaceState(null, '', next);
+    }
+  }
+
+  /* Mobile: Filter-Leiste ausblendbar (Platzsparmaßnahme) */
+  function applyFilterVisibility(){
+    const layout = document.getElementById('layout');
+    if(!layout) return;
+    if(isMobileLayout() && hideFilterOnMobile) layout.classList.add('filter-hidden');
+    else layout.classList.remove('filter-hidden');
+  }
+  function updateFilterToggleLabel(){
+    const btn = document.getElementById('optFilterToggle');
+    if(!btn) return;
+    if(hideFilterOnMobile){
+      btn.textContent = t('Filter zeigen', 'toolbar.filterShow');
+      btn.setAttribute('data-i18n', 'toolbar.filterShow');
+    } else {
+      btn.textContent = t('Filter verstecken', 'toolbar.filterHide');
+      btn.setAttribute('data-i18n', 'toolbar.filterHide');
     }
   }
 
@@ -4297,6 +4358,7 @@
   let warnPastingTextThreshold = 500000;
   /* Entwürfe: immer sessionStorage; localStorage nur mit Opt-In (URL persistDrafts) */
   let persistDrafts = false;
+  let hideFilterOnMobile = false;
   const DRAFT_SESSION_KEY = 'pb-draft-v1';
   const DRAFT_LOCAL_KEY = 'pb-draft-v1-local';
   const DRAFT_LOCAL_TIME_KEY = 'pb-draft-v1-local-time';
@@ -6910,12 +6972,13 @@
 
     detailScroll.appendChild(buildLevelBar(path, depth));
 
+    let head;
     if(node.kind === 'comment'){
-      const head = document.createElement('div'); head.className = 'detail-heading-row';
+      head = document.createElement('div'); head.className = 'detail-heading-row';
       const h = document.createElement('span'); h.className = 'comment-heading'; h.textContent = t('💬 Anmerkung', 'detail.commentHeading');
-      head.appendChild(h); detailScroll.appendChild(head);
+      head.appendChild(h);
     } else {
-      const head = document.createElement('div'); head.className = 'detail-heading-row';
+      head = document.createElement('div'); head.className = 'detail-heading-row';
       const oa = document.createElement('span'); oa.className = 'detail-angle'; oa.textContent = '<';
       head.appendChild(oa);
       const tagInput = document.createElement('input');
@@ -6942,8 +7005,8 @@
       head.appendChild(tagInput);
       const ca = document.createElement('span'); ca.className = 'detail-angle'; ca.textContent = '>';
       head.appendChild(ca);
-      detailScroll.appendChild(head);
     }
+    detailScroll.appendChild(head);
 
     const tools = document.createElement('div'); tools.className = 'detail-tools';
 
@@ -7115,7 +7178,42 @@
       tools.appendChild(optionsWrap);
     }
 
-    detailScroll.appendChild(tools);
+    head.appendChild(tools);
+
+    /* Desktop: Tab-Reihenfolge Tag-Name → Textfeld → Buttons
+       (Buttons stehen durch detail-heading-row im DOM vor dem Textfeld,
+        sollen aber erst danach per Tab erreicht werden) */
+    if(!isMobileLayout()){
+      const ti = head.querySelector('.detail-tag-input');
+      if(ti && !isContainer){
+        ti.addEventListener('keydown', e => {
+          if(e.key === 'Tab' && !e.shiftKey){
+            e.preventDefault();
+            textarea.focus();
+          }
+        });
+        textarea.addEventListener('keydown', e => {
+          if(e.key === 'Tab' && !e.shiftKey){
+            e.preventDefault();
+            const firstBtn = tools.querySelector('button:not([disabled])');
+            if(firstBtn) firstBtn.focus();
+          } else if(e.key === 'Tab' && e.shiftKey){
+            e.preventDefault();
+            ti.focus();
+          }
+        });
+        const firstToolBtn = tools.querySelector('button:not([disabled])');
+        if(firstToolBtn){
+          firstToolBtn.addEventListener('keydown', e => {
+            if(e.key === 'Tab' && e.shiftKey){
+              e.preventDefault();
+              textarea.focus();
+            }
+          });
+        }
+      }
+    }
+
     detailScroll.appendChild(textareaWrap);
 
     if(S.focusDetailField && shouldFocusDetail()){
@@ -7970,6 +8068,12 @@
       'tabBarShown',
       tabsVisible,
       (v) => { tabsVisible = v; writeHashState(); renderTabs(); }
+    ));
+    displaySection.appendChild(createSettingsToggleRow(
+      t('Filter auf Mobile ausblenden', 'settings.hideFilterOnMobile'),
+      'hideFilterOnMobile',
+      hideFilterOnMobile,
+      (v) => { hideFilterOnMobile = v; writeHashState(); applyFilterVisibility(); updateFilterToggleLabel(); }
     ));
     body.appendChild(displaySection);
 
@@ -9068,6 +9172,14 @@
     closeOptionsMenu();
     duplicateActiveTab();
   };
+  document.getElementById('optFilterToggle').onclick = e => {
+    e.stopPropagation();
+    closeOptionsMenu();
+    hideFilterOnMobile = !hideFilterOnMobile;
+    writeHashState();
+    applyFilterVisibility();
+    updateFilterToggleLabel();
+  };
   document.getElementById('optReset').onclick = e => {
     e.stopPropagation();
     closeOptionsMenu();
@@ -9217,6 +9329,8 @@
     renderCustomButtons();
     if(typeof renderWarningsMenus === 'function') renderWarningsMenus();
     renderTabsNoHash();
+    applyFilterVisibility();
+    updateFilterToggleLabel();
     /* Hash-Settings brauchen keinen Tree-Rebuild; Sprache löst eigenen Refresh aus */
     if(currentLang !== prevLang){
       loadLanguage(currentLang).catch(() => {});
@@ -9244,6 +9358,7 @@
     /* Tab-Orientierung: auf Mobile immer top-ähnlich; Parameter left bleibt erhalten */
     renderTabsNoHash();
     updateSourceHeadTools();
+    applyFilterVisibility();
     if(S.selectedId) renderDetail();
     restoreScrollPositions();
   });
@@ -9743,6 +9858,9 @@
   readHashState();
   /* Sprache: URL setLanguage, sonst System, Fallback de */
   writeHashState();
+  /* Mobile Filter-Sichtbarkeit anwenden + Toggle-Label setzen */
+  applyFilterVisibility();
+  updateFilterToggleLabel();
   /* Sofort korrekten Button-Text setzen (verhindert Flackern vor dem restlichen Init) */
   updateResultCharCount();
 

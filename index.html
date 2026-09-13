@@ -13,6 +13,11 @@
 <link rel="manifest" href="https://raw.githubusercontent.com/juristikde/design/main/website/site.webmanifest">
 <meta name="theme-color" content="#faf9f5">
 
+<!-- ========= FONTS (parallel laden, kein @import-Block) ========= -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
 <title>Prompt Baukasten – Strukturierter XML-Editor</title>
 
 <!--
@@ -50,11 +55,14 @@
      Paste = plain text.
   9. Undo-History pro Feld über historyKey inkl. Tab-Id (detail-<tabId>-<nodeId>).
      Bei Delete/Tab-Close pruneEditorHist* aufrufen.
+ 10. State ist Single Source of Truth pro Tab. KEINE globalen Arbeits-Spiegel
+     für tree/selectedId/idCounter/sourceFocused/focusDetailField mehr –
+     Zugriff ausschließlich über S.* (Getter/Setter auf aktiven Tab).
 
   --- WO WAS LIEGT ---
-  • State/Tabs: tabs[], getActiveTab(), syncActiveTabToMemory, loadTab,
+  • State/Tabs: tabs[], getActiveTab(), S (Accessor), loadTab,
     createTabState (scroll, draftXml, draftDirty).
-  • Baum: tree (Spiegel des aktiven Tabs), selectedId, renderOutline*,
+  • Baum: S.tree (Mirror des aktiven Tabs), S.selectedId, renderOutline*,
     renderDetail, serializeTree / parseXMLString.
   • UI-Fabrik: createUiButton, createMenuItem, createMenuSeparator (wiederverwenden!).
   • Hash-Settings: parseHashParams, readHashState, writeHashState.
@@ -81,14 +89,14 @@
   • Mobile-Sheet-Interaktion nicht entfernen oder durch reines Desktop-Layout ersetzen.
   • Keine stillen Full-render()-Aufrufe „zur Sicherheit“ bei Selektion/Tipp.
   • JSON-Dateien nur ändern, wenn der User das ausdrücklich will (Keys vorbereiten).
+  • Keine globalen Arbeits-Spiegel für tree/selectedId/idCounter/sourceFocused/
+    focusDetailField einführen – immer S.* verwenden.
 
   URL-Beispiel-Reihenfolge (Orientierung): setLanguage, tabBarShown,
   tabBarLocation, … siehe writeHashState().
   =============================================================================
 -->
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-
   /*
    * HOVER-REGEL
    * -----------------------------
@@ -382,11 +390,12 @@
     max-width: 12rem;
   }
 
-  /* Volle Breite in Aktionsleisten (Protokoll, Sprache, Source) – Truncation greift dort nicht */
+  /* Volle Breite in Aktionsleisten (Protokoll, Sprache, Source, Einstellungen) – Truncation greift dort nicht */
   .protocol-actions .btn,
   .language-actions .btn,
   .source-actions .btn,
   .protocol-actions .btn:not(.icon-only):not(.block),
+  .language-actions .btn:not(.icon-only):not(.block),
   .source-actions .btn:not(.icon-only):not(.block) {
     max-width: none;
     width: 100%;
@@ -500,9 +509,9 @@
     border: 1px solid var(--line);
     border-radius: var(--radius);
     box-shadow: var(--shadow-raised);
-    padding: var(--space-2);
+    padding: var(--space-3);
     z-index: 10000;
-    min-width: 220px;
+    min-width: 240px;
     display: none;
   }
 
@@ -517,7 +526,13 @@
     font-size: var(--text-caption);
     color: var(--ink-soft);
     margin-bottom: var(--space-1);
+    margin-top: var(--space-2);
     font-weight: 600;
+  }
+
+  .wiki-menu label:first-child,
+  .options-menu .menu-level label:first-child {
+    margin-top: 0;
   }
 
   .wiki-menu select,
@@ -532,7 +547,7 @@
     font-size: var(--text-subhead);
     background: #fff;
     margin-bottom: var(--space-2);
-    min-height: 40px;
+    min-height: var(--touch-min);
   }
 
   .wiki-menu select:focus,
@@ -548,6 +563,13 @@
   .options-menu .menu-level .menu-actions {
     display: flex;
     gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  .wiki-menu .menu-actions .btn,
+  .options-menu .menu-level .menu-actions .btn {
+    flex: 1;
+    min-width: 0;
   }
 
   .wiki-wrap,
@@ -628,12 +650,27 @@
     line-height: 1;
   }
 
+  /* Mobile: Zurück-Button bündig am linken Rand */
+  @media (max-width: 900px) {
+    .options-menu .menu-back {
+      padding-left: var(--space-1);
+    }
+  }
+
   .options-menu .menu-level {
     display: none;
   }
 
   .options-menu .menu-level.active {
     display: block;
+  }
+
+  /* hidden-Attribut respektieren – .opt-item/.menu-back setzen display explizit,
+     was [hidden] sonst überschreiben würde. */
+  .options-menu .opt-item[hidden],
+  .options-menu .opt-sep[hidden],
+  .options-menu .menu-back[hidden] {
+    display: none;
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -1531,6 +1568,13 @@
 
   .detail-textarea::-webkit-scrollbar { display: none; }
 
+  .detail-textarea.wrap-off {
+    white-space: pre;
+    overflow-x: auto;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
   .detail-textarea.comment-style {
     font-style: italic;
     color: var(--ink-soft);
@@ -1791,8 +1835,7 @@
   }
 
   .paste-warn-actions .btn {
-    flex: 1 1 auto;
-    min-width: 7rem;
+    flex: 1;
   }
 
   .warnings-menu .warn-check {
@@ -2179,6 +2222,147 @@
     border-color: var(--color-action);
   }
 
+  /* ===== Einstellungen-Panel ===== */
+  .settings-panel {
+    height: min(80vh, 640px);
+  }
+
+  .settings-section {
+    margin-bottom: var(--space-3);
+  }
+
+  .settings-section-title {
+    font-family: var(--font-serif);
+    font-size: var(--text-subhead);
+    font-weight: 700;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: var(--space-2) var(--space-3) var(--space-1);
+    margin: 0;
+    border-bottom: 1px solid var(--line);
+    flex: none;
+  }
+
+  .settings-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 44px;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+  }
+
+  .settings-row .settings-label {
+    flex: 1;
+    min-width: 0;
+    font-size: var(--text-subhead);
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .settings-row .settings-label .settings-key {
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    color: var(--ink-faint);
+    font-weight: 400;
+  }
+
+  .settings-row .settings-check {
+    flex: none;
+    width: 44px;
+    height: 26px;
+    position: relative;
+  }
+
+  .settings-row .settings-check input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  .settings-row .settings-check .toggle-track {
+    width: 100%;
+    height: 100%;
+    border-radius: 13px;
+    background: var(--line);
+    transition: background 0.15s ease;
+    position: relative;
+  }
+
+  .settings-row .settings-check .toggle-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: transform 0.15s ease;
+  }
+
+  .settings-row .settings-check input:checked + .toggle-track {
+    background: var(--color-action);
+  }
+
+  .settings-row .settings-check input:checked + .toggle-track .toggle-thumb {
+    transform: translateX(18px);
+  }
+
+  .settings-row .settings-num-input {
+    width: 80px;
+    min-width: 80px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 0 var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-subhead);
+    min-height: 32px;
+    background: #fff;
+    color: var(--ink);
+    text-align: right;
+    flex: none;
+  }
+
+  .settings-row .settings-num-input:focus {
+    outline: 2px solid var(--color-action);
+    outline-offset: 0;
+    border-color: var(--color-action);
+  }
+
+  .settings-row .settings-select {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 0 var(--space-2);
+    font-family: inherit;
+    font-size: var(--text-subhead);
+    min-height: 32px;
+    background: #fff;
+    color: var(--ink);
+    flex: none;
+  }
+
+  .settings-actions-reset {
+    flex: 1;
+    max-width: none;
+    text-align: center;
+  }
+
+  button.settings-draft-clear,
+  .settings-section .settings-draft-clear {
+    display: block;
+    width: 100%;
+    max-width: none;
+    margin-top: var(--space-2);
+    flex: none;
+  }
+
   #sourceText {
     border: none !important;
     border-radius: 0 !important;
@@ -2473,7 +2657,200 @@
   }
 
   ::selection { background: var(--color-warning-soft); }
+
+  /* ===== Mobile Fokus-Editor (Vollbild-Editor-Modus) ===== */
+  .focus-editor-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 15000;
+    background: var(--paper-raised);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateY(100%);
+    transition: transform 0.28s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  .focus-editor-overlay.open {
+    display: flex;
+    transform: translateY(0);
+  }
+
+  .focus-editor-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--line);
+    flex: none;
+    min-height: 52px;
+    background: var(--paper-raised);
+  }
+
+  .focus-editor-head .focus-editor-tools {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    flex: 1;
+    justify-content: flex-end;
+  }
+
+  .focus-editor-body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: var(--space-3) var(--space-4);
+    padding-bottom: calc(var(--space-3) + 2.5rem + var(--keyboard-padding, 0px));
+    gap: var(--space-2);
+  }
+
+  .focus-editor-textarea-wrap {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: #fff;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* Char-Count im Fokus-Editor: oben rechts, Gesamt über Auswahl (umgekehrte Reihenfolge) */
+  .focus-editor-textarea-wrap .detail-field-charcount-stack {
+    position: absolute;
+    right: var(--space-3);
+    top: var(--space-2);
+    bottom: auto;
+    flex-direction: column-reverse;
+  }
+
+  .focus-editor-textarea {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.5;
+    color: var(--ink);
+    padding: var(--space-4);
+    padding-bottom: calc(var(--space-4) + var(--keyboard-padding, 0px));
+    resize: none;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    background: transparent;
+    letter-spacing: -0.01em;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  /* Fokus-Editor: NIEMALS Formatierungen oder Stile aus dem Originalfeld
+     übernehmen (auch nicht bei Tags oder Kommentaren). Reiner Text-Edit-Modus. */
+  .focus-editor-textarea:focus { outline: none; }
+
+  .focus-editor-textarea::placeholder {
+    color: var(--ink-faint);
+  }
+
+  .focus-editor-textarea.wrap-off {
+    white-space: pre;
+    overflow-x: auto;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  /* ===== Struktur Undo/Redo + Aktionen (eine Zeile) ===== */
+  .struct-action-row .btn {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ===== Bestätigungs-Dialog (showConfirm) ===== */
+  .confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(38, 49, 63, 0.28);
+    z-index: 11990;
+    display: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .confirm-overlay.open { display: block; }
+
+  .confirm-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(400px, calc(100vw - 32px));
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-raised), 0 12px 40px -12px rgba(38,49,63,.22);
+    z-index: 12000;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .confirm-panel.open { display: flex; }
+
+  .confirm-body {
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .confirm-message {
+    font-size: var(--text-subhead);
+    color: var(--ink);
+    line-height: 1.45;
+    margin: 0;
+  }
+
+  .confirm-actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--line);
+    flex: none;
+  }
+
+  .confirm-actions .btn {
+    flex: 1;
+  }
+
+  /*
+   * BUTTON-REIHENFOLGE-REGEL (gilt für ALLE Fenster-Menü-Designs)
+   * ----------------------------------------------------------------
+   * Der primäre / bestätigende Button (Bestätigen, Einfügen, Prüfen etc.)
+   * ist IMMER links. Der abbrechende Button (Abbrechen, Schließen etc.)
+   * ist IMMER rechts. Dies gilt einheitlich für: confirm-panel,
+   * paste-warn-panel, protocol-actions und alle anderen Dialog-Footer.
+   */
+
+  /* Source dirty indicator */
+  .source-dirty-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-warning);
+    margin-left: var(--space-1);
+    vertical-align: middle;
+    flex: none;
+  }
 </style>
+
 </head>
 <body>
 <div class="wrap">
@@ -2495,8 +2872,8 @@
     <div class="toolbar">
       <div class="toolbar-desktop">
         <div class="options-wrap" id="warningsWrapDesktop">
-          <button type="button" class="btn icon-only" id="btnWarnings" aria-haspopup="true" aria-expanded="false" data-i18n-aria="warnings.title" data-i18n-title="warnings.title" aria-label="Warnungen" title="Warnungen">
-            <svg class="icon-lock" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          <button type="button" class="btn icon-only" id="btnWarnings" aria-haspopup="true" aria-expanded="false" data-i18n-aria="settings.title" data-i18n-title="settings.title" aria-label="Einstellungen" title="Einstellungen">
+            <svg class="icon-gear" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
           <div class="options-menu warnings-menu" id="warningsMenuDesktop" role="menu" hidden></div>
         </div>
@@ -2511,7 +2888,7 @@
           <button type="button" class="btn" id="btnOptions" aria-haspopup="true" aria-expanded="false" data-i18n="toolbar.options">Optionen</button>
           <div class="options-menu" id="optionsMenu" role="menu">
             <div class="menu-level active" id="optionsMenuLevel0">
-              <button type="button" class="opt-item" id="optWarnings" role="menuitem" data-i18n="warnings.title">Warnungen</button>
+              <button type="button" class="opt-item" id="optWarnings" role="menuitem" data-i18n="settings.title">Einstellungen</button>
               <button type="button" class="opt-item" id="optLanguage" role="menuitem" data-i18n="toolbar.language">Sprache</button>
               <button type="button" class="opt-item" id="optValidate" role="menuitem" data-i18n="toolbar.protocol">Protokoll</button>
               <button type="button" class="opt-item" id="optToggleSource" role="menuitem" data-i18n="toolbar.showXml">XML anzeigen</button>
@@ -2532,14 +2909,12 @@
   <div id="protocolPanel" class="protocol-panel" role="dialog" aria-labelledby="protocolTitle" aria-modal="true">
     <div class="protocol-head">
       <h2 id="protocolTitle" data-i18n="protocol.title">Protokoll</h2>
-      <div class="protocol-head-tools">
-        <button type="button" class="btn small" id="btnProtocolClear" data-i18n="protocol.clear">Leeren</button>
-      </div>
       <button type="button" class="protocol-close" id="btnProtocolClose" data-i18n-aria="protocol.close" aria-label="Protokoll schließen">×</button>
     </div>
     <div class="protocol-body" id="protocolList"></div>
     <div class="protocol-actions">
       <button type="button" class="btn primary" id="btnProtocolValidate" data-i18n="protocol.validate">Prüfen</button>
+      <button type="button" class="btn" id="btnProtocolClear" data-i18n="protocol.clear">Leeren</button>
     </div>
   </div>
 
@@ -2571,8 +2946,68 @@
       </label>
     </div>
     <div class="protocol-actions paste-warn-actions">
-      <button type="button" class="btn primary" id="btnPasteWarnCancel" data-i18n="pasteWarn.cancel">Abbrechen</button>
-      <button type="button" class="btn" id="btnPasteWarnInsert" data-i18n="pasteWarn.insert" disabled>Einfügen</button>
+      <button type="button" class="btn primary" id="btnPasteWarnInsert" data-i18n="pasteWarn.insert">Einfügen</button>
+      <button type="button" class="btn" id="btnPasteWarnCancel" data-i18n="pasteWarn.cancel">Abbrechen</button>
+    </div>
+  </div>
+
+  <!-- ===== Bestätigungs-Dialog (showConfirm) ===== -->
+  <div id="confirmOverlay" class="confirm-overlay" hidden></div>
+  <div id="confirmPanel" class="confirm-panel" role="dialog" aria-modal="true" aria-labelledby="confirmMessage" hidden>
+    <div class="confirm-body">
+      <p id="confirmMessage" class="confirm-message"></p>
+    </div>
+    <div class="confirm-actions">
+      <button type="button" class="btn primary" id="btnConfirmOk" data-i18n="confirm.ok">Bestätigen</button>
+      <button type="button" class="btn" id="btnConfirmCancel" data-i18n="confirm.cancel">Abbrechen</button>
+    </div>
+  </div>
+
+  <!-- ===== Einstellungen-Panel ===== -->
+  <div id="settingsOverlay" class="language-overlay" hidden></div>
+  <div id="settingsPanel" class="language-panel settings-panel" role="dialog" aria-labelledby="settingsTitle" aria-modal="true">
+    <div class="language-head">
+      <h2 id="settingsTitle" data-i18n="settings.title">Einstellungen</h2>
+      <button type="button" class="language-close" id="btnSettingsClose" data-i18n-aria="settings.close" aria-label="Einstellungen schließen">×</button>
+    </div>
+    <div class="language-body" id="settingsBody"></div>
+    <div class="language-actions settings-actions">
+      <button type="button" class="btn" id="btnSettingsReset" data-i18n="warnings.resetSettings">Auf Standardwerte zurücksetzen</button>
+    </div>
+  </div>
+
+  <!-- ===== Mobile Fokus-Editor (Vollbild-Editor-Modus) ===== -->
+  <div id="focusEditorOverlay" class="focus-editor-overlay" aria-hidden="true">
+    <div class="focus-editor-head">
+      <button type="button" class="btn small icon-only" id="btnFocusEditorBack" aria-label="Zurück" data-i18n-aria="focusEditor.back">‹</button>
+      <div class="focus-editor-tools">
+        <button type="button" class="btn small icon-only" id="btnFocusEditorUndo" aria-label="Rückgängig" data-i18n-aria="focusEditor.undo" disabled>↶</button>
+        <button type="button" class="btn small icon-only" id="btnFocusEditorRedo" aria-label="Wiederholen" data-i18n-aria="focusEditor.redo" disabled>↷</button>
+        <div class="options-wrap" id="focusEditorOptionsWrap">
+          <button type="button" class="btn small" id="btnFocusEditorOptions" aria-haspopup="true" aria-expanded="false" data-i18n="focusEditor.options">Optionen</button>
+          <div class="options-menu" id="focusEditorOptionsMenu" role="menu">
+            <div class="menu-level active" id="focusEditorMenuLevel0" data-level="0">
+              <button type="button" class="opt-item" id="optFocusEditorFind" role="menuitem" data-i18n="focusEditor.find">Suchen</button>
+              <button type="button" class="opt-item" id="optFocusEditorWrap" role="menuitem" data-i18n="detail.wrapOff">Umbruch an</button>
+              <div class="opt-sep" id="optFocusEditorWikiSep" hidden></div>
+              <button type="button" class="opt-item" id="optFocusEditorWiki" role="menuitem" hidden data-i18n="detail.wikiText">+ WikiText</button>
+              <button type="button" class="opt-item" id="optFocusEditorWikiSettings" role="menuitem" hidden data-i18n="detail.wikiSettingsShort">Wiki-Einstellungen</button>
+            </div>
+            <div class="menu-level" id="focusEditorMenuLevel1" data-level="1">
+              <button type="button" class="menu-back" id="optFocusEditorWikiBack" data-i18n="detail.back">Zurück</button>
+              <label data-i18n="detail.wikiLang">Sprache</label>
+              <select class="wiki-lang" id="feWikiLang"></select>
+              <label data-i18n="detail.wikiChars">ca. Zeichen</label>
+              <input type="number" class="wiki-chars" id="feWikiChars" min="80" max="2000" step="50">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="focus-editor-body">
+      <div class="focus-editor-textarea-wrap" id="focusEditorTextareaWrap">
+        <textarea class="focus-editor-textarea" id="focusEditorTextarea" spellcheck="false"></textarea>
+      </div>
     </div>
   </div>
 
@@ -2610,13 +3045,15 @@
               <div class="outline-footer">
                 <div class="footer-static">
                   <div class="custom-row" id="customButtonsRow"></div>
-                  <div class="action-row">
-                    <button class="btn" id="btnAddRoot" data-i18n="outline.addElement" data-i18n-title="outline.addElementTitle" title="Element auf oberster Ebene hinzufügen">Element</button>
-                    <button class="btn danger" id="btnDelete" data-i18n="outline.delete" data-i18n-title="outline.deleteTitle" title="Auswahl löschen">Löschen</button>
+                  <div class="action-row struct-action-row">
+                    <button type="button" class="btn" id="btnStructUndo" aria-label="Struktur rückgängig" data-i18n-aria="outline.structUndo" data-i18n-title="outline.structUndoTitle" title="Strukturänderung rückgängig" disabled>↶</button>
+                    <button type="button" class="btn" id="btnStructRedo" aria-label="Struktur wiederholen" data-i18n-aria="outline.structRedo" data-i18n-title="outline.structRedoTitle" title="Strukturänderung wiederherstellen" disabled>↷</button>
+                    <button class="btn" id="btnAddRoot" data-i18n-title="outline.addElementTitle" title="Element auf oberster Ebene hinzufügen">+</button>
+                    <button class="btn danger" id="btnDelete" data-i18n-title="outline.deleteTitle" title="Auswahl löschen"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg></button>
                   </div>
                   <div class="action-row">
                     <button class="btn primary" id="btnCopyResult" data-i18n="outline.copyResult" data-i18n-title="outline.copyResultTitle" title="XML-Ergebnis kopieren">Ergebnis</button>
-                    <button type="button" class="btn result-char-count" id="resultCharCount" aria-live="polite" data-i18n-title="outline.charCountTitle" title="Zeichenanzahl ein- oder ausblenden"></button>
+                    <button type="button" class="btn result-char-count" id="resultCharCount" aria-live="off" data-i18n-title="outline.charCountTitle" title="Zeichenanzahl ein- oder ausblenden"></button>
                     <script>
                     /* Früher Hash-Check: Label sofort zeigen, Zahl erst wenn Main-JS fertig (kein Flackern) */
                     (function(){
@@ -2688,7 +3125,7 @@
         native: entry.native || code,
         local: entry.local || entry.native || code
       };
-    }).sort((a, b) => a.native.localeCompare(b.local, currentLang || 'de')); // Sortierung der Sprachen in lokaler Sprache
+    }).sort((a, b) => a.native.localeCompare(b.native, currentLang || 'de'));
   }
 
   function detectSystemLanguage(){
@@ -2723,7 +3160,44 @@
     'drafts.clearEmpty': {
       de: 'Nichts gespeichert',
       en: 'Nothing saved'
-    }
+    },
+    'confirm.cancel': { de: 'Abbrechen', en: 'Cancel' },
+    'confirm.ok': { de: 'Bestätigen', en: 'Confirm' },
+    'focusEditor.back': { de: 'Zurück', en: 'Back' },
+    'focusEditor.undo': { de: 'Rückgängig', en: 'Undo' },
+    'focusEditor.redo': { de: 'Wiederholen', en: 'Redo' },
+    'focusEditor.find': { de: 'Suchen', en: 'Find' },
+    'focusEditor.editText': { de: 'Text bearbeiten', en: 'Edit text' },
+    'outline.structUndo': { de: 'Struktur rückgängig', en: 'Undo structure' },
+    'outline.structUndoTitle': { de: 'Strukturänderung rückgängig', en: 'Undo structure change' },
+    'outline.structRedo': { de: 'Struktur wiederholen', en: 'Redo structure' },
+    'outline.structRedoTitle': { de: 'Strukturänderung wiederherstellen', en: 'Redo structure change' },
+    'outline.copyFailed': { de: '✗', en: '✗' },
+    'outline.copyFailedFull': { de: '✗ Kopieren fehlgeschlagen', en: '✗ Copy failed' },
+    'warnings.resetSettings': { de: 'Auf Standardwerte zurücksetzen', en: 'Reset to defaults' },
+    'warnings.confirmResetSettings': { de: 'Alle Einstellungen zurücksetzen?', en: 'Reset all settings?' },
+    'settings.title': { de: 'Einstellungen', en: 'Settings' },
+    'settings.close': { de: 'Einstellungen schließen', en: 'Close settings' },
+    'settings.sectionWarnings': { de: 'Warnungen', en: 'Warnings' },
+    'settings.sectionDisplay': { de: 'Darstellung', en: 'Display' },
+    'settings.sectionTabBar': { de: 'Tab-Leiste', en: 'Tab Bar' },
+    'settings.sectionAdvanced': { de: 'Erweitert', en: 'Advanced' },
+    'settings.sectionDrafts': { de: 'Entwürfe', en: 'Drafts' },
+    'settings.showCharacterCount': { de: 'Gesamtzeichenanzahl anzeigen', en: 'Show total character count' },
+    'settings.xmlCodeLineWrap': { de: 'XML-Zeilenumbruch', en: 'XML line wrap' },
+    'settings.tabBarShown': { de: 'Tab-Leiste anzeigen', en: 'Show tab bar' },
+    'settings.tabBarLocation': { de: 'Position', en: 'Position' },
+    'settings.tabBarTop': { de: 'Oben', en: 'Top' },
+    'settings.tabBarLeft': { de: 'Links', en: 'Left' },
+    'settings.protocolThreshold': { de: 'Protokoll-Schwellwert', en: 'Protocol threshold' },
+    'settings.warnPastingTextThreshold': { de: 'Paste-Warn-Schwellwert', en: 'Paste warn threshold' },
+    'settings.displayedAmountbuttonC': { de: 'Custom-Buttons Anzahl', en: 'Custom button count' },
+    'focusEditor.options': { de: 'Optionen', en: 'Options' },
+    'detail.wrapOn': { de: 'Umbruch an', en: 'Wrap on' },
+    'detail.wrapOff': { de: 'Umbruch aus', en: 'Wrap off' },
+    'detail.wrapTitle': { de: 'Zeilenumbruch umschalten', en: 'Toggle line wrap' },
+    'settings.detailLineWrap': { de: 'Text-Zeilenumbruch', en: 'Text line wrap' },
+    'detail.wikiSettingsShort': { de: 'Wiki-Einstellungen', en: 'Wiki settings' }
   };
 
   function t(de, key, vars){
@@ -2751,7 +3225,7 @@
     }
     if(vars && typeof vars === 'object'){
       Object.keys(vars).forEach(k => {
-        s = s.replace(new RegExp('\{' + k + '\}', 'g'), String(vars[k]));
+        s = s.split('{' + k + '}').join(String(vars[k]));
       });
     }
     return s;
@@ -2804,6 +3278,10 @@
     if(token !== languageLoadToken) return;
     try { flushSourceFromTree(); } catch(_){}
     captureScrollPositions();
+    /* Offene Menüs schließen – sie wurden mit alten t()-Texten gebaut */
+    if(typeof closeOptionsMenu === 'function') closeOptionsMenu();
+    if(typeof closeAllWikiMenus === 'function') closeAllWikiMenus();
+    if(typeof closeTemplateMenu === 'function') closeTemplateMenu();
     document.documentElement.lang = currentLang;
     if(i18nDict.app && i18nDict.app.documentTitle) document.title = i18nDict.app.documentTitle;
     applyI18nDom(document);
@@ -2925,6 +3403,9 @@
     }
     panel.classList.add('open');
     document.body.style.overflow = 'hidden';
+    /* Fokus auf Schließen-Button (nicht auf Suchfeld – vermeidet Mobile-Tastatur) */
+    const closeBtn = document.getElementById('btnLanguageClose');
+    if(closeBtn) closeBtn.focus();
   }
 
   function closeLanguagePanel(){
@@ -2950,14 +3431,16 @@
   let tabsOrientation = 'horizontal';
   let tabsVisible = true;
   let mobileDetailOpen = false;
-  let unpackMobileOptionsButton = false;
 
+  const _mqMobile = window.matchMedia('(max-width: 900px)');
+  let _isMobile = _mqMobile.matches;
+  _mqMobile.addEventListener('change', e => { _isMobile = e.matches; });
   function isMobileLayout(){
-    return window.matchMedia('(max-width: 900px)').matches;
+    return _isMobile;
   }
 
   function useUnpackedTools(){
-    return !isMobileLayout() || unpackMobileOptionsButton;
+    return !isMobileLayout();
   }
 
   const SHEET_MS = 280;
@@ -2980,52 +3463,56 @@
     return tabs.find(x => x.id === activeTabId) || null;
   }
 
-  /* Aktiver Tab ist Quelle der Wahrheit; Globals tree/selectedId sind Arbeits-Spiegel */
+  /*
+   * Single Source of Truth
+   * ----------------------
+   * S ist ein Accessor-Objekt auf den aktiven Tab. Getter/Setter sehen wie
+   * Variablen aus, gehen aber direkt auf tab.{tree,selectedId,idCounter,
+   * sourceFocused,focusDetailField}. Kein globaler Arbeits-Spiegel mehr.
+   * Wenn kein aktiver Tab existiert (z.B. ganz früh in Init), liefern die
+   * Getter neutrale Werte ([] / null / 1 / false); Setter sind dann No-Op.
+   */
+  const S = {
+    get tree(){ const t = getActiveTab(); return t ? (t.tree || []) : []; },
+    set tree(v){ const t = getActiveTab(); if(t) t.tree = v || []; },
+
+    get selectedId(){ const t = getActiveTab(); return t ? t.selectedId : null; },
+    set selectedId(v){ const t = getActiveTab(); if(t) t.selectedId = v || null; },
+
+    get idCounter(){ const t = getActiveTab(); return t ? (t.idCounter || 1) : 1; },
+    set idCounter(v){ const t = getActiveTab(); if(t) t.idCounter = v; },
+
+    get sourceFocused(){ const t = getActiveTab(); return !!(t && t.sourceFocused); },
+    set sourceFocused(v){ const t = getActiveTab(); if(t) t.sourceFocused = !!v; },
+
+    get focusDetailField(){ const t = getActiveTab(); return !!(t && t.focusDetailField); },
+    set focusDetailField(v){ const t = getActiveTab(); if(t) t.focusDetailField = !!v; }
+  };
+
   function setSelectedId(id){
-    selectedId = id || null;
-    const tab = getActiveTab();
-    if(tab) tab.selectedId = selectedId;
-    return selectedId;
+    S.selectedId = id || null;
+    return S.selectedId;
   }
 
-  function pullActiveTabIntoGlobals(){
-    const tab = getActiveTab();
-    if(!tab) return;
-    tree = tab.tree || [];
-    selectedId = tab.selectedId;
-    idCounter = tab.idCounter || 1;
-    sourceFocused = !!tab.sourceFocused;
-    focusDetailField = !!tab.focusDetailField;
+
+  /* Tree/selectedId/idCounter/sourceFocused/focusDetailField sind durch S
+     immer synchron. Diese Funktion sichert nur noch die Scroll-Position. */
+  function syncActiveTabToMemory(opts){
+    if(!opts || opts.captureScroll !== false) captureScrollPositions();
   }
 
-  /* Scroll strikt pro Tab-Id (eigene Map – keine geteilten Referenzen) */
-  const tabScrollStore = new Map();
-
+  /* Scroll strikt pro Tab – einzige Quelle ist tab.scroll (keine zweite Map) */
   function scrollStateForTabId(tabId){
     if(!tabId) return { outline: 0, detail: 0, source: 0, fields: {} };
-    let sc = tabScrollStore.get(tabId);
-    if(!sc){
-      sc = { outline: 0, detail: 0, source: 0, fields: {} };
-      tabScrollStore.set(tabId, sc);
-    }
-    if(!sc.fields) sc.fields = {};
-    return sc;
+    const tab = tabs.find(x => x.id === tabId);
+    if(!tab) return { outline: 0, detail: 0, source: 0, fields: {} };
+    if(!tab.scroll) tab.scroll = { outline: 0, detail: 0, source: 0, fields: {} };
+    if(!tab.scroll.fields) tab.scroll.fields = {};
+    return tab.scroll;
   }
 
   function getActiveTabScroll(){
     return scrollStateForTabId(activeTabId);
-  }
-
-  function mirrorScrollToTabObject(tabId){
-    const tab = tabs.find(x => x.id === tabId);
-    if(!tab) return;
-    const sc = scrollStateForTabId(tabId);
-    tab.scroll = {
-      outline: sc.outline,
-      detail: sc.detail,
-      source: sc.source,
-      fields: Object.assign({}, sc.fields)
-    };
   }
 
   /*
@@ -3086,8 +3573,8 @@
     if(detailScroll) sc.detail = detailScroll.scrollTop;
     if(sourceText) sc.source = sourceText.scrollTop;
     const ta = detailScroll && detailScroll.querySelector('textarea.detail-textarea');
-    if(ta && selectedId) sc.fields[selectedId] = ta.scrollTop;
-    mirrorScrollToTabObject(tabId);
+    if(ta && S.selectedId) sc.fields[S.selectedId] = ta.scrollTop;
+    // scroll direkt in tab.scroll gespeichert
   }
 
   function applyScrollState(sc){
@@ -3096,8 +3583,8 @@
     if(detailScroll) detailScroll.scrollTop = sc.detail || 0;
     if(sourceText) sourceText.scrollTop = sc.source || 0;
     const ta = detailScroll && detailScroll.querySelector('textarea.detail-textarea');
-    if(ta && selectedId && sc.fields && sc.fields[selectedId] != null){
-      ta.scrollTop = sc.fields[selectedId];
+    if(ta && S.selectedId && sc.fields && sc.fields[S.selectedId] != null){
+      ta.scrollTop = sc.fields[S.selectedId];
     }
   }
 
@@ -3119,7 +3606,7 @@
       const tabId = activeTabId;
       const sc = scrollStateForTabId(tabId);
       sc.outline = outlineList.scrollTop;
-      mirrorScrollToTabObject(tabId);
+      // scroll direkt in tab.scroll gespeichert
     }, { passive: true });
   }
 
@@ -3131,7 +3618,7 @@
         const tabId = activeTabId;
         const sc = scrollStateForTabId(tabId);
         sc.detail = detailScroll.scrollTop;
-        mirrorScrollToTabObject(tabId);
+        // scroll direkt in tab.scroll gespeichert
       }, { passive: true });
     }
     if(sourceText && !sourceText._scrollPersistBound){
@@ -3141,7 +3628,7 @@
         const tabId = activeTabId;
         const sc = scrollStateForTabId(tabId);
         sc.source = sourceText.scrollTop;
-        mirrorScrollToTabObject(tabId);
+        // scroll direkt in tab.scroll gespeichert
       }, { passive: true });
     }
   }
@@ -3154,7 +3641,7 @@
       const tabId = activeTabId;
       const sc = scrollStateForTabId(tabId);
       sc.fields[nodeId] = ta.scrollTop;
-      mirrorScrollToTabObject(tabId);
+      // scroll direkt in tab.scroll gespeichert
     }, { passive: true });
   }
 
@@ -3210,6 +3697,10 @@
     putSheetDormant(sourcePanel);
   }
 
+  const _mqSmall = window.matchMedia('(max-width: 480px)');
+  let _isSmall = _mqSmall.matches;
+  _mqSmall.addEventListener('change', e => { _isSmall = e.matches; });
+
   function updateMobileSheetMetrics(){
     if(!isMobileLayout()){
       clearSheetInlineGeometry();
@@ -3219,7 +3710,7 @@
     const split = document.getElementById('splitBody');
     const detailCol = document.getElementById('detailCol');
     if(!split || !detailCol) return;
-    const fraction = window.matchMedia('(max-width: 480px)').matches ? 0.32 : 0.36;
+    const fraction = _isSmall ? 0.32 : 0.36;
     const layoutRect = layout.getBoundingClientRect();
     const splitRect = split.getBoundingClientRect();
     if(splitRect.height < 40) return;
@@ -3285,6 +3776,7 @@
       sourcePanel.style.display = 'flex';
       setSourceLabels(true);
       sourceGesamtMode = false;
+      sourceDirty = false;
       updateSourcePanelTitle();
       updateSourceFromTree();
       updateSourceHeadTools();
@@ -3411,11 +3903,11 @@
     } else {
       xmlCodeLineWrap = true;
     }
-    if(Object.prototype.hasOwnProperty.call(params, 'unpackMobileOptionsButton')){
-      const v = params.unpackMobileOptionsButton;
-      unpackMobileOptionsButton = (v === 'true' || v === '1');
+    if(Object.prototype.hasOwnProperty.call(params, 'detailTextLineWrap')){
+      const v = params.detailTextLineWrap;
+      detailTextLineWrap = (v === 'true' || v === '1');
     } else {
-      unpackMobileOptionsButton = false;
+      detailTextLineWrap = true;
     }
     if(Object.prototype.hasOwnProperty.call(params, 'protocolThreshold')){
       const n = parseInt(params.protocolThreshold, 10);
@@ -3427,6 +3919,9 @@
     if(Object.prototype.hasOwnProperty.call(params, 'setLanguage')){
       const code = String(params.setLanguage || '').toLowerCase().slice(0, 2);
       if(code) currentLang = code;
+      else currentLang = detectSystemLanguage();
+    } else {
+      currentLang = detectSystemLanguage();
     }
     /* displayedAmountbuttonC: 2–6; Default Mobile 2, Desktop 4 */
     if(Object.prototype.hasOwnProperty.call(params, 'displayedAmountbuttonC')){
@@ -3478,7 +3973,7 @@
     parts.push('tabBarLocation=' + (tabsOrientation === 'vertical' ? 'left' : 'top'));
     parts.push('showCharacterCount=' + (showCharacterCount ? 'true' : 'false'));
     parts.push('xmlCodeLineWrap=' + (xmlCodeLineWrap ? 'true' : 'false'));
-    parts.push('unpackMobileOptionsButton=' + (unpackMobileOptionsButton ? 'true' : 'false'));
+    parts.push('detailTextLineWrap=' + (detailTextLineWrap ? 'true' : 'false'));
     parts.push('protocolThreshold=' + protocolThreshold);
     parts.push('displayedAmountbuttonC=' + displayedAmountbuttonC);
     for(let i = 0; i < CUSTOM_SLOT_MAX; i++){
@@ -3498,7 +3993,8 @@
   }
 
   /* ===== Baum- und Editor-Zustand ===== */
-  let tree = [], idCounter = 1, sourceFocused = false, selectedId = null, focusDetailField = false;
+  /* tree/selectedId/idCounter/sourceFocused/focusDetailField leben jetzt im
+     aktiven Tab und werden ausschließlich über S angesprochen. */
   let showCharacterCount = false;
   /* Custom-Footer-Buttons C1–C6; Menü: user, assistant, tool, comment, parent (Pre/Oberpunkt), child (Sub/Unterpunkt) */
   const CUSTOM_SLOT_MAX = 6;
@@ -3513,9 +4009,11 @@
   let protocolThreshold = 20;
   const protocolTriggerEls = [];
   let xmlCodeLineWrap = true;
+  let detailTextLineWrap = true;
   
 
   let sourceGesamtMode = false;
+  let sourceDirty = false; /* Source-Text wurde manuell editiert, noch nicht übernommen */
   let wikiSettings = {lang:'de', chars:1200}, openWikiMenu = null, openTemplateMenu = null, openOptionsMenu = null;
 
   /* Schließ-/Lösch-/Paste-Warnungen (URL-Parameter, Default true) */
@@ -3535,11 +4033,73 @@
   let nodeClipboard = null;
   let pendingPaste = null; /* { text, target } für Paste-Warn-Dialog */
 
+  /* ===== Strukturelles Undo/Redo =====
+   * Snapshots des gesamten Baums vor jeder Struktur-Operation.
+   * {n} ist klein genug (meist < 100 Knoten) für Full-Tree-Snapshot. */
+  const STRUCT_UNDO_LIMIT = 80;
+  let structUndoStack = [];
+  let structRedoStack = [];
+  let structUndoSuspended = false;
+
+  function structSnapshot(){
+    return {
+      tree: cloneTree(S.tree),
+      selectedId: S.selectedId,
+      idCounter: S.idCounter
+    };
+  }
+
+  function structUndoPush(){
+    if(structUndoSuspended) return;
+    structUndoStack.push(structSnapshot());
+    if(structUndoStack.length > STRUCT_UNDO_LIMIT) structUndoStack.shift();
+    structRedoStack.length = 0;
+    updateStructUndoButtons();
+  }
+
+  function structUndo(){
+    if(!structUndoStack.length) return;
+    structRedoStack.push(structSnapshot());
+    const snap = structUndoStack.pop();
+    structUndoSuspended = true;
+    S.tree = snap.tree;
+    S.selectedId = snap.selectedId;
+    S.idCounter = snap.idCounter;
+    render();
+    structUndoSuspended = false;
+    updateStructUndoButtons();
+  }
+
+  function structRedo(){
+    if(!structRedoStack.length) return;
+    structUndoStack.push(structSnapshot());
+    const snap = structRedoStack.pop();
+    structUndoSuspended = true;
+    S.tree = snap.tree;
+    S.selectedId = snap.selectedId;
+    S.idCounter = snap.idCounter;
+    render();
+    structUndoSuspended = false;
+    updateStructUndoButtons();
+  }
+
+  function updateStructUndoButtons(){
+    const btnU = document.getElementById('btnStructUndo');
+    const btnR = document.getElementById('btnStructRedo');
+    if(btnU) btnU.disabled = structUndoStack.length === 0;
+    if(btnR) btnR.disabled = structRedoStack.length === 0;
+  }
+
+  function clearStructUndo(){
+    structUndoStack.length = 0;
+    structRedoStack.length = 0;
+    updateStructUndoButtons();
+  }
+
   /* Editor: Einrückung wie Serialisierung (2 Spaces) */
   const EDITOR_INDENT = '  ';
   /* VS-Code-ähnlich: viele Schritte, Tipp-Burst wird zu einem Undo-Stop */
   const EDITOR_UNDO_LIMIT = 150;
-  const EDITOR_UNDO_DEBOUNCE_MS = 500;
   const editorHistMap = new Map();
 
   function pruneEditorHistKeys(pred){
@@ -3602,7 +4162,18 @@
   const panelStructureTitle = document.getElementById('panelStructureTitle');
   const LANG_CODES = ['de','en','fr','es','it','pt','nl','pl','ru','ja','zh'];
 
-  function uid(){ return 'n'+(idCounter++); }
+  /* Fallback-Zähler für den seltenen Fall, dass vor dem Anlegen des ersten
+     Tabs bereits neue Knoten erzeugt werden (z.B. beim Laden eines Drafts). */
+  let _fallbackIdCounter = 1;
+  function uid(){
+    const tab = getActiveTab();
+    if(tab){
+      const n = tab.idCounter || 1;
+      tab.idCounter = n + 1;
+      return 'n' + n;
+    }
+    return 'n' + (_fallbackIdCounter++);
+  }
   function newNode(tag,text){ return {id:uid(), kind:'element', tag:tag||'', text:text||'', children:[], collapsed:false}; }
   function newCommentNode(text){ return {id:uid(), kind:'comment', text:text||''}; }
 
@@ -3629,7 +4200,10 @@
       focusDetailField: false,
       scroll: { outline: 0, detail: 0, source: 0, fields: {} },
       draftDirty: true,
-      draftXml: null
+      draftXml: null,
+      protocolLog: [],
+      protocolErrorCount: 0,
+      hasProtocolErrors: false
     };
     if(treeData && treeData.length){
       let max = 0;
@@ -3646,18 +4220,6 @@
     return tabState;
   }
 
-  function syncActiveTabToMemory(opts){
-    const tab = getActiveTab();
-    if(!tab) return;
-    tab.tree = tree;
-    tab.selectedId = selectedId;
-    tab.idCounter = idCounter;
-    tab.sourceFocused = sourceFocused;
-    tab.focusDetailField = focusDetailField;
-    /* Scroll nur speichern wenn DOM noch den echten Tab-Zustand zeigt (nicht mitten im Re-Render) */
-    if(!opts || opts.captureScroll !== false) captureScrollPositions();
-  }
-
   function saveActiveTab(opts){
     syncActiveTabToMemory(opts);
     scheduleDraftSave();
@@ -3670,7 +4232,8 @@
   }
 
   function serializeTabXml(tab){
-    return ('<prompt>\n' + serializeTree(tab.tree || [], 1) + '</prompt>').trim();
+    const body = serializeTree(tab.tree || [], 1);
+    return body ? ('<prompt>\n' + body + '</prompt>') : '<prompt></prompt>';
   }
 
   function buildDraftPayload(){
@@ -3760,9 +4323,9 @@
     tabs = newTabs;
     const idx = Math.min(Math.max(0, data.active|0), tabs.length - 1);
     activeTabId = tabs[idx].id;
-    tree = tabs[idx].tree;
-    selectedId = tabs[idx].selectedId;
-    idCounter = tabs[idx].idCounter;
+    /* tree/selectedId/idCounter werden von S direkt aus tabs[idx] gelesen –
+       keine Zuweisung mehr nötig. */
+    clearStructUndo();
     return true;
   }
 
@@ -3776,28 +4339,38 @@
       if(outlineList) sc.outline = outlineList.scrollTop;
       if(detailScroll) sc.detail = detailScroll.scrollTop;
       if(sourceText) sc.source = sourceText.scrollTop;
-      mirrorScrollToTabObject(prevId);
+      // scroll direkt in tab.scroll gespeichert
     }
     saveActiveTab({ captureScroll: true });
+    /* Protokoll-Zustand pro Tab speichern/wiederherstellen */
+    if(activeTabId){
+      const prevTab = tabs.find(x => x.id === activeTabId);
+      if(prevTab){
+        prevTab.protocolLog = protocolLog;
+        prevTab.protocolErrorCount = protocolErrorCount;
+        prevTab.hasProtocolErrors = hasProtocolErrors;
+      }
+    }
     /* Sheet schließen, solange activeTabId noch der alte Tab ist –
         sonst schreibt closeSheet() den neuen Tab-Scroll in die alte Outline. */
     closeSheet(true);
     const t = tabs.find(x => x.id === tabId);
     if(!t) return;
     activeTabId = tabId;
-    pullActiveTabIntoGlobals();
-    sourceFocused = false;
-    focusDetailField = false;
+    /* S liest ab jetzt direkt aus t – keine Kopie in Globals mehr. */
+    S.sourceFocused = false;
+    S.focusDetailField = false;
+    sourceDirty = false;
+    sourceGesamtMode = false;
+    clearStructUndo();
+    /* Protokoll aus neuem Tab wiederherstellen */
+    protocolLog = t.protocolLog || [];
+    protocolErrorCount = t.protocolErrorCount || 0;
+    hasProtocolErrors = !!t.hasProtocolErrors;
+    updateProtocolMarks();
     if(!t.scroll) t.scroll = { outline: 0, detail: 0, source: 0, fields: {} };
     /* Tab.scroll in Store spiegeln falls noch nicht in Map */
-    if(t.scroll && !tabScrollStore.has(tabId)){
-      tabScrollStore.set(tabId, {
-        outline: t.scroll.outline || 0,
-        detail: t.scroll.detail || 0,
-        source: t.scroll.source || 0,
-        fields: Object.assign({}, t.scroll.fields || {})
-      });
-    }
+    /* tab.scroll ist jetzt die einzige Scroll-Quelle – kein separater Map-Store mehr */
     hideBanner();
     renderTabs();
     render();
@@ -3809,13 +4382,12 @@
     const t = createTabState(title, treeData);
     tabs.push(t);
     activeTabId = t.id;
-    tree = t.tree;
-    selectedId = t.selectedId;
-    idCounter = t.idCounter;
-    sourceFocused = false;
-    focusDetailField = false;
+    /* S liest direkt aus t; sourceFocused/focusDetailField sind in createTabState
+       bereits false. */
     closeSheet(true);
     hideBanner();
+    sourceDirty = false;
+    clearStructUndo();
     renderTabs();
     render();
   }
@@ -3832,33 +4404,37 @@
   function closeTab(tabId, evt){
     if(evt) evt.stopPropagation();
     if(tabs.length <= 1){
-      if(warnPromptTabReset && !confirm(t('Letzten Tab zurücksetzen?', 'tabs.confirmResetLast'))) return;
-      const lastTab = tabs[0];
-      pruneEditorHistForTabId(lastTab.id);
-      lastTab.tree = [];
-      lastTab.selectedId = null;
-      lastTab.idCounter = 1;
-      lastTab.title = t('Prompt {n}', 'tabs.defaultTitle', {n: 1});
-      lastTab.draftDirty = true;
-      lastTab.draftXml = null;
-      if(lastTab.scroll) lastTab.scroll = { outline: 0, detail: 0, source: 0, fields: {} };
-      loadTab(lastTab.id);
+      const doReset = () => {
+        const lastTab = tabs[0];
+        pruneEditorHistForTabId(lastTab.id);
+        lastTab.tree = [];
+        lastTab.selectedId = null;
+        lastTab.idCounter = 1;
+        lastTab.title = t('Prompt {n}', 'tabs.defaultTitle', {n: 1});
+        lastTab.draftDirty = true;
+        lastTab.draftXml = null;
+        if(lastTab.scroll) lastTab.scroll = { outline: 0, detail: 0, source: 0, fields: {} };
+        loadTab(lastTab.id);
+      };
+      maybeConfirm(warnPromptTabReset, t('Letzten Tab zurücksetzen?', 'tabs.confirmResetLast'), doReset);
       return;
     }
-    if(warnPromptTabClose && !confirm(t('Diesen Prompt-Tab schließen?', 'tabs.confirmClose'))) return;
-    const idx = tabs.findIndex(x => x.id === tabId);
-    if(idx < 0) return;
-    const closing = tabs[idx];
-    if(closing) pruneEditorHistForTabId(closing.id);
-    const wasActive = activeTabId === tabId;
-    tabs.splice(idx, 1);
-    if(wasActive){
-      const next = tabs[Math.min(idx, tabs.length-1)];
-      activeTabId = null;
-      loadTab(next.id);
-    } else {
-      renderTabs();
-    }
+    const doClose = () => {
+      const idx = tabs.findIndex(x => x.id === tabId);
+      if(idx < 0) return;
+      const closing = tabs[idx];
+      if(closing) pruneEditorHistForTabId(closing.id);
+      const wasActive = activeTabId === tabId;
+      tabs.splice(idx, 1);
+      if(wasActive){
+        const next = tabs[Math.min(idx, tabs.length-1)];
+        activeTabId = null;
+        loadTab(next.id);
+      } else {
+        renderTabs();
+      }
+    };
+    maybeConfirm(warnPromptTabClose, t('Diesen Prompt-Tab schließen?', 'tabs.confirmClose'), doClose);
   }
 
   function updatePanelStructureTitle(){
@@ -4112,8 +4688,15 @@
       tabsShell.classList.add(effectiveOrientation === 'vertical' ? 'tabs-vertical' : 'tabs-horizontal');
     }
     updateTabMoveButtonLabels();
-    writeHashState();
+    if(!_suppressHashWrite) writeHashState();
     updatePanelStructureTitle();
+  }
+
+  /* renderTabs ohne Hash-Schreiben – für reine Render-Pfade (resize, hashchange) */
+  let _suppressHashWrite = false;
+  function renderTabsNoHash(){
+    _suppressHashWrite = true;
+    try { renderTabs(); } finally { _suppressHashWrite = false; }
   }
 
   panelStructureTitle.oninput = () => applyPanelTitleToTab();
@@ -4164,6 +4747,18 @@
     if(top < 8) top = 8;
     menu.style.left = left + 'px';
     menu.style.top = top + 'px';
+    /* Z-Index dynamisch: über dem Stacking-Context des Buttons (z.B. Fokus-Editor 15000) */
+    let z = 10000;
+    let el = btn;
+    while(el && el !== document.body){
+      const cs = getComputedStyle(el);
+      if(cs.position !== 'static'){
+        const zi = parseInt(cs.zIndex, 10);
+        if(!isNaN(zi) && zi > z) z = zi;
+      }
+      el = el.parentElement;
+    }
+    menu.style.zIndex = (z + 1);
     menu.style.visibility = '';
   }
 
@@ -4173,6 +4768,7 @@
       m.style.left = '';
       m.style.top = '';
       m.style.visibility = '';
+      m.style.zIndex = '';
     });
     openWikiMenu = null;
   }
@@ -4183,6 +4779,8 @@
       menu.classList.remove('open');
       menu.style.left = '';
       menu.style.top = '';
+      menu.style.visibility = '';
+      menu.style.zIndex = '';
     }
     openTemplateMenu = null;
   }
@@ -4193,6 +4791,7 @@
       m.style.left = '';
       m.style.top = '';
       m.style.visibility = '';
+      m.style.zIndex = '';
       /* Nested-Level zurücksetzen */
       const levels = m.querySelectorAll('.menu-level');
       if(levels.length){
@@ -4207,6 +4806,8 @@
     if(srcBtn) srcBtn.setAttribute('aria-expanded', 'false');
     const warnBtn = document.getElementById('btnWarnings');
     if(warnBtn) warnBtn.setAttribute('aria-expanded', 'false');
+    const feOptBtn = document.getElementById('btnFocusEditorOptions');
+    if(feOptBtn) feOptBtn.setAttribute('aria-expanded', 'false');
     document.querySelectorAll('.detail-tools .options-wrap button[aria-expanded]').forEach(b => {
       b.setAttribute('aria-expanded', 'false');
     });
@@ -4217,6 +4818,24 @@
     if(openWikiMenu && !e.target.closest('.wiki-wrap') && !e.target.closest('.wiki-menu')) closeAllWikiMenus();
     if(openTemplateMenu && !e.target.closest('.template-wrap')) closeTemplateMenu();
     if(openOptionsMenu && !e.target.closest('.options-wrap') && !e.target.closest('.options-menu')) closeOptionsMenu();
+  });
+
+  /* Menü-Pfeilnavigation (§2.2): ArrowUp/Down + Home/End in offenen Menüs */
+  document.addEventListener('keydown', e => {
+    const openMenu = document.querySelector('.options-menu.open, .wiki-menu.open');
+    if(!openMenu) return;
+    if(e.key !== 'ArrowUp' && e.key !== 'ArrowDown' && e.key !== 'Home' && e.key !== 'End') return;
+    const items = Array.from(openMenu.querySelectorAll('.opt-item:not(:disabled), .menu-back, .tpl-item'));
+    if(!items.length) return;
+    const activeEl = document.activeElement;
+    let idx = items.indexOf(activeEl);
+    if(idx < 0) idx = -1;
+    e.preventDefault();
+    if(e.key === 'ArrowDown') idx = Math.min(idx + 1, items.length - 1);
+    else if(e.key === 'ArrowUp') idx = Math.max(idx - 1, 0);
+    else if(e.key === 'Home') idx = 0;
+    else if(e.key === 'End') idx = items.length - 1;
+    items[idx].focus();
   });
 
   function createWikiSplitButton(textarea){
@@ -4231,11 +4850,18 @@
     const wikiOpts = ['de','en','fr','es','it','pt','nl','pl','ru','ja','zh','random']
       .map(c => { const wk='wiki.'+c; return '<option value="'+c+'">'+t({'de':'Deutsch','en':'English','fr':'Français','es':'Español','it':'Italiano','pt':'Português','nl':'Nederlands','pl':'Polski','ru':'Русский','ja':'日本語','zh':'中文','random':'Zufällig'}[c]||c, wk)+'</option>'; }).join('');
     menu.innerHTML = '<label>'+t('Sprache', 'detail.wikiLang')+'</label><select class="wiki-lang">'+wikiOpts+
-      '</select><label>'+t('ca. Zeichen', 'detail.wikiChars')+'</label><input type="number" class="wiki-chars" value="450" min="80" max="2000" step="50">'+
-      '<div class="menu-actions"><button type="button" class="btn small primary wiki-insert">'+t('Einfügen', 'detail.wikiInsert')+'</button>'+
-      '<button type="button" class="btn small wiki-close">'+t('Schließen', 'detail.wikiClose')+'</button></div>';
+      '</select><label>'+t('ca. Zeichen', 'detail.wikiChars')+'</label><input type="number" class="wiki-chars" value="450" min="80" max="2000" step="50">';
     menu.querySelector('.wiki-lang').value = wikiSettings.lang;
     menu.querySelector('.wiki-chars').value = wikiSettings.chars;
+
+    /* Einstellungen bei Änderung sofort übernehmen */
+    menu.querySelector('.wiki-lang').addEventListener('change', () => {
+      wikiSettings.lang = menu.querySelector('.wiki-lang').value;
+    });
+    menu.querySelector('.wiki-chars').addEventListener('change', () => {
+      let c = parseInt(menu.querySelector('.wiki-chars').value, 10) || 450;
+      wikiSettings.chars = c;
+    });
 
     async function doInsert(){
       const lang = menu.querySelector('.wiki-lang').value;
@@ -4248,9 +4874,9 @@
           const s = textarea.selectionStart, e = textarea.selectionEnd;
           textarea.value = textarea.value.substring(0,s) + text + textarea.value.substring(e);
           textarea.dispatchEvent(new Event('input',{bubbles:true}));
-          textarea.focus(); textarea.setSelectionRange(s+text.length, s+text.length);
+          if(!isMobileLayout()){ textarea.focus(); textarea.setSelectionRange(s+text.length, s+text.length); }
         }
-        try { textarea.focus(); } catch(_){}
+        if(!isMobileLayout()) try { textarea.focus(); } catch(_){}
         closeAllWikiMenus();
       }catch(err){ alert(t('Fehler: ', 'protocol.errorPrefix')+err.message); }
       finally{ mainBtn.disabled = false; mainBtn.innerHTML = t('+ WikiText', 'detail.wikiText'); }
@@ -4268,32 +4894,13 @@
         openWikiMenu = menu;
       }
     };
-
-    menu.querySelector('.wiki-insert').onclick = e => { e.stopPropagation(); doInsert(); };
-    menu.querySelector('.wiki-close').onclick = e => { e.stopPropagation(); closeAllWikiMenus(); };
     split.appendChild(mainBtn); split.appendChild(sep); split.appendChild(caretBtn);
     wrap.appendChild(split); wrap.appendChild(menu); return wrap;
   }
 
-  /* ===== Vorlagen ===== */
-  /* Vorlagen-Menü entfernt: „Bibliothek“ öffnet die externe Bibliothek */
-  const TEMPLATES_MORE_URL = 'https://juristikde.github.io/xml-prompt-bibliothek/';
-
-  function openMoreTemplatesLink(){
-    window.open(TEMPLATES_MORE_URL, '_blank', 'noopener');
-    closeTemplateMenu();
-    closeOptionsMenu();
-  }
-
-  function renderTemplateMenus(){
-    /* keine eingebetteten Vorlagen mehr */
-  }
-
-  function loadTemplate(){
-    /* deaktiviert – externe Bibliothek */
-  }
-
   /* ===== XML-Parsing / Serialisierung (unverändert in Logik) ===== */
+  /* Vorlagen-Menü entfernt: „Bibliothek“ öffnet die externe Bibliothek */
+  function renderTemplateMenus(){ /* keine eingebetteten Vorlagen mehr */ }
   const strayAmpRe = /&(?!(?:amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)/g;
   function replaceStrayAmpersands(str,rep){ return (str||'').replace(strayAmpRe, rep); }
   function cleanParserErrorText(raw){
@@ -4521,7 +5128,7 @@
     }
     return out;
   }
-  function serializeFull(){ return '<prompt>\n'+serializeTree(tree,1)+'</prompt>'; }
+  function serializeFull(){ return '<prompt>\n'+serializeTree(S.tree,1)+'</prompt>'; }
   function getCopyResultText(){ return serializeFull().trim(); }
 
   function serializeGesamtConfig(){
@@ -4575,7 +5182,7 @@
 
   function getLineMap(){
     const state = {lines: ['<prompt>'], map: {}};
-    serializeTreeWithLines(tree, 1, state);
+    serializeTreeWithLines(S.tree, 1, state);
     state.lines.push('</prompt>');
     return state;
   }
@@ -4641,8 +5248,8 @@
 
   function selectAndShowDetail(id, doFocus){
     setSelectedId(id);
-    focusDetailField = !!doFocus && shouldFocusDetail();
-    updateOutlineSelection(selectedId);
+    S.focusDetailField = !!doFocus && shouldFocusDetail();
+    updateOutlineSelection(S.selectedId);
     scrollCaptureFrozen = true;
     renderDetail();
     requestAnimationFrame(() => { scrollCaptureFrozen = false; });
@@ -4691,18 +5298,20 @@
       chev.setAttribute('aria-label', parentNode.collapsed
         ? t('Aufklappen', 'outline.expand')
         : t('Zuklappen', 'outline.collapse'));
+      chev.setAttribute('aria-expanded', hasCh ? String(!parentNode.collapsed) : 'false');
     }
     updateOutlineCountForNode(parentNode);
   }
 
   function insertRelative(node, opts){
+   structUndoPush();
     opts = opts || {};
     const doFocus = opts.focus !== false;
-    if(selectedId){
-      const f = findNode(tree, selectedId);
+    if(S.selectedId){
+      const f = findNode(S.tree, S.selectedId);
       if(f){
         f.arr.splice(f.index + 1, 0, node);
-        const selRow = outlineRowById(selectedId);
+        const selRow = outlineRowById(S.selectedId);
         const selWrap = selRow ? selRow.parentElement : null;
         const depth = selRow ? (parseInt(selRow.dataset.depth || '0', 10) || 0) : 0;
         if(selWrap && selWrap.parentElement){
@@ -4712,21 +5321,21 @@
 
           /* NEU: Wenn der neue Knoten nicht auf oberster Ebene liegt,
              hat sein Parent jetzt ein Kind mehr – Count aktualisieren. */
-          if(f.arr !== tree){
-            const parentNode = findParentOfArray(tree, f.arr);
+          if(f.arr !== S.tree){
+            const parentNode = findParentOfArray(S.tree, f.arr);
             if(parentNode) refreshParentOutlineChrome(parentNode);
           }
 
           selectAndShowDetail(node.id, doFocus);
           return;
         }
-        selectedId = node.id;
-        focusDetailField = doFocus && shouldFocusDetail();
+        S.selectedId = node.id;
+        S.focusDetailField = doFocus && shouldFocusDetail();
         renderAfterTreeChange();
         return;
       }
     }
-    tree.push(node);
+    S.tree.push(node);
     if(outlineList){
       const empty = outlineList.querySelector('.outline-empty');
       if(empty) empty.remove();
@@ -4734,8 +5343,8 @@
       selectAndShowDetail(node.id, doFocus);
       return;
     }
-    selectedId = node.id;
-    focusDetailField = doFocus && shouldFocusDetail();
+    S.selectedId = node.id;
+    S.focusDetailField = doFocus && shouldFocusDetail();
     renderAfterTreeChange();
   }
 
@@ -4743,8 +5352,9 @@
   function addRootComment(){ insertRelative(newCommentNode('')); }
   function addTemplate(tag){ insertRelative(newNode(tag,''), { focus: false }); }
   function addChild(parentId, isComment){
-    const f = findNode(tree, parentId);
+    const f = findNode(S.tree, parentId);
     if(!f || f.node.kind === 'comment') return;
+   structUndoPush();
     const parent = f.node;
     const migratedText = (parent.text || '').trim() !== '';
     if(migratedText){
@@ -4764,8 +5374,8 @@
 
     /* Text-Migration ändert Struktur stärker → Full-Render sicherer */
     if(migratedText){
-      selectedId = n.id;
-      focusDetailField = shouldFocusDetail();
+      S.selectedId = n.id;
+      S.focusDetailField = shouldFocusDetail();
       renderAfterTreeChange();
       return;
     }
@@ -4784,22 +5394,23 @@
       selectAndShowDetail(n.id, shouldFocusDetail());
       return;
     }
-    selectedId = n.id;
-    focusDetailField = shouldFocusDetail();
+    S.selectedId = n.id;
+    S.focusDetailField = shouldFocusDetail();
     renderAfterTreeChange();
   }
   /* Oberpunkt: neuen leeren Parent um den ausgewählten Knoten legen */
   function addParent(){
-    if(!selectedId) return;
-    const f = findNode(tree, selectedId);
+    if(!S.selectedId) return;
+   structUndoPush();
+    const f = findNode(S.tree, S.selectedId);
     if(!f) return;
     const parent = newNode('','');
     const node = f.arr.splice(f.index, 1)[0];
     parent.children = [node];
     parent.collapsed = false;
     f.arr.splice(f.index, 0, parent);
-    selectedId = parent.id;
-    focusDetailField = shouldFocusDetail();
+    S.selectedId = parent.id;
+    S.focusDetailField = shouldFocusDetail();
     /* Struktur-Verschachtelung ändert sich → Full-Render */
     renderAfterTreeChange();
   }
@@ -4835,9 +5446,9 @@
     else if(actionId === 'tool') addTemplate('tool');
     else if(actionId === 'comment') addRootComment();
     else if(actionId === 'child'){
-      if(selectedId){
-        const f = findNode(tree, selectedId);
-        if(f && f.node.kind === 'element') addChild(selectedId, false);
+      if(S.selectedId){
+        const f = findNode(S.tree, S.selectedId);
+        if(f && f.node.kind === 'element') addChild(S.selectedId, false);
       }
     } else if(actionId === 'parent') addParent();
   }
@@ -4943,10 +5554,11 @@
     }
   }
   function deleteNode(id){
-    const f = findNode(tree, id); if(!f) return;
+    const f = findNode(S.tree, id); if(!f) return;
+   structUndoPush();
     pruneEditorHistForTree([f.node], activeTabId);
-    const wasSelected = selectedId === id;
-    const path = findPath(tree, id) || [];
+    const wasSelected = S.selectedId === id;
+    const path = findPath(S.tree, id) || [];
     const parentNode = path.length > 1 ? path[path.length - 2] : null;
     f.arr.splice(f.index, 1);
 
@@ -4970,10 +5582,8 @@
         }
       }
       if(wasSelected){
-        selectedId = firstNavigableId(tree);
-        const tab = getActiveTab();
-        if(tab) tab.selectedId = selectedId;
-        updateOutlineSelection(selectedId);
+        S.selectedId = firstNavigableId(S.tree);
+        updateOutlineSelection(S.selectedId);
         scrollCaptureFrozen = true;
         renderDetail();
         requestAnimationFrame(() => { scrollCaptureFrozen = false; });
@@ -4986,7 +5596,7 @@
       }
       return;
     }
-    if(wasSelected) selectedId = firstNavigableId(tree);
+    if(wasSelected) S.selectedId = firstNavigableId(S.tree);
     renderAfterTreeChange();
   }
   function outlineWrapForId(id){
@@ -4995,8 +5605,9 @@
   }
 
   function moveNode(id, dir){
-    const f = findNode(tree, id); if(!f) return;
+    const f = findNode(S.tree, id); if(!f) return;
     const ni = f.index + dir; if(ni < 0 || ni >= f.arr.length) return;
+   structUndoPush();
     const other = f.arr[ni];
     const item = f.arr[f.index];
     f.arr[f.index] = other;
@@ -5017,7 +5628,7 @@
   }
   function toggleCollapse(id, evt){
     if(evt) evt.stopPropagation();
-    const f = findNode(tree, id); if(!f) return;
+    const f = findNode(S.tree, id); if(!f) return;
     f.node.collapsed = !f.node.collapsed;
     const row = outlineRowById(id);
     if(!row || !row.parentElement){
@@ -5034,6 +5645,7 @@
       chev.setAttribute('aria-label', f.node.collapsed
         ? t('Aufklappen', 'outline.expand')
         : t('Zuklappen', 'outline.collapse'));
+      chev.setAttribute('aria-expanded', hasCh ? String(!f.node.collapsed) : 'false');
     }
     /* Kind-Zeilen sind Geschwister hinter der row im wrap – gezielt entfernen/neu aufbauen */
     while(wrap.childNodes.length > 1){
@@ -5052,7 +5664,7 @@
   }
 
   function selectNode(id){
-    if(id && id === selectedId){
+    if(id && id === S.selectedId){
       return;
     }
     /* Ausstehende Source-Serialisierung vor Wechsel durchführen */
@@ -5060,7 +5672,7 @@
     /* Nur Selektion: Outline-Klassen + Detail – kein Full-Rebuild der Struktur */
     captureScrollPositions();
     setSelectedId(id);
-    updateOutlineSelection(selectedId);
+    updateOutlineSelection(S.selectedId);
     scrollCaptureFrozen = true;
     renderDetail();
     updateSourceFromTree();
@@ -5077,8 +5689,8 @@
 
   /* ===== Node-Clipboard ===== */
   function copySelectedNode(){
-    if(!selectedId) return;
-    const f = findNode(tree, selectedId);
+    if(!S.selectedId) return;
+    const f = findNode(S.tree, S.selectedId);
     if(!f) return;
     nodeClipboard = cloneNode(f.node);
     /* Global aktualisieren – Menü kann an body hängen */
@@ -5087,8 +5699,9 @@
 
   function pasteNode(){
     if(!nodeClipboard) return;
+   structUndoPush();
     const fresh = cloneNode(nodeClipboard);
-    insertRelative(fresh);
+    insertRelative(fresh, { focus: false });
   }
 
   /* ===== Suchen & Ersetzen ===== */
@@ -5341,19 +5954,28 @@
       if(b !== textarea._findBar) b.remove();
     });
     if(textarea._findBar && textarea._findBar.isConnected){
-      const inp = textarea._findBar.querySelector('.find-input');
-      if(inp){ inp.focus(); inp.select(); }
+      /* Bereits offen → bei erneutem Klick schließen (Toggle) */
+      textarea._findBar.remove();
+      delete textarea._findBar;
+      textarea.focus();
       return;
     }
     const bar = buildFindReplaceBar(textarea);
     textarea._findBar = bar;
-    if(textarea.parentElement) textarea.parentElement.insertBefore(bar, textarea);
+    /* Fokus-Editor: Leiste in focus-editor-body vor dem Wrap einfügen,
+       damit die Zeichenanzahl-Anzeige (absolute am Wrap-Top) mit nach unten rückt */
+    if(textarea.id === 'focusEditorTextarea' && textarea.parentElement && textarea.parentElement.parentElement){
+      const body = textarea.parentElement.parentElement;
+      body.insertBefore(bar, textarea.parentElement);
+    } else if(textarea.parentElement){
+      textarea.parentElement.insertBefore(bar, textarea);
+    }
     const inp = bar.querySelector('.find-input');
     if(inp){
       const sel = (textarea.value || '').slice(textarea.selectionStart, textarea.selectionEnd);
       if(sel && sel.length < 200 && !sel.includes('\n')) inp.value = sel;
-      inp.focus();
-      inp.select();
+      /* Auf Mobile: nicht automatisch fokussieren (vermeidet ungewollte Tastatur bei Button-Klick) */
+      if(!isMobileLayout()){ inp.focus(); inp.select(); }
     }
   }
 
@@ -5377,7 +5999,7 @@
 
   function toggleGesamtMode(){
     sourceGesamtMode = !sourceGesamtMode;
-    sourceFocused = false;
+    S.sourceFocused = false;
     updateSourceFromTree();
     updateSourcePanelTitle();
     updateSourceHeadTools();
@@ -5407,7 +6029,7 @@
       btnFind.title = t('Suchen und Ersetzen', 'detail.findTitle');
       btnFind.textContent = t('Suchen', 'source.find');
       btnFind.onclick = () => openFindReplace(sourceText);
-      tools.appendChild(btnFind);
+      if(!isMobileLayout()) tools.appendChild(btnFind);
 
       const btnWrap = document.createElement('button');
       btnWrap.type = 'button';
@@ -5423,70 +6045,15 @@
       };
       tools.appendChild(btnWrap);
     } else {
-      const wrap = document.createElement('div');
-      wrap.className = 'options-wrap';
-      wrap.id = 'sourceOptionsWrap';
-
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'btn small';
-      btn.id = 'btnSourceOptions';
-      btn.setAttribute('aria-haspopup', 'true');
-      btn.setAttribute('aria-expanded', 'false');
-      btn.textContent = t('Optionen', 'source.options');
-
-      const menu = document.createElement('div');
-      menu.className = 'options-menu source-options-menu';
-      menu.id = 'sourceOptionsMenu';
-      menu.setAttribute('role', 'menu');
-
-      const optGesamt = document.createElement('button');
-      optGesamt.type = 'button';
-      optGesamt.className = 'opt-item';
-      optGesamt.setAttribute('role', 'menuitem');
-      optGesamt.textContent = sourceGesamtMode ? t('Tab-XML', 'source.tabXml') : t('Gesamt-Config', 'source.gesamtConfig');
-      optGesamt.onclick = e => {
-        e.stopPropagation();
-        closeOptionsMenu();
-        toggleGesamtMode();
-      };
-      menu.appendChild(optGesamt);
-
-      const optFind = document.createElement('button');
-      optFind.type = 'button';
-      optFind.className = 'opt-item';
-      optFind.setAttribute('role', 'menuitem');
-      optFind.textContent = t('Suchen', 'source.find');
-      optFind.onclick = e => {
-        e.stopPropagation();
-        closeOptionsMenu();
-        openFindReplace(sourceText);
-      };
-      menu.appendChild(optFind);
-
-      const optWrap = document.createElement('button');
-      optWrap.type = 'button';
-      optWrap.className = 'opt-item';
-      optWrap.setAttribute('role', 'menuitem');
-      optWrap.textContent = xmlCodeLineWrap ? t('Umbruch an', 'source.wrapOn') : t('Umbruch aus', 'source.wrapOff');
-      optWrap.onclick = e => {
-        e.stopPropagation();
-        xmlCodeLineWrap = !xmlCodeLineWrap;
-        writeHashState();
-        applySourceWrap();
-        optWrap.textContent = xmlCodeLineWrap ? t('Umbruch an', 'source.wrapOn') : t('Umbruch aus', 'source.wrapOff');
-        closeOptionsMenu();
-      };
-      menu.appendChild(optWrap);
-
-      btn.onclick = e => {
-        e.stopPropagation();
-        openToolsOptionsMenu(btn, menu);
-      };
-
-      wrap.appendChild(btn);
-      wrap.appendChild(menu);
-      tools.appendChild(wrap);
+      /* Mobile: nur Gesamt-Config Toggle-Button (kein Options-Menü) */
+      const btnGesamt = document.createElement('button');
+      btnGesamt.type = 'button';
+      btnGesamt.className = 'btn small';
+      btnGesamt.id = 'btnGesamtConfig';
+      btnGesamt.title = sourceGesamtMode ? t('Einzelnen Tab-XML anzeigen', 'source.tabXmlTitle') : t('Gesamt-Config aller Tabs anzeigen', 'source.gesamtTitleBtn');
+      btnGesamt.textContent = sourceGesamtMode ? t('Tab-XML', 'source.tabXml') : t('Gesamt', 'source.gesamt');
+      btnGesamt.onclick = () => toggleGesamtMode();
+      tools.appendChild(btnGesamt);
     }
   }
 
@@ -5499,16 +6066,17 @@
 
   function canDropOn(sourceId, targetId){
     if(!sourceId || !targetId || sourceId === targetId) return false;
-    const src = findNode(tree, sourceId);
-    const tgt = findNode(tree, targetId);
+    const src = findNode(S.tree, sourceId);
+    const tgt = findNode(S.tree, targetId);
     if(!src || !tgt) return false;
     return src.arr === tgt.arr;
   }
 
   function performDrop(sourceId, targetId, pos){
     if(!canDropOn(sourceId, targetId)) return;
-    const src = findNode(tree, sourceId);
-    const tgt = findNode(tree, targetId);
+   structUndoPush();
+    const src = findNode(S.tree, sourceId);
+    const tgt = findNode(S.tree, targetId);
     if(!src || !tgt || src.arr !== tgt.arr) return;
     const arr = src.arr;
     const from = src.index;
@@ -5517,7 +6085,7 @@
     const item = arr.splice(from, 1)[0];
     if(from < to) to -= 1;
     arr.splice(to, 0, item);
-    selectedId = sourceId;
+    S.selectedId = sourceId;
 
     const srcWrap = outlineWrapForId(sourceId);
     const tgtWrap = outlineWrapForId(targetId);
@@ -5525,9 +6093,7 @@
       const parent = srcWrap.parentElement;
       if(pos === 'above') parent.insertBefore(srcWrap, tgtWrap);
       else parent.insertBefore(srcWrap, tgtWrap.nextSibling);
-      const tab = getActiveTab();
-      if(tab) tab.selectedId = selectedId;
-      updateOutlineSelection(selectedId);
+      updateOutlineSelection(S.selectedId);
       markActiveTabDraftDirty();
       scheduleDraftSave();
       scheduleSourceFromTree();
@@ -5548,7 +6114,7 @@
     /* Während Rebuild kein Capture: innerHTML setzt scrollTop kurz auf 0 und würde Tab-State überschreiben */
     outlineScrollFrozen = true;
     outlineList.innerHTML = '';
-    if(!tree.length){
+    if(!S.tree.length){
       const e = document.createElement('div');
       e.className = 'outline-empty';
       e.textContent = t('Noch keine Elemente. Lege unten ein Element oder einen Kommentar an.', 'outline.empty');
@@ -5557,7 +6123,7 @@
       requestAnimationFrame(() => { outlineScrollFrozen = false; });
       return;
     }
-    tree.forEach(n => outlineList.appendChild(renderOutlineRow(n, 0)));
+    S.tree.forEach(n => outlineList.appendChild(renderOutlineRow(n, 0)));
     restoreOutlineScroll();
     requestAnimationFrame(() => { outlineScrollFrozen = false; });
   }
@@ -5567,11 +6133,12 @@
     const row = document.createElement('div');
     row.className = 'outline-row depth-'+Math.min(depth,4);
     row.style.paddingLeft = (8 + depth*14)+'px';
-    if(node.id === selectedId) row.classList.add('selected');
+    if(node.id === S.selectedId) row.classList.add('selected');
     if(node._hasError) row.classList.add('error');
     row.dataset.id = node.id;
     row.dataset.depth = String(depth);
     row.setAttribute('role', 'treeitem');
+    row.setAttribute('aria-level', String(depth + 1));
     row.tabIndex = 0;
     row.draggable = true;
 
@@ -5681,6 +6248,7 @@
     const chev = document.createElement('button');
     chev.className = 'outline-chevron'+(hasCh?'':' invisible');
     chev.setAttribute('aria-label', node.collapsed ? t('Aufklappen', 'outline.expand') : t('Zuklappen', 'outline.collapse'));
+    chev.setAttribute('aria-expanded', hasCh ? String(!node.collapsed) : 'false');
     chev.textContent = node.collapsed ? '▸' : '▾';
     chev.onclick = e => toggleCollapse(node.id, e);
     row.appendChild(chev);
@@ -5732,20 +6300,83 @@
     requestAnimationFrame(() => {
       restoreScrollPositions();
       scrollCaptureFrozen = false;
+      updateStructUndoButtons();
     });
   }
 
   /* ===== Detail-Editor (mit Nested-Optionen-Menü) ===== */
   function renderDetail(){
+    /* Inkrementelles Update: wenn gleicher Knoten-Typ und gleiche Tools-Layout,
+       nur Werte aktualisieren statt komplett neu aufbauen (§2.1). */
+    if(S.tree.length && S.selectedId){
+      const incFound = findNode(S.tree, S.selectedId);
+      if(incFound && detailScroll.firstChild && detailScroll._renderedId === S.selectedId){
+        const incNode = incFound.node;
+        const incIsContainer = incNode.kind === 'element' && incNode.children && incNode.children.length > 0;
+        const incWasContainer = !!detailScroll._renderedContainer;
+        const incToolsMode = useUnpackedTools();
+        if(incNode.kind === detailScroll._renderedKind && incIsContainer === incWasContainer && incToolsMode === detailScroll._renderedToolsMode){
+          /* Level-Bar aktualisieren (Breadcrumb ändert sich bei Move) */
+          const incPath = findPath(S.tree, incNode.id) || [];
+          const incDepth = incPath.length;
+          const oldBar = detailScroll.querySelector('.level-bar');
+          if(oldBar){
+            const newBar = buildLevelBar(incPath, incDepth);
+            oldBar.replaceWith(newBar);
+          }
+          /* Tag-Input aktualisieren */
+          if(incNode.kind !== 'comment'){
+            const tagInput = detailScroll.querySelector('.detail-tag-input');
+            if(tagInput && document.activeElement !== tagInput){
+              tagInput.value = incNode.tag;
+            }
+          }
+          /* Textarea aktualisieren */
+          const ta = detailScroll.querySelector('.detail-textarea');
+          if(ta){
+            if(incIsContainer){
+              if(!ta.disabled) ta.disabled = true;
+              if(ta.value !== '') setEditorValue(ta, '');
+              ta.placeholder = t('Dieser Tag ist ein Container.', 'detail.containerPlaceholder');
+            } else {
+              if(ta.disabled) ta.disabled = false;
+              const curVal = getEditorValue(ta);
+              if(document.activeElement !== ta && curVal !== (incNode.text || '')){
+                setEditorValue(ta, incNode.text || '');
+              }
+              ta.placeholder = incNode.kind === 'comment'
+                ? t('Anmerkung…', 'detail.commentPlaceholder')
+                : t('Text für dieses Element…', 'detail.textPlaceholder');
+            }
+            updateDetailFieldCharCount(ta);
+          }
+          /* Paste-Button State */
+          const pasteBtn = detailScroll.querySelector('.btn-paste-node');
+          if(pasteBtn) pasteBtn.disabled = !nodeClipboard;
+          /* Focus wenn gewünscht */
+          if(S.focusDetailField && shouldFocusDetail()){
+            S.focusDetailField = false;
+            const ti = detailScroll.querySelector('.detail-tag-input');
+            const ta2 = detailScroll.querySelector('.detail-textarea');
+            if(ti && incNode.kind !== 'comment') ti.focus();
+            else if(ta2) ta2.focus();
+          } else {
+            S.focusDetailField = false;
+          }
+          return;
+        }
+      }
+    }
+
     detailScroll.innerHTML = '';
     document.querySelectorAll('.tools-options-menu').forEach(m => m.remove());
 
-    if(!tree.length){ detailScroll.appendChild(buildEmptyState()); return; }
-    if(!selectedId || !findNode(tree, selectedId)) selectedId = firstNavigableId(tree);
-    const found = selectedId ? findNode(tree, selectedId) : null;
-    if(!found){ detailScroll.appendChild(buildEmptyState()); return; }
+    if(!S.tree.length){ detailScroll._renderedId = null; detailScroll.appendChild(buildEmptyState()); return; }
+    if(!S.selectedId || !findNode(S.tree, S.selectedId)) S.selectedId = firstNavigableId(S.tree);
+    const found = S.selectedId ? findNode(S.tree, S.selectedId) : null;
+    if(!found){ detailScroll._renderedId = null; detailScroll.appendChild(buildEmptyState()); return; }
     const node = found.node;
-    const path = findPath(tree, node.id)||[];
+    const path = findPath(S.tree, node.id)||[];
     const depth = path.length;
 
     detailScroll.appendChild(buildLevelBar(path, depth));
@@ -5790,21 +6421,21 @@
     btnUp.setAttribute('aria-label', t('Nach oben', 'detail.moveUp'));
     btnUp.title = t('Eintrag nach oben', 'detail.moveUpTitle');
     btnUp.textContent = '↑';
-    btnUp.onclick = () => { if(selectedId) moveNode(selectedId, -1); };
+    btnUp.onclick = () => { if(S.selectedId) moveNode(S.selectedId, -1); };
     const btnDown = document.createElement('button');
     btnDown.type = 'button';
     btnDown.className = 'btn small icon-only';
     btnDown.setAttribute('aria-label', t('Nach unten', 'detail.moveDown'));
     btnDown.title = t('Eintrag nach unten', 'detail.moveDownTitle');
     btnDown.textContent = '↓';
-    btnDown.onclick = () => { if(selectedId) moveNode(selectedId, 1); };
+    btnDown.onclick = () => { if(S.selectedId) moveNode(S.selectedId, 1); };
     moveGroup.appendChild(btnUp);
     moveGroup.appendChild(btnDown);
     tools.appendChild(moveGroup);
 
     const textareaWrap = document.createElement('div'); textareaWrap.className = 'detail-textarea-wrap';
     const textarea = document.createElement('textarea');
-    textarea.className = 'detail-textarea'+(node.kind==='comment'?' comment-style':'');
+    textarea.className = 'detail-textarea'+(node.kind==='comment'?' comment-style':'')+(detailTextLineWrap?'':' wrap-off');
     textarea.dataset.historyKey = 'detail-' + (activeTabId || 'tab') + '-' + node.id;
     const isContainer = node.kind === 'element' && node.children && node.children.length > 0;
     if(isContainer){
@@ -5872,14 +6503,26 @@
       btnFind.textContent = t('Suchen', 'detail.find');
       btnFind.title = t('Suchen und Ersetzen', 'detail.findTitle');
       btnFind.onclick = () => openFindReplace(textarea);
-      tools.appendChild(btnFind);
+      if(!isMobileLayout()) tools.appendChild(btnFind);
+
+      const btnDetailWrap = document.createElement('button');
+      btnDetailWrap.type = 'button';
+      btnDetailWrap.className = 'btn small';
+      btnDetailWrap.textContent = detailTextLineWrap ? t('Umbruch an', 'detail.wrapOn') : t('Umbruch aus', 'detail.wrapOff');
+      btnDetailWrap.title = t('Zeilenumbruch umschalten', 'detail.wrapTitle');
+      btnDetailWrap.setAttribute('aria-pressed', detailTextLineWrap ? 'true' : 'false');
+      btnDetailWrap.onclick = () => {
+        detailTextLineWrap = !detailTextLineWrap;
+        writeHashState();
+        applyDetailLineWrap();
+        btnDetailWrap.textContent = detailTextLineWrap ? t('Umbruch an', 'detail.wrapOn') : t('Umbruch aus', 'detail.wrapOff');
+        btnDetailWrap.setAttribute('aria-pressed', detailTextLineWrap ? 'true' : 'false');
+      };
+      tools.appendChild(btnDetailWrap);
 
       tools.appendChild(wikiWrap);
     } else {
-      /* Mobile: Pfeile + Optionen mit Nested-Ebenen */
-      wikiWrap.style.display = 'none';
-      tools.appendChild(wikiWrap);
-
+      /* Mobile: Pfeile + Optionen (Wiki nur im Fokus-Editor) */
       const optionsWrap = document.createElement('div');
       optionsWrap.className = 'options-wrap';
 
@@ -5926,128 +6569,7 @@
       };
       level0.appendChild(optPaste);
 
-      const optFind = document.createElement('button');
-      optFind.type = 'button';
-      optFind.className = 'opt-item';
-      optFind.setAttribute('role', 'menuitem');
-      optFind.textContent = t('Suchen', 'detail.find');
-      optFind.onclick = e => {
-        e.stopPropagation();
-        closeOptionsMenu();
-        openFindReplace(textarea);
-      };
-      level0.appendChild(optFind);
-
-      const sep = document.createElement('div');
-      sep.className = 'opt-sep';
-      level0.appendChild(sep);
-
-      const optWiki = document.createElement('button');
-      optWiki.type = 'button';
-      optWiki.className = 'opt-item';
-      optWiki.setAttribute('role', 'menuitem');
-      optWiki.textContent = t('+ WikiText', 'detail.wikiText');
-      optWiki.onclick = e => {
-        e.stopPropagation();
-        closeOptionsMenu();
-        const main = wikiWrap.querySelector('.split-main');
-        if(main) main.click();
-      };
-      level0.appendChild(optWiki);
-
-      const optWikiSettings = document.createElement('button');
-      optWikiSettings.type = 'button';
-      optWikiSettings.className = 'opt-item';
-      optWikiSettings.setAttribute('role', 'menuitem');
-      optWikiSettings.textContent = t('Wiki-Einstellungen ›', 'detail.wikiSettings');
-      optWikiSettings.onclick = e => {
-        e.stopPropagation();
-        level0.classList.remove('active');
-        level1.classList.add('active');
-      };
-      level0.appendChild(optWikiSettings);
-
       menu.appendChild(level0);
-
-      /* --- Level 1: Wiki-Einstellungen (gleiche Stelle, zurück möglich) --- */
-      const level1 = document.createElement('div');
-      level1.className = 'menu-level';
-      level1.dataset.level = '1';
-
-      const backBtn = document.createElement('button');
-      backBtn.type = 'button';
-      backBtn.className = 'menu-back';
-      backBtn.textContent = t('Zurück', 'detail.back');
-      backBtn.onclick = e => {
-        e.stopPropagation();
-        level1.classList.remove('active');
-        level0.classList.add('active');
-      };
-      level1.appendChild(backBtn);
-
-      const langLabel = document.createElement('label');
-      langLabel.textContent = t('Sprache', 'detail.wikiLang');
-      level1.appendChild(langLabel);
-
-      const langSelect = document.createElement('select');
-      langSelect.className = 'wiki-lang';
-      ['de','en','fr','es','it','pt','nl','pl','ru','ja','zh','random'].forEach(v => {
-        const o = document.createElement('option');
-        o.value = v; o.textContent = t(({'de':'Deutsch','en':'English','fr':'Français','es':'Español','it':'Italiano','pt':'Português','nl':'Nederlands','pl':'Polski','ru':'Русский','ja':'日本語','zh':'中文','random':'Zufällig'})[v]||v, 'wiki.'+v);
-        langSelect.appendChild(o);
-      });
-      langSelect.value = wikiSettings.lang;
-      level1.appendChild(langSelect);
-
-      const charsLabel = document.createElement('label');
-      charsLabel.textContent = t('ca. Zeichen', 'detail.wikiChars');
-      level1.appendChild(charsLabel);
-
-      const charsInput = document.createElement('input');
-      charsInput.type = 'number';
-      charsInput.className = 'wiki-chars';
-      charsInput.value = wikiSettings.chars;
-      charsInput.min = 80;
-      charsInput.max = 2000;
-      charsInput.step = 50;
-      level1.appendChild(charsInput);
-
-      const actions = document.createElement('div');
-      actions.className = 'menu-actions';
-
-      const insertBtn = document.createElement('button');
-      insertBtn.type = 'button';
-      insertBtn.className = 'btn small primary';
-      insertBtn.textContent = t('Einfügen', 'detail.wikiInsert');
-      insertBtn.onclick = async e => {
-        e.stopPropagation();
-        const lang = langSelect.value;
-        let chars = parseInt(charsInput.value, 10) || 450;
-        wikiSettings = { lang, chars };
-        insertBtn.disabled = true;
-        insertBtn.textContent = t('Lade…', 'detail.wikiLoading');
-        try {
-          const text = await fetchWikiText(lang, chars);
-          if(typeof insertTextInEditor === 'function') insertTextInEditor(textarea, text);
-          else {
-            const s = textarea.selectionStart, ee = textarea.selectionEnd;
-            textarea.value = textarea.value.substring(0, s) + text + textarea.value.substring(ee);
-            textarea.dispatchEvent(new Event('input', { bubbles: true }));
-            textarea.setSelectionRange(s + text.length, s + text.length);
-          }
-          try { textarea.focus(); } catch(_){}
-          closeOptionsMenu();
-        } catch(err) {
-          alert(t('Fehler: ', 'protocol.errorPrefix') + err.message);
-        } finally {
-          insertBtn.disabled = false;
-          insertBtn.textContent = t('Einfügen', 'detail.wikiInsert');
-        }
-      };
-      actions.appendChild(insertBtn);
-      level1.appendChild(actions);
-
-      menu.appendChild(level1);
 
       btnOptions.onclick = e => {
         e.stopPropagation();
@@ -6062,14 +6584,19 @@
     detailScroll.appendChild(tools);
     detailScroll.appendChild(textareaWrap);
 
-    if(focusDetailField && shouldFocusDetail()){
-      focusDetailField = false;
+    if(S.focusDetailField && shouldFocusDetail()){
+      S.focusDetailField = false;
       const ti = detailScroll.querySelector('.detail-tag-input');
       const ta = detailScroll.querySelector('.detail-textarea');
       if(ti) ti.focus(); else if(ta) ta.focus();
     } else {
-      focusDetailField = false;
+      S.focusDetailField = false;
     }
+    /* Tracking für inkrementelles Update (§2.1) */
+    detailScroll._renderedId = S.selectedId;
+    detailScroll._renderedKind = node ? node.kind : null;
+    detailScroll._renderedContainer = node ? (node.kind === 'element' && node.children && node.children.length > 0) : false;
+    detailScroll._renderedToolsMode = useUnpackedTools();
   }
 
   function buildLevelBar(path, depth){
@@ -6134,7 +6661,7 @@
   let sourceFromTreeTimer = null;
   function updateSourceFromTree(){
     if(sourceFromTreeTimer){ clearTimeout(sourceFromTreeTimer); sourceFromTreeTimer = null; }
-    if(!sourceFocused) {
+    if(!S.sourceFocused && !sourceDirty) {
       const prevScroll = sourceText ? sourceText.scrollTop : 0;
       const next = sourceGesamtMode ? serializeGesamtConfig() : getCopyResultText();
       if(sourceText){
@@ -6145,6 +6672,18 @@
       }
     }
     updateResultCharCount();
+    updateSourceDirtyIndicator();
+  }
+
+  function updateSourceDirtyIndicator(){
+    const btn = document.getElementById('btnApplySource');
+    if(!btn) return;
+    let dot = btn.querySelector('.source-dirty-dot');
+    if(sourceDirty){
+      if(!dot){ dot = document.createElement('span'); dot.className = 'source-dirty-dot'; btn.appendChild(dot); }
+    } else if(dot){
+      dot.remove();
+    }
   }
 
   /* Beim Tippen: Source/Ergebnis nicht bei jedem Tastendruck serialisieren */
@@ -6212,12 +6751,11 @@
     }
     tabs = newTabs;
     activeTabId = tabs[0].id;
-    tree = tabs[0].tree;
-    selectedId = tabs[0].selectedId;
-    idCounter = tabs[0].idCounter;
-    sourceFocused = false;
-    focusDetailField = false;
+    /* S liest aus tabs[0]; sourceFocused/focusDetailField werden hier zurückgesetzt. */
+    S.sourceFocused = false;
+    S.focusDetailField = false;
     sourceGesamtMode = false;
+    sourceDirty = false;
     updateSourcePanelTitle();
     const msgs = [];
     if(migrated > 0){
@@ -6240,11 +6778,11 @@
     const { tree: parsed, errors, migrated, renames } = parseXMLString(sourceText.value);
     if(errors.length){ showBanner('error', errors); return; }
     if(parsed.length === 1 && parsed[0].kind === 'element' && (parsed[0].tag || '').toLowerCase() === 'prompt'){
-      tree = parsed[0].children;
+      S.tree = parsed[0].children;
     } else {
-      tree = parsed;
+      S.tree = parsed;
     }
-    selectedId = firstNavigableId(tree);
+    S.selectedId = firstNavigableId(S.tree);
     const msgs = [];
     if(migrated > 0){
       msgs.push(t('Import-Hinweis: Mixed Content erkannt. {n} Text-Blöcke wurden automatisch in <Parent_text>-Tags umgewandelt.', 'protocol.mixedContent', { n: migrated }));
@@ -6253,6 +6791,9 @@
     }
     msgs.push(...tagRenameMessages(renames));
     showBanner('ok', msgs);
+    flashButton('btnApplySource', t('✓', 'outline.copiedShort'));
+    sourceDirty = false;
+    clearStructUndo();
     render();
   }
 
@@ -6313,7 +6854,7 @@
         }
         if(n.children && n.children.length) walk(n.children, depth + 1, tagName);
       });
-    })(tree, 1, null);
+    })(S.tree, 1, null);
     return {hard, soft};
   }
 
@@ -6392,7 +6933,7 @@
   }
 
   function runValidation(){
-    clearErrorFlags(tree);
+    clearErrorFlags(S.tree);
     const {hard, soft} = validateTree();
     if(!hard.length && !soft.length){
       protocolErrorCount = 0;
@@ -6402,7 +6943,7 @@
       return;
     }
     hard.forEach(i => {
-      const f = findNode(tree, i.id);
+      const f = findNode(S.tree, i.id);
       if(f) f.node._hasError = true;
     });
     /* Fehleranzahl kommt über addToProtocol (je Message +1) */
@@ -6428,6 +6969,7 @@
           layout.classList.add('with-source');
           setSourceLabels(true);
           sourceGesamtMode = false;
+          sourceDirty = false;
           updateSourcePanelTitle();
           updateSourceFromTree();
           updateSourceHeadTools();
@@ -6547,15 +7089,51 @@
     if(opt) opt.textContent = xmlCodeLineWrap ? t('Umbruch an', 'source.wrapOn') : t('Umbruch aus', 'source.wrapOff');
   }
 
-  function resetAll(){
-    if(tree.length && warnPromptTabReset && !confirm(t('Alles löschen?', 'outline.confirmReset'))) return;
-    tree = []; selectedId = null; hideBanner(); closeSheet(true); render();
+  /* ===== Detail-Text-Zeilenumbruch ===== */
+  function applyDetailLineWrap(){
+    document.querySelectorAll('.detail-textarea').forEach(ta => ta.classList.toggle('wrap-off', !detailTextLineWrap));
+    const fe = document.getElementById('focusEditorTextarea');
+    if(fe) fe.classList.toggle('wrap-off', !detailTextLineWrap);
+    /* Fokus-Editor Options-Menü Text aktualisieren */
+    const feWrap = document.getElementById('optFocusEditorWrap');
+    if(feWrap) feWrap.textContent = detailTextLineWrap ? t('Umbruch an', 'detail.wrapOn') : t('Umbruch aus', 'detail.wrapOff');
   }
-  function copySource(){ sourceText.select(); navigator.clipboard.writeText(sourceText.value).then(() => flashButton('btnCopySource', t('✓', 'outline.copiedShort'))).catch(() => document.execCommand('copy')); }
+
+  function resetAll(){
+    maybeConfirm(S.tree.length && warnPromptTabReset, t('Diesen Tab zurücksetzen?', 'outline.confirmReset'), () => {
+      structUndoPush();
+      S.tree = [];
+      S.selectedId = null;
+      hideBanner(); closeSheet(true); render();
+    });
+  }
+  function copyToClipboardFallback(text){
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  }
+  function copySource(){
+    navigator.clipboard.writeText(sourceText.value)
+      .then(() => flashButton('btnCopySource', t('✓', 'outline.copiedShort')))
+      .catch(() => {
+        if(copyToClipboardFallback(sourceText.value)) flashButton('btnCopySource', t('✓', 'outline.copiedShort'));
+        else flashButton('btnCopySource', t('✗', 'outline.copyFailed'));
+      });
+  }
   function copyResult(){
     const xml = getCopyResultText();
-    navigator.clipboard.writeText(xml).then(() => flashButton('btnCopyResult', t('✓ Kopiert', 'outline.copied')))
-      .catch(() => { const ta = document.createElement('textarea'); ta.value = xml; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); flashButton('btnCopyResult', t('✓', 'outline.copiedShort')); });
+    navigator.clipboard.writeText(xml)
+      .then(() => flashButton('btnCopyResult', t('✓ Kopiert', 'outline.copied')))
+      .catch(() => {
+        if(copyToClipboardFallback(xml)) flashButton('btnCopyResult', t('✓', 'outline.copiedShort'));
+        else flashButton('btnCopyResult', t('✗ Kopieren fehlgeschlagen', 'outline.copyFailedFull'));
+      });
   }
   function flashButton(id, label){ const b = document.getElementById(id); if(!b) return; const o = b.textContent; b.textContent = label; setTimeout(() => b.textContent = o, 1300); }
   function setSourceLabels(open){
@@ -6603,6 +7181,57 @@
       updateSourceHeadTools();
     }
   }
+
+  /* ===== showConfirm: Bestätigungs-Dialog statt native confirm() ===== */
+  let confirmCallback = null;
+  function showConfirm(message, onConfirm){
+    const panel = document.getElementById('confirmPanel');
+    const overlay = document.getElementById('confirmOverlay');
+    const msg = document.getElementById('confirmMessage');
+    if(!panel || !overlay || !msg) return;
+    msg.textContent = message;
+    confirmCallback = typeof onConfirm === 'function' ? onConfirm : null;
+    overlay.hidden = false;
+    overlay.classList.add('open');
+    panel.hidden = false;
+    panel.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    /* Fokus auf „Abbrechen" (nicht auf Textfeld – vermeidet Mobile-Tastatur) */
+    const cancelBtn = document.getElementById('btnConfirmCancel');
+    if(cancelBtn) cancelBtn.focus();
+  }
+
+  function closeConfirm(confirmed){
+    const panel = document.getElementById('confirmPanel');
+    const overlay = document.getElementById('confirmOverlay');
+    if(panel){ panel.classList.remove('open'); panel.hidden = true; }
+    if(overlay){ overlay.classList.remove('open'); overlay.hidden = true; }
+    const cb = confirmCallback;
+    confirmCallback = null;
+    if(!isProtocolOpen() && !isLanguagePanelOpen() && !isSettingsOpen()) document.body.style.overflow = '';
+    if(confirmed && cb) cb();
+  }
+
+  /* Bedingte Bestätigung: wenn condition true, showConfirm; sonst sofort callback */
+  function maybeConfirm(condition, message, callback){
+    if(!condition){ if(typeof callback === 'function') callback(); return; }
+    showConfirm(message, callback);
+  }
+
+  (function wireConfirmUi(){
+    const cancel = document.getElementById('btnConfirmCancel');
+    const ok = document.getElementById('btnConfirmOk');
+    const overlay = document.getElementById('confirmOverlay');
+    if(cancel) cancel.onclick = () => closeConfirm(false);
+    if(ok) ok.onclick = () => closeConfirm(true);
+    if(overlay) overlay.onclick = () => closeConfirm(false);
+    document.addEventListener('keydown', e => {
+      if(e.key === 'Escape' && document.getElementById('confirmPanel') && document.getElementById('confirmPanel').classList.contains('open')){
+        e.preventDefault();
+        closeConfirm(false);
+      }
+    });
+  })();
 
   /* ===== Warnungs-Einstellungen & Paste-Warn-Dialog ===== */
   const WARN_TOGGLE_DEFS = [
@@ -6686,6 +7315,23 @@
       }, 1300);
     });
     container.appendChild(clearBtn);
+
+    const sep3 = document.createElement('div');
+    sep3.className = 'opt-sep';
+    container.appendChild(sep3);
+
+    const resetSettingsBtn = document.createElement('button');
+    resetSettingsBtn.type = 'button';
+    resetSettingsBtn.className = 'opt-item';
+    resetSettingsBtn.textContent = t('Auf Standardwerte zurücksetzen', 'warnings.resetSettings');
+    resetSettingsBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      maybeConfirm(true, t('Alle Einstellungen zurücksetzen?', 'warnings.confirmResetSettings'), () => {
+        history.replaceState(null, '', location.pathname + location.search);
+        location.reload();
+      });
+    });
+    container.appendChild(resetSettingsBtn);
   }
 
   function syncWarningsChecklists(){
@@ -6707,6 +7353,253 @@
     }
     const mob = document.getElementById('warningsMenuMobileBody');
     if(mob) buildWarningsChecklist(mob);
+  }
+
+  /* ===== Einstellungen-Panel (ersetzt Warnungs-Menü) ===== */
+  function isSettingsOpen(){ const p = document.getElementById('settingsPanel'); return p && p.classList.contains('open'); }
+
+  function openSettingsPanel(){
+    const panel = document.getElementById('settingsPanel');
+    const overlay = document.getElementById('settingsOverlay');
+    if(!panel || !overlay) return;
+    renderSettingsPanel();
+    overlay.hidden = false;
+    overlay.classList.add('open');
+    panel.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    /* Fokus auf Close-Button */
+    const closeBtn = document.getElementById('btnSettingsClose');
+    if(closeBtn) closeBtn.focus();
+  }
+
+  function closeSettingsPanel(){
+    const panel = document.getElementById('settingsPanel');
+    const overlay = document.getElementById('settingsOverlay');
+    if(panel) panel.classList.remove('open');
+    if(overlay){ overlay.classList.remove('open'); overlay.hidden = true; }
+    if(!isProtocolOpen() && !isLanguagePanelOpen() && !isSettingsOpen()) document.body.style.overflow = '';
+  }
+
+  function renderSettingsPanel(){
+    const body = document.getElementById('settingsBody');
+    if(!body) return;
+    body.innerHTML = '';
+
+    /* --- Sektion: Warnungen --- */
+    const warnSection = document.createElement('div');
+    warnSection.className = 'settings-section';
+    const warnTitle = document.createElement('div');
+    warnTitle.className = 'settings-section-title';
+    warnTitle.textContent = t('Warnungen', 'settings.sectionWarnings');
+    warnSection.appendChild(warnTitle);
+
+    WARN_TOGGLE_DEFS.forEach(def => {
+      const row = createSettingsToggleRow(
+        t(def.labelDe, def.labelKey),
+        def.key,
+        def.get(),
+        (v) => { def.set(v); writeHashState(); }
+      );
+      warnSection.appendChild(row);
+    });
+    body.appendChild(warnSection);
+
+    /* --- Sektion: Darstellung --- */
+    const displaySection = document.createElement('div');
+    displaySection.className = 'settings-section';
+    const displayTitle = document.createElement('div');
+    displayTitle.className = 'settings-section-title';
+    displayTitle.textContent = t('Darstellung', 'settings.sectionDisplay');
+    displaySection.appendChild(displayTitle);
+
+    displaySection.appendChild(createSettingsToggleRow(
+      t('Gesamtzeichenanzahl anzeigen', 'settings.showCharacterCount'),
+      'showCharacterCount',
+      showCharacterCount,
+      (v) => { showCharacterCount = v; writeHashState(); updateResultCharCount(); }
+    ));
+    displaySection.appendChild(createSettingsToggleRow(
+      t('XML-Zeilenumbruch', 'settings.xmlCodeLineWrap'),
+      'xmlCodeLineWrap',
+      xmlCodeLineWrap,
+      (v) => { xmlCodeLineWrap = v; writeHashState(); applySourceWrap(); }
+    ));
+    displaySection.appendChild(createSettingsToggleRow(
+      t('Text-Zeilenumbruch', 'settings.detailLineWrap'),
+      'detailTextLineWrap',
+      detailTextLineWrap,
+      (v) => { detailTextLineWrap = v; writeHashState(); applyDetailLineWrap(); }
+    ));
+    displaySection.appendChild(createSettingsToggleRow(
+      t('Tab-Leiste anzeigen', 'settings.tabBarShown'),
+      'tabBarShown',
+      tabsVisible,
+      (v) => { tabsVisible = v; writeHashState(); renderTabs(); }
+    ));
+    body.appendChild(displaySection);
+
+    /* --- Sektion: Tab-Leiste Position --- */
+    const tabSection = document.createElement('div');
+    tabSection.className = 'settings-section';
+    const tabTitle = document.createElement('div');
+    tabTitle.className = 'settings-section-title';
+    tabTitle.textContent = t('Tab-Leiste', 'settings.sectionTabBar');
+    tabSection.appendChild(tabTitle);
+
+    tabSection.appendChild(createSettingsSelectRow(
+      t('Position', 'settings.tabBarLocation'),
+      'tabBarLocation',
+      tabsOrientation === 'vertical' ? 'left' : 'top',
+      [{ value: 'top', label: t('Oben', 'settings.tabBarTop') }, { value: 'left', label: t('Links', 'settings.tabBarLeft') }],
+      (v) => {
+        tabsOrientation = v === 'left' ? 'vertical' : 'horizontal';
+        writeHashState();
+        renderTabs();
+      }
+    ));
+    body.appendChild(tabSection);
+
+    /* --- Sektion: Erweitert --- */
+    const advSection = document.createElement('div');
+    advSection.className = 'settings-section';
+    const advTitle = document.createElement('div');
+    advTitle.className = 'settings-section-title';
+    advTitle.textContent = t('Erweitert', 'settings.sectionAdvanced');
+    advSection.appendChild(advTitle);
+
+    advSection.appendChild(createSettingsNumRow(
+      t('Protokoll-Schwellwert', 'settings.protocolThreshold'),
+      'protocolThreshold',
+      protocolThreshold,
+      1, 1000, 1,
+      (n) => { protocolThreshold = n; writeHashState(); }
+    ));
+    advSection.appendChild(createSettingsNumRow(
+      t('Paste-Warn-Schwellwert', 'settings.warnPastingTextThreshold'),
+      'warnPastingTextThreshold',
+      warnPastingTextThreshold,
+      1, 9999999, 1,
+      (n) => { warnPastingTextThreshold = n; writeHashState(); }
+    ));
+    advSection.appendChild(createSettingsNumRow(
+      t('Custom-Buttons Anzahl', 'settings.displayedAmountbuttonC'),
+      'displayedAmountbuttonC',
+      displayedAmountbuttonC,
+      2, CUSTOM_SLOT_MAX, 1,
+      (n) => { displayedAmountbuttonC = n; writeHashState(); renderCustomButtons(); }
+    ));
+    body.appendChild(advSection);
+
+    /* --- Sektion: Entwürfe --- */
+    const draftSection = document.createElement('div');
+    draftSection.className = 'settings-section';
+    const draftTitle = document.createElement('div');
+    draftTitle.className = 'settings-section-title';
+    draftTitle.textContent = t('Entwürfe', 'settings.sectionDrafts');
+    draftSection.appendChild(draftTitle);
+
+    draftSection.appendChild(createSettingsToggleRow(
+      t('Entwürfe im lokalen Browser-Speicher sichern', 'drafts.persist'),
+      'persistDrafts',
+      persistDrafts,
+      (v) => {
+        persistDrafts = v;
+        writeHashState();
+        if(persistDrafts){ try { saveDraftNow(); } catch(_){} }
+      }
+    ));
+
+    const clearBtn = document.createElement('button');
+    clearBtn.type = 'button';
+    clearBtn.className = 'btn block settings-draft-clear';
+    clearBtn.textContent = t('Gespeicherte Entwürfe löschen', 'drafts.clear');
+    clearBtn.disabled = !hasLocalDraft();
+    clearBtn.addEventListener('click', () => {
+      if(!hasLocalDraft()){
+        const prev = clearBtn.textContent;
+        clearBtn.textContent = t('Nichts gespeichert', 'drafts.clearEmpty');
+        setTimeout(() => { clearBtn.textContent = prev; }, 1300);
+        return;
+      }
+      clearLocalDraft();
+      const prev = clearBtn.textContent;
+      clearBtn.textContent = t('✓ Gelöscht', 'drafts.cleared');
+      clearBtn.disabled = true;
+      setTimeout(() => { clearBtn.textContent = prev; clearBtn.disabled = !hasLocalDraft(); }, 1300);
+    });
+    draftSection.appendChild(clearBtn);
+    body.appendChild(draftSection);
+  }
+
+  function createSettingsToggleRow(label, key, checked, onChange){
+    const row = document.createElement('div');
+    row.className = 'settings-row';
+    const lab = document.createElement('div');
+    lab.className = 'settings-label';
+    lab.textContent = label;
+    const check = document.createElement('div');
+    check.className = 'settings-check';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = !!checked;
+    cb.addEventListener('change', () => { onChange(!!cb.checked); });
+    const track = document.createElement('div');
+    track.className = 'toggle-track';
+    const thumb = document.createElement('div');
+    thumb.className = 'toggle-thumb';
+    track.appendChild(thumb);
+    check.appendChild(cb);
+    check.appendChild(track);
+    row.appendChild(lab);
+    row.appendChild(check);
+    return row;
+  }
+
+  function createSettingsNumRow(label, key, value, min, max, step, onChange){
+    const row = document.createElement('div');
+    row.className = 'settings-row';
+    const lab = document.createElement('div');
+    lab.className = 'settings-label';
+    lab.textContent = label;
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.className = 'settings-num-input';
+    input.value = value;
+    if(min != null) input.min = min;
+    if(max != null) input.max = max;
+    if(step != null) input.step = step;
+    input.addEventListener('change', () => {
+      let n = parseInt(input.value, 10);
+      if(!Number.isInteger(n)) n = value;
+      if(min != null && n < min) n = min;
+      if(max != null && n > max) n = max;
+      input.value = n;
+      onChange(n);
+    });
+    row.appendChild(lab);
+    row.appendChild(input);
+    return row;
+  }
+
+  function createSettingsSelectRow(label, key, value, options, onChange){
+    const row = document.createElement('div');
+    row.className = 'settings-row';
+    const lab = document.createElement('div');
+    lab.className = 'settings-label';
+    lab.textContent = label;
+    const sel = document.createElement('select');
+    sel.className = 'settings-select';
+    options.forEach(opt => {
+      const o = document.createElement('option');
+      o.value = opt.value;
+      o.textContent = opt.label;
+      sel.appendChild(o);
+    });
+    sel.value = value;
+    sel.addEventListener('change', () => { onChange(sel.value); });
+    row.appendChild(lab);
+    row.appendChild(sel);
+    return row;
   }
 
   function closePasteWarn(commit){
@@ -6734,13 +7627,13 @@
         try { ta.setSelectionRange(pos, pos); } catch(_){}
         ta.dispatchEvent(new Event('input', { bubbles: true }));
       }
-      try { ta.focus(); } catch(_){}
+      /* Auf Mobile: nicht fokussieren (vermeidet ungewolltes Öffnen des Fokus-Editors nach Paste) */
+      if(!isMobileLayout()) try { ta.focus(); } catch(_){}
     }
     pendingPaste = null;
     const dont = document.getElementById('pasteWarnDontShow');
     if(dont) dont.checked = false;
     const ins = document.getElementById('btnPasteWarnInsert');
-    if(ins) ins.disabled = true;
   }
 
   function openPasteWarn(text, target, opts){
@@ -6753,7 +7646,7 @@
       lead.textContent = t(
         'Sollen wirklich {n} Zeichen eingefügt werden?',
         'pasteWarn.lead',
-        { n: formatResultCharCount(n) }
+        { n: n.toLocaleString('de-DE') }
       );
     }
     const dont = document.getElementById('pasteWarnDontShow');
@@ -6761,9 +7654,11 @@
       dont.checked = false;
     }
     const ins = document.getElementById('btnPasteWarnInsert');
-    if(ins) ins.disabled = true;
     if(overlay){ overlay.hidden = false; overlay.classList.add('open'); }
     if(panel){ panel.hidden = false; panel.classList.add('open'); }
+    /* Fokus auf „Abbrechen" (nicht auf Textfeld – vermeidet Mobile-Tastatur) */
+    const cancelBtn = document.getElementById('btnPasteWarnCancel');
+    if(cancelBtn) cancelBtn.focus();
   }
 
   /* ===== Textfeld-Enhancements – Undo/Redo nach VS-Code-Verhalten (kein Zeit-Debounce) ===== */
@@ -6844,9 +7739,6 @@
     };
   }
 
-  function snapSel(el){
-    return { start: el.selectionStart || 0, end: el.selectionEnd || 0 };
-  }
 
   function getEditorHist(el){
     const key = editorHistKey(el);
@@ -7095,7 +7987,6 @@
     return true;
   }
 
-  function scheduleEditorUndoGroup(el){ onEditorInputForHistory(el); }
   function finalizeEditorCoalesce(el){
     const h = getEditorHist(el);
     closeOpenStackElement(h);
@@ -7121,8 +8012,13 @@
   }
 
   function updateDetailFieldCharCount(el){
-    if(!el || !el.classList || !el.classList.contains('detail-textarea')) return;
-    const wrap = el.closest('.detail-textarea-wrap');
+    if(!el || !el.classList) return;
+    const isDetail = el.classList.contains('detail-textarea');
+    const isFocusEditor = el.id === 'focusEditorTextarea';
+    if(!isDetail && !isFocusEditor) return;
+    const wrap = isFocusEditor
+      ? document.getElementById('focusEditorTextareaWrap')
+      : el.closest('.detail-textarea-wrap');
     if(!wrap) return;
     const stack = ensureDetailCharCountStack(wrap);
     const meter = stack.querySelector('.detail-field-charcount');
@@ -7473,7 +8369,7 @@
     window._pbSelectionChangeBound = true;
     document.addEventListener('selectionchange', () => {
       const el = document.activeElement;
-      if(el && el.classList && el.classList.contains('detail-textarea')){
+      if(el && el.classList && (el.classList.contains('detail-textarea') || el.id === 'focusEditorTextarea')){
         updateDetailFieldCharCount(el);
       }
     });
@@ -7515,6 +8411,8 @@
 
   window.addEventListener('beforeunload', e => {
     if(!warnBrowserTabClose) return;
+    /* Bei komplett leerem Baum ohne Draft-Rauschen sparen */
+    if(!S.tree.length && !tabs.some(t => t.tree && t.tree.length)) return;
     e.preventDefault();
     e.returnValue = '';
   });
@@ -7543,13 +8441,8 @@
   if(optWarnings){
     optWarnings.onclick = e => {
       e.stopPropagation();
-      const menu = document.getElementById('optionsMenu');
-      if(!menu) return;
-      const l0 = document.getElementById('optionsMenuLevel0');
-      const lw = document.getElementById('optionsMenuLevelWarnings');
-      if(l0) l0.classList.remove('active');
-      if(lw) lw.classList.add('active');
-      renderWarningsMenus();
+      closeOptionsMenu();
+      openSettingsPanel();
     };
   }
   const optWarningsBack = document.getElementById('optWarningsBack');
@@ -7565,18 +8458,7 @@
 
   document.getElementById('btnWarnings').onclick = e => {
     e.stopPropagation();
-    const menu = document.getElementById('warningsMenuDesktop');
-    const btn = document.getElementById('btnWarnings');
-    const isOpen = menu.classList.contains('open');
-    closeAllWikiMenus();
-    closeTemplateMenu();
-    closeOptionsMenu();
-    if(!isOpen){
-      renderWarningsMenus();
-      positionMenu(btn, menu);
-      btn.setAttribute('aria-expanded', 'true');
-      openOptionsMenu = menu;
-    }
+    openSettingsPanel();
   };
 
   document.getElementById('optValidate').onclick = e => {
@@ -7614,7 +8496,6 @@
         warnBeforePastingText = !dont.checked;
         writeHashState();
         syncWarningsChecklists();
-        if(insert) insert.disabled = !dont.checked;
       });
     }
   })();
@@ -7645,10 +8526,11 @@
   };
 
   document.getElementById('btnAddRoot').onclick = addRootNode;
+  document.getElementById('btnStructUndo').onclick = structUndo;
+  document.getElementById('btnStructRedo').onclick = structRedo;
   document.getElementById('btnDelete').onclick = () => {
-    if(!selectedId) return;
-    if(warnPromptEntryDelete && !confirm(t('Wirklich löschen?', 'outline.confirmDelete'))) return;
-    deleteNode(selectedId);
+    if(!S.selectedId) return;
+    maybeConfirm(warnPromptEntryDelete, t('Wirklich löschen?', 'outline.confirmDelete'), () => deleteNode(S.selectedId));
   };
   document.getElementById('btnValidate').onclick = openProtocol;
   document.getElementById('btnProtocolClose').onclick = closeProtocol;
@@ -7666,6 +8548,22 @@
     languageOverlayEl.addEventListener('click', closeLanguagePanel);
   }
   document.getElementById('btnLanguageClose').onclick = closeLanguagePanel;
+  /* ===== Einstellungen-Panel Bindings ===== */
+  document.getElementById('btnSettingsClose').onclick = closeSettingsPanel;
+  const settingsOverlayEl = document.getElementById('settingsOverlay');
+  if(settingsOverlayEl) settingsOverlayEl.addEventListener('click', closeSettingsPanel);
+  document.getElementById('btnSettingsReset').onclick = () => {
+    maybeConfirm(true, t('Alle Einstellungen zurücksetzen?', 'warnings.confirmResetSettings'), () => {
+      history.replaceState(null, '', location.pathname + location.search);
+      location.reload();
+    });
+  };
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && isSettingsOpen && isSettingsOpen()){
+      e.preventDefault();
+      closeSettingsPanel();
+    }
+  });
   const languageSearchEl = document.getElementById('languageSearch');
   if(languageSearchEl){
     languageSearchEl.addEventListener('input', () => {
@@ -7682,6 +8580,39 @@
     if(e.key === 'Escape' && isProtocolOpen()){
       e.preventDefault();
       closeProtocol();
+    }
+    /* Strukturelles Undo/Redo: Ctrl+Shift+Z / Ctrl+Shift+Y (nur wenn kein Textfeld fokussiert) */
+    const mod = e.ctrlKey || e.metaKey;
+    const activeEl = document.activeElement;
+    const isTextField = activeEl && (activeEl.tagName === 'TEXTAREA' || (activeEl.tagName === 'INPUT' && (activeEl.type === 'text' || !activeEl.type)));
+    if(mod && e.shiftKey && !isTextField && !document.getElementById('confirmPanel').classList.contains('open')){
+      if(e.key === 'z' || e.key === 'Z'){ e.preventDefault(); structUndo(); }
+      else if(e.key === 'y' || e.key === 'Y'){ e.preventDefault(); structRedo(); }
+    }
+    /* Focus-Trap für modale Dialoge */
+    if(e.key === 'Tab'){
+      const openPanels = [
+        document.getElementById('protocolPanel'),
+        document.getElementById('languagePanel'),
+        document.getElementById('pasteWarnPanel'),
+        document.getElementById('confirmPanel'),
+        document.getElementById('settingsPanel')
+      ].filter(p => p && p.classList.contains('open'));
+      if(openPanels.length){
+        const panel = openPanels[0];
+        const focusable = panel.querySelectorAll('button, input, [tabindex]:not([tabindex="-1"])');
+        if(focusable.length){
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if(e.shiftKey && document.activeElement === first){
+            e.preventDefault();
+            last.focus();
+          } else if(!e.shiftKey && document.activeElement === last){
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
     }
   });
   document.getElementById('btnReset').onclick = resetAll;
@@ -7711,11 +8642,15 @@
       setSourceLabels(false);
     }
   };
-  sourceText.onfocus = () => { sourceFocused = true; };
+  sourceText.onfocus = () => { S.sourceFocused = true; };
   sourceText.onblur = () => {
-    sourceFocused = false;
-    /* Nach Verlassen des XML-Feldes: Tree-Ansicht wieder anzeigen (unapplied edits bleiben im Feld bis Übernehmen) */
+    S.sourceFocused = false;
+    /* Source-Edits bleiben erhalten (sourceDirty) – werden beim nächsten updateSourceFromTree nicht überschrieben */
   };
+  sourceText.addEventListener('input', () => {
+    if(S.sourceFocused) sourceDirty = true;
+    updateSourceDirtyIndicator();
+  });
   sourceText.addEventListener('keydown', e => {
     if((e.ctrlKey || e.metaKey) && e.key === 'f'){
       e.preventDefault();
@@ -7732,7 +8667,7 @@
     updateSourceHeadTools();
     renderCustomButtons();
     if(typeof renderWarningsMenus === 'function') renderWarningsMenus();
-    renderTabs();
+    renderTabsNoHash();
     /* Hash-Settings brauchen keinen Tree-Rebuild; Sprache löst eigenen Refresh aus */
     if(currentLang !== prevLang){
       loadLanguage(currentLang).catch(() => {});
@@ -7758,38 +8693,301 @@
       if(activeSheet) updateMobileSheetMetrics();
     }
     /* Tab-Orientierung: auf Mobile immer top-ähnlich; Parameter left bleibt erhalten */
-    renderTabs();
+    renderTabsNoHash();
     updateSourceHeadTools();
-    if(selectedId) renderDetail();
+    if(S.selectedId) renderDetail();
     restoreScrollPositions();
   });
+
+  /* ResizeObserver für splitBody – ersetzt getBoundingClientRect-Polling bei Sheet-Geometrie (§4.2) */
+  if(typeof ResizeObserver !== 'undefined'){
+    const _sheetObserver = new ResizeObserver(() => {
+      if(isMobileLayout() && activeSheet) updateMobileSheetMetrics();
+    });
+    const _sb = document.getElementById('splitBody');
+    if(_sb) _sheetObserver.observe(_sb);
+  }
+
+  /* ===== Mobile Fokus-Editor (Vollbild-Editor-Modus) ===== */
+  let focusEditorTarget = null;
+  let focusEditorIsTag = false;
+  let focusEditorOrigValue = '';
+
+  function openFocusEditor(targetEl, isTag){
+    if(!isMobileLayout()) return;
+    if(!targetEl) return;
+    focusEditorTarget = targetEl;
+    focusEditorIsTag = !!isTag;
+    focusEditorOrigValue = getEditorValue(targetEl);
+
+    const overlay = document.getElementById('focusEditorOverlay');
+    const textarea = document.getElementById('focusEditorTextarea');
+    const wrap = document.getElementById('focusEditorTextareaWrap');
+    if(!overlay || !textarea) return;
+
+    /* Universell: immer die Textarea als Editor verwenden (auch für Tags) */
+    textarea.style.display = 'block';
+    textarea.value = focusEditorOrigValue;
+    textarea.placeholder = targetEl.placeholder || '';
+    textarea.className = 'focus-editor-textarea' + (detailTextLineWrap ? '' : ' wrap-off');
+    textarea.dataset.historyKey = targetEl.dataset.historyKey || '';
+
+    /* Wiki-Optionen nur im Fokus-Editor zeigen, wenn Originalfeld eine Detail-Textarea ist */
+    const showWiki = !!targetEl.classList && targetEl.classList.contains('detail-textarea');
+    const optWiki = document.getElementById('optFocusEditorWiki');
+    const optWikiSettings = document.getElementById('optFocusEditorWikiSettings');
+    const optWikiSep = document.getElementById('optFocusEditorWikiSep');
+    if(optWiki) optWiki.hidden = !showWiki;
+    if(optWikiSettings) optWikiSettings.hidden = !showWiki;
+    if(optWikiSep) optWikiSep.hidden = !showWiki;
+    /* Enhance wenn noch nicht gemacht */
+    if(!textarea._editorEnhanced){
+      enhanceTextEditor(textarea, { historyKey: textarea.dataset.historyKey, charCount: true });
+    }
+    /* Char-Count-Stack sicherstellen (gleicher Stil wie Desktop) */
+    if(wrap) ensureDetailCharCountStack(wrap);
+
+    overlay.setAttribute('aria-hidden', 'false');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    /* Fokus aufs Textfeld (User hat explizit getippt → Tastatur ist gewollt) */
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if(textarea){
+          textarea.focus();
+          const len = (textarea.value || '').length;
+          try { textarea.setSelectionRange(len, len); } catch(_){}
+        }
+        updateFocusEditorUndoButtons();
+        if(textarea) updateDetailFieldCharCount(textarea);
+      });
+    });
+  }
+
+  function closeFocusEditor(){
+    const overlay = document.getElementById('focusEditorOverlay');
+    if(!overlay || !overlay.classList.contains('open')) return;
+    const textarea = document.getElementById('focusEditorTextarea');
+    /* Options- und Wiki-Menü schließen */
+    if(typeof closeOptionsMenu === 'function') closeOptionsMenu();
+    if(typeof closeAllWikiMenus === 'function') closeAllWikiMenus();
+    if(!focusEditorTarget) { overlay.classList.remove('open'); overlay.setAttribute('aria-hidden', 'true'); return; }
+
+    /* Wert zurückkopieren */
+    const newValue = textarea ? textarea.value : '';
+    if(newValue !== focusEditorOrigValue){
+      if(focusEditorIsTag){
+        focusEditorTarget.value = newValue;
+        /* Input-Event auslösen für Tag-Synchronisation */
+        focusEditorTarget.dispatchEvent(new Event('input', { bubbles: true }));
+      } else {
+        setEditorValue(focusEditorTarget, newValue);
+        /* Node-Text aktualisieren */
+        if(focusEditorTarget.classList.contains('detail-textarea')){
+          const found = S.selectedId ? findNode(S.tree, S.selectedId) : null;
+          if(found){
+            found.node.text = newValue;
+            if(found.node.kind === 'comment') updateOutlineLabelFor(found.node.id, null, newValue);
+            else updateOutlinePreview(found.node.id, newValue);
+            scheduleSourceFromTree();
+          }
+        } else if(focusEditorTarget === sourceText){
+          sourceDirty = true;
+          updateSourceDirtyIndicator();
+        }
+      }
+    }
+
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    if(!isProtocolOpen() && !isLanguagePanelOpen() && !isSettingsOpen()) document.body.style.overflow = '';
+    /* Original-Feld blur-en um Tastatur zu schließen */
+    try { if(document.activeElement && document.activeElement.tagName === 'TEXTAREA') document.activeElement.blur(); } catch(_){}
+    focusEditorTarget = null;
+  }
+
+  function updateFocusEditorUndoButtons(){
+    const btnU = document.getElementById('btnFocusEditorUndo');
+    const btnR = document.getElementById('btnFocusEditorRedo');
+    const el = document.getElementById('focusEditorTextarea');
+    if(!el || !btnU || !btnR) return;
+    const h = getEditorHist(el);
+    btnU.disabled = h.past.length === 0;
+    btnR.disabled = h.future.length === 0;
+  }
+
+  (function wireFocusEditor(){
+    const back = document.getElementById('btnFocusEditorBack');
+    const undo = document.getElementById('btnFocusEditorUndo');
+    const redo = document.getElementById('btnFocusEditorRedo');
+    const options = document.getElementById('btnFocusEditorOptions');
+    const optMenu = document.getElementById('focusEditorOptionsMenu');
+    const optFind = document.getElementById('optFocusEditorFind');
+    const optWrap = document.getElementById('optFocusEditorWrap');
+    if(back) back.onclick = () => closeFocusEditor();
+    if(undo) undo.onclick = () => {
+      const el = document.getElementById('focusEditorTextarea');
+      if(el){ editorUndo(el); updateFocusEditorUndoButtons(); }
+    };
+    if(redo) redo.onclick = () => {
+      const el = document.getElementById('focusEditorTextarea');
+      if(el){ editorRedo(el); updateFocusEditorUndoButtons(); }
+    };
+    if(options && optMenu){
+      options.onclick = e => {
+        e.stopPropagation();
+        const isOpen = optMenu.classList.contains('open');
+        closeAllWikiMenus();
+        closeTemplateMenu();
+        closeOptionsMenu();
+        if(!isOpen){
+          optWrap.textContent = detailTextLineWrap ? t('Umbruch aus', 'detail.wrapOff') : t('Umbruch an', 'detail.wrapOn');
+          positionMenu(options, optMenu);
+          options.setAttribute('aria-expanded', 'true');
+          openOptionsMenu = optMenu;
+        }
+      };
+    }
+    if(optFind) optFind.onclick = e => {
+      e.stopPropagation();
+      closeOptionsMenu();
+      const el = document.getElementById('focusEditorTextarea');
+      if(el) openFindReplace(el);
+    };
+    if(optWrap) optWrap.onclick = e => {
+      e.stopPropagation();
+      detailTextLineWrap = !detailTextLineWrap;
+      writeHashState();
+      applyDetailLineWrap();
+      optWrap.textContent = detailTextLineWrap ? t('Umbruch aus', 'detail.wrapOff') : t('Umbruch an', 'detail.wrapOn');
+      closeOptionsMenu();
+    };
+
+    /* Wiki im Fokus-Editor (nur bei Detail-Textfeldern sichtbar) */
+    const optWiki = document.getElementById('optFocusEditorWiki');
+    const optWikiSettings = document.getElementById('optFocusEditorWikiSettings');
+    const feLevel0 = document.getElementById('focusEditorMenuLevel0');
+    const feLevel1 = document.getElementById('focusEditorMenuLevel1');
+    const feWikiBack = document.getElementById('optFocusEditorWikiBack');
+    const feWikiLang = document.getElementById('feWikiLang');
+    const feWikiChars = document.getElementById('feWikiChars');
+
+    /* Wiki-Sprach-Optionen füllen */
+    if(feWikiLang && !feWikiLang.options.length){
+      ['de','en','fr','es','it','pt','nl','pl','ru','ja','zh','random'].forEach(v => {
+        const o = document.createElement('option');
+        o.value = v; o.textContent = t(({'de':'Deutsch','en':'English','fr':'Français','es':'Español','it':'Italiano','pt':'Português','nl':'Nederlands','pl':'Polski','ru':'Русский','ja':'日本語','zh':'中文','random':'Zufällig'})[v]||v, 'wiki.'+v);
+        feWikiLang.appendChild(o);
+      });
+    }
+
+    async function feDoWikiInsert(){
+      const fe = document.getElementById('focusEditorTextarea');
+      if(!fe) return;
+      const lang = feWikiLang ? feWikiLang.value : wikiSettings.lang;
+      let chars = feWikiChars ? parseInt(feWikiChars.value, 10) || 450 : wikiSettings.chars;
+      wikiSettings = { lang, chars };
+      optWiki.disabled = true;
+      const prevText = optWiki.textContent;
+      optWiki.textContent = t('Lade…', 'detail.wikiLoading');
+      try {
+        const text = await fetchWikiText(lang, chars);
+        if(typeof insertTextInEditor === 'function') insertTextInEditor(fe, text);
+        else {
+          const s = fe.selectionStart, ee = fe.selectionEnd;
+          fe.value = fe.value.substring(0, s) + text + fe.value.substring(ee);
+          fe.dispatchEvent(new Event('input', { bubbles: true }));
+          fe.setSelectionRange(s + text.length, s + text.length);
+        }
+        closeOptionsMenu();
+      } catch(err) {
+        alert(t('Fehler: ', 'protocol.errorPrefix') + err.message);
+      } finally {
+        optWiki.disabled = false;
+        optWiki.textContent = prevText;
+      }
+    }
+
+    if(optWiki) optWiki.onclick = e => {
+      e.stopPropagation();
+      feDoWikiInsert();
+    };
+
+    if(optWikiSettings) optWikiSettings.onclick = e => {
+      e.stopPropagation();
+      /* Zur Wiki-Einstellungen-Ebene wechseln (Nested-Level im Options-Menü) */
+      if(feLevel0) feLevel0.classList.remove('active');
+      if(feLevel1) feLevel1.classList.add('active');
+      if(feWikiLang) feWikiLang.value = wikiSettings.lang;
+      if(feWikiChars) feWikiChars.value = wikiSettings.chars;
+    };
+
+    if(feWikiBack) feWikiBack.onclick = e => {
+      e.stopPropagation();
+      if(feLevel1) feLevel1.classList.remove('active');
+      if(feLevel0) feLevel0.classList.add('active');
+    };
+
+    if(feWikiLang) feWikiLang.addEventListener('change', () => { wikiSettings.lang = feWikiLang.value; });
+    if(feWikiChars) feWikiChars.addEventListener('change', () => { wikiSettings.chars = parseInt(feWikiChars.value, 10) || 450; });
+
+    /* Intercept focus on text fields in mobile */
+    document.addEventListener('focusin', e => {
+      if(!isMobileLayout()) return;
+      const el = e.target;
+      if(!el || el.nodeType !== 1) return;
+      /* Focus editor textarea: allow */
+      if(el.id === 'focusEditorTextarea') return;
+      /* Language search: allow (not a mobile focus editor target) */
+      if(el.id === 'languageSearch') return;
+      /* Only intercept textareas and text inputs that are in the detail/source area */
+      if(el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && (el.type === 'text' || !el.type))){
+        if(el.id === 'panelStructureTitle' || el.classList.contains('detail-textarea') || el.classList.contains('detail-tag-input') || el.id === 'sourceText'){
+          /* Prevent native focus → open focus editor instead */
+          e.stopImmediatePropagation();
+          try { el.blur(); } catch(_){}
+          const isTag = el.classList.contains('detail-tag-input');
+          setTimeout(() => openFocusEditor(el, isTag), 50);
+        }
+      }
+    }, true);
+
+    /* Update undo/redo buttons + char count on input in focus editor */
+    const feTextarea = document.getElementById('focusEditorTextarea');
+    if(feTextarea) feTextarea.addEventListener('input', () => {
+      updateFocusEditorUndoButtons();
+      updateDetailFieldCharCount(feTextarea);
+    });
+
+    /* Escape closes focus editor */
+    document.addEventListener('keydown', e => {
+      if(e.key === 'Escape'){
+        const overlay = document.getElementById('focusEditorOverlay');
+        if(overlay && overlay.classList.contains('open')){
+          e.preventDefault();
+          closeFocusEditor();
+        }
+      }
+    });
+  })();
 
   /* ===== Start ===== */
   readHashState();
   /* Sprache: URL setLanguage, sonst System, Fallback de */
-  (function initLang(){
-    const params = parseHashParams();
-    if(Object.prototype.hasOwnProperty.call(params, 'setLanguage') && params.setLanguage){
-      currentLang = String(params.setLanguage).toLowerCase().slice(0, 2);
-    } else {
-      currentLang = detectSystemLanguage();
-    }
-  })();
   writeHashState();
   /* Sofort korrekten Button-Text setzen (verhindert Flackern vor dem restlichen Init) */
   updateResultCharCount();
 
-  idCounter = 1;
   const draft = loadDraftPayload();
   if(draft && applyDraftPayload(draft)){
-    /* Tabs aus session/local wiederhergestellt */
+    /* Tabs aus session/local wiederhergestellt. S liest direkt aus dem aktiven Tab. */
   } else {
     const first = createTabState(t('Prompt {n}', 'tabs.defaultTitle', {n: 1}), []);
     tabs = [first];
     activeTabId = first.id;
-    tree = first.tree;
-    selectedId = first.selectedId;
-    idCounter = first.idCounter;
+    /* Keine Zuweisungen an tree/selectedId/idCounter mehr nötig –
+       S liest direkt aus first. */
   }
   registerProtocolTrigger(document.getElementById('btnValidate'));
   registerProtocolTrigger(document.getElementById('btnOptions'));
@@ -7801,6 +8999,7 @@
     putAllSheetsDormant();
   }
   applySourceWrap();
+  applyDetailLineWrap();
   updateSourceHeadTools();
   renderTemplateMenus();
   renderCustomButtons();
@@ -7814,6 +9013,7 @@
   renderTabs();
   render();
   updateResultCharCount();
+  updateStructUndoButtons();
   loadLanguage(currentLang).catch(() => {});
   /* beim Verlassen noch einmal speichern */
   window.addEventListener('pagehide', () => {

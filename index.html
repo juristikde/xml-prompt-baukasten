@@ -838,6 +838,34 @@
      beginnt IMMER mit der Trefferanzeige (und den Buttons dahinter),
      nie mit einzelnen Buttons oder einem zerrissenen Zähler.
 
+ 77. §TAB-ROW-RESET: resetTransientCachesOnTabSwitch leert beim Tab-
+     Wechsel zusätzlich den Virtual-Row-Cache: _activeRows (Rows vom DOM
+     lösen, in _rowPool zurückgeben), _outlineRowMap und _lastSelectedRow.
+     Grund: Node-IDs sind PRO TAB vergeben (n1, n2, …) – verschiedene
+     Tabs kollidieren in den ID-Strings. paintVirtualOutlineWindow
+     überspringt Zeilen mit rowEl._vid === entry.id (OPT-4-Optimierung);
+     ohne Reset blieben nach dem Tab-Wechsel bei ID-Kollision an gleichem
+     flat-Index INHALT und .selected-Klasse der alten Tab-Zeile stehen,
+     während der Detail-Editor korrekt den neuen Tab zeigte (Outline-
+     Markierung ≠ Detail-Auswahl). Innerhalb EINES Tabs bleibt die
+     Optimierung gültig (IDs dort eindeutig und stabil).
+
+ 78. §SOURCE-GESAMT-COPY/SYNC: (a) copySource ist MODUS-BEWUSST: Im
+     Gesamt-Modus wird die GESAMT-Config kopiert (vorher flush-te der
+     Cache-Restore den EINZEL-TAB-Cache _sourceCacheText in die Textarea
+     → kopiert wurde das Einzel-Tab-XML; beim Wieder-Einfügen baute
+     applyGesamtFromSource daraus EINEN Tab statt aller Tabs –
+     "Gesamt-Config wird nicht übernommen"). (b) §SOURCE-DIRTY-WRITE-
+     GUARD: _applySourceDomText schreibt NIE in eine dirty Source – der
+     Idle-Write (bis 600ms) konnte einen frisch eingefügten Text wieder
+     löschen (Re-Check zur Laufzeit im doWrite, nicht nur beim
+     Scheduling). (c) §PASTE-FOCUS-FIRST: closePasteWarn fokussiert das
+     Ziel VOR dem Schreiben, damit das input-Event bei gesetztem
+     sourceFocused läuft und der Paste als dirty markiert wird.
+     (d) applyGesamtFromSource setzt protocolLog auf den neuen ersten
+     Tab (wie loadTab) – Erfolgsmeldungen landeten sonst im Array des
+     gelöschten Tabs.
+
   --- WO WAS LIEGT ---
   • State/Tabs: tabs[], _tabMap (Map<id,tab>), getActiveTab(), S (Accessor),
     loadTab, createTabState (scroll, draftXml, draftDirty, lazy, sourceDirty,
@@ -5948,6 +5976,26 @@
       _outlineVirtualPaintRaf = 0;
     }
     _outlineVirtualLastRange = { start: -1, end: -1 };
+    /* §TAB-ROW-RESET (§77): Node-IDs sind PRO TAB vergeben (n1, n2, …) –
+       verschiedene Tabs kollidieren also in den ID-Strings. Der Virtual-
+       Cache _activeRows (keyed nach flatIndex + vid) blieb beim Tab-Wechsel
+       erhalten: paintVirtualOutlineWindow übersprang Zeilen mit
+       rowEl._vid === entry.id (Optimierung) → bei ID-Kollision an gleichem
+       Index blieben INHALT und .selected-Klasse der ALTEN Tab-Zeile stehen,
+       während der Detail-Editor korrekt den neuen Tab zeigte. Fix: Active-
+       Rows vom DOM lösen und in den Pool zurückgeben, Row-Map leeren,
+       Selection-Referenz nullen – der nächste Paint baut das Fenster
+       komplett neu (recycleOutlineRow setzt Klassen inkl. selected neu). */
+    if(typeof _activeRows !== 'undefined' && _activeRows){
+      _activeRows.forEach((rowEl) => {
+        if(!rowEl) return;
+        if(rowEl.parentNode) rowEl.parentNode.removeChild(rowEl);
+        if(typeof _rowPool !== 'undefined' && _rowPool.length < _POOL_MAX) _rowPool.push(rowEl);
+      });
+      _activeRows.clear();
+    }
+    if(typeof _outlineRowMap !== 'undefined' && _outlineRowMap) _outlineRowMap.clear();
+    if(typeof _lastSelectedRow !== 'undefined') _lastSelectedRow = null;
     debounceCancel('draftSave');
     /* §44: Frame-Scheduler-Queues leeren – Tasks gehören zum alten Tab */
     if(typeof _fsClear === 'function') _fsClear();
@@ -14672,6 +14720,13 @@
       return;
     }
     const doWrite = () => {
+      /* §SOURCE-DIRTY-WRITE-GUARD (§78): Ein editierter (dirty) Source wird
+         vom Baum NIE überschrieben – auch nicht von einem noch laufenden
+         deferred Write. Der Idle-Write (bis 600ms) konnte eine frisch
+         eingefügte Config löschen, wenn der Paste schneller war als der
+         Scheduler (Panel-/Modus-Wechsel → deferred Write → Paste → Write
+         feuert). Re-Check zur Laufzeit, nicht nur beim Scheduling. */
+      if(typeof getSourceDirty === 'function' && getSourceDirty()) return;
       sourceText.value = next;
       _sourceDomTextRef = next;
       if(scrollY != null) sourceText.scrollTop = scrollY;
@@ -14847,6 +14902,11 @@
     tabs = newTabs;
     _rebuildTabMap();
     activeTabId = tabs[0].id;
+    /* §SOURCE-GESAMT-APPLY (§78): Protokoll-Alias auf den neuen ersten Tab
+       setzen (wie loadTab) – sonst loggte showBanner weiter in das Array
+       des gelöschten alten Tabs, die Erfolgsmeldung fehlte im Protokoll. */
+    protocolLog = tabs[0].protocolLog || [];
+    if(typeof updateProtocolMarks === 'function') updateProtocolMarks();
     /* S liest aus tabs[0]; sourceFocused/focusDetailField werden hier zurückgesetzt. */
     S.sourceFocused = false;
     S.focusDetailField = false;
@@ -15707,11 +15767,29 @@
     return ok;
   }
   function copySource(){
-    /* Sicherstellen dass DOM den aktuellen Cache hat */
-    if(_sourceCacheText && _sourceDomTextRef !== _sourceCacheText){
-      _applySourceDomText(_sourceCacheText, null, true);
+    /* §SOURCE-COPY-MODE (§78): Der Copy-Button respektiert Modus + Dirty.
+       GESAMT-Modus: Die Gesamt-Config wird kopiert – der frühere Cache-
+       Flush schrieb vor dem Kopieren den EINZEL-TAB-Cache (_sourceCacheText)
+       in die Textarea → kopiert wurde das Einzel-Tab-XML; beim Wieder-
+       Einfügen baute applyGesamtFromSource daraus EINEN Tab statt aller
+       Tabs ("wird nicht übernommen"). DIRTY: Der Nutzer-Text wird 1:1
+       kopiert und NIEMALS vom Baum überschrieben. */
+    let text;
+    if(getSourceDirty()){
+      text = (sourceText && sourceText.value) || '';
+    } else if(sourceGesamtMode){
+      if(typeof updateSourceFromTree === 'function'){
+        try { updateSourceFromTree({ syncDom: true }); } catch(_){}
+      }
+      text = (sourceText && sourceText.value)
+        || (typeof serializeGesamtConfig === 'function' ? serializeGesamtConfig() : '');
+    } else {
+      /* Sicherstellen dass DOM den aktuellen Cache hat */
+      if(_sourceCacheText && _sourceDomTextRef !== _sourceCacheText){
+        _applySourceDomText(_sourceCacheText, null, true);
+      }
+      text = (_sourceDomTextRef != null ? _sourceDomTextRef : (sourceText && sourceText.value)) || '';
     }
-    const text = (_sourceDomTextRef != null ? _sourceDomTextRef : (sourceText && sourceText.value)) || '';
     navigator.clipboard.writeText(text)
       .then(() => flashButton('btnCopySource', t('✓', 'outline.copiedShort')))
       .catch(() => {
@@ -16306,6 +16384,13 @@
     if(overlay){ overlay.classList.remove('open'); overlay.hidden = true; }
     if(commit && pendingPaste && pendingPaste.target){
       const ta = pendingPaste.target;
+      /* §PASTE-FOCUS-FIRST (§78): Vor dem Schreiben fokussieren. Das
+         input-Event muss laufen, während der Feld-Fokus (S.sourceFocused)
+         schon steht – sonst markiert der Source-Input-Listener den Paste
+         nicht als dirty und der nächste Baum-Serialize könnte ihn löschen
+         (Dialog-Flow: Fokus lag auf Abbrechen-Button, onblur hatte
+         sourceFocused bereits false gesetzt). */
+      if(!isMobileLayout()) try { ta.focus(); } catch(_){}
       const text = pendingPaste.text || '';
       const replaceAll = !!pendingPaste.replaceAll;
       if(replaceAll && typeof pushEditorUndo === 'function' && typeof setEditorValue === 'function'){

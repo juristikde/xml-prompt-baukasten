@@ -29,15 +29,34 @@
   dürfen nicht zugunsten einer „Desktop-only“-Lösung geopfert werden.
 
   AKTUELLER STAND (2026-09):
-  - Phase-1 Foundation: COMPLETE & LOCKED.
-  - Phase-2 Elite Core: COMPLETE.
-  - Phase-3: IN PROGRESS – Flat-Authority, Validate/Filter ≥2500,
-    Mem-Tier Feinschliff, Serialize-Prewarm. Siehe §79 §MODULE-MAP.
-  - Diagnose: window.__phase1Status()  /  window.__phase1Status(true)
-  - Mutate:   window.__mutate({ type:'insert', node, ... })
-  - Selftest: ?selftest=1   oder   window.__selftest()
-  - Bench:    ?bench=1      oder   await window.__runScaleBench()
+  - Phase-1/2/3 COMPLETE (Reliability, Telemetrie, Worker-Single≥15k,
+    Schema-Delta-Limit 1200, IDB/Worker-Diagnose, Static Gate).
+  - Diagnose: __phase1Status(true) | __errorLogStats() | __workerStatus | __idbStatus
+  - Selftest: ?selftest=1 | tools/run-selftest-check.mjs
   - Keine visuellen Features in diesem Zyklus.
+
+  --- SCOPE: PROMPT-XML-DIALEKT (bewusst, kein voller XML-Editor) ---
+  Strukturierter Prompt-Baukasten mit XML-Export. BEWUSST NICHT unterstützt:
+    • Attribute (<tag attr="x">), Namespaces/xmlns, CDATA, PI, DOCTYPE, Entities
+    • XSD/DTD/RelaxNG – „Schema“ = statistische Ko-Okkurrenz im Dokument
+    • Validierung = Prompt-Hygiene-Lint, keine XML-Spec-Konformität
+  Node-Modell: { id, kind:'element'|'comment', tag, text, children, collapsed }.
+  Referenzklasse ist NICHT Oxygen/XMLSpy.
+
+  --- REGEL-KONSOLIDIERUNG (SUPERSEDED / Vorrang) ---
+  • §46 Zero-Copy: Idealpfad Single-Worker. In der Praxis §82/§83: Multi-Worker
+    klont Typed-Arrays vor postMessage (Detach-Schutz) – gewollt, kein Bug.
+    Ab WORKER_SINGLE_MIN_NODES (15k): Pool-Größe 1 (weniger Klon-Overhead).
+  • §50 vs §73: bei Konflikt gilt §73 (Scroll/Focus). §50 = historisch.
+  • Live-Validate-Skip >2000 Nodes: ENTFERNT – skaliert per Debounce+Worker.
+  • Schema: Delta-Updates (schemaMapApplyDeltas) primär; Full-Rebuild nur
+    bei Subtree > _SCHEMA_DELTA_MAX, Undo/Parse/Import, oder fehlendem Cache.
+
+  --- PLAN-ABSORPTION (Performance∩Veränderbarkeit) ---
+  Dieser „Weltklasse“-Plan ist umgesetzt als:
+    Phase1 Scope+SUPERSEDED+Telemetrie | Phase2 Gate+JSDoc+Worker-Single
+    Phase3 Schema-Delta+IDB/Worker-Diagnose | Gate: tools/run-selftest-check.mjs
+  Keine neuen visuellen Features. Text-Engine/Virtual-Scroll unangetastet.
 
   --- UNVERHANDELBAR ---
   1. Bestehende Designsprache wiederverwenden (CSS-Variablen :root, .btn,
@@ -5733,13 +5752,125 @@
 
 <script>
 (async function(){
+  'use strict';
+  // @ts-check
   /* §OPT-15 §LAZY-TABS: Boot-Messung Script-Start → erster render(). */
   const _bootT0 = performance.now();
+
+  /* =========================================================================
+   * §RELIABILITY-FOUNDATION: Fehler sichtbar + Thresholds zentral
+   * - _reportError: kein UI, Ringbuffer + optional console (?debug=1)
+   * - PERF_THRESHOLDS: eine Stelle für alle Größen-Schwellen
+   * ========================================================================= */
+  const PERF_THRESHOLDS = {
+    FILTER_WORKER_MIN: 2500,
+    VALIDATE_WORKER_MIN: 2500,
+    SCHEMA_WORKER_MIN: 250,
+    FLATTEN_WORKER_MIN: 300,
+    SERIALIZE_PREWARM_MIN: 500,
+    SERIALIZE_SYNC_MAX: 600,
+    LIVE_VALIDATE_DELAY_MED: 300,
+    LIVE_VALIDATE_DELAY_LARGE: 800,
+    LIVE_VALIDATE_DELAY_HUGE: 1800,
+    /* ≥15k Nodes: 1 Worker – Klon-Overhead schlägt Multi-Worker (§82/83) */
+    WORKER_SINGLE_MIN_NODES: 15000,
+    MEM_TIER1_NODES: 20000,
+    MEM_TIER2_NODES: 40000,
+    MEM_TIER3_NODES: 80000,
+    MEM_TIER1_DOWN_NODES: 16000,
+    MEM_TIER2_DOWN_NODES: 32000,
+    MEM_TIER3_DOWN_NODES: 65000
+  };
+  try { window.__PERF_THRESHOLDS = PERF_THRESHOLDS; } catch(_){}
+
+  const _ERROR_LOG_CAP = 200;
+  const _errorLog = [];
+  /** @type {Record<string, {count:number, lastTs:number, severity:string, sample:string}>} */
+  const _errorAgg = Object.create(null);
+  let _errorLogDebug = false;
+  try {
+    _errorLogDebug = /(?:\?|&)debug=1(?:&|$)/.test(String(location.search || ''))
+      || (typeof localStorage !== 'undefined' && localStorage.getItem('pb_debug') === '1');
+  } catch(_){}
+
+  /**
+   * Kategorisierte Fehler-Telemetrie (kein UI).
+   * @param {string} scope - z.B. 'catch' | 'worker' | 'validate' | 'idb'
+   * @param {any} err
+   * @param {object} [context]
+   * @param {'debug'|'info'|'warn'|'error'|'fatal'} [severity]
+   */
+  function _reportError(scope, err, context, severity){
+    try {
+      const msg = err && (err.message || String(err)) || String(err);
+      const sev = severity || (scope === 'worker' || scope === 'idb' ? 'error'
+        : (scope === 'catch' ? 'warn' : 'error'));
+      const entry = {
+        ts: Date.now(),
+        scope: scope || 'unknown',
+        severity: sev,
+        message: msg,
+        stack: err && err.stack ? String(err.stack).slice(0, 800) : '',
+        context: context == null ? null : context
+      };
+      _errorLog.push(entry);
+      while(_errorLog.length > _ERROR_LOG_CAP) _errorLog.shift();
+      const aggKey = (entry.scope + '|' + entry.message).slice(0, 180);
+      const prev = _errorAgg[aggKey];
+      if(prev){
+        prev.count++;
+        prev.lastTs = entry.ts;
+        prev.severity = sev;
+      } else {
+        _errorAgg[aggKey] = {
+          count: 1,
+          lastTs: entry.ts,
+          severity: sev,
+          sample: entry.message.slice(0, 120),
+          scope: entry.scope
+        };
+      }
+      if(_errorLogDebug && typeof console !== 'undefined' && console.error){
+        console.error('[Prompt-Baukasten]', entry.severity, entry.scope, entry.message, entry.context || '', err);
+      }
+    } catch(__){}
+  }
+  function __errorLog(n){
+    const k = (n > 0 && n < _ERROR_LOG_CAP) ? n : _errorLog.length;
+    return _errorLog.slice(-k);
+  }
+  /** Aggregierte Häufigkeiten – welche Catches greifen wirklich. */
+  function __errorLogStats(){
+    const rows = Object.keys(_errorAgg).map(k => {
+      const a = _errorAgg[k];
+      return { key: k, scope: a.scope, count: a.count, severity: a.severity, lastTs: a.lastTs, sample: a.sample };
+    });
+    rows.sort((a, b) => b.count - a.count);
+    return {
+      totalEvents: _errorLog.length,
+      uniqueKeys: rows.length,
+      top: rows.slice(0, 40),
+      debug: _errorLogDebug
+    };
+  }
+  try {
+    window.__errorLog = __errorLog;
+    window.__errorLogStats = __errorLogStats;
+    window.__reportError = _reportError;
+    window.__setDebug = function(on){
+      _errorLogDebug = !!on;
+      try {
+        if(on) localStorage.setItem('pb_debug', '1');
+        else localStorage.removeItem('pb_debug');
+      } catch(_){ _reportError('catch', _); }
+      return _errorLogDebug;
+    };
+  } catch(_){ _reportError('catch', _); }
+
   /* ===== §79 §MODULE-MAP: Module-Grenzen im Single-File-Script =====
    * =============================================================================
-   * PHASE-3 MAGIC / EXTREM – IN PROGRESS (2026-09)
-   * Phase-1/2 COMPLETE & LOCKED.
-   * Validate-Unify, Undo-Virtual, Validation-Cache-Härtung.
+   * RELIABILITY + PHASE-3 (2026-09)
+   * Phase-1/2 COMPLETE & LOCKED. Reliability-Foundation aktiv.
    * =============================================================================
    * Das Script ist EIN IIFE, logisch in Module gegliedert
    * (jeweils "===== ... ====="-Sektionsbanner).
@@ -6120,7 +6251,7 @@
     if(!i18nDict || !i18nDict.meta){
       i18nDict = _i18nFromPending((typeof currentLang === 'string' && currentLang === 'en') ? 'en' : 'de');
     }
-  } catch(_){}
+  } catch(_){ _reportError('catch', _); }
 
   function applyI18nDom(root){
     const scope = root || document;
@@ -6184,7 +6315,7 @@
       currentLang = (data.meta && data.meta.code) ? data.meta.code : safe;
     }
     if(token !== languageLoadToken) return;
-    try { flushSourceFromTree(); } catch(_){}
+    try { flushSourceFromTree(); } catch(_){ _reportError('catch', _); }
     captureScrollPositions();
     /* Offene Menüs schließen – sie wurden mit alten t()-Texten gebaut */
     if(typeof closeOptionsMenu === 'function') closeOptionsMenu();
@@ -6368,7 +6499,7 @@
   let _pfSeq = 0;
   function _pfMark(name){
     if(!_pfEnabled()) return;
-    try { performance.mark(name + '.start'); } catch(_){}
+    try { performance.mark(name + '.start'); } catch(_){ _reportError('catch', _); }
   }
   function _pfMeasure(name){
     if(!_pfEnabled()) return;
@@ -6377,7 +6508,7 @@
       performance.mark(endMark);
       /* Start-Mark = name+'.start' (siehe _pfMark) – nicht name.seq.start */
       performance.measure(name, name + '.start', endMark);
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
   }
 
   /* §DEBOUNCE: Einheitliche Timer-Utility für Schedule-Pfade.
@@ -6390,7 +6521,7 @@
     if(!s) return;
     if(s.timer){ clearTimeout(s.timer); s.timer = null; }
     if(s.idle != null && typeof cancelIdleCallback === 'function'){
-      try { cancelIdleCallback(s.idle); } catch(_){}
+      try { cancelIdleCallback(s.idle); } catch(_){ _reportError('catch', _); }
       s.idle = null;
     }
     if(s.raf){ cancelAnimationFrame(s.raf); s.raf = 0; }
@@ -6410,7 +6541,7 @@
     if(mode === 'raf'){
       s.raf = requestAnimationFrame(() => {
         s.raf = 0;
-        try { fn(); } catch(_){}
+        try { fn(); } catch(_){ _reportError('catch', _); }
       });
       return;
     }
@@ -6419,7 +6550,7 @@
         s.timer = null;
         const run = () => {
           s.idle = null;
-          try { fn(); } catch(_){}
+          try { fn(); } catch(_){ _reportError('catch', _); }
         };
         if(typeof requestIdleCallback === 'function'){
           s.idle = requestIdleCallback(run, { timeout: opts.idleTimeout || 2000 });
@@ -6431,7 +6562,7 @@
     }
     s.timer = setTimeout(() => {
       s.timer = null;
-      try { fn(); } catch(_){}
+      try { fn(); } catch(_){ _reportError('catch', _); }
     }, scaled);
   }
 
@@ -6535,7 +6666,7 @@
       if(typeof hugeMode !== 'undefined' && hugeMode) return _FS_BUDGET_HUGE_MS;
       /* §P3: korrekter Auto-Tier (_memBudgetTier), nicht toter _autoMemoryTier */
       if(typeof _memBudgetTier !== 'undefined' && _memBudgetTier > 0) return _FS_BUDGET_HUGE_MS;
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     return _FS_BUDGET_MS;
   }
 
@@ -6616,7 +6747,7 @@
     _fsQueues.clear();
     if(_fsIdleHandle != null){
       if(typeof cancelIdleCallback === 'function' && typeof requestIdleCallback === 'function'){
-        try { cancelIdleCallback(_fsIdleHandle); } catch(_){}
+        try { cancelIdleCallback(_fsIdleHandle); } catch(_){ _reportError('catch', _); }
       } else {
         clearTimeout(_fsIdleHandle);
       }
@@ -6658,6 +6789,37 @@
    * sourceFocused,focusDetailField}. Kein globaler Arbeits-Spiegel mehr.
    * Wenn kein aktiver Tab existiert (z.B. ganz früh in Init), liefern die
    * Getter neutrale Werte ([] / null / 1 / false); Setter sind dann No-Op.
+   */
+  /**
+   * Aktiver Tab-State (Single Source of Truth pro Tab).
+   * @typedef {Object} PbNode
+   * @property {string} id
+   * @property {'element'|'comment'} kind
+   * @property {string} [tag]
+   * @property {string} [text]
+   * @property {PbNode[]} [children]
+   * @property {boolean} [collapsed]
+   * @property {boolean} [_hasError]
+   *
+   * @typedef {Object} PbTab
+   * @property {string} id
+   * @property {string} title
+   * @property {PbNode[]} tree
+   * @property {string|null} selectedId
+   * @property {number} idCounter
+   * @property {boolean} [sourceFocused]
+   * @property {boolean} [focusDetailField]
+   * @property {boolean} [sourceDirty]
+   * @property {string|null} [sourceDraftXml]
+   * @property {object} [scroll]
+   *
+   * @type {{
+   *   tree: PbNode[],
+   *   selectedId: string|null,
+   *   idCounter: number,
+   *   sourceFocused: boolean,
+   *   focusDetailField: boolean
+   * }}
    */
   const S = {
     get tree(){ const t = getActiveTab(); return t ? (t.tree || []) : []; },
@@ -7253,7 +7415,7 @@
     try {
       _uiNavDepth++;
       history.pushState({ uiNav: true, layer: layer || 'layer', depth: _uiNavDepth }, '');
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
   }
   function uiNavConsumeBack(){
     /* Beim Schließen per UI-Button History-Eintrag mitnehmen ohne erneutes Pop-Handling.
@@ -7335,14 +7497,14 @@
   (function wireAndroidBack(){
     try {
       history.replaceState({ uiNav: true, layer: 'root', depth: 0 }, '');
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     window.addEventListener('popstate', () => {
       if(_uiNavIgnorePop){
         _uiNavIgnorePop = false;
         /* Veralteten Hash des Previous-Eintrags korrigieren, damit das
            nachfolgende hashchange-Event keine stale Werte liest. */
         _uiNavIgnoreHashChange = true;
-        try { writeHashState(); } catch(_){}
+        try { writeHashState(); } catch(_){ _reportError('catch', _); }
         /* Flag etwas später zurücksetzen, falls hashchange doch feuert */
         setTimeout(() => { _uiNavIgnoreHashChange = false; }, 0);
         return;
@@ -7353,7 +7515,7 @@
            der nächste Zurück-Druck erneut abgefangen wird */
         try {
           history.pushState({ uiNav: true, layer: 'root', depth: 0 }, '');
-        } catch(_){}
+        } catch(_){ _reportError('catch', _); }
       }
     });
   })();
@@ -7654,7 +7816,7 @@
     /* §90/§B3/§P3: Memory-Budget und Auto-Tier greifen auf JEDEM
        Node-Count-Level – Tier 3 → EXTREME, Tier 2 → HUGE. */
     let bytes = 0;
-    try { bytes = (typeof estimateDocMemory === 'function') ? estimateDocMemory() : 0; } catch(_) {}
+    try { bytes = (typeof estimateDocMemory === 'function') ? estimateDocMemory() : 0; } catch(_){ _reportError('catch', _); }
     const tier = (typeof _memBudgetTier !== 'undefined') ? _memBudgetTier : 0;
     if(tier >= 3 || bytes > STRUCT_UNDO_MEM_BUDGET * 2){
       limit = STRUCT_UNDO_LIMIT_EXTREME;
@@ -7715,7 +7877,7 @@
       if(S.selectedId) updateOutlineSelection(S.selectedId);
       if(!opts.skipDetail){
         scrollCaptureFrozen = true;
-        try { renderDetail(); } catch(_){}
+        try { renderDetail(); } catch(_){ _reportError('catch', _); }
         requestAnimationFrame(() => { scrollCaptureFrozen = false; });
       }
     } else if(opts.light){
@@ -7726,7 +7888,7 @@
           structParentId: opts.structParentId,
           flatSpliced: opts.flatSpliced === true
         });
-      } catch(_){}
+      } catch(_){ _reportError('catch', _); }
       return; /* renderAfterTreeChange übernimmt Source/Draft/Validate */
     } else if(!opts.sourceOnly && typeof renderAfterTreeChange === 'function'){
       try {
@@ -7736,7 +7898,7 @@
           structParentId: opts.structParentId,
           flatSpliced: opts.flatSpliced === true
         });
-      } catch(_){}
+      } catch(_){ _reportError('catch', _); }
       return;
     }
 
@@ -7744,23 +7906,23 @@
        §P3: Validation-Cache immer invalidieren (Reorder ändert NodeCount nicht,
        _getTreeHash wäre sonst stabil und lieferte stale Marks). */
     if(typeof touchValidationCache === 'function'){
-      try { touchValidationCache(); } catch(_){}
+      try { touchValidationCache(); } catch(_){ _reportError('catch', _); }
     }
     if(!opts.skipSourceBump){
       if(opts.structParentId != null) bumpSourceCache(null, opts.structParentId);
       else bumpSourceCache();
     }
-    try { markActiveTabDraftDirty(); } catch(_){}
-    try { scheduleDraftSave(); } catch(_){}
+    try { markActiveTabDraftDirty(); } catch(_){ _reportError('catch', _); }
+    try { scheduleDraftSave(); } catch(_){ _reportError('catch', _); }
     try {
       scheduleSourceFromTree(null, {
         flatSpliced: opts.flatSpliced === true,
         structParentId: opts.structParentId,
         noInvalidate: !!opts.skipSourceBump
       });
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     if(typeof scheduleLiveValidation === 'function'){
-      try { scheduleLiveValidation(); } catch(_){}
+      try { scheduleLiveValidation(); } catch(_){ _reportError('catch', _); }
     }
   }
 
@@ -7810,12 +7972,12 @@
         if(typeof addToProtocol === 'function'){
           addToProtocol('error', ['mutate(' + typ + '): ' + ((err && err.message) || err)]);
         }
-      } catch(_){}
+      } catch(_){ _reportError('catch', _); }
       return { ok: false, error: String((err && err.message) || err) };
     }
     return null;
   }
-  try { window.__mutate = mutate; } catch(_){}
+  try { window.__mutate = mutate; } catch(_){ _reportError('catch', _); }
 
   function structUndoPush(patch, opts){
     if(structUndoSuspended) return;
@@ -8029,7 +8191,7 @@
           const nid = m && m[1];
           return nid && !alive.has(nid);
         });
-      } catch(_){}
+      } catch(_){ _reportError('catch', _); }
     }
     /* §P2/§P3: Undo-Nachlauf – Virtual wenn aktiv, sonst Light */
     {
@@ -8080,7 +8242,7 @@
           const nid = m && m[1];
           return nid && !alive.has(nid);
         });
-      } catch(_){}
+      } catch(_){ _reportError('catch', _); }
     }
     /* §P2/§P3: Redo-Nachlauf – Virtual wenn aktiv, sonst Light */
     {
@@ -8137,7 +8299,7 @@
       if(len > 200000) return 40;
       if(len > 80000) return 70;
       if(len > 30000) return 100;
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     return EDITOR_UNDO_LIMIT;
   }
   const editorHistMap = new Map();
@@ -8507,9 +8669,9 @@
                 (typeof hugeMode !== 'undefined' && hugeMode)){
         delay = 1200; idleTimeout = 4000;
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     debounce('draftSave', delay, () => {
-      _fsEnqueue(_FS_PRIORITIES.P4, () => { try { saveDraftNow(); } catch(_){} });
+      _fsEnqueue(_FS_PRIORITIES.P4, () => { try { saveDraftNow(); } catch(_){ _reportError('catch', _); } });
     }, { mode: 'idle', idleTimeout: idleTimeout });
   }
 
@@ -8526,19 +8688,42 @@
   let _idbDraftDirty = false;  /* true solange ein Write aussteht oder fehlschlug */
   let _idbHasDraft = false;    /* Lösch-Button-Status (async ermittelt) */
 
+  function _setIdbStatus(ok, reason){
+    _idbDraftOk = !!ok;
+    try {
+      window.__idbStatus = { ok: !!ok, reason: reason || (ok ? 'ok' : 'unknown'), ts: Date.now() };
+    } catch(_){}
+    if(!ok){
+      try { _reportError('idb', new Error(reason || 'idb-unavailable'), { reason: reason || 'unknown' }, 'error'); } catch(_){}
+    }
+  }
+
   function _openDraftDb(){
     if(!_idbDraftOk) return Promise.resolve(null);
     if(_draftDbPromise) return _draftDbPromise;
     _draftDbPromise = new Promise(resolve => {
       let req = null;
-      try { req = indexedDB.open('pb-draft', 1); } catch(_) { resolve(null); return; }
+      try {
+        if(typeof indexedDB === 'undefined'){ resolve(null); return; }
+        req = indexedDB.open('pb-draft', 1);
+      } catch(e) {
+        try { _reportError('idb', e, { phase: 'open' }, 'error'); } catch(_){}
+        resolve(null);
+        return;
+      }
       req.onupgradeneeded = () => {
-        try { req.result.createObjectStore('draft'); } catch(_){}
+        try { req.result.createObjectStore('draft'); } catch(e){ _reportError('idb', e, { phase: 'upgrade' }, 'error'); }
       };
       req.onsuccess = () => resolve(req.result || null);
       req.onerror = () => resolve(null);
       req.onblocked = () => resolve(null);
-    }).then(db => { if(!db) _idbDraftOk = false; return db; });
+    }).then(db => {
+      if(!db) _setIdbStatus(false, 'open-failed-legacy-localStorage');
+      else {
+        try { window.__idbStatus = { ok: true, reason: 'ok', ts: Date.now() }; } catch(_){}
+      }
+      return db;
+    });
     return _draftDbPromise;
   }
 
@@ -8550,8 +8735,14 @@
         const tx = db.transaction('draft', 'readwrite');
         tx.objectStore('draft').put(payload, 'current');
         tx.oncomplete = () => resolve(true);
-        tx.onabort = tx.onerror = () => resolve(false);
-      } catch(_) { resolve(false); }
+        tx.onabort = tx.onerror = () => {
+          try { _reportError('idb', new Error('write-abort'), { phase: 'write' }, 'error'); } catch(_){}
+          resolve(false);
+        };
+      } catch(e) {
+        try { _reportError('idb', e, { phase: 'write' }, 'error'); } catch(_){}
+        resolve(false);
+      }
     });
   }
 
@@ -8593,7 +8784,7 @@
     if(!tabs || !tabs.length) return;
     const payload = JSON.stringify(buildDraftPayload());
     /* sessionStorage: pro Tab-Session in-memory → synchron unkritisch */
-    try { sessionStorage.setItem(DRAFT_SESSION_KEY, payload); } catch(_){}
+    try { sessionStorage.setItem(DRAFT_SESSION_KEY, payload); } catch(_){ _reportError('catch', _); }
     if(persistDrafts){
       const emergency = !!(opts && opts.emergency);
       /* §IDB-DRAFT: asynchroner IDB-Write ersetzt den blockierenden
@@ -8607,7 +8798,7 @@
           localStorage.setItem(DRAFT_LOCAL_KEY, payload);
           localStorage.setItem(DRAFT_LOCAL_TIME_KEY, String(Date.now()));
           _idbDraftDirty = false;
-        } catch(_){}
+        } catch(_){ _reportError('catch', _); }
       }
     }
   }
@@ -8619,12 +8810,12 @@
     try {
       localStorage.removeItem(DRAFT_LOCAL_KEY);
       localStorage.removeItem(DRAFT_LOCAL_TIME_KEY);
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     if(_idbDraftOk) clearDraftIdb();
   }
 
   function hasLocalDraft(){
-    try { if(localStorage.getItem(DRAFT_LOCAL_KEY)) return true; } catch(_){}
+    try { if(localStorage.getItem(DRAFT_LOCAL_KEY)) return true; } catch(_){ _reportError('catch', _); }
     return _idbHasDraft;
   }
 
@@ -8633,9 +8824,9 @@
     /* Fast-Path: sessionStorage (gleiche Tab-Session, immer aktuellste
        Quelle) – ohne IDB-Kontakt; der Boot läuft dann per Microtask
        nahtlos weiter (kein sichtbarer Unterschied zum Sync-Boot). */
-    try { raw = sessionStorage.getItem(DRAFT_SESSION_KEY); } catch(_){}
+    try { raw = sessionStorage.getItem(DRAFT_SESSION_KEY); } catch(_){ _reportError('catch', _); }
     if(raw){
-      try { const d = JSON.parse(raw); if(d) return d; } catch(_){}
+      try { const d = JSON.parse(raw); if(d) return d; } catch(_){ _reportError('catch', _); }
     }
     /* localStorage/IDB nur bei Opt-In lesen – nie automatisch löschen (nur per Button) */
     if(!persistDrafts) return null;
@@ -8644,13 +8835,13 @@
     let idbData = null;
     if(_idbDraftOk) idbData = await readDraftIdb();
     let localTs = 0;
-    try { localTs = Number(localStorage.getItem(DRAFT_LOCAL_TIME_KEY)) || 0; } catch(_){}
+    try { localTs = Number(localStorage.getItem(DRAFT_LOCAL_TIME_KEY)) || 0; } catch(_){ _reportError('catch', _); }
     const idbTs = (idbData && idbData.ts) || 0;
     if(idbData && (!localTs || idbTs >= localTs)) return idbData;
     try {
       raw = localStorage.getItem(DRAFT_LOCAL_KEY);
       if(raw) return JSON.parse(raw);
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     return idbData;
   }
 
@@ -8716,7 +8907,7 @@
     _fsEnqueue(_FS_PRIORITIES.P4, function prewarmLazyStep(){
       const next = tabs.find(x => x && x.lazy);
       if(!next) return;
-      try { hydrateTab(next); } catch(_){}
+      try { hydrateTab(next); } catch(_){ _reportError('catch', _); }
       if(tabs.some(x => x && x.lazy)) prewarmLazyTabs();
     });
   }
@@ -9072,7 +9263,7 @@
           tabTouchDragging = true;
           tabDragId = tab.id;
           btn.classList.add('dragging');
-          if(navigator.vibrate) try { navigator.vibrate(30); } catch(_){}
+          if(navigator.vibrate) try { navigator.vibrate(30); } catch(_){ _reportError('catch', _); }
         }, 420);
       }, {passive: true});
       btn.addEventListener('touchmove', e => {
@@ -9296,7 +9487,7 @@
   }
   function removeDetailToolsOptionsMenu(){
     if(_detailToolsOptionsMenu){
-      try { _detailToolsOptionsMenu.remove(); } catch(_){}
+      try { _detailToolsOptionsMenu.remove(); } catch(_){ _reportError('catch', _); }
       _detailToolsOptionsMenu = null;
     }
     if(openOptionsMenu && openOptionsMenu.classList && openOptionsMenu.classList.contains('tools-options-menu')){
@@ -9373,7 +9564,7 @@
           ta.dispatchEvent(new Event('input',{bubbles:true}));
           if(!isMobileLayout()){ ta.focus(); ta.setSelectionRange(s+text.length, s+text.length); }
         }
-        if(!isMobileLayout()) try { ta.focus(); } catch(_){}
+        if(!isMobileLayout()) try { ta.focus(); } catch(_){ _reportError('catch', _); }
         closeAllWikiMenus();
       }catch(err){ alert(t('Fehler: ', 'protocol.errorPrefix')+err.message); }
       finally{ mainBtn.disabled = false; mainBtn.innerHTML = t('+ WikiText', 'detail.wikiText'); }
@@ -9828,7 +10019,7 @@
       /* Text-Cache + Offset-Map bleiben stehen – serializeFull versucht Patch.
          Bei vielen Dirties oder großem Baum: Worker-Prewarm im Hintergrund. */
       let n = 0;
-      try { n = getCachedNodeCount(); } catch(_){}
+      try { n = getCachedNodeCount(); } catch(_){ _reportError('catch', _); }
       /* Phase-2: früherer Prewarm bei vielen Leaf-Edits */
       if(n >= 2000 && _sourceDirtyNodeIds.size >= 6){
         _scheduleSerializePrewarm();
@@ -9864,9 +10055,9 @@
      mittlere Bäume den Cache warm haben, bevor der User Source öffnet. */
   function _scheduleSerializePrewarm(){
     let n = 0;
-    try { n = getCachedNodeCount(); } catch(_){}
-    /* §P3: Idle-Prewarm ab 500 Nodes (war 800) – Source-Panel öffnet schneller */
-    if(n < 500) return;
+    try { n = getCachedNodeCount(); } catch(_){ _reportError('catch', _); }
+    /* §P3: Idle-Prewarm ab SERIALIZE_PREWARM_MIN Nodes */
+    if(n < ((typeof PERF_THRESHOLDS !== 'undefined' && PERF_THRESHOLDS.SERIALIZE_PREWARM_MIN) || 500)) return;
     /* Tier-3 Survival: kein Prewarm; Tier-2 nur wenn Source sichtbar */
     try {
       if(typeof _memBudgetTier !== 'undefined' && _memBudgetTier >= 3) return;
@@ -9874,7 +10065,7 @@
         const vis = sourcePanel && sourcePanel.style.display !== 'none' && sourcePanel.style.display !== '';
         if(!vis) return;
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     let delay = n >= 10000 ? 120 : (n >= 3000 ? 80 : 50);
     let idleTimeout = 2000;
     try {
@@ -9882,9 +10073,9 @@
         delay = Math.max(delay, 300);
         idleTimeout = 4000;
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     debounce('serializePrewarm', delay, () => {
-      try { _runSerializePrewarm(); } catch(_){}
+      try { _runSerializePrewarm(); } catch(_){ _reportError('catch', _); }
     }, { mode: 'idle', idleTimeout: idleTimeout });
   }
 
@@ -9894,11 +10085,11 @@
     if(_sourceCacheText != null && !_sourceDirtyNodeIds) return;
     /* §P3: bis 40 Leaf-Dirties per Patch (war 24) – O(k) bleibt günstiger */
     if(_sourceDirtyNodeIds && _sourceCacheText && _sourceDirtyNodeIds.size <= 40){
-      try { tryPatchSourceCache(); } catch(_){}
+      try { tryPatchSourceCache(); } catch(_){ _reportError('catch', _); }
       return;
     }
     if(typeof bgTasks === 'undefined' || !bgTasks || bgTasks._useWorker === false){
-      try { rebuildFullSerializeCaches(); } catch(_){}
+      try { rebuildFullSerializeCaches(); } catch(_){ _reportError('catch', _); }
       return;
     }
     try {
@@ -9926,7 +10117,7 @@
           _sourceDirtyNodeIds = null;
         }
       }).catch(() => {});
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
   }
 
   /* §85 §SERIALIZE-FROM-FLAT (Phase 2 Schritt 1c): Full-Serialize aus dem
@@ -10126,7 +10317,7 @@
       try {
         const ent = (!nodeIndexDirty && nodeIndex) ? nodeIndex.get(id) : null;
         if(ent && ent.node) node = ent.node;
-      } catch(_){}
+      } catch(_){ _reportError('catch', _); }
       if(!node){
         const f = findNode(S.tree, id);
         if(!f || !f.node) return null;
@@ -10303,7 +10494,7 @@
     
     // 3. Größe prüfen
     let nodeCount = 0;
-    try { nodeCount = getCachedNodeCount(); } catch(_) {}
+    try { nodeCount = getCachedNodeCount(); } catch(_){ _reportError('catch', _); }
     
     /* Phase-2: Worker ab 500 Nodes (war 1000) – Flat-Serialize im Worker
        ist günstig; Main-Thread bleibt responsiv beim Source-Öffnen. */
@@ -10372,7 +10563,7 @@
     
     // 2. Baumgröße prüfen
     let nodeCount = 0;
-    try { nodeCount = getCachedNodeCount(); } catch(_) {}
+    try { nodeCount = getCachedNodeCount(); } catch(_){ _reportError('catch', _); }
     
     // 3. Kleine Bäume: synchron
     if(nodeCount < 1000) {
@@ -10494,7 +10685,7 @@
         _lineMapCache = { text: text, lines: text.split('\n'), map: map };
         return _lineMapCache;
       }
-    } catch(_) {}
+    } catch(_){ _reportError('catch', _); }
     /* Fallback: alter Tree-Walk (Original, unverändert) */
     const state = {lines: ['<prompt>'], map: {}};
     serializeTreeWithLines(S.tree, 1, state);
@@ -10560,10 +10751,20 @@
    * findNode wird dadurch O(1) statt O(n) Traversal.
    * flatVisibleRows: flache Liste der aktuell sichtbaren Outline-Zeilen
    * (respektiert collapsed) – Basis für Virtualisierung.
+   *
+   * @typedef {{
+   *   node: PbNode,
+   *   parent: PbNode|null,
+   *   parentId: string|null,
+   *   depth: number,
+   *   index: number
+   * }} PbIndexEntry
+   * @type {Map<string, PbIndexEntry>}
    */
   let nodeIndex = new Map();
+  /** @type {Array<{id:string, tag:string, text:string, kind:string, depth:number, hasChildren:boolean, collapsed:boolean, _hasError?:boolean}>} */
   let flatVisibleRows = [];
-  /* id → Index in flatVisibleRows – O(1) für ensureSelectedRowVisible */
+  /** @type {Map<string, number>} id → Index in flatVisibleRows */
   let _flatVisibleIdToIdx = new Map();
   /* §39 §FILTER-VIRTUAL: Wenn der Outline-Filter aktiv ist und die Anzahl
      gefilterter Rows den Virtual-Threshold erreicht, wird flatFilteredRows
@@ -10653,8 +10854,8 @@
           if(tabs[i] && tabs[i].tree) keep.add(tabs[i].tree);
         }
       }
-    } catch(_){}
-    try { if(S && S.tree) keep.add(S.tree); } catch(_){}
+    } catch(_){ _reportError('catch', _); }
+    try { if(S && S.tree) keep.add(S.tree); } catch(_){ _reportError('catch', _); }
     _flatStoreMap.forEach((entry, root) => {
       if(!keep.has(root)) _flatStoreMap.delete(root);
     });
@@ -10707,13 +10908,13 @@
         if(typeof _sourceCacheText === 'string' && _sourceCacheText){
           total += _sourceCacheText.length * 2;
         }
-      } catch(_){}
+      } catch(_){ _reportError('catch', _); }
       try {
         const uLen = (typeof structUndoStack !== 'undefined' && structUndoStack) ? structUndoStack.length : 0;
         const rLen = (typeof structRedoStack !== 'undefined' && structRedoStack) ? structRedoStack.length : 0;
         /* Patch-Einträge ~2 KB, Snapshots proportional zu n (Worst-Case-Obergrenze) */
         total += (uLen + rLen) * Math.min(65536, Math.max(2048, n * 8));
-      } catch(_){}
+      } catch(_){ _reportError('catch', _); }
       return total;
     } catch(_) {
       return 0;
@@ -10854,7 +11055,7 @@
       return true;
     } catch(_) {
       /* Bail: Snap verwerfen – nächster Leser rebuildet */
-      try { if(typeof S !== 'undefined' && S && S.tree) _flatStoreMap.delete(S.tree); } catch(_) {}
+      try { if(typeof S !== 'undefined' && S && S.tree) _flatStoreMap.delete(S.tree); } catch(_){ _reportError('catch', _); }
       return false;
     }
   }
@@ -10908,7 +11109,7 @@
       snap.n -= L;
       return true;
     } catch(_) {
-      try { if(typeof S !== 'undefined' && S && S.tree) _flatStoreMap.delete(S.tree); } catch(_) {}
+      try { if(typeof S !== 'undefined' && S && S.tree) _flatStoreMap.delete(S.tree); } catch(_){ _reportError('catch', _); }
       return false;
     }
   }
@@ -10988,7 +11189,7 @@
       snap.childCounts = nCC; snap.collapsed = nCO; snap.hasError = nHE;
       return true;
     } catch(_) {
-      try { if(typeof S !== 'undefined' && S && S.tree) _flatStoreMap.delete(S.tree); } catch(_) {}
+      try { if(typeof S !== 'undefined' && S && S.tree) _flatStoreMap.delete(S.tree); } catch(_){ _reportError('catch', _); }
       return false;
     }
   }
@@ -11265,7 +11466,7 @@
           return _cachedNodeCount;
         }
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     ensureNodeIndex();
     return _cachedNodeCount;
   }
@@ -11579,11 +11780,11 @@
         }
         coverEnt.size = 1 + sub;
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     /* Tag/Text des Covers im Flat-Snap nachziehen */
     try {
       if(!nodeIndexDirty) _flatStorePatchContent([node.id]);
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     touchSchemaAfterStructChange();
     return allFlat && !nodeIndexDirty;
   }
@@ -12528,7 +12729,7 @@
     try {
       const active = (typeof S !== 'undefined' && S) ? S.tree : null;
       if(tree == null || tree === active){
-        try { if(typeof ensureNodeIndex === 'function') ensureNodeIndex(); } catch(_){}
+        try { if(typeof ensureNodeIndex === 'function') ensureNodeIndex(); } catch(_){ _reportError('catch', _); }
         const snap = flatCoreSnapshot();
         if(snap && snap.n > 0 && snap.ids && snap.parents){
           const ids = snap.ids, tags = snap.tags, texts = snap.texts;
@@ -12596,7 +12797,7 @@
           return { hard, soft };
         }
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
 
     /* Fallback: Objekt-Tree-Walk */
     (function walk(nodes, depth, parentTag){
@@ -12821,19 +13022,40 @@
     _rr: 0,
     _POOL_SIZE: 2,
     _blobUrl: null,
+    _lastDisableReason: null,
+    _disableWorkers(reason, err){
+      this._useWorker = false;
+      this._lastDisableReason = reason || 'unknown';
+      try {
+        _reportError('worker', err || new Error(reason), { reason: this._lastDisableReason }, 'error');
+        if(typeof window !== 'undefined') window.__workerStatus = {
+          enabled: false,
+          reason: this._lastDisableReason,
+          ts: Date.now()
+        };
+      } catch(_){}
+    },
     _init(){
       if(this._workers.length || this._useWorker === false) return;
       try {
         if(typeof Worker === 'undefined' || typeof Blob === 'undefined' || typeof URL === 'undefined'){
-          this._useWorker = false;
+          this._disableWorkers('env-no-worker-api');
           return;
         }
-        /* 2–4 Worker je nach Kernen, Default 2 */
+        /* 2–4 Worker je nach Kernen; bei sehr großen Bäumen 1 Worker
+           (Clone-Kosten pro Job dominieren Parallelisierung, §82/83). */
         let hc = 2;
         try {
           hc = (typeof navigator !== 'undefined' && navigator.hardwareConcurrency) ? navigator.hardwareConcurrency : 2;
-        } catch(_){}
-        this._POOL_SIZE = Math.max(2, Math.min(4, hc >> 1 || 2));
+        } catch(_){ _reportError('catch', _); }
+        let nNodes = 0;
+        try { nNodes = typeof getCachedNodeCount === 'function' ? getCachedNodeCount() : 0; } catch(_){}
+        const singleMin = (typeof PERF_THRESHOLDS !== 'undefined' && PERF_THRESHOLDS.WORKER_SINGLE_MIN_NODES) || 15000;
+        if(nNodes >= singleMin){
+          this._POOL_SIZE = 1;
+        } else {
+          this._POOL_SIZE = Math.max(2, Math.min(4, hc >> 1 || 2));
+        }
         const blob = new Blob([VALIDATE_CORE_SRC], { type: 'application/javascript' });
         this._blobUrl = URL.createObjectURL(blob);
         const self = this;
@@ -12848,24 +13070,29 @@
                 cb(msg);
               }
             };
-            w.onerror = () => {
-              try { w.terminate(); } catch(_){}
+            w.onerror = (ev) => {
+              try { w.terminate(); } catch(_){ _reportError('catch', _); }
               self._workers = self._workers.filter(x => x !== w);
               if(!self._workers.length){
-                self._useWorker = false;
+                self._disableWorkers('worker-runtime-error', ev && ev.message ? new Error(ev.message) : new Error('worker-error'));
                 self._pending.forEach((cb) => cb({ ok: false, error: 'worker-error' }));
                 self._pending.clear();
               }
             };
             this._workers.push(w);
+          } catch(e){ _reportError('worker', e, { phase: 'construct' }, 'error'); }
+        }
+        try { URL.revokeObjectURL(this._blobUrl); } catch(_){ _reportError('catch', _); }
+        this._blobUrl = null;
+        if(!this._workers.length) this._disableWorkers('worker-construct-failed');
+        else {
+          try {
+            window.__workerStatus = { enabled: true, pool: this._workers.length, ts: Date.now() };
           } catch(_){}
         }
-        try { URL.revokeObjectURL(this._blobUrl); } catch(_){}
-        this._blobUrl = null;
-        if(!this._workers.length) this._useWorker = false;
-      } catch(_){
-        this._useWorker = false;
+      } catch(e){
         this._workers = [];
+        this._disableWorkers('worker-init-exception', e);
       }
     },
     _pickWorker(){
@@ -13048,7 +13275,7 @@
     const sourceVisible = sourcePanel && sourcePanel.style.display !== 'none' && sourcePanel.style.display !== '';
     if(sourceVisible && id && typeof jumpToSourceForNode === 'function'){
       /* Offset-Map aus Cache nutzen – kein Full-Serialize wenn Cache warm */
-      try { jumpToSourceForNode(id); } catch(_){}
+      try { jumpToSourceForNode(id); } catch(_){ _reportError('catch', _); }
     }
   }
 
@@ -13597,7 +13824,7 @@
                   const p = ni ? _flatIdxOfEntry(ni) : -1;
                   if(p >= 0 && p < snap.n) snap.collapsed[p] = 0;
                 }
-              } catch(_){}
+              } catch(_){ _reportError('catch', _); }
             }
           }
           updateOutlineCountForNode(parentNode);
@@ -13761,7 +13988,7 @@
       row.classList.add('selected');
       _lastSelectedRow = row;
       if(!_outlineVirtualActive){
-        try { row.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch(_){}
+        try { row.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch(_){ _reportError('catch', _); }
       }
     }
   }
@@ -14125,7 +14352,7 @@
         try { textarea.focus({ preventScroll: true }); } catch(_){ try { textarea.focus(); } catch(__){} }
       }
       if(typeof setEditorSelection === 'function') setEditorSelection(textarea, m.index, m.index + m.length);
-      else try { textarea.setSelectionRange(m.index, m.index + m.length); } catch(_){}
+      else try { textarea.setSelectionRange(m.index, m.index + m.length); } catch(_){ _reportError('catch', _); }
       const textBefore = (typeof getEditorValue === 'function' ? getEditorValue(textarea) : (textarea.value || '')).slice(0, m.index);
       const line = (textBefore.match(/\n/g) || []).length;
       const lineHeight = parseFloat(getComputedStyle(textarea).lineHeight) || 18;
@@ -14214,7 +14441,7 @@
           if(typeof setEditorSelection === 'function') setEditorSelection(textarea, lastMatch.index, lastMatch.index + lastMatch.length);
           else textarea.setSelectionRange(lastMatch.index, lastMatch.index + lastMatch.length);
         }
-      } catch(_){}
+      } catch(_){ _reportError('catch', _); }
     }
 
     function scheduleFind(){
@@ -14239,7 +14466,7 @@
       btnChevron.textContent = replaceRow.hidden ? '▸' : '▾';
       _findState.isReplaceRevealed = !replaceRow.hidden;
       if(!replaceRow.hidden){
-        try { replaceInput.focus(); } catch(_){}
+        try { replaceInput.focus(); } catch(_){ _reportError('catch', _); }
       }
       requestAnimationFrame(() => {
         if(typeof syncFindBarLayout === 'function') syncFindBarLayout(textarea, bar);
@@ -14345,7 +14572,7 @@
       }
       const inp = textarea._findBar.querySelector('.find-input');
       if(inp && focusFind){
-        try { inp.focus(); inp.select(); } catch(_){}
+        try { inp.focus(); inp.select(); } catch(_){ _reportError('catch', _); }
       }
       if(opts.openReplace){
         const rr = textarea._findBar.querySelector('.replace-row');
@@ -14371,7 +14598,7 @@
           _findState.searchString = val.slice(left, pos + rightMatch[0].length);
         }
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
 
     const bar = buildFindReplaceBar(textarea, { openReplace: !!opts.openReplace });
     bar._findTextarea = textarea;
@@ -14391,7 +14618,7 @@
     const inp = bar.querySelector('.find-input');
     /* Fokus nur bei explizitem Ctrl/Cmd+F – Button ist reiner Toggle */
     if(inp && focusFind){
-      try { inp.focus(); inp.select(); } catch(_){}
+      try { inp.focus(); inp.select(); } catch(_){ _reportError('catch', _); }
     }
   }
 
@@ -14950,7 +15177,7 @@
   /* §P3: Filter-Worker erst ab 2500 Nodes (war 800).
      computeFilterSets ist Flat-Array-Scan – unter 2500 Nodes ist Sync
      günstiger als PostMessage+Klon. Darüber Worker (Main-Thread frei). */
-  const FILTER_WORKER_MIN_NODES = 2500;
+  const FILTER_WORKER_MIN_NODES = (typeof PERF_THRESHOLDS !== 'undefined' && PERF_THRESHOLDS.FILTER_WORKER_MIN) || 2500;
 
   /* §OPT-3: Adaptives Debounce für Filter-Updates.
    * Berechnet Debounce-Delay basierend auf Baumgröße:
@@ -14961,7 +15188,7 @@
    * Worker-Threshold für Filter: 2000 Nodes (§OPT-8 vereinheitlicht) */
   function _getFilterDebounceDelay() {
     let n = 0;
-    try { n = getCachedNodeCount(); } catch(_) {}
+    try { n = getCachedNodeCount(); } catch(_){ _reportError('catch', _); }
     let d = 100;
     if(n >= 10000) d = 250;
     else if(n >= 5000) d = 200;
@@ -14969,7 +15196,7 @@
     try {
       if(typeof _memBudgetTier !== 'undefined' && _memBudgetTier >= 2) d = Math.max(d, 350);
       else if(typeof hugeTuningsActive === 'function' && hugeTuningsActive()) d = Math.max(d, 220);
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     return d;
   }
 
@@ -15056,7 +15283,7 @@
       return;
     }
     let n = 0;
-    try { n = getCachedNodeCount(); } catch(_){}
+    try { n = getCachedNodeCount(); } catch(_){ _reportError('catch', _); }
     /* §OPT-8: Nutzt den vereinheitlichten globalen Threshold (2000). */
     const useWorker = n >= FILTER_WORKER_MIN_NODES
       && typeof bgTasks !== 'undefined' && bgTasks && bgTasks._useWorker !== false;
@@ -15083,7 +15310,7 @@
           applySets(computeFilterSets());
         });
         return;
-      } catch(_){}
+      } catch(_){ _reportError('catch', _); }
     }
     applySets(computeFilterSets());
   }
@@ -15105,7 +15332,7 @@
         }
         done = true;
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     if(!done){
       (function walk(nodes){
         const list = nodes || [];
@@ -15136,7 +15363,7 @@
         }
         done = true;
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     if(!done){
       (function walk(nodes){
         const list = nodes || [];
@@ -15193,7 +15420,8 @@
    * Fallback: Subtrees mit > _SCHEMA_DELTA_MAX Paaren → Full-Invalidierung
    * (Delta-Sammeln wäre teurer als ein Worker-Rebuild).
    * Undo/Redo/Parse/Import/Tab-Wechsel bleiben Full-Invalidierungen. */
-  const _SCHEMA_DELTA_MAX = 500;
+  /* Phase-3: höheres Delta-Limit – weniger Full-Invalidierungen bei mittleren Subtrees */
+  const _SCHEMA_DELTA_MAX = 1200;
   const _SCHEMA_DELTA_WEIGHT = 2;
 
   /* Einzelnes parent→child-Paar auf Cache anwenden (delta = ±1 × Gewicht). */
@@ -15245,7 +15473,7 @@
     /* __SCHEMA_CHILD_MAP debounced nachziehen (ruft buildSchemaMap → Cache-Hit) */
     if(typeof refreshSchemaChildMap === 'function'){
       debounce('schemaChildMapRefresh', 150, () => {
-        try { refreshSchemaChildMap(); } catch(_){}
+        try { refreshSchemaChildMap(); } catch(_){ _reportError('catch', _); }
       });
     }
     _pfMeasure('schemaMapApplyDeltas');
@@ -15430,7 +15658,8 @@
        Threshold ≥ 250 Nodes: bei sehr kleinen Trees ist sync schneller als
        Worker-Overhead (postMessage + structured clone). */
     const nodeCount = typeof getCachedNodeCount === 'function' ? getCachedNodeCount() : 0;
-    const useWorker = nodeCount >= 250 && typeof bgTasks !== 'undefined' && bgTasks && typeof bgTasks.run === 'function';
+    const schemaMin = (typeof PERF_THRESHOLDS !== 'undefined' && PERF_THRESHOLDS.SCHEMA_WORKER_MIN) || 250;
+    const useWorker = nodeCount >= schemaMin && typeof bgTasks !== 'undefined' && bgTasks && typeof bgTasks.run === 'function';
     if(useWorker && !_schemaMapRebuildPending){
       _schemaMapRebuildPending = true;
       _rebuildSchemaMapAsync();
@@ -15478,7 +15707,7 @@
           if(!b) return;
           Object.keys(b).forEach(tag => { scored.set(tag, (scored.get(tag) || 0) + 1); });
         });
-      } catch(_){}
+      } catch(_){ _reportError('catch', _); }
     }
     /* Prompt common vocabulary */
     PROMPT_COMMON_TAGS.forEach(tag => {
@@ -15778,7 +16007,7 @@
       if(text.charCodeAt(i) === 10) line++;
     }
     if(typeof setEditorSelection === 'function') setEditorSelection(sourceText, fullOffset, endPos);
-    else try { sourceText.setSelectionRange(fullOffset, endPos); } catch(_){}
+    else try { sourceText.setSelectionRange(fullOffset, endPos); } catch(_){ _reportError('catch', _); }
     const lineHeight = getSourceLineHeight();
     const targetTop = Math.max(0, (line - 2) * lineHeight);
     if(Math.abs((sourceText.scrollTop || 0) - targetTop) > lineHeight){
@@ -16168,7 +16397,7 @@
     const filterActive = outlineFilterMode.size > 0 || !!(outlineFilterQuery && outlineFilterQuery.trim());
     if(filterActive){
       let nCnt = 0;
-      try { nCnt = getCachedNodeCount(); } catch(_){}
+      try { nCnt = getCachedNodeCount(); } catch(_){ _reportError('catch', _); }
       if(nCnt >= FILTER_WORKER_MIN_NODES){
         if(_filterMatchIds){
           flatFilteredRows = [];
@@ -16324,7 +16553,7 @@
     if(typeof _outlineVirtualActive === 'undefined' || !_outlineVirtualActive) return;
     _outlineVirtualLastRange = { start: -1, end: -1 };
     requestAnimationFrame(() => {
-      try { paintVirtualOutlineWindow(); } catch(_){}
+      try { paintVirtualOutlineWindow(); } catch(_){ _reportError('catch', _); }
     });
   }
 
@@ -16452,7 +16681,7 @@
         isTouchDragging = true;
         dragId = node.id;
         row.classList.add('dragging');
-        if(navigator.vibrate) try { navigator.vibrate(30); } catch(_){}
+        if(navigator.vibrate) try { navigator.vibrate(30); } catch(_){ _reportError('catch', _); }
       }, 420);
     }, {passive: true});
 
@@ -17272,7 +17501,7 @@
 
   function _sourceShouldDeferDom(textLen){
     if(textLen >= SOURCE_DOM_DEFER_CHARS) return true;
-    try { if(getCachedNodeCount() >= SOURCE_DOM_DEFER_NODES) return true; } catch(_){}
+    try { if(getCachedNodeCount() >= SOURCE_DOM_DEFER_NODES) return true; } catch(_){ _reportError('catch', _); }
     return !!(typeof hugeMode !== 'undefined' && hugeMode);
   }
 
@@ -17391,7 +17620,7 @@
         if(typeof hugeMode !== 'undefined' && hugeMode) delay = 400;
         else if(nodeCount > 800) delay = 280;
         else if(_sourceCacheText != null && dirtyIds) delay = 100;
-      } catch(_){}
+      } catch(_){ _reportError('catch', _); }
       debounce('sourceFromTree', delay, () => {
         try {
           if(_sourceCacheText != null && !_sourceDirtyNodeIds){
@@ -17412,10 +17641,10 @@
                 }
               });
               return;
-            } catch(_){}
+            } catch(_){ _reportError('catch', _); }
           }
           updateResultCharCount();
-        } catch(_){}
+        } catch(_){ _reportError('catch', _); }
       }, { mode: 'idle', idleTimeout: 800 });
       return;
     }
@@ -17425,7 +17654,7 @@
       if(typeof hugeMode !== 'undefined' && hugeMode) delay = 300;
       else if(getCachedNodeCount() > 400) delay = 200;
       else if(fewLeaves) delay = 80;
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     debounce('sourceFromTree', delay, () => {
       _fsEnqueue(_FS_PRIORITIES.P3, () => updateSourceFromTree());
     });
@@ -17516,7 +17745,7 @@
     try {
       if(typeof updateSourceFromTree === 'function') updateSourceFromTree({ syncDom: true });
       if(_sourceHighlightActive && typeof updateSourceHighlight === 'function') updateSourceHighlight();
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
   }
 
   /* §INCREMENTAL-APPLY (Phase 1/2 Kern): Source→Tree ohne Full-Parse, wenn
@@ -17572,7 +17801,7 @@
       if(!_sourceCacheText || !_offsetMapCache || !_offsetMapCache.offsets){
         try {
           if(typeof serializeFull === 'function') serializeFull();
-        } catch(_){}
+        } catch(_){ _reportError('catch', _); }
         if(!_sourceCacheText || !_offsetMapCache || !_offsetMapCache.offsets) return null;
       }
       /* Pending leaf-dirties flushen, damit Cache dem Tree entspricht */
@@ -17889,7 +18118,7 @@
       try {
         if(typeof renderDetail === 'function') renderDetail();
         if(typeof updateSourceFromTree === 'function') updateSourceFromTree({ syncDom: true });
-      } catch(_){}
+      } catch(_){ _reportError('catch', _); }
       return;
     }
     if(incr && (incr.kind === 'text-patch' || incr.kind === 'node-reparse')){
@@ -17915,7 +18144,7 @@
            Sichtbarkeitsliste trotzdem hinter dem Index liegen. O(n) über
            warmen Flat-Snap, kein Full-Index-Rebuild. */
         if(keep){
-          try { rebuildFlatVisibleRows(S.tree); } catch(_){}
+          try { rebuildFlatVisibleRows(S.tree); } catch(_){ _reportError('catch', _); }
         }
         renderAfterTreeChange({
           keepIndex: keep,
@@ -17957,7 +18186,7 @@
               if(typeof renderDetail === 'function') renderDetail();
             }
           }
-        } catch(_){}
+        } catch(_){ _reportError('catch', _); }
         scheduleLiveValidation();
         markActiveTabDraftDirty();
         scheduleDraftSave();
@@ -17980,7 +18209,7 @@
             updateSourceHighlight();
           }
         }
-      } catch(_){}
+      } catch(_){ _reportError('catch', _); }
       return;
     }
 
@@ -18013,7 +18242,7 @@
     } catch(_){
       try { nodeIndexDirty = true; } catch(__){}
     }
-    try { ensureNodeIndex(); } catch(_){}
+    try { ensureNodeIndex(); } catch(_){ _reportError('catch', _); }
     try {
       let max = 0;
       const snap = flatCoreSnapshot();
@@ -18035,7 +18264,7 @@
         })(nextTree);
       }
       if(max >= S.idCounter) S.idCounter = max + 1;
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     /* Selektion: nur behalten wenn ID im NEUEN Index existiert */
     try {
       if(prevSelectedId && !nodeIndexDirty && nodeIndex && nodeIndex.has(prevSelectedId)){
@@ -18060,22 +18289,22 @@
     setSourceDirty(false);
     /* Full-Replace: Undo-Stack bezieht sich auf alten Baum → muss weg */
     clearStructUndo();
-    try { _perfCollapseSig = ''; } catch(_){}
+    try { _perfCollapseSig = ''; } catch(_){ _reportError('catch', _); }
     /* Virtual-Outline-Range invalidieren, damit Window neu gemalt wird */
-    try { _outlineVirtualLastRange = { start: -1, end: -1 }; } catch(_){}
+    try { _outlineVirtualLastRange = { start: -1, end: -1 }; } catch(_){ _reportError('catch', _); }
     /* Full-Replace: NIEMALS keepIndex – Outline muss garantiert neu sein */
     renderAfterTreeChange({ keepIndex: false, light: false, flatSpliced: false });
     /* Serialize: kleine Bäume sync, ab ~600 Nodes Idle/Worker-Prewarm –
        User sieht Outline/Detail sofort, Source-Cache folgt ohne Blockade. */
     try {
       let nWarm = 0;
-      try { nWarm = getCachedNodeCount(); } catch(_){}
+      try { nWarm = getCachedNodeCount(); } catch(_){ _reportError('catch', _); }
       if(nWarm < 600 && typeof serializeFull === 'function') serializeFull();
       else if(typeof _scheduleSerializePrewarm === 'function') _scheduleSerializePrewarm();
       else if(typeof serializeFull === 'function') serializeFull();
-    } catch(_){}
-    try { if(typeof touchValidationCache === 'function') touchValidationCache(); } catch(_){}
-    try { if(typeof scheduleLiveValidation === 'function') scheduleLiveValidation(); } catch(_){}
+    } catch(_){ _reportError('catch', _); }
+    try { if(typeof touchValidationCache === 'function') touchValidationCache(); } catch(_){ _reportError('catch', _); }
+    try { if(typeof scheduleLiveValidation === 'function') scheduleLiveValidation(); } catch(_){ _reportError('catch', _); }
     /* §SOURCE-APPLY-SYNC (§75): „Übernehmen“ schreibt den neu serialisierten
        Text SYNCHRON ins DOM (kein idle-deferred Write) und tokeniziert das
        Syntax-Overlay SOFORT neu. Vorher ersetzte der idle-Write (bis 600ms)
@@ -18084,7 +18313,7 @@
     try {
       if(typeof updateSourceFromTree === 'function') updateSourceFromTree({ syncDom: true });
       if(_sourceHighlightActive && typeof updateSourceHighlight === 'function') updateSourceHighlight();
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
   }
 
   /* ===== Validierung (Phase 2: Issues) ===== */
@@ -18128,7 +18357,7 @@
         }
         patched = true;
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     if(!patched) _flatStoreTouch(nodes);
     /* Fast-Path: nur bekannte Diag-Nodes zurücksetzen */
     if(_lastDiagNodeIds.length){
@@ -18320,9 +18549,9 @@
     const start = pos + (col && col > 0 ? Math.min(col - 1, lineText.length) : 0);
     const end = pos + lineText.length;
     /* Auf Mobile: nicht fokussieren – sonst öffnet sich der Fokus-Editor (§MOBILE-FOCUS-REGEL) */
-    if(!isMobileLayout()) try { sourceText.focus(); } catch(_){}
+    if(!isMobileLayout()) try { sourceText.focus(); } catch(_){ _reportError('catch', _); }
     if(typeof setEditorSelection === 'function') setEditorSelection(sourceText, start, end);
-    else try { sourceText.setSelectionRange(start, end); } catch(_){}
+    else try { sourceText.setSelectionRange(start, end); } catch(_){ _reportError('catch', _); }
     const lineHeight = parseFloat(getComputedStyle(sourceText).lineHeight) || 18;
     sourceText.scrollTop = Math.max(0, (line - 3) * lineHeight);
   }
@@ -18862,7 +19091,7 @@
     try {
       if(typeof _memBudgetTier !== 'undefined' && _memBudgetTier >= 2) wait = 400;
       else if(typeof hugeTuningsActive === 'function' && hugeTuningsActive()) wait = 220;
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     _hlLastRange = { startLine: -1, endLine: -1 };
     _hlLineStartsForText = null;
     debounce('sourceHighlight', wait, () => updateSourceHighlight());
@@ -18937,7 +19166,7 @@
       text = (sourceText && sourceText.value) || '';
     } else if(sourceGesamtMode){
       if(typeof updateSourceFromTree === 'function'){
-        try { updateSourceFromTree({ syncDom: true }); } catch(_){}
+        try { updateSourceFromTree({ syncDom: true }); } catch(_){ _reportError('catch', _); }
       }
       text = (sourceText && sourceText.value)
         || (typeof serializeGesamtConfig === 'function' ? serializeGesamtConfig() : '');
@@ -19022,7 +19251,7 @@
         _applySourceDomText(_sourceCacheText, null, false);
       } else {
         _fsEnqueue(_FS_PRIORITIES.P2, () => {
-          try { updateSourceFromTree(); } catch(_){}
+          try { updateSourceFromTree(); } catch(_){ _reportError('catch', _); }
         });
       }
       updateSourceHeadTools();
@@ -19050,7 +19279,7 @@
     /* Immer Fokus auf „Bestätigen“ (Desktop + Mobile). */
     const okBtn = document.getElementById('btnConfirmOk');
     requestAnimationFrame(() => {
-      try { if(okBtn) okBtn.focus(); } catch(_){}
+      try { if(okBtn) okBtn.focus(); } catch(_){ _reportError('catch', _); }
     });
   }
 
@@ -19141,7 +19370,7 @@
       writeHashState();
       /* Opt-In an: sofort speichern. Opt-Out: localStorage bleibt bis manueller Löschen-Button */
       if(persistDrafts){
-        try { saveDraftNow(); } catch(_){}
+        try { saveDraftNow(); } catch(_){ _reportError('catch', _); }
       }
       renderWarningsMenus();
     });
@@ -19403,8 +19632,8 @@
       (on) => {
         persistSchema = !!on;
         writeHashState();
-        if(persistSchema){ try { schedulePersistSchema(); } catch(_){} }
-        else { try { writePersistedSchema(null); } catch(_){} }
+        if(persistSchema){ try { schedulePersistSchema(); } catch(_){ _reportError('catch', _); } }
+        else { try { writePersistedSchema(null); } catch(_){ _reportError('catch', _); } }
       }
     ));
     body.appendChild(advSection);
@@ -19424,7 +19653,7 @@
       (v) => {
         persistDrafts = v;
         writeHashState();
-        if(persistDrafts){ try { saveDraftNow(); } catch(_){} }
+        if(persistDrafts){ try { saveDraftNow(); } catch(_){ _reportError('catch', _); } }
       }
     ));
     body.appendChild(draftSection);
@@ -19559,7 +19788,7 @@
          nicht als dirty und der nächste Baum-Serialize könnte ihn löschen
          (Dialog-Flow: Fokus lag auf Abbrechen-Button, onblur hatte
          sourceFocused bereits false gesetzt). */
-      if(!isMobileLayout()) try { ta.focus(); } catch(_){}
+      if(!isMobileLayout()) try { ta.focus(); } catch(_){ _reportError('catch', _); }
       const text = pendingPaste.text || '';
       const replaceAll = !!pendingPaste.replaceAll;
       if(replaceAll && typeof pushEditorUndo === 'function' && typeof setEditorValue === 'function'){
@@ -19575,11 +19804,11 @@
         const val = ta.value || '';
         ta.value = val.slice(0, start) + text + val.slice(end);
         const pos = start + text.length;
-        try { ta.setSelectionRange(pos, pos); } catch(_){}
+        try { ta.setSelectionRange(pos, pos); } catch(_){ _reportError('catch', _); }
         ta.dispatchEvent(new Event('input', { bubbles: true }));
       }
       /* Auf Mobile: nicht fokussieren (vermeidet ungewolltes Öffnen des Fokus-Editors nach Paste) */
-      if(!isMobileLayout()) try { ta.focus(); } catch(_){}
+      if(!isMobileLayout()) try { ta.focus(); } catch(_){ _reportError('catch', _); }
     }
     pendingPaste = null;
     const dont = document.getElementById('pasteWarnDontShow');
@@ -19788,7 +20017,7 @@
 
   function setEditorSelection(el, start, end){
     if(!el) return;
-    try { el.setSelectionRange(start, end == null ? start : end); } catch(_){}
+    try { el.setSelectionRange(start, end == null ? start : end); } catch(_){ _reportError('catch', _); }
   }
 
   /* Zentrale Schreib-API für alle Textfelder */
@@ -19800,8 +20029,8 @@
     const s = Math.max(0, Math.min(selStart == null ? len : selStart, len));
     const e = Math.max(0, Math.min(selEnd == null ? s : selEnd, len));
     el.value = val;
-    try { el.setSelectionRange(s, e); } catch(_){}
-    try { el.dispatchEvent(new Event('input', { bubbles: true })); } catch(_){}
+    try { el.setSelectionRange(s, e); } catch(_){ _reportError('catch', _); }
+    try { el.dispatchEvent(new Event('input', { bubbles: true })); } catch(_){ _reportError('catch', _); }
     h.applying = false;
     updateDetailFieldCharCount(el);
   }
@@ -19921,7 +20150,7 @@
     h.future.push(elem);
     h.versionMark = elem.beforeVersionMark;
     setEditorValue(el, value, sel.start, sel.end);
-    try { el.focus(); } catch(_){}
+    try { el.focus(); } catch(_){ _reportError('catch', _); }
     return true;
   }
 
@@ -19941,7 +20170,7 @@
     h.isOpen = false;
     h.versionMark = elem.afterVersionMark;
     setEditorValue(el, value, sel.start, sel.end);
-    try { el.focus(); } catch(_){}
+    try { el.focus(); } catch(_){ _reportError('catch', _); }
     return true;
   }
 
@@ -20121,7 +20350,7 @@
     if(!list.length) return;
     const parts = [];
     for(const f of list){
-      try { parts.push(await readFileAsText(f)); } catch(_){}
+      try { parts.push(await readFileAsText(f)); } catch(_){ _reportError('catch', _); }
     }
     if(!parts.length) return;
     let combined = parts.join('\n\n');
@@ -20134,7 +20363,7 @@
     const len = combined.length;
     setEditorValue(el, combined, len, len);
     commitEditorBaseline(el);
-    try { el.focus(); } catch(_){}
+    try { el.focus(); } catch(_){ _reportError('catch', _); }
   }
 
   function setFileDragOver(el, on){
@@ -20351,7 +20580,7 @@
     [detailScroll, sourcePanel, document.getElementById('detailCol'), document.getElementById('structurePanel')]
       .filter(Boolean)
       .forEach(root => {
-        try { pasteGuardObserver.observe(root, { childList: true, subtree: true }); } catch(_){}
+        try { pasteGuardObserver.observe(root, { childList: true, subtree: true }); } catch(_){ _reportError('catch', _); }
       });
   };
   observePasteRoots();
@@ -20672,7 +20901,7 @@
       return;
     }
     const prevLang = currentLang;
-    try { flushSourceFromTree(); } catch(_){}
+    try { flushSourceFromTree(); } catch(_){ _reportError('catch', _); }
     captureScrollPositions();
     readHashState();
     applyTextCharCount();
@@ -20784,9 +21013,9 @@
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         if(textarea){
-          try { textarea.focus(); } catch(_){}
+          try { textarea.focus(); } catch(_){ _reportError('catch', _); }
           const len = (textarea.value || '').length;
-          try { textarea.setSelectionRange(len, len); } catch(_){}
+          try { textarea.setSelectionRange(len, len); } catch(_){ _reportError('catch', _); }
         }
         updateFocusEditorUndoButtons();
         if(textarea) updateDetailFieldCharCount(textarea);
@@ -20832,7 +21061,7 @@
     overlay.setAttribute('aria-hidden', 'true');
     /* §OS-FIRST-REGEL: kein body.overflow mehr zu restaurieren – wir setzen ihn nicht. */
     /* Original-Feld blur-en um Tastatur zu schließen */
-    try { if(document.activeElement && document.activeElement.tagName === 'TEXTAREA') document.activeElement.blur(); } catch(_){}
+    try { if(document.activeElement && document.activeElement.tagName === 'TEXTAREA') document.activeElement.blur(); } catch(_){ _reportError('catch', _); }
     focusEditorTarget = null;
     if(typeof uiNavConsumeBack === 'function') uiNavConsumeBack();
   }
@@ -20906,7 +21135,7 @@
       if(!el) return;
       const len = (el.value || '').length;
       try { el.focus({ preventScroll: true }); } catch(_){ try { el.focus(); } catch(__){} }
-      try { el.setSelectionRange(0, len); } catch(_){}
+      try { el.setSelectionRange(0, len); } catch(_){ _reportError('catch', _); }
       updateDetailFieldCharCount(el);
     };
     if(optCopy) optCopy.onclick = e => {
@@ -20955,7 +21184,7 @@
       if(typeof pushEditorUndo === 'function') pushEditorUndo(el);
       const len = text.length;
       if(typeof setEditorValue === 'function') setEditorValue(el, text, len, len);
-      else { el.value = text; try { el.setSelectionRange(len, len); } catch(_){} }
+      else { el.value = text; try { el.setSelectionRange(len, len); } catch(_){ _reportError('catch', _); } }
       if(typeof commitEditorBaseline === 'function') commitEditorBaseline(el);
       updateDetailFieldCharCount(el);
       updateFocusEditorUndoButtons();
@@ -21043,7 +21272,7 @@
         if(el.id === 'panelStructureTitle' || el.classList.contains('detail-textarea') || el.classList.contains('detail-tag-input') || el.id === 'sourceText'){
           /* Prevent native focus → open focus editor instead */
           e.stopImmediatePropagation();
-          try { el.blur(); } catch(_){}
+          try { el.blur(); } catch(_){ _reportError('catch', _); }
           const isTag = el.classList.contains('detail-tag-input');
           setTimeout(() => openFocusEditor(el, isTag), 50);
         }
@@ -21295,7 +21524,7 @@
         const snap = flatCoreSnapshotFor(root);
         if(snap && typeof snap.n === 'number') return snap.n;
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     let c = 0;
     (function walk(ns){ for(const n of ns){ c++; if(n.children) walk(n.children); } })(nodes || []);
     return c;
@@ -21440,7 +21669,7 @@
         const snap = flatCoreSnapshotFor(root);
         if(snap && snap.n > 0) return _treeToJsonFromFlat(snap);
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     return (nodes || []).map(n => {
       if(n.kind === 'comment') return { kind: 'comment', text: n.text || '' };
       const o = { tag: n.tag || '', text: n.text || '' };
@@ -21461,7 +21690,7 @@
         const snap = flatCoreSnapshot();
         if(snap && snap.n > 0) return _exportMarkdownFromFlat(snap);
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     depth = depth || 0;
     let out = '';
     (nodes || []).forEach(n => {
@@ -21601,7 +21830,7 @@
       a.download = filename || 'export.txt';
       document.body.appendChild(a);
       a.click();
-      setTimeout(() => { try { URL.revokeObjectURL(url); a.remove(); } catch(_){} }, 500);
+      setTimeout(() => { try { URL.revokeObjectURL(url); a.remove(); } catch(_){ _reportError('catch', _); } }, 500);
       showBanner('ok', [t('Export heruntergeladen.', 'phase3.exportDownloaded')]);
       return true;
     } catch(_){ return false; }
@@ -21676,7 +21905,7 @@
     try {
       if(tabA && tabA.lazy && typeof hydrateTab === 'function') hydrateTab(tabA);
       if(tabB && tabB.lazy && typeof hydrateTab === 'function') hydrateTab(tabB);
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     /* §FLAT-DIFF: bevorzugt Flat-Snaps der beiden Tabs */
     let mapA = null, mapB = null;
     try {
@@ -21684,7 +21913,7 @@
       const snapB = tabB && tabB.tree ? flatCoreSnapshotFor(tabB.tree) : null;
       if(snapA && snapA.n > 0) mapA = structuralPathMapFromFlat(snapA);
       if(snapB && snapB.n > 0) mapB = structuralPathMapFromFlat(snapB);
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     if(!mapA) mapA = structuralPathMap(tabA.tree || []);
     if(!mapB) mapB = structuralPathMap(tabB.tree || []);
     const entries = [];
@@ -21935,7 +22164,7 @@
 
   function openDiffPanel(){
     if(typeof closeProtocol === 'function') closeProtocol();
-    if(typeof closeLanguagePanel === 'function') try { closeLanguagePanel(); } catch(_){}
+    if(typeof closeLanguagePanel === 'function') try { closeLanguagePanel(); } catch(_){ _reportError('catch', _); }
     fillDiffTabSelects();
     const sum = document.getElementById('diffSummary');
     if(sum){ sum.hidden = true; sum.innerHTML = ''; }
@@ -21974,14 +22203,14 @@
     try {
       if(tabA.lazy && typeof hydrateTab === 'function') hydrateTab(tabA);
       if(tabB.lazy && typeof hydrateTab === 'function') hydrateTab(tabB);
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     const finish = (entries) => renderDiffList(entries, tabA, tabB);
     /* Phase 3 Feinschliff: große Bäume → Diff im Worker */
     let nA = 0, nB = 0;
     try {
       nA = typeof countNodes === 'function' ? countNodes(tabA.tree) : 0;
       nB = typeof countNodes === 'function' ? countNodes(tabB.tree) : 0;
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     if(nA + nB > 1200 && typeof bgTasks !== 'undefined' && bgTasks && typeof bgTasks.run === 'function'){
       /* §46 §WORKER-FLAT-PAYLOAD + §83: flats aus dem per-Tab-Cache –
          wiederholte Diffs desselben Tab-Paars bauen nichts neu. */
@@ -22075,14 +22304,14 @@
       while(editorHistMap.size > maxKeys && i < keys.length){
         editorHistMap.delete(keys[i++]);
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
   }
   /* §P3: Flat-Store auf aktiven Tab + max 1 weiteren begrenzen. */
   function _flatStoreEvictUnderPressure(keepMax){
     try {
       if(!_flatStoreMap || _flatStoreMap.size <= keepMax) return;
       const keep = new Set();
-      try { if(S && S.tree) keep.add(S.tree); } catch(_){}
+      try { if(S && S.tree) keep.add(S.tree); } catch(_){ _reportError('catch', _); }
       const roots = [];
       _flatStoreMap.forEach((_, root) => roots.push(root));
       for(let i = 0; i < roots.length; i++){
@@ -22093,7 +22322,7 @@
           keep.add(roots[i]);
         }
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
   }
   /* §91/§B3/§P3: Effektive Tunings – Tier 0 normal, 1 Huge, 2 extrem, 3 survival
      Feinschliff: Tier-1 drosselt Flat-Store früher; Debounce-Scale etwas weicher
@@ -22138,10 +22367,10 @@
       if(survival && typeof bgTasks !== 'undefined' && bgTasks && bgTasks._workers){
         while(bgTasks._workers.length > 1){
           const w = bgTasks._workers.pop();
-          try { w.terminate(); } catch(_){}
+          try { w.terminate(); } catch(_){ _reportError('catch', _); }
         }
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
   }
   /* §91/§B3/§P3: Memory-Budget-Check – 4 Tiers mit Hysterese.
    * Tier 1: > 256 MB, zurück < 192 MB (75 %).
@@ -22153,24 +22382,24 @@
         try {
           const bytes = estimateDocMemory();
           let n = 0;
-          try { n = getCachedNodeCount(); } catch(_){}
+          try { n = getCachedNodeCount(); } catch(_){ _reportError('catch', _); }
           const prev = _memBudgetTier | 0;
           let tier = prev;
           /* Aufwärts: sofort bei Budget-Überschreitung */
-          if(bytes > DOC_MEM_BUDGET_T3 || n >= 80000) tier = 3;
-          else if(bytes > DOC_MEM_BUDGET_T2 || n >= 40000) tier = Math.max(tier, 2);
-          else if(bytes > DOC_MEM_BUDGET || n >= 20000) tier = Math.max(tier, 1);
-          /* §P3 Feinschliff Abwärts-Hysterese: 70 % (war 75 %) + etwas höhere
-             Node-Puffer → schnellerer Recovery nach Löschen großer Subtrees */
-          if(prev >= 3 && tier >= 3 && bytes < DOC_MEM_BUDGET_T3 * 0.70 && n < 65000) tier = 2;
-          if(prev >= 2 && tier >= 2 && bytes < DOC_MEM_BUDGET_T2 * 0.70 && n < 32000) tier = Math.min(tier, 1);
-          if(prev >= 1 && bytes < DOC_MEM_BUDGET * 0.70 && n < 16000) tier = 0;
+          const TN = (typeof PERF_THRESHOLDS !== 'undefined') ? PERF_THRESHOLDS : {};
+          if(bytes > DOC_MEM_BUDGET_T3 || n >= (TN.MEM_TIER3_NODES || 80000)) tier = 3;
+          else if(bytes > DOC_MEM_BUDGET_T2 || n >= (TN.MEM_TIER2_NODES || 40000)) tier = Math.max(tier, 2);
+          else if(bytes > DOC_MEM_BUDGET || n >= (TN.MEM_TIER1_NODES || 20000)) tier = Math.max(tier, 1);
+          /* Abwärts-Hysterese 70 % + Node-Puffer aus PERF_THRESHOLDS */
+          if(prev >= 3 && tier >= 3 && bytes < DOC_MEM_BUDGET_T3 * 0.70 && n < (TN.MEM_TIER3_DOWN_NODES || 65000)) tier = 2;
+          if(prev >= 2 && tier >= 2 && bytes < DOC_MEM_BUDGET_T2 * 0.70 && n < (TN.MEM_TIER2_DOWN_NODES || 32000)) tier = Math.min(tier, 1);
+          if(prev >= 1 && bytes < DOC_MEM_BUDGET * 0.70 && n < (TN.MEM_TIER1_DOWN_NODES || 16000)) tier = 0;
           if(tier !== _memBudgetTier){
             _memBudgetTier = tier;
             _applyHugeTunings();
-            try { applyPerformanceMode(); } catch(_) {}
+            try { applyPerformanceMode(); } catch(_){ _reportError('catch', _); }
           }
-        } catch(_) {}
+        } catch(_){ _reportError('catch', _); }
       });
     }, { mode: 'idle', idleTimeout: 3000 });
   }
@@ -22214,24 +22443,33 @@
 
   /* ===== As-you-type Soft-Validation (Idle-Callback; Huge-Mode drosselt) ===== */
   function scheduleLiveValidation(){
+    /* §RELIABILITY: Live-Validate schaltet NICHT mehr ab bei großen Bäumen.
+       Stattdessen längeres Debounce + Worker (runLiveValidation). Survival-
+       Tier drosselt nur die Frequenz, prüft aber weiterhin. */
     let delay = 400;
-    let skip = false;
+    let idleTimeout = 1200;
     try {
       const n = getCachedNodeCount();
-      /* §B3: Auto-Memory-Tier und manueller Huge-Mode stoppen Live-Validate */
-      if((typeof hugeTuningsActive === 'function' && hugeTuningsActive()) ||
-         (typeof hugeMode !== 'undefined' && hugeMode) || n > 2000){
-        skip = true;
-      } else if(n > 800) delay = 1100;
-      else if(n > 300) delay = 600;
-    } catch(_){}
-    if(skip){
-      debounceCancel('liveValidate');
-      return;
-    }
+      const T = (typeof PERF_THRESHOLDS !== 'undefined') ? PERF_THRESHOLDS : {};
+      const survival = (typeof _memBudgetTier !== 'undefined' && _memBudgetTier >= 3)
+        || (typeof hugeMode !== 'undefined' && hugeMode);
+      if(n > 20000 || survival){
+        delay = T.LIVE_VALIDATE_DELAY_HUGE || 1800;
+        idleTimeout = 2500;
+      } else if(n > 2000){
+        delay = T.LIVE_VALIDATE_DELAY_LARGE || 1100;
+        idleTimeout = 1800;
+      } else if(n > 800){
+        delay = T.LIVE_VALIDATE_DELAY_MED || 600;
+      } else if(n > 300){
+        delay = 500;
+      }
+    } catch(e){ _reportError('scheduleLiveValidation', e); }
     debounce('liveValidate', delay, () => {
-      _fsEnqueue(_FS_PRIORITIES.P4, () => { try { runLiveValidation(); } catch(_){} });
-    }, { mode: 'idle', idleTimeout: 1200 });
+      _fsEnqueue(_FS_PRIORITIES.P4, () => {
+        try { runLiveValidation(); } catch(e){ _reportError('runLiveValidation.sched', e); }
+      });
+    }, { mode: 'idle', idleTimeout: idleTimeout });
   }
   let _liveValidateSeq = 0;
   /* §OPT-5: Validation-Cache – vermeidet redundante Validierung wenn sich
@@ -22277,36 +22515,40 @@
       return;
     }
     
-    /* §P3 §VALIDATE-UNIFY: validateCoreLocal ist Flat-first (Array-Scan).
-       Worker-Overhead (PostMessage + Klon) lohnt erst bei sehr großen Bäumen.
-       Schwelle 200 → 2500: darunter Sync-Flat, darüber Worker mit Flat-Payload.
-       Beide Pfade müssen gleiche Hard/Soft-Codes liefern. */
+    /* §RELIABILITY §VALIDATE-UNIFY: Flat-first Sync unter VALIDATE_WORKER_MIN,
+       darüber Worker. Nie abschalten – auch bei 50k+ Nodes. */
     const nodeCount = getCachedNodeCount();
-    const USE_WORKER_MIN = 2500;
+    const USE_WORKER_MIN = (typeof PERF_THRESHOLDS !== 'undefined' && PERF_THRESHOLDS.VALIDATE_WORKER_MIN) || 2500;
     const useWorker = nodeCount >= USE_WORKER_MIN && typeof bgTasks !== 'undefined' && bgTasks && typeof bgTasks.run === 'function';
     if(useWorker){
       const seq = ++_liveValidateSeq;
-      /* §46/§82: Flat-Payload, Store-Snap geklont im Worker-Transfer */
       const flatTree = flatCoreSnapshot();
       bgTasks.run('validate', { flatTree }).then(res => {
         if(seq !== _liveValidateSeq) return;
         if(nodeIndexDirty) return;
-        const raw = (res && res.ok && res.result) ? res.result : validateCoreLocal(S.tree);
-        _validationCache = raw;
-        _validationCacheTreeHash = currentHash;
-        _applyLiveValidation(raw);
-      }).catch(() => {
+        try {
+          const raw = (res && res.ok && res.result) ? res.result : validateCoreLocal(S.tree);
+          _validationCache = raw;
+          _validationCacheTreeHash = currentHash;
+          _applyLiveValidation(raw);
+        } catch(e){ _reportError('runLiveValidation.workerOk', e); }
+      }).catch(err => {
+        _reportError('runLiveValidation.worker', err);
         if(seq !== _liveValidateSeq) return;
+        try {
+          const raw = validateCoreLocal(S.tree);
+          _validationCache = raw;
+          _validationCacheTreeHash = currentHash;
+          _applyLiveValidation(raw);
+        } catch(e){ _reportError('runLiveValidation.workerFallback', e); }
+      });
+    } else {
+      try {
         const raw = validateCoreLocal(S.tree);
         _validationCache = raw;
         _validationCacheTreeHash = currentHash;
         _applyLiveValidation(raw);
-      });
-    } else {
-      const raw = validateCoreLocal(S.tree);
-      _validationCache = raw;
-      _validationCacheTreeHash = currentHash;
-      _applyLiveValidation(raw);
+      } catch(e){ _reportError('runLiveValidation.sync', e); }
     }
     _pfMeasure('runLiveValidation');
   }
@@ -22326,7 +22568,7 @@
       if(entry && entry.snap && entry.snap.hasError && entry.snap.ids){
         snapHe = entry.snap;
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     if(!snapHe) _flatStoreTouch();
     for(let i = 0; i < hard.length; i++){
       const item = hard[i];
@@ -22474,7 +22716,7 @@
     /* §44 §FRAME-SCHEDULER: P4-Task via Scheduler ausführen (Budget-gesteuert) */
     _persistSchemaTimer = setTimeout(() => {
       _persistSchemaTimer = null;
-      _fsEnqueue(_FS_PRIORITIES.P4, () => { try { persistLearnedSchema(); } catch(_){} });
+      _fsEnqueue(_FS_PRIORITIES.P4, () => { try { persistLearnedSchema(); } catch(_){ _reportError('catch', _); } });
     }, 1500);
   }
 
@@ -22999,10 +23241,10 @@
         const ti = tabs.indexOf(tempTab);
         if(ti >= 0) tabs.splice(ti, 1);
         _tabMap.delete(tempTab.id);
-        try { pruneEditorHistForTabId(tempTab.id); } catch(_){}
-        if(tempTab.tree && tempTab.tree !== tempRoot){ try { _flatStoreMap.delete(tempTab.tree); } catch(_){} }
+        try { pruneEditorHistForTabId(tempTab.id); } catch(_){ _reportError('catch', _); }
+        if(tempTab.tree && tempTab.tree !== tempRoot){ try { _flatStoreMap.delete(tempTab.tree); } catch(_){ _reportError('catch', _); } }
       }
-      if(tempRoot){ try { _flatStoreMap.delete(tempRoot); } catch(_){} }
+      if(tempRoot){ try { _flatStoreMap.delete(tempRoot); } catch(_){ _reportError('catch', _); } }
       nodeIndex = sIdx;
       flatVisibleRows = sVis;
       _flatVisibleIdToIdx = sVisMap;
@@ -23020,8 +23262,8 @@
       scrollCaptureFrozen = sFrozen;
       /* UI resynchronisieren – der Test hat Outline/Detail synchron auf den
          Temp-Baum gerendert (kein Paint dazwischen, User sieht nichts) */
-      try { renderTabs(); render(); updateStructUndoButtons(); } catch(_){}
-      if(outlineList){ try { outlineList.scrollTop = sScroll; } catch(_){} }
+      try { renderTabs(); render(); updateStructUndoButtons(); } catch(_){ _reportError('catch', _); }
+      if(outlineList){ try { outlineList.scrollTop = sScroll; } catch(_){ _reportError('catch', _); } }
     }
   }
 
@@ -23294,7 +23536,7 @@
       _offsetMapCache = sOm;
       _sourceDirtyNodeIds = sDirtyIds;
       _sourceCacheGen = sGen;
-      if(tree) try { _flatStoreMap.delete(tree); } catch(_){}
+      if(tree) try { _flatStoreMap.delete(tree); } catch(_){ _reportError('catch', _); }
     }
   }
 
@@ -23364,7 +23606,7 @@
       _offsetMapCache = sOm;
       _sourceDirtyNodeIds = sDirtyIds;
       _sourceCacheGen = sGen;
-      if(tree) try { _flatStoreMap.delete(tree); } catch(_){}
+      if(tree) try { _flatStoreMap.delete(tree); } catch(_){ _reportError('catch', _); }
     }
   }
 
@@ -23403,7 +23645,7 @@
           const ix = snap.ids.indexOf('st-fv-2');
           if(ix >= 0) snap.collapsed[ix] = 1;
         }
-      } catch(_){}
+      } catch(_){ _reportError('catch', _); }
       rebuildFlatVisibleRows(tree);
       const visCol = flatVisibleRows.map(r => r.id).join(',');
       const expectCol = 'st-fv-1,st-fv-2,st-fv-4';
@@ -23429,7 +23671,7 @@
       _flatVisibleIdToIdx = sVisMap;
       _cachedNodeCount = sCnt;
       nodeIndexDirty = sDirty;
-      if(tree) try { _flatStoreMap.delete(tree); } catch(_){}
+      if(tree) try { _flatStoreMap.delete(tree); } catch(_){ _reportError('catch', _); }
     }
   }
 
@@ -23587,31 +23829,31 @@
      den Zwischenstand, und der App-State danach ist unverändert) */
   if(_selfTestRequested) setTimeout(_runSelfTest, 400);
   /* Expliziter API-Einstieg (neben ?selftest=1) */
-  try { window.__selftest = _runSelfTest; } catch(_){}
+  try { window.__selftest = _runSelfTest; } catch(_){ _reportError('catch', _); }
   /* §98 §BENCH-APPLY: ?bench=1 – Scale-Bench versetzt nach dem Boot starten
      (App rendert zuerst fertig; 600 ms Abstand zum Selftest-Trigger, falls
      beide gesetzt sind). Ausgabe: Protokoll-Echo + window.__lastScaleBench.
      Der setTimeout-Callback läuft nach Abschluss des gesamten Scripts –
      __runScaleBench ist da sicher definiert. */
   if(_benchRequested) setTimeout(() => {
-    try { window.__runScaleBench().catch(() => {}); } catch(_){}
+    try { window.__runScaleBench().catch(() => {}); } catch(_){ _reportError('catch', _); }
   }, 600);
   /* beim Verlassen noch einmal speichern */
   window.addEventListener('pagehide', () => {
-    try { flushSourceFromTree(); } catch(_){}
-    try { captureScrollPositions(); } catch(_){}
+    try { flushSourceFromTree(); } catch(_){ _reportError('catch', _); }
+    try { captureScrollPositions(); } catch(_){ _reportError('catch', _); }
     /* §IDB-DRAFT: Notfall-Write – synchroner localStorage-Fallback, solange
        der asynchrone IDB-Write nicht bestätigt ist. */
-    try { saveDraftNow({ emergency: true }); } catch(_){}
-    if(typeof persistSchema !== 'undefined' && persistSchema){ try { persistLearnedSchema(); } catch(_){} }
+    try { saveDraftNow({ emergency: true }); } catch(_){ _reportError('catch', _); }
+    if(typeof persistSchema !== 'undefined' && persistSchema){ try { persistLearnedSchema(); } catch(_){ _reportError('catch', _); } }
   });
   document.addEventListener('visibilitychange', () => {
     if(document.visibilityState === 'hidden'){
-      try { flushSourceFromTree(); } catch(_){}
-      try { captureScrollPositions(); } catch(_){}
+      try { flushSourceFromTree(); } catch(_){ _reportError('catch', _); }
+      try { captureScrollPositions(); } catch(_){ _reportError('catch', _); }
       /* §IDB-DRAFT: Notfall-Write wie bei pagehide. */
-      try { saveDraftNow({ emergency: true }); } catch(_){}
-      if(typeof persistSchema !== 'undefined' && persistSchema){ try { persistLearnedSchema(); } catch(_){} }
+      try { saveDraftNow({ emergency: true }); } catch(_){ _reportError('catch', _); }
+      if(typeof persistSchema !== 'undefined' && persistSchema){ try { persistLearnedSchema(); } catch(_){ _reportError('catch', _); } }
     }
   });
 
@@ -23621,17 +23863,27 @@
      Zusätzlich: __phase1Status(true) loggt eine kompakte Zusammenfassung. */
   window.__phase1Status = function(logSummary){
     const out = {
-      /* Phase-1/2 COMPLETE; Phase-3 Flat-Authority + Perf. */
+      /* Phase-1/2/3 COMPLETE */
       phase: 3,
-      phaseStatus: 'IN_PROGRESS',
+      phaseStatus: 'COMPLETE',
       foundationLocked: true,
-      optimizationCycle: 'Phase-3-Magic',
+      optimizationCycle: 'Phase-3-Complete',
+      reportErrorPresent: typeof _reportError === 'function',
+      errorLogPresent: typeof __errorLog === 'function',
+      errorLogStatsPresent: typeof __errorLogStats === 'function',
+      perfThresholdsPresent: typeof PERF_THRESHOLDS === 'object',
+      liveValidateNeverSkips: true,
+      workerSingleMin: (typeof PERF_THRESHOLDS !== 'undefined' && PERF_THRESHOLDS.WORKER_SINGLE_MIN_NODES) || 15000,
+      schemaDeltaMax: (typeof _SCHEMA_DELTA_MAX !== 'undefined') ? _SCHEMA_DELTA_MAX : null,
+      workerStatus: (typeof window !== 'undefined' && window.__workerStatus) || null,
+      idbStatus: (typeof window !== 'undefined' && window.__idbStatus) || null,
+      xmlScopeDocumented: true,
       mutatePresent: typeof mutate === 'function',
       afterStructMutationPresent: typeof _afterStructMutation === 'function',
       structOpsUnified: true,
       undoRedoUnified: true,
-      validateWorkerMin: 2500,
-      filterWorkerMin: 2500,
+      validateWorkerMin: (typeof PERF_THRESHOLDS !== 'undefined' && PERF_THRESHOLDS.VALIDATE_WORKER_MIN) || 2500,
+      filterWorkerMin: (typeof PERF_THRESHOLDS !== 'undefined' && PERF_THRESHOLDS.FILTER_WORKER_MIN) || 2500,
       flatAuthority: true,
       nodeCount: 0,
       flatStoreSize: 0,
@@ -23709,17 +23961,17 @@
       health: 'unknown'
     };
 
-    try { out.nodeCount = getCachedNodeCount(); } catch(_){}
-    try { out.flatStoreSize = _flatStoreMap ? _flatStoreMap.size : 0; } catch(_){}
+    try { out.nodeCount = getCachedNodeCount(); } catch(_){ _reportError('catch', _); }
+    try { out.flatStoreSize = _flatStoreMap ? _flatStoreMap.size : 0; } catch(_){ _reportError('catch', _); }
     try {
       const snap = flatCoreSnapshot();
       out.flatWarm = !!(snap && snap.n > 0);
-    } catch(_){}
-    try { out.sourceCache = !!_sourceCacheText; } catch(_){}
-    try { out.offsetMap = !!(_offsetMapCache && _offsetMapCache.offsets); } catch(_){}
+    } catch(_){ _reportError('catch', _); }
+    try { out.sourceCache = !!_sourceCacheText; } catch(_){ _reportError('catch', _); }
+    try { out.offsetMap = !!(_offsetMapCache && _offsetMapCache.offsets); } catch(_){ _reportError('catch', _); }
     try {
       out.memEstimateMB = Math.round(estimateDocMemory() / 10485.76) / 10;
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
 
     /* Health heuristic */
     const issues = [];
@@ -23818,7 +24070,7 @@
        roots[2] ist vom Collapse-Test unberührt → sichtbarer, expandierter Parent. */
     /* §OPT-12: Cache wärmen (entspricht Idle-Prewarm im Realbetrieb) –
        sonst würden die Moves gegen einen kalten Cache laufen. */
-    try { serializeFull(); } catch(_){}
+    try { serializeFull(); } catch(_){ _reportError('catch', _); }
     const tMove0 = performance.now();
     if(roots[2] && roots[2].children && roots[2].children.length > 6){
       const ch = roots[2].children;
@@ -23834,7 +24086,7 @@
        Mit Regionen-Patch: Cache-Hit ≈ 0ms (rebuildFullSerializeCaches/
        rebuildNodeIndex dürfen hier nicht auftauchen). */
     const tSer0 = performance.now();
-    try { serializeFull(); } catch(_){}
+    try { serializeFull(); } catch(_){ _reportError('catch', _); }
     timings.serMs = performance.now() - tSer0;
 
     /* §98 §BENCH-APPLY: Undo/Redo-Dauer – 5× structUndo + 5× structRedo
@@ -23851,7 +24103,7 @@
       const tRedo0 = performance.now();
       for(let u = 0; u < 5; u++) structRedo();
       timings.redoMs = performance.now() - tRedo0;
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
 
     /* Scroll outline */
     const tSc0 = performance.now();
@@ -23890,7 +24142,7 @@
        real persistierte Entwürfe überschreibt; Session-Draft gesichert. */
     const tSave0 = performance.now();
     let benchDraftBak = null;
-    try { benchDraftBak = sessionStorage.getItem(DRAFT_SESSION_KEY); } catch(_){}
+    try { benchDraftBak = sessionStorage.getItem(DRAFT_SESSION_KEY); } catch(_){ _reportError('catch', _); }
     const benchPersistBak = persistDrafts;
     try {
       persistDrafts = false;
@@ -23898,9 +24150,9 @@
     } finally { persistDrafts = benchPersistBak; }
     timings.saveMs = performance.now() - tSave0;
     if(benchDraftBak != null){
-      try { sessionStorage.setItem(DRAFT_SESSION_KEY, benchDraftBak); } catch(_){}
+      try { sessionStorage.setItem(DRAFT_SESSION_KEY, benchDraftBak); } catch(_){ _reportError('catch', _); }
     } else {
-      try { sessionStorage.removeItem(DRAFT_SESSION_KEY); } catch(_){}
+      try { sessionStorage.removeItem(DRAFT_SESSION_KEY); } catch(_){ _reportError('catch', _); }
     }
 
     /* Filter (sync path if under worker threshold) */
@@ -23918,8 +24170,8 @@
        drei Zahlen sind die Baseline, gegen die Phase 2 optimiert. */
     const tParse0 = performance.now();
     let benchParseSource = '';
-    try { benchParseSource = (_sourceCacheText != null ? _sourceCacheText : serializeFull()); } catch(_){}
-    try { parseXMLString(benchParseSource); } catch(_){}
+    try { benchParseSource = (_sourceCacheText != null ? _sourceCacheText : serializeFull()); } catch(_){ _reportError('catch', _); }
+    try { parseXMLString(benchParseSource); } catch(_){ _reportError('catch', _); }
     timings.parseMs = performance.now() - tParse0;
     timings.parseChars = benchParseSource.length;
     const tIdx0 = performance.now();
@@ -23930,7 +24182,7 @@
     const tFlat0 = performance.now();
     /* §84: Kaltmessung erzwingen – der Co-Build in rebuildNodeIndex hat
        den Snap soeben registriert; ohne nodes-Argument wäre flatMs ≈0. */
-    try { benchFlat = flatCoreSnapshot(S.tree); } catch(_){}
+    try { benchFlat = flatCoreSnapshot(S.tree); } catch(_){ _reportError('catch', _); }
     timings.flatMs = performance.now() - tFlat0;
     timings.flatNodes = benchFlat ? benchFlat.n : null;
     /* §82 §FLAT-STORE: Warm-Metrik – zweiter Aufruf muss den Store-Cache
@@ -23938,19 +24190,19 @@
        §84: Nach ensureNodeIndex trifft er den Co-Build-Snap – gilt damit
        zugleich als Nachweis, dass der Co-Build registriert wurde. */
     const tFlatW0 = performance.now();
-    try { flatCoreSnapshot(); } catch(_){}
+    try { flatCoreSnapshot(); } catch(_){ _reportError('catch', _); }
     timings.flatWarmMs = performance.now() - tFlatW0;
     /* §83 §FLAT-STORE-PER-TAB: Warm-Nachweis für den Cross-Tab-Cache –
        nach einem Aufwärm-Lauf über alle Tabs muss der zweite Lauf alle
        Snaps aus dem Cache nehmen (≈0ms). Deutlich >0ms ⇒ Per-Tab-
        Invalidierung oder Eviction ist undicht. */
-    try { tabs.forEach(tab => { if(tab && tab.tree) flatCoreSnapshotFor(tab.tree); }); } catch(_){}
+    try { tabs.forEach(tab => { if(tab && tab.tree) flatCoreSnapshotFor(tab.tree); }); } catch(_){ _reportError('catch', _); }
     const tTabsW0 = performance.now();
-    try { tabs.forEach(tab => { if(tab && tab.tree) flatCoreSnapshotFor(tab.tree); }); } catch(_){}
+    try { tabs.forEach(tab => { if(tab && tab.tree) flatCoreSnapshotFor(tab.tree); }); } catch(_){ _reportError('catch', _); }
     timings.flatTabsWarmMs = performance.now() - tTabsW0;
     /* §B4: Validate auf warmem Flat (Main-Thread-Pfad) */
     const tVal0 = performance.now();
-    try { if(typeof validateCoreLocal === 'function') validateCoreLocal(S.tree); } catch(_){}
+    try { if(typeof validateCoreLocal === 'function') validateCoreLocal(S.tree); } catch(_){ _reportError('catch', _); }
     timings.validateMs = performance.now() - tVal0;
     /* Content-Patch warm: zweiter Leaf-Edit + Flat-Content-Patch */
     const tCp0 = performance.now();
@@ -23960,7 +24212,7 @@
         n2.text = (n2.text || '') + ' y';
         if(typeof _flatStorePatchContent === 'function') _flatStorePatchContent([n2.id]);
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     timings.contentPatchMs = performance.now() - tCp0;
     const memAfter = _benchMem();
     timings.memBeforeMB = memBefore != null ? Math.round(memBefore / 104857.6) / 10 : null;
@@ -24087,7 +24339,7 @@
             + ' | gate ' + (r.gatePass ? 'PASS' : 'FAIL'));
         }
       }
-    } catch(_){}
+    } catch(_){ _reportError('catch', _); }
     return rows;
   };
 })();

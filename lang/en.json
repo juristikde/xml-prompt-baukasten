@@ -1,380 +1,390 @@
 {
   "meta": {
     "code": "en",
-    "name": "English",
-    "dir": "ltr"
+    "name": "English"
   },
   "languages": {
-    "ar": {
-      "native": "العربية",
-      "local": "Arabic"
-    },
-    "bg": {
-      "native": "Български",
-      "local": "Bulgarian"
-    },
-    "bs": {
-      "native": "Bosanski",
-      "local": "Bosnian"
-    },
-    "cs": {
-      "native": "Čeština",
-      "local": "Czech"
-    },
-    "da": {
-      "native": "Dansk",
-      "local": "Danish"
-    },
     "de": {
       "native": "Deutsch",
       "local": "German"
     },
-    "el": {
-      "native": "Ελληνικά",
-      "local": "Greek"
-    },
     "en": {
       "native": "English",
       "local": "English"
-    },
-    "es": {
-      "native": "Español",
-      "local": "Spanish"
-    },
-    "et": {
-      "native": "Eesti",
-      "local": "Estonian"
-    },
-    "fi": {
-      "native": "Suomi",
-      "local": "Finnish"
-    },
-    "fr": {
-      "native": "Français",
-      "local": "French"
-    },
-    "ga": {
-      "native": "Gaeilge",
-      "local": "Irish"
-    },
-    "hi": {
-      "native": "हिन्दी",
-      "local": "Hindi"
-    },
-    "hr": {
-      "native": "Hrvatski",
-      "local": "Croatian"
-    },
-    "hu": {
-      "native": "Magyar",
-      "local": "Hungarian"
-    },
-    "it": {
-      "native": "Italiano",
-      "local": "Italian"
-    },
-    "ja": {
-      "native": "日本語",
-      "local": "Japanese"
-    },
-    "ka": {
-      "native": "ქართული",
-      "local": "Georgian"
-    },
-    "ko": {
-      "native": "한국어",
-      "local": "Korean"
-    },
-    "lt": {
-      "native": "Lietuvių",
-      "local": "Lithuanian"
-    },
-    "lv": {
-      "native": "Latviešu",
-      "local": "Latvian"
-    },
-    "mk": {
-      "native": "Македонски",
-      "local": "Macedonian"
-    },
-    "mo": {
-      "native": "Moldovenească",
-      "local": "Moldovan"
-    },
-    "mt": {
-      "native": "Malti",
-      "local": "Maltese"
-    },
-    "nl": {
-      "native": "Nederlands",
-      "local": "Dutch"
-    },
-    "pl": {
-      "native": "Polski",
-      "local": "Polish"
-    },
-    "pt": {
-      "native": "Português",
-      "local": "Portuguese"
-    },
-    "ro": {
-      "native": "Română",
-      "local": "Romanian"
-    },
-    "ru": {
-      "native": "Русский",
-      "local": "Russian"
-    },
-    "sk": {
-      "native": "Slovenčina",
-      "local": "Slovak"
-    },
-    "sl": {
-      "native": "Slovenščina",
-      "local": "Slovenian"
-    },
-    "sq": {
-      "native": "Shqip",
-      "local": "Albanian"
-    },
-    "sr": {
-      "native": "Српски",
-      "local": "Serbian"
-    },
-    "sv": {
-      "native": "Svenska",
-      "local": "Swedish"
-    },
-    "tr": {
-      "native": "Türkçe",
-      "local": "Turkish"
-    },
-    "uk": {
-      "native": "Українська",
-      "local": "Ukrainian"
-    },
-    "zh": {
-      "native": "中文",
-      "local": "Chinese"
     }
   },
   "app": {
-    "documentTitle": "Prompt Builder – Structured XML Editor",
+    "documentTitle": "Prompt Builder – Structured Editor",
     "title": "Prompt Builder"
   },
-  "toolbar": {
-    "protocol": "Log",
-    "showXml": "Show XML",
-    "hideXml": "Hide XML",
-    "reset": "Reset",
-    "resetTitle": "Reset structure",
-    "options": "Options",
-    "language": "Language",
-    "library": "Library"
+  "drafts": {
+    "persist": "Save drafts in local browser storage",
+    "clear": "Clear saved drafts",
+    "cleared": "✓ Cleared",
+    "clearEmpty": "Nothing saved"
+  },
+  "confirm": {
+    "cancel": "Cancel",
+    "ok": "Confirm"
+  },
+  "focusEditor": {
+    "back": "Back",
+    "undo": "Undo",
+    "redo": "Redo",
+    "find": "Find",
+    "editText": "Edit text",
+    "selectAll": "Select all",
+    "copy": "Copy",
+    "pasteReplace": "Replace with clipboard",
+    "copied": "✓ Copied",
+    "pasteFailed": "Clipboard unavailable",
+    "options": "Options"
   },
   "protocol": {
-    "title": "Log",
-    "clear": "Clear",
-    "close": "Close log",
-    "validate": "Validate",
-    "empty": "No entries yet. Tap Validate to check the structure.",
-    "noErrors": "No errors.",
-    "xmlApplied": "XML applied successfully.",
-    "gesamtApplied": "Full config applied successfully.",
-    "mixedContent": "Import note: Mixed content detected. {n} text blocks were moved into <Parent_text> tags.",
-    "containerMoved": "Note: Content of <{parent}> was moved to <{leaf}> because container tags should not hold direct text.",
-    "invalidXml": "Invalid XML.",
-    "invalidXmlDetail": "Invalid XML: {detail}",
-    "invalidXmlLine": "Invalid XML – line {line}",
-    "invalidXmlLineCol": "Invalid XML – line {line}, column {col}",
-    "invalidXmlLineColDetail": "Invalid XML – line {line}, column {col}: {detail}",
-    "invalidXmlLineDetail": "Invalid XML – line {line}: {detail}",
-    "noGesamt": "No valid full config found.",
+    "fixRename": "Rename → <{tag}>",
+    "fixSanitize": "Sanitize name",
+    "fixDelete": "Delete empty tag",
+    "fixWrap": "Wrap in <{tag}>",
+    "fixApply": "Fix",
+    "fixApplied": "SmartFix applied.",
+    "fixAll": "Fix all similar",
+    "fixAllApplied": "SmartFix: {n} entries fixed.",
+    "lineOnly": "Line {line}",
     "networkError": "Network error",
-    "noPage": "No page",
+    "noPage": "No page found",
     "textTooShort": "Text too short",
     "errorPrefix": "Error: ",
-    "linePrefix": "Line {line}: ",
-    "tagRenamed": "Note: Tag <{from}> was corrected to <{to}> (XML names must not start with a digit)."
+    "invalidXmlLineColDetail": "XML ungültig – Zeile {line}, Spalte {col}: {detail}",
+    "invalidXmlLineCol": "XML ungültig – Zeile {line}, Spalte {col}",
+    "invalidXmlLineDetail": "XML ungültig – Zeile {line}: {detail}",
+    "invalidXmlLine": "XML ungültig – Zeile {line}",
+    "invalidXmlDetail": "XML ungültig: {detail}",
+    "invalidXml": "The text is not valid.",
+    "containerMoved": "Hinweis: Inhalt von <{parent}> wurde nach <{leaf}> verschoben, da Container-Tags keinen direkten Text enthalten sollten.",
+    "tagRenamed": "Hinweis: Tag <{from}> wurde zu <{to}> korrigiert (XML-Namen dürfen nicht mit einer Ziffer beginnen).",
+    "noGesamt": "Keine gültige Gesamt-Config gefunden.",
+    "mixedContent": "Import-Hinweis: Mixed Content erkannt. {n} Text-Blöcke wurden automatisch in <Parent_text>-Tags umgewandelt.",
+    "gesamtApplied": "Gesamt-Config erfolgreich übernommen.",
+    "xmlUnchanged": "Nothing changed.",
+    "xmlApplied": "Changes applied.",
+    "noErrors": "No issues found.",
+    "linePrefix": "Zeile {line}: ",
+    "empty": "Noch keine Einträge. Tippe auf „Prüfen“, um die Struktur jetzt zu prüfen.",
+    "selftestOk": "Selbsttest (Phase-1): {checks} Checks in {ms} ms – keine Abweichungen.",
+    "selftestFail": "Selbsttest (Phase-1): {fails} von {checks} Checks fehlgeschlagen ({ms} ms).",
+    "selftestDetail": "Selbsttest Detail: {detail}",
+    "selftestCrash": "Selbsttest abgebrochen: {err}",
+    "title": "Log",
+    "close": "Close",
+    "validate": "Check",
+    "clear": "Clear"
   },
-  "language": {
-    "title": "Language",
-    "close": "Close language menu",
-    "searchPlaceholder": "Search languages…",
-    "searchAria": "Search languages",
-    "empty": "No language found.",
-    "selected": "Selected"
+  "validation": {
+    "dupSibling": "Note: Multiple siblings with tag <{tag}>{line}",
+    "schemaUnexpected": "Schema: <{tag}> unusual under <{parent}>{line}",
+    "lineSuffix": " · Zeile ~{line}",
+    "tagNoName": "Tag ohne Namen – Zeile {line}",
+    "tagInvalid": "Tag <{tag}> enthält ungültige Zeichen – Zeile {line}",
+    "genericTag": "Warnung: <{tag}> ist zu generisch. Nutze beschreibende Namen wie <kunden_anfrage> statt <data>{line}",
+    "depth": "Warnung: Verschachtelungstiefe {depth} in <{tag}>. Mehr als 4 Ebenen erschweren das Verständnis.{line}",
+    "exampleHint": "Hinweis: <example> sollte in <examples> verpackt sein{line}",
+    "emptyTag": "Hinweis: <{tag}> ist leer{line}"
   },
-  "tabs": {
-    "namePlaceholder": "Tab name",
-    "nameAria": "Tab name",
-    "duplicate": "Duplicate",
-    "duplicateTitle": "Duplicate current tab",
-    "close": "Close tab",
-    "new": "New tab",
-    "defaultTitle": "Prompt {n}",
-    "copySuffix": " Copy",
-    "confirmResetLast": "Reset the last tab?",
-    "confirmReplaceTemplate": "Replace the current structure with the template?",
-    "movePrev": "Move left",
-    "moveNext": "Move right",
-    "moveUp": "Move up",
-    "moveDown": "Move down",
-    "movePrevTitle": "Move tab left",
-    "moveNextTitle": "Move tab right",
-    "moveUpTitle": "Move tab up",
-    "moveDownTitle": "Move tab down",
-    "confirmClose": "Close this prompt tab?"
+  "phase3": {
+    "tabDiff": "Compare tabs",
+    "exportJson": "Export JSON",
+    "importJson": "Import JSON",
+    "importJsonOk": "JSON imported ({n} nodes).",
+    "importJsonFail": "Invalid or empty JSON.",
+    "exportDownloaded": "Export downloaded.",
+    "diffJump": "Jump to entry",
+    "diffOnlyA": "only in “{tab}”",
+    "diffOnlyB": "only in “{tab}”",
+    "exportMd": "Export Markdown",
+    "diffNeedTabs": "Need at least 2 tabs to compare.",
+    "diffTitle": "Diff: \"{a}\" ↔ \"{b}\"",
+    "diffSame": "No structural differences.",
+    "diffAdded": "+ only in \"{tab}\": {path}",
+    "diffChanged": "~ changed: {path}",
+    "exportCopied": "✓ Export copied",
+    "hugeMode": "Huge mode (aggressive virtualization)",
+    "diffPanelTitle": "Tab diff",
+    "diffClose": "Close diff",
+    "diffTabA": "Tab A",
+    "diffTabB": "Tab B",
+    "diffRun": "Compare",
+    "diffEmpty": "Pick two tabs and tap Compare.",
+    "schemaStrict": "Schema mode (learned structure)",
+    "makeValid": "Make structure valid",
+    "makeValidOk": "Structure cleaned ({n} changes).",
+    "makeValidNone": "No automatic fixes needed.",
+    "exportLlm": "Export LLM JSON",
+    "exportLlmCopied": "✓ LLM JSON copied",
+    "requiredChildAdded": "Required child <{tag}> added under <{parent}>",
+    "persistSchema": "Persist learned schema across sessions",
+    "persistSchemaHint": "Tag suggestions persist after reload",
+    "schemaProfileCleared": "✓ Schema profile cleared",
+    "schemaProfileClear": "Clear saved schema profile"
+  },
+  "settings": {
+    "hugeMode": "Huge mode",
+    "title": "Settings",
+    "close": "Close settings",
+    "sectionWarnings": "Warnings",
+    "sectionDisplay": "Display",
+    "sectionTabBar": "Tab Bar",
+    "sectionAdvanced": "Advanced",
+    "sectionDrafts": "Drafts",
+    "sectionStorageClear": "Clear local storage",
+    "showCharacterCountResult": "Show total character count",
+    "showCharacterCountText": "Show text character count",
+    "xmlCodeLineWrap": "XML line wrap",
+    "tabBarShown": "Show tab bar",
+    "tabBarLocation": "Position",
+    "tabBarTop": "Top",
+    "tabBarLeft": "Left",
+    "protocolThreshold": "Protocol threshold",
+    "warnPastingTextThreshold": "Paste warn threshold",
+    "displayedAmountbuttonC": "Custom button count",
+    "detailLineWrap": "Text line wrap",
+    "hideFilterOnMobile": "Hide filter on mobile",
+    "performanceMode": "Performance mode",
+    "performanceAuto": "Automatic",
+    "performanceOn": "Always on",
+    "performanceOff": "Disabled"
   },
   "outline": {
-    "empty": "No elements yet. Add an element or comment below.",
-    "addElement": "Element",
-    "addElementTitle": "Add root element",
-    "addComment": "Comment",
-    "addCommentTitle": "Add root comment",
+    "structUndo": "Undo structure",
+    "structUndoTitle": "Undo structure change",
+    "structRedo": "Redo structure",
+    "structRedoTitle": "Redo structure change",
+    "copyFailed": "✗",
+    "copyFailedFull": "✗ Copy failed",
+    "filterPlaceholder": "Search structure…",
+    "filterPlaceholderContent": "Search structure and content…",
+    "filterAria": "Search structure",
+    "filterAriaContent": "Search structure and content",
+    "filter": "Filter",
+    "filterTitle": "Filter structure",
+    "filterPanelTitle": "Filter",
+    "filterPanelClose": "Close filter",
+    "filterSectionContent": "Content",
+    "filterSectionType": "Type",
+    "filterSectionValidation": "Validation",
+    "filterSectionSearch": "Search",
+    "filterSearchContent": "Search structure and content",
+    "filterResetAll": "Reset all filters",
+    "filterComments": "Comments only",
+    "filterErrors": "With errors only",
+    "collapseToggle": "Collapse/expand all",
+    "collapseToggleTitle": "Collapse or expand all entries",
+    "collapseAll": "Collapse all",
+    "expandAll": "Expand all",
+    "filterEmpty": "Empty entries only",
+    "filterTitleless": "Titleless entries only",
+    "filterActive": "Filter active",
+    "charCountLabel": "Zeichenzahl",
+    "expand": "Aufklappen",
+    "collapse": "Zuklappen",
     "addUser": "user",
-    "addUserTitle": "Add user element",
     "addAssistant": "assistant",
-    "addAssistantTitle": "Add assistant element",
-    "addChild": "Sub",
-    "addChildTitle": "Add sub-item under selection",
-    "addParent": "Pre",
-    "addParentTitle": "Wrap selection in a new pre-item",
-    "delete": "Delete",
-    "deleteTitle": "Delete selection",
-    "copyResult": "Result",
-    "copyResultTitle": "Copy XML result",
-    "copied": "✓ Copied",
-    "copiedShort": "✓",
-    "confirmDelete": "Delete this item?",
-    "confirmReset": "Delete everything?",
-    "commentLabel": "Note",
-    "noName": "(unnamed)",
-    "expand": "Expand",
-    "collapse": "Collapse",
-    "openEditor": "Open in editor",
-    "charCountLabel": "Characters",
-    "charCountTitle": "Show or hide character count",
-    "customPick": "Choose action",
-    "customPickTitle": "Choose button action",
     "addTool": "tool",
-    "addToolTitle": "Add tool element"
+    "addComment": "Comment",
+    "addChild": "Sub-entry",
+    "addParent": "Group above",
+    "addUserTitle": "Add a user entry",
+    "addAssistantTitle": "Add an assistant entry",
+    "addToolTitle": "Add a tool entry",
+    "addCommentTitle": "Add a top-level comment",
+    "addChildTitle": "Add a sub-entry under the selection",
+    "addParentTitle": "Wrap selection in a new group",
+    "customPick": "Funktion wählen",
+    "customPickTitle": "Button-Funktion wählen",
+    "commentLabel": "Anmerkung",
+    "noName": "(ohne Namen)",
+    "open": "Öffnen",
+    "empty": "Noch keine Elemente. Lege unten ein Element oder einen Kommentar an.",
+    "openEditor": "Im Editor öffnen",
+    "copiedShort": "✓",
+    "confirmReset": "Reset this tab?",
+    "copied": "✓ Kopiert",
+    "confirmDelete": "Wirklich löschen?",
+    "addElementTitle": "Add entry",
+    "deleteTitle": "Delete entry",
+    "copyResult": "Copy result",
+    "copyResultTitle": "Copy the finished result",
+    "charCountTitle": "Character count"
+  },
+  "warnings": {
+    "resetSettings": "Reset to defaults",
+    "confirmResetSettings": "Reset all settings?",
+    "entryDelete": "When deleting structure entries",
+    "tabReset": "When resetting a prompt",
+    "tabClose": "When closing a prompt tab",
+    "browserClose": "When leaving the page",
+    "pasteLarge": "When pasting large amounts of text"
   },
   "detail": {
-    "empty": "Select an element on the left or add a new one below.",
-    "level": "Level {n}",
-    "commentHeading": "💬 Note",
-    "tagPlaceholder": "tag-name",
-    "tagAria": "Tag name",
-    "textPlaceholder": "Text for this element…",
-    "commentPlaceholder": "Note…",
-    "containerPlaceholder": "This tag is a container.",
-    "textAria": "Element text",
-    "commentAria": "Comment text",
-    "moveUp": "Move up",
-    "moveDown": "Move down",
-    "moveUpTitle": "Move item up",
-    "moveDownTitle": "Move item down",
-    "copy": "Copy",
-    "copyTitle": "Copy selected item",
-    "paste": "Paste",
-    "pasteTitle": "Paste copied item",
-    "find": "Find",
-    "findTitle": "Find and replace",
-    "options": "Options",
-    "wikiText": "WikiText",
-    "wikiSettings": "Wiki settings ›",
-    "wikiLang": "Language",
-    "wikiChars": "Approx. characters",
-    "wikiInsert": "Insert",
-    "wikiClose": "Close",
-    "wikiLoading": "Loading…",
-    "wikiAria": "Wiki settings",
-    "back": "Back",
-    "closeEditor": "Close editor"
-  },
-  "source": {
-    "title": "XML code",
-    "gesamtTitle": "Full config",
-    "options": "Options",
-    "find": "Find",
     "wrapOn": "Wrap on",
     "wrapOff": "Wrap off",
     "wrapTitle": "Toggle line wrap",
-    "gesamt": "Full",
-    "tabXml": "Tab XML",
-    "gesamtConfig": "Full config",
-    "gesamtTitleBtn": "Show full config of all tabs",
-    "tabXmlTitle": "Show single tab XML",
-    "close": "Close XML",
-    "placeholder": "Paste XML prompt…",
-    "aria": "XML source",
+    "wikiSettingsShort": "Wiki settings",
+    "copy": "Kopieren",
+    "wikiText": "Text",
+    "wikiAria": "Wiki-Einstellungen",
+    "wikiLang": "Language",
+    "wikiChars": "Characters",
+    "wikiLoading": "Lade…",
+    "findTitle": "Suchen und Ersetzen",
+    "containerPlaceholder": "Dieser Tag ist ein Container.",
+    "commentPlaceholder": "Anmerkung…",
+    "textPlaceholder": "Text für dieses Element…",
+    "commentHeading": "💬 Anmerkung",
+    "tagPlaceholder": "tag-name",
+    "tagAria": "Tag-Name",
+    "moveUp": "Nach oben",
+    "moveUpTitle": "Eintrag nach oben",
+    "moveDown": "Nach unten",
+    "moveDownTitle": "Eintrag nach unten",
+    "commentAria": "Kommentartext",
+    "textAria": "Elementtext",
+    "copyTitle": "Ausgewählten Punkt kopieren",
+    "paste": "Einfügen",
+    "pasteTitle": "Kopierten Punkt einfügen",
+    "find": "Suchen",
+    "options": "Optionen",
+    "back": "Back",
+    "level": "Ebene {n}",
+    "closeEditor": "Editor schließen",
+    "empty": "Wähle links ein Element aus oder lege unten ein neues an."
+  },
+  "toolbar": {
+    "filterShow": "Show filter",
+    "filterHide": "Hide filter",
+    "language": "Language",
+    "hideXml": "XML ausblenden",
+    "showXml": "Show source",
+    "protocol": "Log",
+    "library": "Library",
+    "options": "Options",
+    "reset": "Reset",
+    "resetTitle": "Reset structure"
+  },
+  "search": {
+    "clearAria": "Clear input"
+  },
+  "diff": {
+    "noChange": "No structural change"
+  },
+  "struct": {
+    "undoInsert": "Undo: inserted <{tag}>",
+    "redoInsert": "Redo: inserted <{tag}>",
+    "undoDelete": "Undo: removed <{tag}>",
+    "redoDelete": "Redo: removed <{tag}>",
+    "undoReorder": "Undo: moved",
+    "redoReorder": "Redo: moved",
+    "undoSnapshot": "Structure restored",
+    "redoSnapshot": "Structure restored",
+    "undoWrap": "Rückgängig: Oberpunkt entfernt",
+    "redoWrap": "Wiederholt: Oberpunkt erstellt",
+    "undoMigrate": "Rückgängig: Text-Migration rückgängig",
+    "redoMigrate": "Wiederholt: Text migriert"
+  },
+  "a11y": {
+    "skipToStructure": "Skip to structure",
+    "hugeModeOn": "Huge mode enabled: Performance optimizations for large documents",
+    "hugeModeOff": "Huge mode disabled"
+  },
+  "workflow": {
+    "valid": "Workflow: Structure is valid.",
+    "errorsFound": "Workflow: {n} errors found.",
+    "warningsOnly": "Workflow: {n} warnings, no errors.",
+    "cleaned": "Workflow: Structure cleaned.",
+    "exported": "Workflow: LLM JSON exported.",
+    "exportNoCopy": "Workflow: LLM JSON created (copy failed)."
+  },
+  "chars": {
+    "count": "…{n}…"
+  },
+  "language": {
+    "empty": "Keine Sprache gefunden.",
+    "selected": "Ausgewählt",
+    "title": "Language",
+    "close": "Close",
+    "searchPlaceholder": "Search language…"
+  },
+  "tabs": {
+    "defaultTitle": "Prompt {n}",
+    "copySuffix": " Kopie",
+    "confirmResetLast": "Reset the last tab?",
+    "confirmClose": "Close this prompt tab?",
+    "moveUpTitle": "Tab nach oben verschieben",
+    "movePrevTitle": "Move tab to the left",
+    "moveDownTitle": "Tab nach unten verschieben",
+    "moveNextTitle": "Move tab to the right",
+    "moveUp": "Nach oben",
+    "movePrev": "Move left",
+    "moveDown": "Nach unten",
+    "moveNext": "Move right",
+    "close": "Tab schließen",
+    "new": "Neuer Tab",
+    "namePlaceholder": "Name…",
+    "nameAria": "Prompt name",
+    "duplicate": "Duplicate",
+    "duplicateTitle": "Duplicate this prompt"
+  },
+  "find": {
+    "widgetAria": "Suchen und Ersetzen",
+    "toggleReplace": "Ersetzen ein-/ausblenden",
+    "placeholder": "Suchen…",
+    "ariaFind": "Suchbegriff",
+    "caseTitle": "Groß-/Kleinschreibung beachten",
+    "wholeWordTitle": "Ganzes Wort",
+    "regexTitle": "Regulärer Ausdruck",
+    "prev": "Vorheriges Vorkommen",
+    "prevTitle": "Vorheriges",
+    "next": "Nächstes Vorkommen",
+    "nextTitle": "Nächstes",
+    "close": "Suche schließen",
+    "closeTitle": "Schließen",
+    "replacePlaceholder": "Ersetzen…",
+    "ariaReplace": "Ersatztext",
+    "replace": "Ersetzen",
+    "replaceTitle": "Aktuelles Vorkommen ersetzen",
+    "replaceAll": "Alle",
+    "replaceAllTitle": "Alle Vorkommen ersetzen",
+    "regexError": "Ungültiger regulärer Ausdruck",
+    "noResults": "Keine Treffer",
+    "replaced": "{n} ersetzt"
+  },
+  "source": {
+    "gesamtTitle": "Gesamt-Config",
+    "title": "Source",
+    "tabXmlTitle": "Einzelnen Tab-XML anzeigen",
+    "gesamtTitleBtn": "Gesamt-Config aller Tabs anzeigen",
+    "tabXml": "Tab-XML",
+    "gesamt": "Gesamt",
+    "find": "Find",
+    "wrapTitle": "Zeilenumbruch umschalten",
+    "wrapOn": "Umbruch an",
+    "wrapOff": "Line wrap off",
+    "highlightOff": "Syntax aus",
+    "highlightOn": "Highlighting",
+    "options": "Options",
+    "close": "Close",
+    "placeholder": "Source text…",
+    "aria": "Source text",
     "apply": "Apply",
     "copy": "Copy"
   },
-  "find": {
-    "placeholder": "Find…",
-    "replacePlaceholder": "Replace…",
-    "ariaFind": "Search term",
-    "ariaReplace": "Replacement",
-    "prev": "Previous match",
-    "next": "Next match",
-    "prevTitle": "Previous",
-    "nextTitle": "Next",
-    "close": "Close find",
-    "closeTitle": "Close",
-    "replace": "Replace",
-    "replaceTitle": "Replace current match",
-    "replaceAll": "All",
-    "replaceAllTitle": "Replace all matches",
-    "caseTitle": "Match case",
-    "regexTitle": "Regular expression",
-    "replaced": "{n} replaced",
-    "regexError": "RegEx!"
-  },
-  "chars": {
-    "count": "{n} characters",
-    "selected": " · {n} selected"
-  },
-  "validation": {
-    "tagNoName": "Tag without a name – line {line}",
-    "tagInvalid": "Tag <{tag}> has invalid characters – line {line}",
-    "genericTag": "Warning: <{tag}> is too generic. Prefer descriptive names like <customer_request> over <data>{line}",
-    "depth": "Warning: Nesting depth {depth} in <{tag}>. More than 4 levels is hard to follow.{line}",
-    "exampleHint": "Hint: <example> should be wrapped in <examples>{line}",
-    "emptyTag": "Hint: <{tag}> is empty{line}",
-    "lineSuffix": " · line ~{line}"
-  },
-  "wiki": {
-    "de": "Deutsch",
-    "en": "English",
-    "fr": "Français",
-    "es": "Español",
-    "it": "Italiano",
-    "pt": "Português",
-    "nl": "Nederlands",
-    "pl": "Polski",
-    "ru": "Русский",
-    "ja": "日本語",
-    "zh": "中文",
-    "random": "Random"
-  },
-  "warnings": {
-    "title": "Warnings",
-    "entryDelete": "When deleting structure items",
-    "tabReset": "When resetting the prompt",
-    "tabClose": "When closing a prompt tab",
-    "browserClose": "When closing the website",
-    "pasteLarge": "When pasting very large text"
-  },
   "pasteWarn": {
+    "lead": "Sollen wirklich {n} Zeichen eingefügt werden?",
     "title": "Large paste",
     "close": "Close",
-    "lead": "Really insert {n} characters?",
-    "body": "This may crash this browser window. Any unsaved text could be lost.",
-    "hint": "Paste the text in smaller chunks instead.",
-    "dontShow": "Don’t show this warning again",
-    "cancel": "Cancel",
-    "insert": "Paste"
+    "body": "You are about to paste a large amount of text.",
+    "hint": "This may take a moment on large documents.",
+    "dontShow": "Don't show again",
+    "insert": "Insert",
+    "cancel": "Cancel"
   }
 }

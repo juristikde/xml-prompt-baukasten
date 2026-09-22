@@ -9913,6 +9913,8 @@
       const line = pad + '<!-- ' + s + ' -->\n';
       state.parts.push(line);
       state.len += line.length;
+      /* End-Offset: exklusives Ende der Node-Region (für Leaf-Patches) */
+      if(state.ends) state.ends[node.id] = state.len;
       return;
     }
     const tag = sanitizeTagName((node.tag && node.tag.trim()) || '') || 'element';
@@ -9967,6 +9969,8 @@
         state.len += chunk.length;
       }
     }
+    /* End-Offset nach vollständigem Node-Write (inkl. Closing-Tag) */
+    if(state.ends) state.ends[node.id] = state.len;
   }
 
   function serializeTree(nodes, depth){
@@ -10111,6 +10115,7 @@
             text: ser.text,
             offsets: ser.offsets || {},
             depths: ser.depths || {},
+            ends: ser.ends || {},
             sorted: ser.sorted || [],
             prefixLen: ser.prefixLen != null ? ser.prefixLen : 9
           };
@@ -10139,6 +10144,7 @@
     const ids = snap.ids, tags = snap.tags, texts = snap.texts;
     const kinds = snap.kinds, fdepths = snap.depths, childCounts = snap.childCounts;
     const parts = state.parts, pads = state.pads, offsets = state.offsets, depths = state.depths, sortedPairs = state.sortedPairs;
+    const ends = state.ends;
     const open = []; /* Flat-Indizes der offenen Container */
     function closeTop(){
       const i = open.pop();
@@ -10148,6 +10154,8 @@
       const chunk = pad + '</' + tag + '>\n';
       parts.push(chunk);
       state.len += chunk.length;
+      /* Container-End erst nach Closing-Tag */
+      if(ends) ends[ids[i]] = state.len;
     }
     for(let i = 0; i < n; i++){
       const d = fdepths[i] + 1;
@@ -10167,6 +10175,7 @@
         const line = pad + '<!-- ' + s + ' -->\n';
         parts.push(line);
         state.len += line.length;
+        if(ends) ends[id] = state.len;
         continue;
       }
       const tag = sanitizeTagName((tags[i] || '').trim()) || 'element';
@@ -10209,10 +10218,12 @@
         chunk = pad + '</' + tag + '>\n';
         parts.push(chunk);
         state.len += chunk.length;
+        if(ends) ends[id] = state.len;
       } else {
         const chunk = pad + '<' + tag + '>' + escapeXML(text) + '</' + tag + '>\n';
         parts.push(chunk);
         state.len += chunk.length;
+        if(ends) ends[id] = state.len;
       }
     }
     while(open.length) closeTop();
@@ -10222,15 +10233,17 @@
     _pfMark('rebuildFullSerializeCaches');
     const prefix = '<prompt>\n';
     /* §45: sortedPairs wird während der Tiefensuche befüllt –
-       Offsets sind aufsteigend (depth-first Walk), kein Sort nötig. */
-    let state = { parts: [prefix], len: prefix.length, pads: {}, offsets: {}, depths: {}, sortedPairs: [] };
+       Offsets sind aufsteigend (depth-first Walk), kein Sort nötig.
+       ends[id] = exklusives Ende der Node-Region (Leaf-Patches dürfen
+       Parent-Closing-Tags nicht mit ersetzen). */
+    let state = { parts: [prefix], len: prefix.length, pads: {}, offsets: {}, depths: {}, ends: {}, sortedPairs: [] };
     /* §85 §SERIALIZE-FROM-FLAT: Flat-Pfad (byte-identisch, siehe
        _serializeFromFlatSnap) – Original-Walk als Fallback auf frischem
        State, falls der Flat-Pfad ausnahmsweise scheitert. */
     try {
       _serializeFromFlatSnap(flatCoreSnapshotFor(S.tree || []), state);
     } catch(_) {
-      state = { parts: [prefix], len: prefix.length, pads: {}, offsets: {}, depths: {}, sortedPairs: [] };
+      state = { parts: [prefix], len: prefix.length, pads: {}, offsets: {}, depths: {}, ends: {}, sortedPairs: [] };
       const list = S.tree || [];
       for(let i = 0; i < list.length; i++) serializeNodeInto(list[i], 1, state);
     }
@@ -10245,6 +10258,7 @@
       text: text,
       offsets: state.offsets,
       depths: state.depths,
+      ends: state.ends,
       sorted: state.sortedPairs,
       prefixLen: prefix.length
     };
@@ -10289,6 +10303,7 @@
     const nSorted = sorted.length;
     /* In-place Mutation der Offset-Map wenn möglich – Clone nur bei Delta≠0 */
     let offsets = _offsetMapCache.offsets;
+    let ends = _offsetMapCache.ends || null;
     let sortedWork = sorted;
     let cloned = false;
     function ensureClone(){
@@ -10297,6 +10312,13 @@
       offsets = Object.create(null);
       for(const k in srcOff){
         if(Object.prototype.hasOwnProperty.call(srcOff, k)) offsets[k] = srcOff[k];
+      }
+      if(ends){
+        const srcEnds = ends;
+        ends = Object.create(null);
+        for(const k in srcEnds){
+          if(Object.prototype.hasOwnProperty.call(srcEnds, k)) ends[k] = srcEnds[k];
+        }
       }
       sortedWork = new Array(nSorted);
       for(let i = 0; i < nSorted; i++){
@@ -10324,15 +10346,27 @@
         node = f.node;
       }
       if(node.kind === 'element' && node.children && node.children.length) return null;
+      /* End-Offset der Node-Region: ends[id] ist exklusiv und enthält
+         NICHT Parent-Closing-Tags. Fallback „nächster Start / totalEnd“
+         fraß bei nested Leaves die Closing-Tags der Vorfahren (Bug:
+         fehlendes </parent> nach Tag-Rename des letzten Kindes).
+         Ohne ends bei depth>1 → Full-Rebuild (sicherer als Parent-Close
+         zu fressen). */
       let end = totalEnd;
-      const pos = _bsOffsetGE(sortedWork, start);
-      if(pos < nSorted && sortedWork[pos][1] === id){
-        if(pos + 1 < nSorted) end = Math.min(end, sortedWork[pos + 1][0]);
+      if(ends && ends[id] != null && ends[id] >= start){
+        end = ends[id];
+      } else if(depth > 1){
+        return null; /* nested Leaf ohne ends → Full-Invalidate */
       } else {
-        for(let i = 0; i < nSorted; i++){
-          if(sortedWork[i][1] === id){
-            if(i + 1 < nSorted) end = Math.min(end, sortedWork[i + 1][0]);
-            break;
+        const pos = _bsOffsetGE(sortedWork, start);
+        if(pos < nSorted && sortedWork[pos][1] === id){
+          if(pos + 1 < nSorted) end = Math.min(end, sortedWork[pos + 1][0]);
+        } else {
+          for(let i = 0; i < nSorted; i++){
+            if(sortedWork[i][1] === id){
+              if(i + 1 < nSorted) end = Math.min(end, sortedWork[i + 1][0]);
+              break;
+            }
           }
         }
       }
@@ -10348,6 +10382,16 @@
           sortedWork[j][0] += delta;
           offsets[sortedWork[j][1]] += delta;
         }
+        if(ends){
+          for(const k in ends){
+            if(!Object.prototype.hasOwnProperty.call(ends, k) || k === id) continue;
+            if(ends[k] > start) ends[k] += delta;
+          }
+        }
+      }
+      if(ends){
+        ensureClone();
+        ends[id] = start + replacement.length;
       }
     }
 
@@ -10356,6 +10400,7 @@
       text: text,
       offsets: offsets,
       depths: depths,
+      ends: ends,
       sorted: sortedWork,
       prefixLen: _offsetMapCache.prefixLen
     };
@@ -10409,7 +10454,7 @@
       /* Region neu serialisieren – state.len startet bei pStart →
          absolute Offsets ohne Nachjustierung (gleicher Pfad wie
          rebuildFullSerializeCaches → byte-identische Ausgabe). */
-      const state = { parts: [], len: pStart, pads: {}, offsets: {}, depths: {}, sortedPairs: [] };
+      const state = { parts: [], len: pStart, pads: {}, offsets: {}, depths: {}, ends: {}, sortedPairs: [] };
       serializeNodeInto(pf.node, pDepth, state);
       const replacement = state.parts.join('');
       const delta = replacement.length - (blockEnd - pStart);
@@ -10422,13 +10467,24 @@
       for(const k in offsets){ if(Object.prototype.hasOwnProperty.call(offsets, k)) newOffsets[k] = offsets[k]; }
       const newDepths = Object.create(null);
       for(const k in depths){ if(Object.prototype.hasOwnProperty.call(depths, k)) newDepths[k] = depths[k]; }
+      const oldEnds = om.ends || null;
+      const newEnds = Object.create(null);
+      if(oldEnds){
+        for(const k in oldEnds){ if(Object.prototype.hasOwnProperty.call(oldEnds, k)) newEnds[k] = oldEnds[k]; }
+      }
       for(let j = pos; j < segEnd; j++){
         delete newOffsets[sorted[j][1]];
         delete newDepths[sorted[j][1]];
+        delete newEnds[sorted[j][1]];
       }
       for(const k in state.offsets){
         newOffsets[k] = state.offsets[k];
         newDepths[k] = state.depths[k];
+      }
+      if(state.ends){
+        for(const k in state.ends){
+          if(Object.prototype.hasOwnProperty.call(state.ends, k)) newEnds[k] = state.ends[k];
+        }
       }
       /* sorted neu: Kopf unverändert + neue Segment-Einträge (Doc-Order,
          absolute Offsets) + Rest um delta verschoben */
@@ -10438,12 +10494,26 @@
       for(let j = segEnd; j < sorted.length; j++){
         newSorted.push([sorted[j][0] + delta, sorted[j][1]]);
         newOffsets[sorted[j][1]] = sorted[j][0] + delta;
+        if(newEnds[sorted[j][1]] != null) newEnds[sorted[j][1]] += delta;
+      }
+      /* Ends von Vorfahren außerhalb des Segments, die nach pStart enden,
+         um delta verschieben (Region lag in ihrem Span). */
+      if(oldEnds){
+        for(const k in oldEnds){
+          if(!Object.prototype.hasOwnProperty.call(oldEnds, k)) continue;
+          if(newEnds[k] == null) continue; /* bereits gelöscht (im Segment) */
+          if(state.ends && Object.prototype.hasOwnProperty.call(state.ends, k)) continue; /* frisch gesetzt */
+          if(oldEnds[k] > pStart && offsets[k] != null && offsets[k] < pStart){
+            newEnds[k] = oldEnds[k] + delta;
+          }
+        }
       }
       _sourceCacheText = text;
       _offsetMapCache = {
         text: text,
         offsets: newOffsets,
         depths: newDepths,
+        ends: newEnds,
         sorted: newSorted,
         prefixLen: om.prefixLen
       };
@@ -10522,6 +10592,7 @@
           text: ser.text,
           offsets: ser.offsets || {},
           depths: ser.depths || {},
+          ends: ser.ends || {},
           sorted: ser.sorted || [],
           prefixLen: ser.prefixLen != null ? ser.prefixLen : 9
         };
@@ -12262,6 +12333,7 @@
       var len = prefix.length;
       var offsets = {};
       var depths = {};
+      var ends = {};
       var sorted = [];
       var pads = {};
       function padAt(d){
@@ -12283,6 +12355,7 @@
             sorted.push([len, node.id]);
             var cl = pad + '<!-- ' + cs + ' -->\\n';
             parts.push(cl); len += cl.length;
+            ends[node.id] = len;
             continue;
           }
           var tag = (node.tag && String(node.tag).trim()) || 'element';
@@ -12327,6 +12400,7 @@
               parts.push(one); len += one.length;
             }
           }
+          ends[node.id] = len;
         }
       }
       walk(nodes || [], depth || 1);
@@ -12336,6 +12410,7 @@
         text: parts.join(''),
         offsets: offsets,
         depths: depths,
+        ends: ends,
         sorted: sorted,
         prefixLen: prefix.length
       };
@@ -12418,6 +12493,7 @@
       var len = prefix.length;
       var offsets = withOffsets ? {} : null;
       var depths = withOffsets ? {} : null;
+      var ends = withOffsets ? {} : null;
       var sorted = withOffsets ? [] : null;
       var pads = {};
       function padAt(d){
@@ -12436,6 +12512,7 @@
         var chunk = pad + '</' + tag + '>\\n';
         parts.push(chunk);
         len += chunk.length;
+        if(ends) ends[ids[i]] = len;
       }
       for(var i = 0; i < n; i++){
         var d = fdepths[i] + 1;
@@ -12452,6 +12529,7 @@
           var line = pad + '<!-- ' + cs + ' -->\\n';
           parts.push(line);
           len += line.length;
+          if(ends) ends[id] = len;
           continue;
         }
         var tag = sanitizeTagM((tags[i] || '').trim()) || 'element';
@@ -12488,9 +12566,11 @@
           }
           var c2 = pad + '</' + tag + '>\\n';
           parts.push(c2); len += c2.length;
+          if(ends) ends[id] = len;
         } else {
           var one = pad + '<' + tag + '>' + escM(text) + '</' + tag + '>\\n';
           parts.push(one); len += one.length;
+          if(ends) ends[id] = len;
         }
       }
       while(open.length) closeTop();
@@ -12498,7 +12578,7 @@
       len += '</prompt>'.length;
       var textOut = parts.join('');
       if(withOffsets){
-        return { text: textOut, offsets: offsets, depths: depths, sorted: sorted, prefixLen: prefix.length };
+        return { text: textOut, offsets: offsets, depths: depths, ends: ends, sorted: sorted, prefixLen: prefix.length };
       }
       return textOut;
     }

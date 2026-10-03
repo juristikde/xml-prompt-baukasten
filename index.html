@@ -18597,6 +18597,18 @@
   function _cdataEligible(s){ return !!s && CDATA_TRIGGER_RE.test(s) && !_textBlocksCdata(s); }
   let _cdataFlashPhase = 0; /* wechselt a/b: Animation ohne erzwungenes Layout neu starten */
   let _cdataPillTimer = 0;
+  /* §CDATA-FLASH-CLEANUP: Flash-Klassen nach Animationsende entfernen.
+     Ohne Cleanup blieben cdata-flash-a/b am (gecachten, §OPT-11) Button
+     haften – CSS-Animationen starten bei jedem DOM-Re-Attach (Node-Wechsel
+     in der Strukturliste) erneut, obwohl kein Zustandswechsel stattfand. */
+  function _stripCdataFlash(el){
+    if(!el || !el.classList) return;
+    if(el._cdataFlashCleanup){
+      el.removeEventListener('animationend', el._cdataFlashCleanup);
+      el._cdataFlashCleanup = null;
+    }
+    el.classList.remove('cdata-flash-a', 'cdata-flash-b');
+  }
   function _cdataAutoFlash(textarea, kind){
     try {
       _cdataFlashPhase ^= 1;
@@ -18635,8 +18647,14 @@
       if(kind === 'on' && !reduce){
         const btns = document.querySelectorAll('.btn-cdata-toggle, .opt-cdata-toggle');
         for(let i = 0; i < btns.length; i++){
-          btns[i].classList.remove('cdata-flash-a', 'cdata-flash-b');
-          btns[i].classList.add('cdata-flash-' + v);
+          const b = btns[i];
+          _stripCdataFlash(b);
+          /* einmaliger animationend-Listener: Klasse weg, sobald die
+             Animation fertig ist (plus Safety-Timeout) */
+          b._cdataFlashCleanup = function(){ _stripCdataFlash(b); };
+          b.addEventListener('animationend', b._cdataFlashCleanup, { once: true });
+          setTimeout(() => { _stripCdataFlash(b); }, 1200);
+          b.classList.add('cdata-flash-' + v);
         }
       }
     } catch(_){ _reportError('catch', _); }
@@ -18810,6 +18828,18 @@
         pbs[i].disabled = !nodeClipboard;
         registerPasteNodeBtn(pbs[i]);
       }
+      /* §CDATA-FLASH-CLEANUP: Stale Flash-Klassen vom gecachten Tools-Block
+         entfernen, BEVOR er re-attachet wird – sonst startet eine kurz
+         vorher getriggerte Auto-CDATA-Animation beim Re-Attach erneut
+         (CSS-Animationen laufen nach DOM-Detach/Re-Attach nochmal). */
+      try {
+        const fl = _detailToolsCache.el.querySelectorAll('.btn-cdata-toggle, .opt-cdata-toggle');
+        for(let i = 0; i < fl.length; i++) _stripCdataFlash(fl[i]);
+        if(_detailToolsCache.menu){
+          const fm = _detailToolsCache.menu.querySelectorAll('.btn-cdata-toggle, .opt-cdata-toggle');
+          for(let i = 0; i < fm.length; i++) _stripCdataFlash(fm[i]);
+        }
+      } catch(_){ _reportError('catch', _); }
       /* §CDATA-PER-NODE: nach Tools-Cache-Hit Flag vom aktuellen Node lesen
          (tools noch nicht im detailScroll – Scope = Cache-Element) */
       try { _syncDetailCdataButtons(node, _detailToolsCache.el); } catch(_){ _reportError('catch', _); }

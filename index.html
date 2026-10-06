@@ -18556,6 +18556,10 @@
     if(typeof _detailToolsOptionsMenu !== 'undefined' && _detailToolsOptionsMenu){
       scopes.push(_detailToolsOptionsMenu);
     }
+    /* §CDATA-FLASH-CLEANUP: Buttons sammeln, die NICHT mehr flashen dürfen,
+       werden am Ende bereinigt (siehe unten). Läuft bei jedem renderDetail-
+       Pfad (inkl. inkrementellem Update) → spätestens nach einem Render ist
+       eine stale Flash-Klasse garantiert weg. */
     for(let s = 0; s < scopes.length; s++){
       const scope = scopes[s];
       if(!scope || !scope.querySelectorAll) continue;
@@ -18566,9 +18570,16 @@
         seen.add(el);
         if(!show){
           el.style.display = 'none';
+          if(!_cdataFlashActive()) _stripCdataFlash(el);
           continue;
         }
         el.style.display = '';
+        /* §CDATA-FLASH-CLEANUP: Stale Flash-Klassen strippen – dieser Sync
+           läuft bei jedem Node-Wechsel/Render (auch Cache-Hit und inkremen-
+           tell). Die Animation soll NUR beim echten Auto-CDATA-Übergang
+           laufen (gesetzt in _cdataAutoFlash), nie beim Re-Attach. Guard:
+           frisch getriggerte Flashes (gleicher oninput-Tick) bleiben stehen. */
+        if(!_cdataFlashActive()) _stripCdataFlash(el);
         el.textContent = on ? t('CDATA an', 'detail.cdataOn') : t('CDATA aus', 'detail.cdataOff');
         el.setAttribute('aria-pressed', on ? 'true' : 'false');
         el.disabled = !!blocked;
@@ -18598,16 +18609,27 @@
   let _cdataFlashPhase = 0; /* wechselt a/b: Animation ohne erzwungenes Layout neu starten */
   let _cdataPillTimer = 0;
   /* §CDATA-FLASH-CLEANUP: Flash-Klassen nach Animationsende entfernen.
-     Ohne Cleanup blieben cdata-flash-a/b am (gecachten, §OPT-11) Button
+     Ohne Cleanup bleiben cdata-flash-a/b am (gecachten, §OPT-11) Button
      haften – CSS-Animationen starten bei jedem DOM-Re-Attach (Node-Wechsel
-     in der Strukturliste) erneut, obwohl kein Zustandswechsel stattfand. */
+     in der Strukturliste) erneut, obwohl kein Zustandswechsel stattfand.
+     animationend ODER animationcancel (Detach mitten in der Animation) plus
+     Safety-Timeout decken alle Browser-/Throttling-Pfade ab. */
   function _stripCdataFlash(el){
     if(!el || !el.classList) return;
     if(el._cdataFlashCleanup){
       el.removeEventListener('animationend', el._cdataFlashCleanup);
+      el.removeEventListener('animationcancel', el._cdataFlashCleanup);
       el._cdataFlashCleanup = null;
     }
     el.classList.remove('cdata-flash-a', 'cdata-flash-b');
+  }
+  /* §CDATA-FLASH-GUARD: Zeitfenster, in dem ein legitimer Flash läuft.
+     _syncDetailCdataButtons läuft im selben oninput-Handler direkt nach
+     _cdataAutoFlash – ohne Guard würde es die frisch gesetzte Animation
+     sofort wieder strippen. Innerhalb des Fensters wird NICHT gestrippt. */
+  let _cdataFlashGuardUntil = 0;
+  function _cdataFlashActive(){
+    return Date.now() < _cdataFlashGuardUntil;
   }
   function _cdataAutoFlash(textarea, kind){
     try {
@@ -18649,13 +18671,17 @@
         for(let i = 0; i < btns.length; i++){
           const b = btns[i];
           _stripCdataFlash(b);
-          /* einmaliger animationend-Listener: Klasse weg, sobald die
-             Animation fertig ist (plus Safety-Timeout) */
+          /* einmaliger Listener (end oder cancel): Klasse weg, sobald die
+             Animation fertig/abgebrochen ist; Safety-Timeout fängt den Fall,
+             dass das Event durch Detach/Throttling verloren geht */
           b._cdataFlashCleanup = function(){ _stripCdataFlash(b); };
           b.addEventListener('animationend', b._cdataFlashCleanup, { once: true });
-          setTimeout(() => { _stripCdataFlash(b); }, 1200);
+          b.addEventListener('animationcancel', b._cdataFlashCleanup, { once: true });
+          if(b._cdataFlashTimer) clearTimeout(b._cdataFlashTimer);
+          b._cdataFlashTimer = setTimeout(() => { _stripCdataFlash(b); }, 1200);
           b.classList.add('cdata-flash-' + v);
         }
+        _cdataFlashGuardUntil = Date.now() + 1200;
       }
     } catch(_){ _reportError('catch', _); }
   }
@@ -18828,18 +18854,6 @@
         pbs[i].disabled = !nodeClipboard;
         registerPasteNodeBtn(pbs[i]);
       }
-      /* §CDATA-FLASH-CLEANUP: Stale Flash-Klassen vom gecachten Tools-Block
-         entfernen, BEVOR er re-attachet wird – sonst startet eine kurz
-         vorher getriggerte Auto-CDATA-Animation beim Re-Attach erneut
-         (CSS-Animationen laufen nach DOM-Detach/Re-Attach nochmal). */
-      try {
-        const fl = _detailToolsCache.el.querySelectorAll('.btn-cdata-toggle, .opt-cdata-toggle');
-        for(let i = 0; i < fl.length; i++) _stripCdataFlash(fl[i]);
-        if(_detailToolsCache.menu){
-          const fm = _detailToolsCache.menu.querySelectorAll('.btn-cdata-toggle, .opt-cdata-toggle');
-          for(let i = 0; i < fm.length; i++) _stripCdataFlash(fm[i]);
-        }
-      } catch(_){ _reportError('catch', _); }
       /* §CDATA-PER-NODE: nach Tools-Cache-Hit Flag vom aktuellen Node lesen
          (tools noch nicht im detailScroll – Scope = Cache-Element) */
       try { _syncDetailCdataButtons(node, _detailToolsCache.el); } catch(_){ _reportError('catch', _); }
@@ -21253,7 +21267,45 @@
         });
     });
   }
-  function flashButton(id, label){ const b = document.getElementById(id); if(!b) return; const o = b.textContent; b.textContent = label; setTimeout(() => b.textContent = o, 1300); }
+  /* §FLASH-BUTTON-HARDENING: (1) Original-Label pro Button nur EINMAL pro
+     Flash-Zyklus merken (data-Attribut) – der alte Code capturte bei einem
+     zweiten Klick während „✓ Kopiert“ lief genau diesen Flash-Text als
+     „Original“ und restored ihn dauerhaft (Button hängt fest). (2) Pending
+     Timer pro Button clearen – kein Timer-Stau bei Dauerklick. (3) Firefox/
+     Chrome drosseln setTimeout in Hintergrund-Tabs massiv – visibilitychange
+     setzt überfällige Flashes bei Rückkehr sofort zurück. */
+  const _flashBtnState = new Map(); /* id → { timer, restoreAt } */
+  function flashButton(id, label){
+    const b = document.getElementById(id);
+    if(!b) return;
+    /* Original immer frisch merken, wenn gerade kein Flash läuft – hält
+       Label-Updates (Sprachwechsel etc.) mit */
+    if(!_flashBtnState.has(id)){
+      if(b.dataset && b.dataset.flashLabel != null) delete b.dataset.flashLabel;
+      b.dataset.flashLabel = b.textContent;
+    }
+    const prev = _flashBtnState.get(id);
+    if(prev) clearTimeout(prev.timer);
+    b.textContent = label;
+    const timer = setTimeout(function(){
+      b.textContent = b.dataset.flashLabel || b.textContent;
+      _flashBtnState.delete(id);
+    }, 1300);
+    _flashBtnState.set(id, { timer: timer, restoreAt: Date.now() + 1300 });
+  }
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState !== 'visible') return;
+    const now = Date.now();
+    Array.from(_flashBtnState.keys()).forEach(function(id){
+      const st = _flashBtnState.get(id);
+      if(st && st.restoreAt <= now){
+        clearTimeout(st.timer);
+        const b = document.getElementById(id);
+        if(b) b.textContent = b.dataset.flashLabel || b.textContent;
+        _flashBtnState.delete(id);
+      }
+    });
+  });
   function setSourceLabels(open){
     const label = open ? t('XML ausblenden', 'toolbar.hideXml') : t('XML anzeigen', 'toolbar.showXml');
     const desk = document.getElementById('btnToggleSource');

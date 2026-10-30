@@ -5529,9 +5529,8 @@
 
   /* ===== Auto-CDATA: Hinweis-Pill, Rand-Puls, Button-Ring =====
      Bewusst leise: ein kleines Pill oben rechts im Textfeld (Desktop UND Mobile sichtbar, auch wenn der CDATA-Button
-     im Optionen-Menü steckt), ein einmaliger Puls im Innenrand und ein Ring am CDATA-Button. Neustart der Animation
-     ohne erzwungenes Layout: zwei identische Keyframe-Sätze (-a/-b), die abwechselnd gesetzt werden.
-     Reduced Motion: keine Animation; das Pill wird über .is-shown statisch eingeblendet (siehe JS). */
+     im Optionen-Menü steckt), ein einmaliger Puls im Innenrand und ein Ring am CDATA-Button. Die Bewegung selbst
+     läuft als Web Animation (JS: _cdataAutoFlash); hier stehen nur die Ruhe-Stile (Pill unsichtbar, Rand-Element). */
   .cdata-auto-pill {
     position: absolute;
     top: 0.6rem;
@@ -5577,62 +5576,15 @@
     .cdata-auto-glyph { display: none; }
     .cdata-auto-pill { right: 0.5rem; top: 0.5rem; }
   }
-  .cdata-auto-pill.run-a { animation: cdataPillA 2400ms both; }
-  .cdata-auto-pill.run-b { animation: cdataPillB 2400ms both; }
-  .cdata-auto-pill.is-shown { opacity: 1; transform: none; }
-
-  @keyframes cdataPillA {
-    0%   { opacity: 0; transform: translateY(-6px) scale(0.97); animation-timing-function: cubic-bezier(.2, .8, .2, 1); }
-    12%  { opacity: 1; transform: translateY(0) scale(1); }
-    78%  { opacity: 1; transform: translateY(0) scale(1); animation-timing-function: ease-in; }
-    100% { opacity: 0; transform: translateY(-3px) scale(0.99); }
-  }
-  @keyframes cdataPillB {
-    0%   { opacity: 0; transform: translateY(-6px) scale(0.97); animation-timing-function: cubic-bezier(.2, .8, .2, 1); }
-    12%  { opacity: 1; transform: translateY(0) scale(1); }
-    78%  { opacity: 1; transform: translateY(0) scale(1); animation-timing-function: ease-in; }
-    100% { opacity: 0; transform: translateY(-3px) scale(0.99); }
-  }
-
-  /* Innenrand-Puls (Pseudo-Element im Wrap: wird vom overflow:hidden nicht abgeschnitten) */
-  .detail-textarea-wrap.cdata-pulse-a::after,
-  .detail-textarea-wrap.cdata-pulse-b::after,
-  .focus-editor-textarea-wrap.cdata-pulse-a::after,
-  .focus-editor-textarea-wrap.cdata-pulse-b::after {
-    content: '';
+  /* Die Effekte laufen als Web Animations (JS, element.animate) – KEINE Klassen/Keyframes mehr: stehen gebliebene
+     Klassen würden bei jedem Neueinhängen/Wieder-Anzeigen neu starten (siehe _cdataAutoFlash). */
+  .cdata-auto-edge {
     position: absolute;
     inset: 0;
     z-index: 3;
     border-radius: inherit;
     pointer-events: none;
-  }
-  .detail-textarea-wrap.cdata-pulse-a::after,
-  .focus-editor-textarea-wrap.cdata-pulse-a::after { animation: cdataEdgeA 1100ms ease-out both; }
-  .detail-textarea-wrap.cdata-pulse-b::after,
-  .focus-editor-textarea-wrap.cdata-pulse-b::after { animation: cdataEdgeB 1100ms ease-out both; }
-  @keyframes cdataEdgeA {
-    0%   { box-shadow: inset 0 0 0 2px rgba(51, 65, 92, 0),    inset 0 0 28px 0 rgba(51, 65, 92, 0); }
-    18%  { box-shadow: inset 0 0 0 2px rgba(51, 65, 92, 0.38), inset 0 0 28px 0 rgba(51, 65, 92, 0.07); }
-    100% { box-shadow: inset 0 0 0 2px rgba(51, 65, 92, 0),    inset 0 0 28px 0 rgba(51, 65, 92, 0); }
-  }
-  @keyframes cdataEdgeB {
-    0%   { box-shadow: inset 0 0 0 2px rgba(51, 65, 92, 0),    inset 0 0 28px 0 rgba(51, 65, 92, 0); }
-    18%  { box-shadow: inset 0 0 0 2px rgba(51, 65, 92, 0.38), inset 0 0 28px 0 rgba(51, 65, 92, 0.07); }
-    100% { box-shadow: inset 0 0 0 2px rgba(51, 65, 92, 0),    inset 0 0 28px 0 rgba(51, 65, 92, 0); }
-  }
-
-  /* Ring am CDATA-Button (Desktop-Button und Eintrag im Optionen-Menü) */
-  .cdata-flash-a { animation: cdataBtnA 1000ms cubic-bezier(.2, .8, .2, 1) both; }
-  .cdata-flash-b { animation: cdataBtnB 1000ms cubic-bezier(.2, .8, .2, 1) both; }
-  @keyframes cdataBtnA {
-    0%   { box-shadow: 0 0 0 0 rgba(51, 65, 92, 0);    transform: scale(1); }
-    25%  { box-shadow: 0 0 0 5px rgba(51, 65, 92, 0.22); transform: scale(1.04); }
-    100% { box-shadow: 0 0 0 0 rgba(51, 65, 92, 0);    transform: scale(1); }
-  }
-  @keyframes cdataBtnB {
-    0%   { box-shadow: 0 0 0 0 rgba(51, 65, 92, 0);    transform: scale(1); }
-    25%  { box-shadow: 0 0 0 5px rgba(51, 65, 92, 0.22); transform: scale(1.04); }
-    100% { box-shadow: 0 0 0 0 rgba(51, 65, 92, 0);    transform: scale(1); }
+    box-shadow: inset 0 0 0 2px rgba(51, 65, 92, 0), inset 0 0 28px 0 rgba(51, 65, 92, 0);
   }
 </style>
 
@@ -5919,7 +5871,7 @@
             </div>
           </div>
         </section>
-        <section class="panel" id="sourcePanel" style="display:none;" aria-label="XML-Code">
+        <section class="panel" id="sourcePanel" style="display:none;" aria-label="XML-Code" data-i18n-aria="source.title">
           <div class="panel-head">
             <h2 id="sourcePanelTitle" data-i18n="source.title">XML-Code</h2>
             <div class="panel-head-tools" id="sourceHeadTools">
@@ -6318,6 +6270,7 @@
    * - PERF_THRESHOLDS: eine Stelle für alle Größen-Schwellen
    * ========================================================================= */
   const PERF_THRESHOLDS = {
+    DRAFT_GZIP_MIN_CHARS: 65536, /* ab dieser Payload-Länge wird der sessionStorage-Entwurf asynchron gzip-komprimiert geschrieben */
     FAST_PARSE_MIN_CHARS: 65536, /* ab dieser Eingabelänge nutzt parseXMLString den Tokenizer-Pfad (sonst DOMParser) */
     FILTER_WORKER_MIN: 2500,
     VALIDATE_WORKER_MIN: 2500,
@@ -6905,6 +6858,11 @@
     if(typeof renderCustomButtons === 'function') renderCustomButtons();
     if(typeof renderWarningsMenus === 'function') renderWarningsMenus();
     if(typeof render === 'function') render();
+    /* FIX: Die Tab-Leiste hat eigene t()-Texte (Schließen-Label als aria-label/title) und wird von render() nicht neu
+       gebaut – sie blieb nach einem Sprachwechsel (und beim async nachgeladenen Start-Wörterbuch) in der alten Sprache.
+       Die Signatur in renderTabs enthält das übersetzte Label → Neuaufbau nur, wenn sich wirklich etwas geändert hat. */
+    if(typeof renderTabs === 'function') renderTabs();
+    if(typeof refreshSearchClearLabels === 'function') refreshSearchClearLabels();
     if(typeof updateResultCharCount === 'function') updateResultCharCount();
     if(typeof renderProtocolList === 'function' && isProtocolOpen && isProtocolOpen()) renderProtocolList();
     updateLanguageButton();
@@ -7290,7 +7248,10 @@
           if(elapsed >= budget * 2){ yielded = true; break; }
         }
         const fn = q.shift();
+        /* Profiling je Aufgabe (nur bei aktivem __PROFILE; sonst ein Flag-Check): zeigt im _pfReport 'task:<name>' */
+        const _tp = window.__PROFILE ? performance.now() : 0;
         try { fn(); } catch(_){ /* Task-Fehler nicht Scheduler kappen */ }
+        if(_tp){ try { performance.measure('task:P' + pri + ':' + (fn.name || 'anon'), { start: _tp, end: performance.now() }); } catch(_){} }
         dispatched++;
         _fsStats.dispatched++;
       }
@@ -9652,6 +9613,24 @@
     if(typeof schedulePersistSchema === 'function') schedulePersistSchema();
   }
 
+  /* Draft-XML eines Tabs. Für den AKTIVEN Tab liefert serializeFull() denselben Text (Preamble + <prompt> + Body
+     + </prompt>) aus dem inkrementell gepflegten Quelltext-Cache: sauber → sofort, ≤ 40 geänderte Blätter → O(k) Patch,
+     sonst Neuaufbau (= Kosten wie bisher). Vorher wurde bei JEDEM Autosave der ganze Tab neu serialisiert
+     (gemessen: 117 von 135 ms je Speicherung bei 100 000 Nodes). Leeres Dokument bleibt auf dem alten Weg
+     (serializeTabXml schreibt dort '<prompt></prompt>' ohne Zeilenumbruch). Gleichheit: tools/draft-equiv.py. */
+  function _draftXmlFor(tab){
+    /* NUR bei warmem Cache: ist _sourceCacheText kalt (z. B. Quelltext-Ansicht versteckt → Cache wird nicht mitgepflegt),
+       würde serializeFull() komplett neu bauen UND Offset-/Tiefen-/End-Karten für alle Knoten erzeugen – das ist teurer
+       als die schlichte Flat-Serialisierung. Dann bleibt es beim bisherigen Weg. */
+    if(tab && tab.id === activeTabId && tab.tree && tab.tree.length && tab.tree === S.tree &&
+       _sourceCacheText != null && (!_sourceDirtyNodeIds || _sourceDirtyNodeIds.size <= 40)){
+      try {
+        const t = serializeFull();
+        if(typeof t === 'string' && t.length) return t;
+      } catch(_){ _reportError('draft.xmlFromCache', _, {}, 'warn'); }
+    }
+    return serializeTabXml(tab);
+  }
   function serializeTabXml(tab){
     /* §88 §TABXML-FROM-FLAT: Body aus dem per-Tab Flat-Snap (§82–§84)
        statt Tree-Walk – byte-identisch zu serializeTree (§85/§87).
@@ -9666,15 +9645,22 @@
 
   /* Phase 3: Fold-State als Tag-Pfad-Signaturen (überlebt Re-Parse mit neuen IDs) */
   function captureFoldSignatures(nodes, path, out){
-    path = path || [];
+    /* Perf: nur CONTAINER tragen zum Ergebnis bei – für Blätter (bei großen Dokumenten fast alle Knoten) wird
+       nichts mehr angelegt (vorher je Knoten ein Pfad-Array via concat + bei Treffern join). Pfad als String
+       ('tag#i/tag#j'), Ergebnis identisch (Test: tools/draft-equiv.py). path ist hier ein String ('' = Wurzel). */
+    path = path || '';
     out = out || [];
-    (nodes || []).forEach((n, i) => {
-      if(n.kind === 'comment') return;
+    if(!nodes) return out;
+    for(let i = 0; i < nodes.length; i++){
+      const n = nodes[i];
+      if(n.kind === 'comment') continue;
+      const ch = n.children;
+      if(!ch || !ch.length) continue;
       const seg = ((n.tag || 'element').toLowerCase()) + '#' + i;
-      const p = path.concat([seg]);
-      if(n.collapsed && n.children && n.children.length) out.push(p.join('/'));
-      if(n.children && n.children.length) captureFoldSignatures(n.children, p, out);
-    });
+      const p = path ? path + '/' + seg : seg;
+      if(n.collapsed) out.push(p);
+      captureFoldSignatures(ch, p, out);
+    }
     return out;
   }
   function applyFoldSignatures(nodes, sigSet, path){
@@ -9703,9 +9689,12 @@
   }
 
   function buildDraftPayload(){
+    const _pf = window.__PROFILE; let _a = _pf ? performance.now() : 0, _b = 0, _c = 0;
     syncActiveTabToMemory({ captureScroll: false });
+    if(_pf){ _b = performance.now(); try { performance.measure('draft.build.syncActive', { start: _a, end: _b }); } catch(_){} }
     const activeTab = getActiveTab();
     if(activeTab) saveFoldsToTab(activeTab);
+    if(_pf){ _c = performance.now(); try { performance.measure('draft.build.folds', { start: _b, end: _c }); } catch(_){} }
     let activeIdx = 0;
     for(let i = 0; i < tabs.length; i++){
       if(tabs[i].id === activeTabId){ activeIdx = i; break; }
@@ -9714,8 +9703,10 @@
     for(let i = 0; i < tabs.length; i++){
       const tab = tabs[i];
       if(tab.draftDirty || tab.draftXml == null){
-        tab.draftXml = serializeTabXml(tab);
+        const _s0 = _pf ? performance.now() : 0;
+        tab.draftXml = _draftXmlFor(tab);
         tab.draftDirty = false;
+        if(_pf){ try { performance.measure('draft.build.serializeTab', { start: _s0, end: performance.now() }); } catch(_){} }
       }
       if(!tab.foldIds) saveFoldsToTab(tab);
       tabPayloads[i] = { title: tab.title || '', xml: tab.draftXml, folds: tab.foldIds || [] };
@@ -9728,6 +9719,12 @@
     };
   }
 
+  /* Rückstau: Entprellung = max(Basis, FAKTOR × letzte Speicherdauer), gedeckelt. Gemessen: 100 000 Nodes ≈ 170 ms je
+     Speichern → ~2 s; 30 000 Nodes ≈ 55 ms → ~0,7 s; kleine Dokumente (< 600/12 = 50 ms) unverändert 600 ms. */
+  var _lastDraftSaveMs = 0;
+  function _draftBackoffMs(base){
+    return Math.min(8000, Math.max(base, Math.round(12 * (_lastDraftSaveMs || 0))));
+  }
   function scheduleDraftSave(){
     /* §IDLE-DRAFT + §B3: unter Huge/Memory-Tier länger debouncen, damit
        große Serialize/Stringify-Zyklen seltener den Main-Thread treffen */
@@ -9740,10 +9737,13 @@
         delay = 1200; idleTimeout = 4000;
       }
     } catch(_){ _reportError('catch', _); }
+    const _bd = _draftBackoffMs(delay);
+    if(_bd > delay){ delay = _bd; idleTimeout = Math.max(idleTimeout, _bd * 3); }
     debounce('draftSave', delay, () => {
-      _fsEnqueue(_FS_PRIORITIES.P4, () => { try { saveDraftNow(); } catch(_){ _reportError('catch', _); } });
+      _fsEnqueue(_FS_PRIORITIES.P4, function draftSaveTask(){ try { saveDraftNow(); } catch(_){ _reportError('catch', _); } });
     }, { mode: 'idle', idleTimeout: idleTimeout });
   }
+
 
   /* ===== §OPT-14 §IDB-DRAFT: Asynchrone Draft-Persistenz ===== */
   /* Persistenter Zweig (Opt-in persistDrafts) schreibt asynchron via
@@ -9850,13 +9850,67 @@
     });
   }
 
+  /* ===== Komprimierter Session-Entwurf =====
+     Gemessen (30 000 Nodes, Tippen mit Pausen): 65 % der aktiven CPU-Zeit lagen im synchronen
+     sessionStorage.setItem des Autosaves (Long Tasks bis ~600 ms genau dann, wenn der Nutzer wieder zu tippen
+     beginnt). sessionStorage ist in Chromium ~3,5× langsamer als localStorage und blockiert proportional zur Größe.
+     Jetzt: ab DRAFT_GZIP_MIN_CHARS wird der Payload ASYNCHRON gzip-komprimiert (CompressionStream, ohne Long Task)
+     und als 'gz1:'+base64 geschrieben → der synchrone Anteil schrumpft auf wenige ms, das ~5-MB-Quota reicht
+     für ein Vielfaches. Regeln: (1) Sequenz: ein später fertiger, älterer Auftrag überschreibt nie einen neueren Stand;
+     (2) Notfall-Pfad (pagehide/hidden) bleibt synchron + unkomprimiert; (3) Rückfall auf den alten Weg bei fehlender
+     API, Fehler oder defektem Wert. */
+  let _draftSaveSeq = 0;
+  function _gzSupported(){
+    return typeof CompressionStream === 'function' && typeof DecompressionStream === 'function' && typeof Blob === 'function' && typeof Response === 'function';
+  }
+  async function _gzipB64(str){
+    const buf = await new Response(new Blob([str]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer();
+    const u8 = new Uint8Array(buf);
+    let bin = '';
+    for(let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+    return btoa(bin);
+  }
+  async function _gunzipB64(b64){
+    const bin = atob(b64);
+    const u8 = new Uint8Array(bin.length);
+    for(let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+    return await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
+  }
+  function _writeSessionDraft(payload, emergency, seq){
+    const min = (typeof PERF_THRESHOLDS !== 'undefined' && PERF_THRESHOLDS.DRAFT_GZIP_MIN_CHARS != null) ? PERF_THRESHOLDS.DRAFT_GZIP_MIN_CHARS : 65536;
+    const plain = () => { try { sessionStorage.setItem(DRAFT_SESSION_KEY, payload); } catch(_){ _reportError('catch', _); } };
+    if(emergency || payload.length < min || !_gzSupported()){ plain(); return; }
+    _gzipB64(payload).then(b64 => {
+      if(seq !== _draftSaveSeq) return; /* neuerer Stand (oder Notfall-Write) ist schon unterwegs/geschrieben */
+      try { sessionStorage.setItem(DRAFT_SESSION_KEY, 'gz1:' + b64); } catch(_){ _reportError('catch', _); }
+    }).catch(err => {
+      _reportError('draft.gzip', err, { len: payload.length }, 'warn');
+      if(seq === _draftSaveSeq) plain();
+    });
+  }
+
   function saveDraftNow(opts){
     if(!tabs || !tabs.length) return;
-    const payload = JSON.stringify(buildDraftPayload());
-    /* sessionStorage: pro Tab-Session in-memory → synchron unkritisch */
-    try { sessionStorage.setItem(DRAFT_SESSION_KEY, payload); } catch(_){ _reportError('catch', _); }
+    const _pf = window.__PROFILE, _p0 = performance.now();
+    const _obj = buildDraftPayload();
+    const _p1 = _pf ? performance.now() : 0;
+    const payload = JSON.stringify(_obj);
+    const _p2 = _pf ? performance.now() : 0;
+    const emergency = !!(opts && opts.emergency);
+    const seq = ++_draftSaveSeq;
+    _writeSessionDraft(payload, emergency, seq);
+    const _p3 = performance.now();
+    /* Rückstau nach Kosten: dauert ein (synchroner Teil des) Speichern(s) lange, wartet scheduleDraftSave beim nächsten
+       Mal entsprechend länger (siehe _draftBackoffMs) – kleine Dokumente bleiben bei der Basis-Entprellung. */
+    if(!emergency) _lastDraftSaveMs = _p3 - _p0;
+    if(_pf){
+      try {
+        performance.measure('draft.build', { start: _p0, end: _p1 });
+        performance.measure('draft.stringify', { start: _p1, end: _p2 });
+        performance.measure('draft.writeSync', { start: _p2, end: _p3 });
+      } catch(_){}
+    }
     if(persistDrafts){
-      const emergency = !!(opts && opts.emergency);
       /* §IDB-DRAFT: asynchroner IDB-Write ersetzt den blockierenden
          localStorage-Write im Autosave-Pfad. */
       if(_idbDraftOk) _saveDraftToIdb(payload);
@@ -9895,6 +9949,11 @@
        Quelle) – ohne IDB-Kontakt; der Boot läuft dann per Microtask
        nahtlos weiter (kein sichtbarer Unterschied zum Sync-Boot). */
     try { raw = sessionStorage.getItem(DRAFT_SESSION_KEY); } catch(_){ _reportError('catch', _); }
+    if(raw && raw.charCodeAt(0) === 103 && raw.startsWith('gz1:')){
+      /* komprimierter Session-Entwurf; bei Fehler/fehlender API weiter zu IDB/localStorage wie bei leerem Wert */
+      try { raw = _gzSupported() ? await _gunzipB64(raw.slice(4)) : null; }
+      catch(err){ _reportError('draft.gunzip', err, {}, 'warn'); raw = null; }
+    }
     if(raw){
       try { const d = JSON.parse(raw); if(d) return d; } catch(_){ _reportError('catch', _); }
     }
@@ -9914,6 +9973,7 @@
     } catch(_){ _reportError('catch', _); }
     return idbData;
   }
+
 
   /* ===== §OPT-15 §LAZY-TABS: Tab-Hydration beim ersten Zugriff ===== */
   /* Draft-XML → Tree (wie beim alten eager Boot). Rückgabe null = Parse-
@@ -10063,6 +10123,7 @@
     /* §OPT-15 §LAZY-TABS: Ziel-Tab ggf. erst hydrieren (einmaliger Parse),
        bevor irgendetwas aus t.tree gelesen wird. */
     hydrateTab(t);
+    markSourceDomUrgent(3000); /* Tab bewusst gewechselt → Quelltext zeitnah anzeigen */
     activeTabId = tabId;
     /* S liest ab jetzt direkt aus t – keine Kopie in Globals mehr. */
     S.sourceFocused = false;
@@ -10092,6 +10153,7 @@
     const t = createTabState(title, treeData);
     tabs.push(t);
     _tabMap.set(t.id, t);
+    markSourceDomUrgent(3000);
     activeTabId = t.id;
     /* S liest direkt aus t; sourceFocused/focusDetailField sind in createTabState
        bereits false. */
@@ -10256,7 +10318,17 @@
     }
   }
 
-  function renderTabs(){
+  /* Perf (viele Tabs): Die Tab-Elemente hängen NUR von Tab-ID, Titel, dem übersetzten Schließen-Label und dem
+     Aktiv-Status ab (Handler nutzen tab.id; isMobileLayout()/tabsOrientation werden erst beim Ereignis gelesen).
+     Bisher wurde die gesamte Leiste bei JEDEM Wechsel neu gebaut (alle Elemente + Listener, danach Breiten neu setzen
+     und messen = erzwungenes Layout): gemessen ~13 ms + 0,4 ms pro Tab und Wechsel (80 Tabs: 44 ms). Bleibt die
+     Signatur gleich, genügt es, die Aktiv-Klasse umzuschalten. Äquivalenz zum Neuaufbau: tools/tabs-test.py. */
+  function _tabsSignature(){
+    let sig = t('Tab schließen', 'tabs.close');
+    for(let i = 0; i < tabs.length; i++) sig += '\u0001' + tabs[i].id + '\u0002' + tabs[i].title;
+    return sig;
+  }
+  function _rebuildTabItems(){
     tabList.innerHTML = '';
     tabs.forEach(tab => {
       const btn = document.createElement('button');
@@ -10396,6 +10468,23 @@
       tabList.appendChild(btn);
     });
 
+  }
+
+  function renderTabs(){
+    const sig = _tabsSignature();
+    const items = tabList.querySelectorAll(':scope > .tab-item');
+    if(tabList._renderSig === sig && items.length === tabs.length){
+      for(let i = 0; i < items.length; i++){
+        const on = tabs[i].id === activeTabId;
+        if(items[i].classList.contains('active') !== on){
+          items[i].classList.toggle('active', on);
+          items[i].setAttribute('aria-selected', on ? 'true' : 'false');
+        }
+      }
+    } else {
+      _rebuildTabItems();
+      tabList._renderSig = sig;
+    }
     tabsShell.classList.remove('tabs-horizontal','tabs-vertical','tabs-hidden');
     /* Mobile: linke Tab-Leiste visuell wie oben (top); Parameter left bleibt gültig und persistent */
     const effectiveOrientation = isMobileLayout() ? 'horizontal' : tabsOrientation;
@@ -10442,6 +10531,7 @@
     panelStructureTitle.value = name;
     applyPanelTitleToTab();
   };
+
 
   /* ===== Wiki & Menü-Positionierung ===== */
   async function fetchWikiText(lang,chars){
@@ -15759,6 +15849,13 @@
      NACHDEM das Input im DOM hängt (Wrapper wird an seiner Position
      eingefügt). Programmatisches Leeren muss input._searchClear.sync()
      aufrufen, sonst bleibt der Button sichtbar. */
+  /* Löschen-Buttons der Suchfelder werden einmalig mit t() beschriftet; nach einem Sprachwechsel (und beim async
+     nachgeladenen Start-Wörterbuch) muss die Beschriftung neu gesetzt werden – siehe loadLanguage. */
+  function refreshSearchClearLabels(){
+    const lbl = t('Eingabe löschen', 'search.clearAria');
+    document.querySelectorAll('.search-clear-btn').forEach(b => { b.setAttribute('aria-label', lbl); b.title = lbl; });
+  }
+
   function enhanceSearchClear(input){
     if(!input || input._searchClear) return input;
     const wrap = document.createElement('div');
@@ -18556,10 +18653,6 @@
     if(typeof _detailToolsOptionsMenu !== 'undefined' && _detailToolsOptionsMenu){
       scopes.push(_detailToolsOptionsMenu);
     }
-    /* §CDATA-FLASH-CLEANUP: Buttons sammeln, die NICHT mehr flashen dürfen,
-       werden am Ende bereinigt (siehe unten). Läuft bei jedem renderDetail-
-       Pfad (inkl. inkrementellem Update) → spätestens nach einem Render ist
-       eine stale Flash-Klasse garantiert weg. */
     for(let s = 0; s < scopes.length; s++){
       const scope = scopes[s];
       if(!scope || !scope.querySelectorAll) continue;
@@ -18570,16 +18663,9 @@
         seen.add(el);
         if(!show){
           el.style.display = 'none';
-          if(!_cdataFlashActive()) _stripCdataFlash(el);
           continue;
         }
         el.style.display = '';
-        /* §CDATA-FLASH-CLEANUP: Stale Flash-Klassen strippen – dieser Sync
-           läuft bei jedem Node-Wechsel/Render (auch Cache-Hit und inkremen-
-           tell). Die Animation soll NUR beim echten Auto-CDATA-Übergang
-           laufen (gesetzt in _cdataAutoFlash), nie beim Re-Attach. Guard:
-           frisch getriggerte Flashes (gleicher oninput-Tick) bleiben stehen. */
-        if(!_cdataFlashActive()) _stripCdataFlash(el);
         el.textContent = on ? t('CDATA an', 'detail.cdataOn') : t('CDATA aus', 'detail.cdataOff');
         el.setAttribute('aria-pressed', on ? 'true' : 'false');
         el.disabled = !!blocked;
@@ -18606,35 +18692,30 @@
      rückwirkend verändert (nur oninput). */
   const CDATA_TRIGGER_RE = /[<>&]/;
   function _cdataEligible(s){ return !!s && CDATA_TRIGGER_RE.test(s) && !_textBlocksCdata(s); }
-  let _cdataFlashPhase = 0; /* wechselt a/b: Animation ohne erzwungenes Layout neu starten */
-  let _cdataPillTimer = 0;
-  /* §CDATA-FLASH-CLEANUP: Flash-Klassen nach Animationsende entfernen.
-     Ohne Cleanup bleiben cdata-flash-a/b am (gecachten, §OPT-11) Button
-     haften – CSS-Animationen starten bei jedem DOM-Re-Attach (Node-Wechsel
-     in der Strukturliste) erneut, obwohl kein Zustandswechsel stattfand.
-     animationend ODER animationcancel (Detach mitten in der Animation) plus
-     Safety-Timeout decken alle Browser-/Throttling-Pfade ab. */
-  function _stripCdataFlash(el){
-    if(!el || !el.classList) return;
-    if(el._cdataFlashCleanup){
-      el.removeEventListener('animationend', el._cdataFlashCleanup);
-      el.removeEventListener('animationcancel', el._cdataFlashCleanup);
-      el._cdataFlashCleanup = null;
-    }
-    el.classList.remove('cdata-flash-a', 'cdata-flash-b');
+  /* ---- Auto-CDATA-Effekte: Web Animations API statt CSS-Klassen ----
+     Vorher trugen CSS-Klassen (cdata-flash-*, run-*, cdata-pulse-*) die Animationen und wurden erst beim NÄCHSTEN
+     Effekt wieder entfernt. Stehen gebliebene Klassen starten ihre Animation bei jedem Neueinhängen (gecachter
+     Tools-Block bei jedem Auswahlwechsel) bzw. jeder Wieder-Anzeige (Fokus-Editor, Optionen-Menü) NEU – reproduziert:
+     Button-Animation bei jedem Klick auf einen anderen Eintrag, Pill + Rand-Puls bei jedem erneuten Öffnen des
+     Fokus-Editors. element.animate() liefert ein eigenes Animationsobjekt: es endet von selbst, hinterlässt weder
+     Klasse noch Timer (Firefox drosselt Timer in lange offenen/verdeckten Tabs) und startet beim Neueinhängen nie
+     neu. Reduced Motion: nur Ein-/Ausblenden (Deckkraft), keine Bewegung – ohne Zeitgeber, die hängen bleiben könnten. */
+  function _cdataFxPlay(el, keyframes, opts){
+    if(!el || typeof el.animate !== 'function') return null;
+    try {
+      const prev = el._cdataFx;
+      if(prev){ try { prev.cancel(); } catch(_){ _reportError('catch', _); } }
+      const a = el.animate(keyframes, opts);
+      el._cdataFx = a;
+      const clear = () => { if(el._cdataFx === a) el._cdataFx = null; };
+      a.onfinish = clear; a.oncancel = clear;
+      return a;
+    } catch(_){ _reportError('catch', _); return null; }
   }
-  /* §CDATA-FLASH-GUARD: Zeitfenster, in dem ein legitimer Flash läuft.
-     _syncDetailCdataButtons läuft im selben oninput-Handler direkt nach
-     _cdataAutoFlash – ohne Guard würde es die frisch gesetzte Animation
-     sofort wieder strippen. Innerhalb des Fensters wird NICHT gestrippt. */
-  let _cdataFlashGuardUntil = 0;
-  function _cdataFlashActive(){
-    return Date.now() < _cdataFlashGuardUntil;
-  }
+  const _CDATA_RING_0 = 'inset 0 0 0 2px rgba(51,65,92,0), inset 0 0 28px 0 rgba(51,65,92,0)';
+  const _CDATA_RING_1 = 'inset 0 0 0 2px rgba(51,65,92,.38), inset 0 0 28px 0 rgba(51,65,92,.07)';
   function _cdataAutoFlash(textarea, kind){
     try {
-      _cdataFlashPhase ^= 1;
-      const v = _cdataFlashPhase ? 'a' : 'b';
       const reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
       const wrap = textarea && textarea.closest ? textarea.closest('.detail-textarea-wrap, .focus-editor-textarea-wrap') : null;
       if(wrap){
@@ -18654,34 +18735,40 @@
         pill.querySelector('.cdata-auto-label').textContent = kind === 'on'
           ? t('CDATA automatisch aktiviert', 'detail.cdataAutoOn')
           : t('CDATA aus · enthält ]]>', 'detail.cdataAutoBlocked');
-        pill.classList.remove('run-a', 'run-b', 'is-shown');
-        wrap.classList.remove('cdata-pulse-a', 'cdata-pulse-b');
         if(reduce){
-          /* Reduced Motion: keine Bewegung – Pill bleibt statisch sichtbar und verschwindet per Timer */
-          pill.classList.add('is-shown');
-          clearTimeout(_cdataPillTimer);
-          _cdataPillTimer = setTimeout(() => { pill.classList.remove('is-shown'); }, 2200);
+          _cdataFxPlay(pill, [
+            { opacity: 0, transform: 'none', offset: 0 },
+            { opacity: 1, transform: 'none', offset: 0.08 },
+            { opacity: 1, transform: 'none', offset: 0.8 },
+            { opacity: 0, transform: 'none', offset: 1 }
+          ], { duration: 2400 });
         } else {
-          pill.classList.add('run-' + v);
-          if(kind === 'on') wrap.classList.add('cdata-pulse-' + v);
+          _cdataFxPlay(pill, [
+            { opacity: 0, transform: 'translateY(-6px) scale(0.97)', easing: 'cubic-bezier(.2,.8,.2,1)', offset: 0 },
+            { opacity: 1, transform: 'translateY(0) scale(1)', offset: 0.12 },
+            { opacity: 1, transform: 'translateY(0) scale(1)', easing: 'ease-in', offset: 0.78 },
+            { opacity: 0, transform: 'translateY(-3px) scale(0.99)', offset: 1 }
+          ], { duration: 2400 });
+          if(kind === 'on'){
+            let edge = wrap.querySelector(':scope > .cdata-auto-edge');
+            if(!edge){ edge = document.createElement('div'); edge.className = 'cdata-auto-edge'; edge.setAttribute('aria-hidden', 'true'); wrap.appendChild(edge); }
+            _cdataFxPlay(edge, [
+              { boxShadow: _CDATA_RING_0, offset: 0 },
+              { boxShadow: _CDATA_RING_1, offset: 0.18 },
+              { boxShadow: _CDATA_RING_0, offset: 1 }
+            ], { duration: 1100, easing: 'ease-out' });
+          }
         }
       }
       if(kind === 'on' && !reduce){
         const btns = document.querySelectorAll('.btn-cdata-toggle, .opt-cdata-toggle');
         for(let i = 0; i < btns.length; i++){
-          const b = btns[i];
-          _stripCdataFlash(b);
-          /* einmaliger Listener (end oder cancel): Klasse weg, sobald die
-             Animation fertig/abgebrochen ist; Safety-Timeout fängt den Fall,
-             dass das Event durch Detach/Throttling verloren geht */
-          b._cdataFlashCleanup = function(){ _stripCdataFlash(b); };
-          b.addEventListener('animationend', b._cdataFlashCleanup, { once: true });
-          b.addEventListener('animationcancel', b._cdataFlashCleanup, { once: true });
-          if(b._cdataFlashTimer) clearTimeout(b._cdataFlashTimer);
-          b._cdataFlashTimer = setTimeout(() => { _stripCdataFlash(b); }, 1200);
-          b.classList.add('cdata-flash-' + v);
+          _cdataFxPlay(btns[i], [
+            { boxShadow: '0 0 0 0 rgba(51,65,92,0)', transform: 'scale(1)', offset: 0 },
+            { boxShadow: '0 0 0 5px rgba(51,65,92,.22)', transform: 'scale(1.04)', offset: 0.25 },
+            { boxShadow: '0 0 0 0 rgba(51,65,92,0)', transform: 'scale(1)', offset: 1 }
+          ], { duration: 1000, easing: 'cubic-bezier(.2,.8,.2,1)' });
         }
-        _cdataFlashGuardUntil = Date.now() + 1200;
       }
     } catch(_){ _reportError('catch', _); }
   }
@@ -19504,17 +19591,86 @@
     };
     if(sync || !_sourceShouldDeferDom(next.length)){
       debounceCancel('sourceDomWrite');
+      _sourceDomPending = null;
       doWrite();
       return;
     }
-    /* Großes XML: Char-Count sofort, DOM-Write idle – UI bleibt reaktiv */
+    /* Großes XML: Char-Count sofort, DOM-Write erst nach einer RUHEPHASE, die mit den gemessenen Kosten wächst.
+       Vorher: debounce(…, 0, …, idle) → der ~1 s lange Write (natives Textfeld-Layout, bei 30 000 Nodes ≈ 2,5 MB)
+       lief schon in der ersten Lücke ZWISCHEN zwei Tastendrücken und blockierte die nächsten (gemessen: 3,2 s
+       Long Tasks, ein einzelner Tastendruck 216 ms). Ausstehender Write: wird vor jedem Lesen von sourceText.value,
+       bei Klick/Fokus/Taste im Feld und bei Panel-Aktionen sofort ausgeführt (read-your-writes, siehe
+       _installSourceValueIntercept) und von jedem neueren Write/Setzen verworfen. */
     const seq = ++_sourceDomWriteSeq;
-    debounce('sourceDomWrite', 0, () => {
+    /* Bewusste Anzeige-Aktion (Panel öffnen, Tab wechseln) → sofort (idle, ≤ 600 ms) wie bisher; nur die
+       Hintergrund-Aktualisierung während des Tippens bekommt die kostenabhängige Ruhephase. */
+    const urgent = performance.now() < _sourceDomUrgentUntil;
+    const wait = urgent ? 0 : Math.min(6000, Math.round(3 * _srcWriteCostEstimate(next.length) + 300));
+    const pend = { doWrite: doWrite, next: next, seq: seq, t0: performance.now() };
+    _sourceDomPending = pend;
+    /* Die Ruhephase hängt an der TATSÄCHLICHEN Nutzeraktivität (_lastUserInputAt), nicht am letzten Aufruf hierher:
+       updateSourceFromTree ist selbst entprellt und kommt erst ~300 ms NACH dem letzten Tastendruck – der Timer eines
+       früheren Bursts feuerte sonst mitten im nächsten (gemessen: Write ~400 ms nach dem letzten Tastendruck trotz
+       1,3 s Ruhephase). Obergrenze 20 s, damit die Ansicht bei Dauertippen nicht beliebig veraltet. */
+    const attempt = () => {
       if(seq !== _sourceDomWriteSeq) return;
-      if(_sourceDomTextRef === next) return;
-      doWrite();
-    }, { mode: 'idle', idleTimeout: 600 });
+      if(_sourceDomTextRef === next){ if(_sourceDomPending === pend) _sourceDomPending = null; return; }
+      if(!urgent && performance.now() - pend.t0 < 20000){
+        const quiet = performance.now() - _lastUserInputAt;
+        if(quiet < wait){ debounce('sourceDomWrite', Math.ceil(wait - quiet) + 20, attempt, { mode: 'idle', idleTimeout: 600 }); return; }
+      }
+      _runSourceDomWrite(pend);
+    };
+    debounce('sourceDomWrite', wait, attempt, { mode: 'idle', idleTimeout: 600 });
   }
+
+  /* ----- Ausstehender, verzögerter Quelltext-Write (große Dokumente) ----- */
+  let _sourceDomPending = null;   /* { doWrite, next, seq } */
+  let _sourceDomUrgentUntil = 0;  /* bis dahin: Write unverzögert (nach bewusster Anzeige-Aktion) */
+  let _lastUserInputAt = 0;       /* letzte Tastatur-/Eingabe-Aktivität (für die Ruhephase des verzögerten Writes) */
+  ['keydown', 'beforeinput', 'input'].forEach(ev => document.addEventListener(ev, () => { _lastUserInputAt = performance.now(); }, true));
+  function markSourceDomUrgent(ms){ _sourceDomUrgentUntil = performance.now() + (ms || 3000); }
+  let _lastSourceWriteMs = 0;     /* gemessene Kosten (Write + nächster Frame), geglättet */
+  function _srcWriteCostEstimate(len){ return _lastSourceWriteMs > 0 ? _lastSourceWriteMs : len * 0.00035; }
+  function _runSourceDomWrite(p){
+    _sourceDomPending = null;
+    const t0 = performance.now();
+    p.doWrite();
+    /* Kosten bis zum gerenderten Frame messen (das Layout fällt erst dort an) → steuert die nächste Ruhephase */
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const c = performance.now() - t0;
+      _lastSourceWriteMs = _lastSourceWriteMs ? (0.5 * _lastSourceWriteMs + 0.5 * c) : c;
+    }));
+  }
+  function flushSourceDomWrite(){
+    const p = _sourceDomPending;
+    if(!p) return;
+    debounceCancel('sourceDomWrite');
+    if(p.seq !== _sourceDomWriteSeq || _sourceDomTextRef === p.next){ _sourceDomPending = null; return; }
+    _runSourceDomWrite(p);
+  }
+  /* Read-your-writes: JEDES Lesen von sourceText.value (Übernehmen, Validieren, Kopieren, M13 …) holt einen
+     ausstehenden Write vorher nach; JEDES Setzen von außen verwirft ihn (Tab-Wechsel, Einfügen, Config laden) –
+     er darf nie einen neueren Inhalt überschreiben. */
+  function _installSourceValueIntercept(){
+    try {
+      if(!sourceText || sourceText.__valueIntercepted) return;
+      const d = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value');
+      if(!d || !d.get || !d.set) return;
+      Object.defineProperty(sourceText, 'value', {
+        configurable: true, enumerable: d.enumerable,
+        get: function(){ if(_sourceDomPending) flushSourceDomWrite(); return d.get.call(this); },
+        set: function(v){
+          if(_sourceDomPending){ _sourceDomPending = null; _sourceDomWriteSeq++; debounceCancel('sourceDomWrite'); }
+          d.set.call(this, v);
+        }
+      });
+      sourceText.__valueIntercepted = true;
+      /* Zusätzlich: Interaktion mit dem Feld holt den aktuellen Stand sofort nach, BEVOR Caret/Fokus/Eingabe landen */
+      ['pointerdown', 'focus', 'keydown'].forEach(ev => sourceText.addEventListener(ev, flushSourceDomWrite, true));
+    } catch(_){ _reportError('catch', _); }
+  }
+  _installSourceValueIntercept();
 
   function updateSourceFromTree(opts){
     opts = opts || {};
@@ -21267,45 +21423,50 @@
         });
     });
   }
-  /* §FLASH-BUTTON-HARDENING: (1) Original-Label pro Button nur EINMAL pro
-     Flash-Zyklus merken (data-Attribut) – der alte Code capturte bei einem
-     zweiten Klick während „✓ Kopiert“ lief genau diesen Flash-Text als
-     „Original“ und restored ihn dauerhaft (Button hängt fest). (2) Pending
-     Timer pro Button clearen – kein Timer-Stau bei Dauerklick. (3) Firefox/
-     Chrome drosseln setTimeout in Hintergrund-Tabs massiv – visibilitychange
-     setzt überfällige Flashes bei Rückkehr sofort zurück. */
-  const _flashBtnState = new Map(); /* id → { timer, restoreAt } */
-  function flashButton(id, label){
-    const b = document.getElementById(id);
-    if(!b) return;
-    /* Original immer frisch merken, wenn gerade kein Flash läuft – hält
-       Label-Updates (Sprachwechsel etc.) mit */
-    if(!_flashBtnState.has(id)){
-      if(b.dataset && b.dataset.flashLabel != null) delete b.dataset.flashLabel;
-      b.dataset.flashLabel = b.textContent;
-    }
-    const prev = _flashBtnState.get(id);
-    if(prev) clearTimeout(prev.timer);
-    b.textContent = label;
-    const timer = setTimeout(function(){
-      b.textContent = b.dataset.flashLabel || b.textContent;
-      _flashBtnState.delete(id);
-    }, 1300);
-    _flashBtnState.set(id, { timer: timer, restoreAt: Date.now() + 1300 });
+  /* Kurzzeitige Rückmeldung am Button ("✓ Kopiert") mit garantierter Rückkehr zur normalen Beschriftung.
+     Vorher: `const o = b.textContent` bei JEDEM Aufruf + setTimeout. Folgen: (1) ein zweiter Aufruf innerhalb von
+     1,3 s hielt "✓ Kopiert" für das Original und stellte DAS dauerhaft wieder her (Button hängt auf "Kopiert");
+     (2) eine inzwischen geänderte Beschriftung (Sprachwechsel, setSourceLabels) wurde mit dem alten Stand
+     überschrieben; (3) Firefox/Chrome drosseln Timer in lange offenen oder verdeckten Tabs – der Rücksetz-Timer lief
+     dann nicht (oder sehr spät) und der Button blieb stehen.
+     Jetzt: Original nur beim ERSTEN Flash eines Zyklus erfassen; Zustand je Button-ID (überlebt Neu-Rendern des
+     Elements); beim Zurücksetzen nur überschreiben, wenn noch die eigene Flash-Beschriftung steht; überfällige
+     Flashes werden bei visibilitychange/pageshow/focus sofort zurückgesetzt (gedrosselter Timer). */
+  /* flashText(el, label, ms, after): zeigt `label` ms Millisekunden lang und stellt danach die Beschriftung wieder her.
+     Zustand je ELEMENT (WeakMap); Original nur beim ersten Flash eines Zyklus; Rücksetzen nur, wenn noch das eigene
+     Label steht; `after` (optional) läuft IMMER beim Zurücksetzen (z. B. disabled neu berechnen). */
+  const _flashTextState = new WeakMap();
+  const _flashTextActive = new Set();
+  function _flashTextRestore(el){
+    const st = _flashTextState.get(el);
+    if(!st) return;
+    clearTimeout(st.timer);
+    _flashTextState.delete(el);
+    _flashTextActive.delete(el);
+    if(el.textContent === st.label) el.textContent = st.orig;
+    if(st.after){ try { st.after(); } catch(_){ _reportError('catch', _); } }
   }
-  document.addEventListener('visibilitychange', function(){
-    if(document.visibilityState !== 'visible') return;
-    const now = Date.now();
-    Array.from(_flashBtnState.keys()).forEach(function(id){
-      const st = _flashBtnState.get(id);
-      if(st && st.restoreAt <= now){
-        clearTimeout(st.timer);
-        const b = document.getElementById(id);
-        if(b) b.textContent = b.dataset.flashLabel || b.textContent;
-        _flashBtnState.delete(id);
-      }
-    });
-  });
+  function flashText(el, label, ms, after){
+    if(!el) return;
+    ms = ms || 1300;
+    let st = _flashTextState.get(el);
+    if(st) clearTimeout(st.timer);              /* laufender Flash: das ORIGINAL bleibt das Original */
+    else { st = { orig: el.textContent }; _flashTextState.set(el, st); }
+    st.label = label;
+    st.after = after || st.after || null;
+    el.textContent = label;
+    st.until = performance.now() + ms;
+    _flashTextActive.add(el);
+    st.timer = setTimeout(() => _flashTextRestore(el), ms);
+  }
+  function flashButton(id, label){ flashText(document.getElementById(id), label, 1300); }
+  function _flashRestoreOverdue(){
+    const now = performance.now();
+    _flashTextActive.forEach(el => { const st = _flashTextState.get(el); if(!st || now >= st.until) _flashTextRestore(el); });
+  }
+  document.addEventListener('visibilitychange', _flashRestoreOverdue);
+  window.addEventListener('pageshow', _flashRestoreOverdue);
+  window.addEventListener('focus', _flashRestoreOverdue);
   function setSourceLabels(open){
     const label = open ? t('XML ausblenden', 'toolbar.hideXml') : t('XML anzeigen', 'toolbar.showXml');
     const desk = document.getElementById('btnToggleSource');
@@ -21347,6 +21508,7 @@
       setSourceLabels(true);
       sourceGesamtMode = false;
       updateSourcePanelTitle();
+      markSourceDomUrgent(3000); /* Panel soeben bewusst geöffnet → Text zeitnah anzeigen */
       /* Warmer Cache → deferred DOM bei großen Texten; sonst frame-budgetiert */
       if(_sourceCacheText != null && !_sourceDirtyNodeIds && !S.sourceFocused && !getSourceDirty()){
         updateResultCharCount(_sourceCacheText);
@@ -21493,19 +21655,12 @@
     clearBtn.addEventListener('click', e => {
       e.stopPropagation();
       if(!hasLocalDraft()){
-        const prev = clearBtn.textContent;
-        clearBtn.textContent = t('Nichts gespeichert', 'drafts.clearEmpty');
-        setTimeout(() => { clearBtn.textContent = prev; }, 1300);
+        flashText(clearBtn, t('Nichts gespeichert', 'drafts.clearEmpty'), 1300);
         return;
       }
       clearLocalDraft();
-      const prev = clearBtn.textContent;
-      clearBtn.textContent = t('✓ Gelöscht', 'drafts.cleared');
       clearBtn.disabled = true;
-      setTimeout(() => {
-        clearBtn.textContent = prev;
-        clearBtn.disabled = !hasLocalDraft();
-      }, 1300);
+      flashText(clearBtn, t('✓ Gelöscht', 'drafts.cleared'), 1300, () => { clearBtn.disabled = !hasLocalDraft(); });
     });
     container.appendChild(clearBtn);
 
@@ -21791,16 +21946,12 @@
     clearBtn.disabled = !hasLocalDraft();
     clearBtn.addEventListener('click', () => {
       if(!hasLocalDraft()){
-        const prev = clearBtn.textContent;
-        clearBtn.textContent = t('Nichts gespeichert', 'drafts.clearEmpty');
-        setTimeout(() => { clearBtn.textContent = prev; }, 1300);
+        flashText(clearBtn, t('Nichts gespeichert', 'drafts.clearEmpty'), 1300);
         return;
       }
       clearLocalDraft();
-      const prev = clearBtn.textContent;
-      clearBtn.textContent = t('✓ Gelöscht', 'drafts.cleared');
       clearBtn.disabled = true;
-      setTimeout(() => { clearBtn.textContent = prev; clearBtn.disabled = !hasLocalDraft(); }, 1300);
+      flashText(clearBtn, t('✓ Gelöscht', 'drafts.cleared'), 1300, () => { clearBtn.disabled = !hasLocalDraft(); });
     });
     clearSection.appendChild(clearBtn);
 
@@ -21812,10 +21963,8 @@
     schemaClearBtn.disabled = !hasPersistedSchema();
     schemaClearBtn.addEventListener('click', () => {
       writePersistedSchema(null);
-      const prev = schemaClearBtn.textContent;
-      schemaClearBtn.textContent = t('✓ Schema-Profil gelöscht', 'phase3.schemaProfileCleared');
       schemaClearBtn.disabled = true;
-      setTimeout(() => { schemaClearBtn.textContent = prev; schemaClearBtn.disabled = !hasPersistedSchema(); }, 1300);
+      flashText(schemaClearBtn, t('✓ Schema-Profil gelöscht', 'phase3.schemaProfileCleared'), 1300, () => { schemaClearBtn.disabled = !hasPersistedSchema(); });
     });
     clearSection.appendChild(schemaClearBtn);
 
@@ -23316,11 +23465,7 @@
       const el = document.getElementById('focusEditorTextarea');
       if(!el) return;
       const text = el.value || '';
-      const done = () => {
-        const prev = optCopy.textContent;
-        optCopy.textContent = t('✓ Kopiert', 'focusEditor.copied');
-        setTimeout(() => { optCopy.textContent = prev; }, 1200);
-      };
+      const done = () => { flashText(optCopy, t('✓ Kopiert', 'focusEditor.copied'), 1200); };
       if(navigator.clipboard && navigator.clipboard.writeText){
         navigator.clipboard.writeText(text).then(done).catch(() => {
           if(typeof copyToClipboardFallback === 'function' && copyToClipboardFallback(text)) done();
@@ -23341,9 +23486,7 @@
         }
       } catch(_){ text = ''; }
       if(!text){
-        const prev = optPasteReplace.textContent;
-        optPasteReplace.textContent = t('Zwischenablage nicht lesbar', 'focusEditor.pasteFailed');
-        setTimeout(() => { optPasteReplace.textContent = prev; }, 1400);
+        flashText(optPasteReplace, t('Zwischenablage nicht lesbar', 'focusEditor.pasteFailed'), 1400);
         return;
       }
       text = typeof applyPasteFormat === 'function' ? applyPasteFormat(text) : String(text).replace(/\r\n/g, '\n').replace(/\r/g, '\n');
@@ -24547,7 +24690,7 @@
    * Tier 3: > 512 MB, zurück < 384 MB. */
   function scheduleMemoryBudgetCheck(){
     debounce('memBudget', 2500, () => {
-      _fsEnqueue(_FS_PRIORITIES.P4, () => {
+      _fsEnqueue(_FS_PRIORITIES.P4, function memBudgetTask(){
         try {
           const bytes = estimateDocMemory();
           let n = 0;
@@ -24635,7 +24778,7 @@
       }
     } catch(e){ _reportError('scheduleLiveValidation', e); }
     debounce('liveValidate', delay, () => {
-      _fsEnqueue(_FS_PRIORITIES.P4, () => {
+      _fsEnqueue(_FS_PRIORITIES.P4, function liveValidationTask(){
         try { runLiveValidation(); } catch(e){ _reportError('runLiveValidation.sched', e); }
       });
     }, { mode: 'idle', idleTimeout: idleTimeout });
@@ -24904,7 +25047,7 @@
     /* §44 §FRAME-SCHEDULER: P4-Task via Scheduler ausführen (Budget-gesteuert) */
     _persistSchemaTimer = setTimeout(() => {
       _persistSchemaTimer = null;
-      _fsEnqueue(_FS_PRIORITIES.P4, () => { try { persistLearnedSchema(); } catch(_){ _reportError('catch', _); } });
+      _fsEnqueue(_FS_PRIORITIES.P4, function persistSchemaTask(){ try { persistLearnedSchema(); } catch(_){ _reportError('catch', _); } });
     }, 1500);
   }
 

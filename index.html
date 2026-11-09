@@ -12139,8 +12139,11 @@
          Zwangs-Hydratieren im Export-Pfad. */
       /* §87 §GESAMT-FROM-FLAT: hydratierte Tabs per Flat-Snap statt
          serializeTree-Walk – identischer Output, kein Tree-Walk. */
+      /* FIX: draftXml enthält die XML-Deklaration/DOCTYPE (Preamble). Mitten im Gesamt-Text ist sie für den Parser ein
+         Fehler ('XML declaration allowed only at the start') → der Export war nicht wieder einlesbar. Hydrierte Tabs
+         schreiben ohnehin ohne Preamble; hier genauso. */
       const body = (tab.lazy && tab.draftXml)
-        ? String(tab.draftXml)
+        ? String(extractXmlPreamble(String(tab.draftXml)).rest || '')
         : ('<prompt>\n' + _serializeTreeFromFlat(tab.tree || []) + '</prompt>');
       parts.push(body.trim());
     });
@@ -19819,8 +19822,12 @@
     const newTabs = [];
     let currentTitle = t('Prompt {n}', 'tabs.defaultTitle', {n: 1});
     let currentChildren = [];
-    function flush(){
-      if(currentChildren.length || newTabs.length === 0){
+    /* FIX: Der Fallback-Tab (mindestens ein Tab) gilt nur für den SCHLUSSaufruf. Vorher (… || newTabs.length === 0)
+       feuerte er schon beim ersten TAB:-Marker, wenn davor noch kein Inhalt kam – bei JEDEM Export, der mit
+       '<!-- GESAMT-CONFIG -->' + '<!-- TAB: … -->' beginnt: ein leerer Phantom-Tab 'Prompt 1' vorne, der zugleich
+       der aktive Tab wurde (und die Preamble bekam). */
+    function flush(isFinal){
+      if(currentChildren.length || (isFinal && newTabs.length === 0)){
         let treeData = currentChildren;
         if(currentChildren.length === 1 && currentChildren[0].kind === 'element' && (currentChildren[0].tag || '').toLowerCase() === 'prompt'){
           treeData = currentChildren[0].children || [];
@@ -19842,7 +19849,7 @@
         currentChildren.push(n);
       }
     });
-    flush();
+    flush(true);
     if(!newTabs.length){
       showBanner('error', [t('Keine gültige Gesamt-Config gefunden.', 'protocol.noGesamt')]);
       return;
